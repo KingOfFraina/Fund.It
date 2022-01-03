@@ -10,36 +10,36 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "helloServlet", value = "/hello-servlet")
 public class HelloServlet extends HttpServlet {
-    /**
-     * @
-     */
-    private String message;
+   /**
+    * @
+    */
+   private String message;
 
-    /**
-     *
-     */
-    public void init() {
-        message = "Hello Fund.It team";
-    }
+   /**
+    *
+    */
+   public void init() {
+      message = "Hello Fund.It team  ";
+   }
 
-    /**
-     * @param request
-     * @param response
-     */
-    public void doGet(final HttpServletRequest request,
-                      final HttpServletResponse response) throws IOException {
-        response.setContentType("text/html");
+   /**
+    * @param request
+    * @param response
+    */
+   public void doGet(final HttpServletRequest request,
+                     final HttpServletResponse response) throws IOException {
+      response.setContentType("text/html");
 
-        // Hello
-        PrintWriter out = response.getWriter();
-        out.println("<html><body>");
-        out.println("<h1>" + message + "</h1>");
-        out.println("</body></html>");
-    }
+      // Hello
+      PrintWriter out = response.getWriter();
+      out.println("<html><body>");
+      out.println("<h1>" + message + "</h1>");
+      out.println("</body></html>");
+   }
 
-    /**
-     *
-     */
-    public void destroy() {
-    }
+   /**
+    *
+    */
+   public void destroy() {
+   }
 }
