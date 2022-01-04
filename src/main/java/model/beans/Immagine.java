@@ -41,4 +41,16 @@ public final class Immagine {
     public void setPath(final String imgPath) {
         this.path = imgPath;
     }
+
+    /**
+     * @return la stringa dell'oggetto
+     */
+    @Override
+    public String toString() {
+        return "Immagine{"
+                + "campagna="
+                + campagna
+                + ", path='" + path + '\''
+                + '}';
+    }
 }
