@@ -1,5 +1,7 @@
 package model.beans;
 
+import java.util.List;
+
 public final class Campagna {
     /**
      * id della campagna.
@@ -29,6 +31,10 @@ public final class Campagna {
      * riferimento all'utente.
      */
     private Utente utente;
+    /**
+     * immagini relative alla campagna.
+     */
+    private List<Immagine> immagini;
 
     /**
      * @return id della campagna.
@@ -126,6 +132,20 @@ public final class Campagna {
      */
     public void setUtente(final Utente beneficiario) {
         this.utente = beneficiario;
+    }
+
+    /**
+     * @return foto sulla campagna.
+     */
+    public List<Immagine> getImmagini() {
+        return immagini;
+    }
+
+    /**
+     * @param foto lista di foto relative alla campagna.
+     */
+    public void setImmagini(final List<Immagine> foto) {
+        this.immagini = foto;
     }
 
     @Override
