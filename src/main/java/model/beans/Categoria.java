@@ -15,7 +15,7 @@ public final class Categoria {
 
     /***
      *
-     * @return String il nome della categoria
+     * @return String il nome della categoria.
      */
     public String getNome() {
         return nome;
@@ -23,7 +23,7 @@ public final class Categoria {
 
     /***
      *
-     * @param nomeCategoria Il nome della categoria
+     * @param nomeCategoria Il nome della categoria.
      */
     public void setNome(final String nomeCategoria) {
         this.nome = nomeCategoria;
