@@ -23,6 +23,7 @@ public class Servlet extends HttpServlet
          ResultSet rs = ps.executeQuery();
          rs.next();
          System.out.println(rs.getString("nome") + rs.getString("cognome"));
+         ConPool.getInstance().closeDataSource();
       }
       catch (SQLException e)
       {

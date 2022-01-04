@@ -72,4 +72,10 @@ public final class ConPool {
 
         return datasource.getConnection();
     }
+
+    public void closeDataSource()
+    {
+       if(datasource != null)
+          datasource.close();
+    }
 }
