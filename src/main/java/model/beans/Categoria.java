@@ -28,7 +28,7 @@ public final class Categoria {
     public void setNome(final String nomeCategoria) {
         this.nome = nomeCategoria;
     }
-    
+
     @Override
     public String toString() {
         return "Categoria{"
