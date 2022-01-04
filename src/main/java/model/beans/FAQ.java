@@ -1,66 +1,86 @@
 package model.beans;
 
-public class FAQ
-{
-   private int IDFaq;
-   private String Domanda, Risposta;
-   private Utente utente;
+public final class FAQ {
+   /**
+    * Rappresenta l'ID della faq.
+    */
+   private int idFaq;
+   /**
+    * Rappresenta la domanda della faq.
+    */
+   private String domanda;
+   /**
+    * Rappresenta la risposta della faq.
+    */
+   private String risposta;
+   /**
+    * Rappresenta l'utente che crea la faq.
+    */
+   private Utente utenteCreatore;
 
-   public FAQ(int IDFaq, String domanda, String risposta, Utente utente)
-   {
-      this.IDFaq = IDFaq;
-      Domanda = domanda;
-      Risposta = risposta;
-      this.utente = utente;
+   /**
+    * @return l'ID della faq.
+    */
+   public int getIdFaq() {
+      return idFaq;
    }
 
-   public FAQ()
-   {
+   /**
+    * @param id rappresenta l'ID della faq
+    */
+   public void setIdFaq(final int id) {
+      this.idFaq = id;
    }
 
-   public int getIDFaq()
-   {
-      return IDFaq;
+   /**
+    * @return la domanda relativa alla faq
+    */
+   public String getDomanda() {
+      return domanda;
    }
 
-   public void setIDFaq(int IDFaq)
-   {
-      this.IDFaq = IDFaq;
+   /**
+    * @param newDomanda rappresenta la domanda della faq
+    */
+   public void setDomanda(final String newDomanda) {
+      this.domanda = newDomanda;
    }
 
-   public String getDomanda()
-   {
-      return Domanda;
+   /**
+    * @return la risposta relativa alla faq
+    */
+   public String getRisposta() {
+      return risposta;
    }
 
-   public void setDomanda(String domanda)
-   {
-      Domanda = domanda;
+   /**
+    * @param newRisposta rappresenta la risposta della faq
+    */
+   public void setRisposta(final String newRisposta) {
+      this.risposta = newRisposta;
    }
 
-   public String getRisposta()
-   {
-      return Risposta;
+   /**
+    * @return l'utente che ha creato la FAQ
+    */
+   public Utente getUtenteCreatore() {
+      return utenteCreatore;
    }
 
-   public void setRisposta(String risposta)
-   {
-      Risposta = risposta;
-   }
-
-   public Utente getUtente()
-   {
-      return utente;
-   }
-
-   public void setUtente(Utente utente)
-   {
-      this.utente = utente;
+   /**
+    * @param newUtenteCreatore rappresenta l'utente che ha creato la FAQ
+    */
+   public void setUtenteCreatore(final Utente newUtenteCreatore) {
+      this.utenteCreatore = newUtenteCreatore;
    }
 
    @Override
-   public String toString()
-   {
-      return "FAQ{" + "IDFaq=" + IDFaq + ", Domanda='" + Domanda + '\'' + ", Risposta='" + Risposta + '\'' + ", utente=" + utente + '}';
+   public String toString() {
+      return "FAQ{"
+              + "IDFaq=" + idFaq
+              + ", domanda='" + domanda + '\''
+              + ", Risposta='" + risposta + '\''
+              + ", utente=" + utente
+              + '}';
    }
 }
