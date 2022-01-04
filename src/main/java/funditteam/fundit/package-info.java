@@ -1,3 +1,0 @@
-/**
- **/
-package funditteam.fundit;
