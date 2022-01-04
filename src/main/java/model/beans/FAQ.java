@@ -80,7 +80,7 @@ public final class FAQ {
               + "IDFaq=" + idFaq
               + ", domanda='" + domanda + '\''
               + ", Risposta='" + risposta + '\''
-              + ", utente=" + utente
+              + ", utente=" + utenteCreatore
               + '}';
    }
 }
