@@ -3,7 +3,7 @@ package model.beans;
 
 import java.util.Date;
 
-enum StatoSegnalazione {
+public enum StatoSegnalazione {
     /**
      * Stato "attiva".
      */
