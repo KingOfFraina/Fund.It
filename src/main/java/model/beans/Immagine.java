@@ -9,7 +9,10 @@ public final class Immagine {
      * Path immagine.
      */
     private String path;
-
+    /**
+     * Id univoco immagine.
+     */
+    private int id;
     /**
      * Getter Campagna.
      * @return la campagna relativa
@@ -43,14 +46,27 @@ public final class Immagine {
     }
 
     /**
+     * @return id dell'immagine.
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @param ident identificativo dell'immagine da recuperare.
+     */
+    public void setId(final int ident) {
+        this.id = ident;
+    }
+    /**
      * @return la stringa dell'oggetto
      */
     @Override
     public String toString() {
         return "Immagine{"
-                + "campagna="
-                + campagna
+                + "campagna=" + campagna
                 + ", path='" + path + '\''
+                + ", id=" + id
                 + '}';
     }
 }

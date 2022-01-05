@@ -40,11 +40,49 @@ public class FAQDao implements  DAO<FAQ> {
 
     @Override
     public List<FAQ> getAll() {
+
+        try (Connection con = ConPool.getInstance().getConnection())
+        {
+            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM faq"))
+            {
+                ResultSet rs = ps.executeQuery();
+
+                List<FAQ> retrieved = null;
+
+                while (rs.next())
+                {
+                    retrieved.add(extract(rs, ""));
+                }
+
+                return retrieved;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         return null;
     }
 
     @Override
     public boolean save(FAQ entity) {
+        if(entity == null)
+            return false;
+
+        try (Connection con = ConPool.getInstance().getConnection())
+        {
+            try (PreparedStatement ps = con.prepareStatement("INSERT INTO faq VALUES (domanda, risposta, idUtente) (?,?,?)"))
+            {
+
+                ps.setString(1, entity.getDomanda());
+                ps.setString(2, entity.getRisposta());
+                ps.setInt(3, entity.getUtenteCreatore().getIdUtente());
+                if (ps.executeUpdate() == 0) {
+                    return false;
+                }
+                return true;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         return false;
     }
 
