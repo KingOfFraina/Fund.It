@@ -65,7 +65,7 @@ public final class Utente {
      */
     private List<Donazione> donazioniList;
     /**
-     * Lista delle segnalazioni .... TODO
+     * Lista delle segnalazioni effettuate.
      */
     private List<Segnalazione> segnalazioneList;
 
@@ -285,14 +285,14 @@ public final class Utente {
     }
 
     /**
-     * @return Lista TODO .
+     * @return Lista effettuate.
      */
     public List<Segnalazione> getSegnalazioneList() {
         return segnalazioneList;
     }
 
     /**
-     * @param sList List TODO .
+     * @param sList List effettuate.
      */
     public void setSegnalazioneList(final List<Segnalazione> sList) {
         this.segnalazioneList = sList;
