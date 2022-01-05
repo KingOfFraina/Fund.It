@@ -35,6 +35,14 @@ public final class Campagna {
      * immagini relative alla campagna.
      */
     private List<Immagine> immagini;
+    /**
+     * lista delle donazioni alla campagna.
+     */
+    private List<Donazione> donazioni;
+    /**
+     * lista delle segnalazioni alla campagna.
+     */
+    private List<Segnalazione> segnalazioni;
 
     /**
      * @return id della campagna.
@@ -146,6 +154,37 @@ public final class Campagna {
      */
     public void setImmagini(final List<Immagine> foto) {
         this.immagini = foto;
+    }
+
+    /**
+     *
+     * @return lista delle donazioni.
+     */
+    public List<Donazione> getDonazioni() {
+        return donazioni;
+    }
+
+    /**
+     *
+     * @param importo lista delle donazioni.
+     */
+    public void setDonazioni(final List<Donazione> importo) {
+        this.donazioni = importo;
+    }
+
+    /**
+     *
+     * @return lista delle segnalazioni.
+     */
+    public List<Segnalazione> getSegnalazioni() {
+        return segnalazioni;
+    }
+
+    /**
+     * @param reports lista delle segnalazioni.
+     */
+    public void setSegnalazioni(final List<Segnalazione> reports) {
+        this.segnalazioni = reports;
     }
 
     @Override
