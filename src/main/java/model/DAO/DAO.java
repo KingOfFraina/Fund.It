@@ -9,13 +9,16 @@ public interface DAO<T> {
     * @return null se non viene trovato nessun risultato,
     * un'instanza nel caso in cui viene trovato un risultato
     */
-   T getById(int id) throws SQLException;
+   T getById(int id);
 
-   List<T> getAll() throws SQLException;
+   /**
+    * @return
+    */
+   List<T> getAll();
 
-   boolean save(T entity) throws SQLException;
+   boolean save(T entity);
 
-   boolean update(T entity) throws SQLException;
+   boolean update(T entity);
 
-   boolean delete(T entity) throws SQLException;
+   boolean delete(T entity);
 }
