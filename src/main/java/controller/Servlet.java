@@ -6,10 +6,8 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Enumeration;
 
 @WebServlet(name = "Servlet", value = "/Servlet")
 public class Servlet extends HttpServlet {
@@ -21,9 +19,15 @@ public class Servlet extends HttpServlet {
             ResultSet rs = ps.executeQuery();
             rs.next();
             System.out.println(rs.getString("nome") + rs.getString("cognome"));
-            ConPool.getInstance().closeDataSource();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        ConPool.getInstance().closeDataSource();
     }
 }
