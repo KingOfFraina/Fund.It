@@ -1,6 +1,7 @@
 package model.DAO;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 public interface DAO<T> {
@@ -43,5 +44,5 @@ public interface DAO<T> {
     * @return l'istanza della della classe T popolata con le informazioni
     * presenti nel resultSet
     */
-   T extract(ResultSet resultSet, String alias);
+   T extract(ResultSet resultSet, String alias) throws SQLException;
 }
