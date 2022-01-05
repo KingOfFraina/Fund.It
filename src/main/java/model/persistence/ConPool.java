@@ -2,10 +2,7 @@ package model.persistence;
 
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.apache.tomcat.jdbc.pool.DataSource;
-
 import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public final class ConPool {
