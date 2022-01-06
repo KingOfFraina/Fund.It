@@ -20,6 +20,27 @@ public final class SegnalazioneDao implements DAO<Segnalazione> {
      */
     private static final Logger LOG =
             Logger.getLogger("SegnalazioneDao");
+    /**
+     * Costante indica il primo parametro di un PreparedStatement.
+     */
+    private static final int FIRST_PARAMETER = 1;
+    /**
+     * Costante che indica il secondo parametro di un PreparedStatement.
+     */
+    private static final int SECOND_PARAMETER = 2;
+    /**
+     * Costante che indica il terzo parametro di un PreparedStatement.
+     */
+    private static final int THIRD_PARAMETER = 3;
+    /**
+     * Costante che indica il quarto parametro di un PreparedStatement.
+     */
+    private static final int FOURTH_PARAMETER = 4;
+    /**
+     * Costante che indica il quinto parametro di un PreparedStatement.
+     */
+    private static final int FIFTH_PARAMETER = 5;
+
 
     @Override
     public Segnalazione getById(final int id) {
@@ -38,7 +59,6 @@ public final class SegnalazioneDao implements DAO<Segnalazione> {
         }
     }
 
-
     @Override
     public List<Segnalazione> getAll() {
         LOG.warning("---------Called SegnalazioneDao.getAll----------");
@@ -56,16 +76,38 @@ public final class SegnalazioneDao implements DAO<Segnalazione> {
         return list;
     }
 
-
     @Override
     public boolean save(final Segnalazione entity) {
-
         LOG.warning("---------Called SegnalazioneDao.save----------");
         try (Connection connection = ConPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement("",
+             PreparedStatement statement = connection.prepareStatement(
+                     "INSERT INTO segnalazione "
+                             + "(DataOra, descrizione,"
+                             + " idUtenteSegnalatore, idUtenteSegnalato, Stato)"
+                             + "values (?, ?, ?, ?, ?)",
                      PreparedStatement.RETURN_GENERATED_KEYS)) {
 
+            statement.setDate(
+                    FIRST_PARAMETER, (java.sql.Date) entity.getDataOra());
+
+            statement.setString(
+                    SECOND_PARAMETER, entity.getDescrizione());
+
+            statement.setInt(
+                    THIRD_PARAMETER, entity.getSegnalatore().getIdUtente());
+
+            statement.setInt(
+                    FOURTH_PARAMETER, entity.getSegnalato().getIdUtente());
+
+            statement.setString(
+                    FIFTH_PARAMETER, entity.getStatoSegnalazione().toString());
+
             int ret = statement.executeUpdate();
+            ResultSet set = statement.getGeneratedKeys();
+
+            if (set.next()) {
+                entity.setIdSegnalazione(set.getInt(0));
+            }
             return (ret > 0);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -74,12 +116,36 @@ public final class SegnalazioneDao implements DAO<Segnalazione> {
 
     @Override
     public boolean update(final Segnalazione entity) {
-        return false;
+        int ret;
+        try (Connection connection = ConPool.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                     "UPDATE segnalazione "
+                             + "SET Stato = ? WHERE idSegnalazione = ?")) {
+
+            statement.setString(1, entity.getStatoSegnalazione().toString());
+            statement.setInt(2, entity.getIdSegnalazione());
+
+            ret = statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return ret > 0;
     }
 
     @Override
     public boolean delete(final Segnalazione entity) {
-        return false;
+        int ret;
+        try (Connection connection = ConPool.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement("")) {
+
+            statement.setInt(1, entity.getIdSegnalazione());
+
+            ret = statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return ret > 0;
     }
 
     @Override
