@@ -12,19 +12,24 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 public final class SegnalazioneDao implements DAO<Segnalazione> {
     /**
-     * @param id rappresenta l'identificativo dell'entity
-     * @return Segnalazione Un oggetto di tipo Segnalazione associato al record
-     * nel database
+     * Logger di classe.
      */
+    private static final Logger LOG =
+            Logger.getLogger("SegnalazioneDao");
+
     @Override
     public Segnalazione getById(final int id) {
+        LOG.warning("---------Called SegnalazioneDao.getById----------");
         try (Connection connection = ConPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT "
-                     + "* FROM segnalazione AS s"
-                     + " WHERE s.idSegnalazione = ?")) {
+             PreparedStatement statement =
+                     connection.prepareStatement(
+                             "SELECT * "
+                                     + "FROM segnalazione AS s"
+                                     + " WHERE s.idSegnalazione = ?")) {
             ResultSet set = statement.executeQuery();
 
             return extract(set, "s");
@@ -33,12 +38,11 @@ public final class SegnalazioneDao implements DAO<Segnalazione> {
         }
     }
 
-    /**
-     * @return List<Segnalazione> Una lista di oggetti di tipo Segnalazione
-     */
+
     @Override
     public List<Segnalazione> getAll() {
-        List<Segnalazione> list = new ArrayList<>();
+        LOG.warning("---------Called SegnalazioneDao.getAll----------");
+        List<Segnalazione> list;
         try (Connection connection = ConPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement("")) {
             list = new ArrayList<>();
@@ -52,9 +56,20 @@ public final class SegnalazioneDao implements DAO<Segnalazione> {
         return list;
     }
 
+
     @Override
     public boolean save(final Segnalazione entity) {
-        return false;
+
+        LOG.warning("---------Called SegnalazioneDao.save----------");
+        try (Connection connection = ConPool.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement("",
+                     PreparedStatement.RETURN_GENERATED_KEYS)) {
+
+            int ret = statement.executeUpdate();
+            return (ret > 0);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -69,7 +84,7 @@ public final class SegnalazioneDao implements DAO<Segnalazione> {
 
     @Override
     public Segnalazione extract(final ResultSet resultSet, final String alias)
-                                                        throws SQLException {
+            throws SQLException {
         Segnalazione s = new Segnalazione();
         s.setIdSegnalazione(resultSet.getInt(""));
         s.setDataOra(new Date());

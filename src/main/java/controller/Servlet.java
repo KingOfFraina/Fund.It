@@ -12,7 +12,7 @@ import java.util.Enumeration;
 @WebServlet(name = "Servlet", value = "/Servlet")
 public class Servlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
             Connection c = ConPool.getInstance().getConnection();
             PreparedStatement ps = c.prepareStatement("SELECT * FROM utente");

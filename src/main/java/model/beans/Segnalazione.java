@@ -3,20 +3,6 @@ package model.beans;
 
 import java.util.Date;
 
-public enum StatoSegnalazione {
-    /**
-     * Stato "attiva".
-     */
-    ATTIVA,
-    /**
-     * Stato "risolta".
-     */
-    RISOLTA,
-    /**
-     * Stato "archiviata".
-     */
-    ARCHIVIATA
-}
 
 public final class Segnalazione {
     /**
