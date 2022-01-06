@@ -1,13 +1,12 @@
 package model.DAO;
 
-import model.beans.Immagine;
 import model.beans.Utente;
 import model.storage.ConPool;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class UtenteDAO implements DAO<Utente> {
@@ -17,7 +16,7 @@ public final class UtenteDAO implements DAO<Utente> {
 
       try (Connection connection = ConPool.getInstance().getConnection()) {
          if (connection != null) {
-            String query = "SELECT * FROM immagine WHERE idImmagine = ?";
+            String query = "SELECT * FROM utente WHERE idUtente = ?";
 
             try (PreparedStatement preparedStatement =
                          connection.prepareStatement(query)) {
@@ -25,7 +24,7 @@ public final class UtenteDAO implements DAO<Utente> {
                ResultSet resultSet = preparedStatement.executeQuery();
 
                if (resultSet.next()) {
-                  immagine = extract(resultSet, null);
+                  utente = extract(resultSet, null);
                }
             }
          }
@@ -38,27 +37,98 @@ public final class UtenteDAO implements DAO<Utente> {
 
    @Override
    public List<Utente> getAll() {
-      return null;
+      List<Utente> utenteList = null;
+
+      try (Connection connection = ConPool.getInstance().getConnection()) {
+         if (connection != null) {
+            String query = "SELECT * FROM utente";
+            utenteList = new ArrayList<>();
+
+            try (PreparedStatement preparedStatement =
+                         connection.prepareStatement(query)) {
+               ResultSet resultSet = preparedStatement.executeQuery();
+
+               while (resultSet.next()) {
+                  utenteList.add(extract(resultSet, null));
+               }
+
+            }
+         }
+      } catch (SQLException e) {
+         e.printStackTrace();
+      }
+
+      return utenteList;
    }
 
    @Override
    public boolean save(final Utente entity) {
+      //TODO
       return false;
    }
 
    @Override
    public boolean update(final Utente entity) {
+      //TODO
       return false;
    }
 
    @Override
    public boolean delete(final Utente entity) {
+      if (entity != null) {
+         try (Connection connection =
+                      ConPool.getInstance().getConnection()) {
+            if (connection != null) {
+               String query =
+                       "DELETE FROM utente WHERE idUtente = ?";
+
+               try (PreparedStatement preparedStatement =
+                            connection.prepareStatement(query)) {
+
+                  preparedStatement.setInt(1, entity.getIdUtente());
+
+                  return preparedStatement.executeUpdate() > 0 ? true : false;
+               }
+            }
+         } catch (SQLException e) {
+            e.printStackTrace();
+         }
+      }
       return false;
    }
 
    @Override
    public Utente extract(final ResultSet resultSet, final String alias)
            throws SQLException {
-      return null;
+      Utente utente = null;
+      String tableAlias = "";
+
+      if (resultSet != null) {
+         utente = new Utente();
+
+         if (alias != null) {
+            tableAlias = alias + ".";
+         }
+
+         utente.setAdmin(resultSet.getBoolean(tableAlias + "admin"));
+         utente.setCap(resultSet.getString(tableAlias + "cap"));
+         utente.setCf(resultSet.getString(tableAlias + "cf"));
+         utente.setCitta(resultSet.getString(tableAlias + "citta"));
+         utente.setCognome(resultSet.getString(tableAlias + "cognome"));
+         utente.setDataBan(resultSet.getDate(tableAlias + "dataBan"));
+         utente.setDataDiNascita(resultSet.getDate(tableAlias + "dataDiNascita"));
+         utente.setEmail(resultSet.getString(tableAlias + "email"));
+         utente.setFotoProfilo(resultSet.getString(tableAlias + "fotoProfilo"));
+         utente.setIdUtente(resultSet.getInt(tableAlias + "idUtente"));
+         utente.setNome(resultSet.getString(tableAlias + "nome"));
+         utente.setPassword(resultSet.getString(tableAlias + "password"));
+         utente.setStrada(resultSet.getString(tableAlias + "strada"));
+         utente.setTelefono(resultSet.getString(tableAlias + "telefono"));
+         utente.setCampagnaList(null);
+         utente.setDonazioniList(null);
+         utente.setSegnalazioneList(null);
+      }
+
+      return utente;
    }
 }
