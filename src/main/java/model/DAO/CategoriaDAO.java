@@ -1,8 +1,6 @@
 package model.DAO;
 
 import model.beans.Categoria;
-import model.beans.FAQ;
-import model.beans.Utente;
 import model.persistence.ConPool;
 
 import java.sql.Connection;
@@ -13,50 +11,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class CategoriaDAO implements DAO<Categoria> {
-
-    /**
-     * @param id rappresenta l'identificativo dell'entity.
-     * @return l'oggetto categoria dal db.
-     */
     @Override
     public Categoria getById(final int id) {
         Categoria c = null;
-        try (Connection con = ConPool.getInstance().getConnection()){
-            if(con != null){
-                try(PreparedStatement stmt = con.prepareStatement("SELECT * FROM categoria WHERE idCategoria = ?")){
+        try (Connection con = ConPool.getInstance().getConnection()) {
+            if (con != null) {
+                try (PreparedStatement stmt =
+                             con.prepareStatement("SELECT * FROM categoria "
+                                     + "WHERE idCategoria = ?")) {
                     stmt.setInt(1, id);
                     ResultSet resultSet = stmt.executeQuery();
-                    while(resultSet.next()){
+                    while (resultSet.next()) {
                         c = extract(resultSet, null);
 
                     }
                 }
 
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return c;
     }
 
-    /**
-     * @return la lista di tutte le categorie nel db.
-     */
     @Override
     public List<Categoria> getAll() {
         List<Categoria> cList = null;
-        try(Connection con = ConPool.getInstance().getConnection()){
-            if(con != null){
+        try (Connection con = ConPool.getInstance().getConnection()) {
+            if (con != null) {
                 cList = new ArrayList<>();
 
-                try(PreparedStatement stmt = con.prepareStatement("SELECT * FROM categoria")){
+                try (PreparedStatement stmt =
+                             con.prepareStatement("SELECT * FROM categoria")) {
                     ResultSet resultSet = stmt.executeQuery();
-                    while (resultSet.next()){
+                    while (resultSet.next()) {
                         cList.add(extract(resultSet, null));
                     }
                 }
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return cList;
@@ -64,37 +57,76 @@ public final class CategoriaDAO implements DAO<Categoria> {
 
     @Override
     public boolean save(final Categoria entity) {
-        if(entity != null){
-            try(Connection con = ConPool.getInstance().getConnection()){
-                if(con != null){
-                    try(PreparedStatement stmt = con.prepareStatement("INSERT INTO "))
+        if (entity != null) {
+            try (Connection con = ConPool.getInstance().getConnection()) {
+                if (con != null) {
+                    String nomeCat = entity.getNome();
+                    try (PreparedStatement stmt =
+                             con.prepareStatement("INSERT INTO "
+                                 + "categoria (nomeCategoria) VALUES (?)")) {
+                        stmt.setString(1, nomeCat);
+                        return stmt.executeUpdate() > 0;
+                    }
                 }
-            }catch(SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public boolean update(Categoria entity) {
         return false;
     }
 
     @Override
-    public boolean delete(Categoria entity) {
+    public boolean update(final Categoria entity) {
+        if (entity != null) {
+            try (Connection con = ConPool.getInstance().getConnection()) {
+                if (con != null) {
+                    try (PreparedStatement stmt =
+                             con.prepareStatement("UPDATE categoria "
+                                 + "SET nomeCategoria = ? WHERE id = ?")) {
+                        stmt.setString(1, entity.getNome());
+                        stmt.setInt(2, entity.getIdCategoria());
+                        return stmt.executeUpdate() > 0;
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         return false;
     }
 
     @Override
-    public Categoria extract(ResultSet resultSet, String alias) throws SQLException {
-        if(resultSet != null) {
+    public boolean delete(final Categoria entity) {
+        if (entity != null) {
+            try (Connection con = ConPool.getInstance().getConnection()) {
+                if (con != null) {
+                    try (PreparedStatement stmt =
+                         con.prepareStatement("DELETE FROM categoria "
+                             + "WHERE idCategoria = ?")) {
+                        stmt.setInt(1, entity.getIdCategoria());
+                        return stmt.executeUpdate() > 0;
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Categoria extract(final ResultSet resultSet,
+                             final String alias) throws SQLException {
+        if (resultSet != null) {
             Categoria c = new Categoria();
+            String alias2 = "";
 
-            if(!alias.isEmpty())
-                alias+=".";
+            if (!alias.isEmpty()) {
+                alias2 = alias + ".";
+            }
 
-            c.setNome(resultSet.getString(alias+"nomeCategoria"));
-            c.setIdCategoria(resultSet.getInt(alias+"idCategoria"));
+            c.setNome(resultSet.getString(alias2 + "nomeCategoria"));
+            c.setIdCategoria(resultSet.getInt(alias2 + "idCategoria"));
             return c;
         }
         return null;
