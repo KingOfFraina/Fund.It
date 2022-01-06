@@ -5,6 +5,10 @@ public final class Categoria {
      * Il nome della categoria.
      */
     private String nome;
+    /**
+     * id categoria.
+     */
+    private int idCategoria;
 
     /***
      * Costruttore.
@@ -14,7 +18,6 @@ public final class Categoria {
     }
 
     /***
-     *
      * @return String il nome della categoria.
      */
     public String getNome() {
@@ -27,6 +30,20 @@ public final class Categoria {
      */
     public void setNome(final String nomeCategoria) {
         this.nome = nomeCategoria;
+    }
+
+    /**
+     * @return ide della categoria.
+     */
+    public int getIdCategoria() {
+        return idCategoria;
+    }
+
+    /**
+     * @param id id della categoria.
+     */
+    public void setIdCategoria(final int id) {
+        this.idCategoria = id;
     }
 
     @Override
