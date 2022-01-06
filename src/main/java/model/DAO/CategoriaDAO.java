@@ -1,8 +1,7 @@
 package model.DAO;
 
 import model.beans.Categoria;
-import model.persistence.ConPool;
-
+import model.storage.ConPool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -3,7 +3,7 @@ package model.DAO;
 import model.beans.Segnalazione;
 import model.beans.StatoSegnalazione;
 import model.beans.Utente;
-import model.persistence.ConPool;
+import model.storage.ConPool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

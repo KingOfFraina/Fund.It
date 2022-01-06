@@ -2,7 +2,7 @@ package model.DAO;
 
 import model.beans.Campagna;
 import model.beans.Immagine;
-import model.persistence.ConPool;
+import model.storage.ConPool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

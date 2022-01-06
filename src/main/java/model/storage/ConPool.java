@@ -1,4 +1,4 @@
-package model.persistence;
+package model.storage;
 
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.apache.tomcat.jdbc.pool.DataSource;

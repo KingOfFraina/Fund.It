@@ -2,7 +2,7 @@ package model.DAO;
 
 import model.beans.FAQ;
 import model.beans.Utente;
-import model.persistence.ConPool;
+import model.storage.ConPool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

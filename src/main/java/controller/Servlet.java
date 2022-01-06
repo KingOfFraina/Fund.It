@@ -1,13 +1,10 @@
 package controller;
 
-import model.persistence.ConPool;
+import model.storage.ConPool;
 
-import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
-import java.io.IOException;
 import java.sql.*;
-import java.util.Enumeration;
 
 @WebServlet(name = "Servlet", value = "/Servlet")
 public class Servlet extends HttpServlet {
