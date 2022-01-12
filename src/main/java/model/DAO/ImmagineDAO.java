@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ImmagineDAO implements DAO<Immagine> {
+public final class ImmagineDAO implements DAO<Immagine>, DAOHelper<Immagine> {
    @Override
    public Immagine getById(final int id) {
       Immagine immagine = null;
@@ -74,11 +74,9 @@ public final class ImmagineDAO implements DAO<Immagine> {
                try (PreparedStatement preparedStatement =
                             connection.prepareStatement(query)) {
 
-                  preparedStatement.setInt(1,
-                          entity.getCampagna().getIdCampagna());
-                  preparedStatement.setString(2, entity.getPath());
+                  fillPreparedStatement(preparedStatement, entity);
 
-                  return preparedStatement.executeUpdate() > 0 ? true : false;
+                  return preparedStatement.executeUpdate() > 0;
                }
             }
          } catch (SQLException e) {
@@ -99,13 +97,11 @@ public final class ImmagineDAO implements DAO<Immagine> {
 
                try (PreparedStatement preparedStatement =
                             connection.prepareStatement(query)) {
-                  int index = 1;
-                  preparedStatement.setInt(index++,
-                          entity.getCampagna().getIdCampagna());
-                  preparedStatement.setString(index++, entity.getPath());
+                  int index = fillPreparedStatement(preparedStatement, entity);
+
                   preparedStatement.setInt(index, entity.getId());
 
-                  return preparedStatement.executeUpdate() > 0 ? true : false;
+                  return preparedStatement.executeUpdate() > 0;
                }
             }
          } catch (SQLException e) {
@@ -161,5 +157,17 @@ public final class ImmagineDAO implements DAO<Immagine> {
       }
 
       return immagine;
+   }
+
+   @Override
+   public int fillPreparedStatement(final PreparedStatement preparedStatement,
+                                    final Immagine entity) throws SQLException {
+      int index = 1;
+
+      preparedStatement.setInt(index++,
+              entity.getCampagna().getIdCampagna());
+      preparedStatement.setString(index++, entity.getPath());
+
+      return index;
    }
 }
