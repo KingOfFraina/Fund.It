@@ -14,12 +14,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-public final class SegnalazioneDao implements DAO<Segnalazione> {
+public final class SegnalazioneDAO
+        implements DAO<Segnalazione>, DAOHelper<Segnalazione> {
     /**
      * Logger di classe.
      */
     private static final Logger LOG =
-            Logger.getLogger("SegnalazioneDao");
+            Logger.getLogger("SegnalazioneDAO");
     /**
      * Costante indica il primo parametro di un PreparedStatement.
      */
@@ -44,7 +45,7 @@ public final class SegnalazioneDao implements DAO<Segnalazione> {
 
     @Override
     public Segnalazione getById(final int id) {
-        LOG.warning("---------Called SegnalazioneDao.getById----------");
+        LOG.warning("---------Called SegnalazioneDAO.getById----------");
         try (Connection connection = ConPool.getInstance().getConnection();
              PreparedStatement statement =
                      connection.prepareStatement(
@@ -61,7 +62,7 @@ public final class SegnalazioneDao implements DAO<Segnalazione> {
 
     @Override
     public List<Segnalazione> getAll() {
-        LOG.warning("---------Called SegnalazioneDao.getAll----------");
+        LOG.warning("---------Called SegnalazioneDAO.getAll----------");
         List<Segnalazione> list;
         try (Connection connection = ConPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement("")) {
@@ -78,7 +79,7 @@ public final class SegnalazioneDao implements DAO<Segnalazione> {
 
     @Override
     public boolean save(final Segnalazione entity) {
-        LOG.warning("---------Called SegnalazioneDao.save----------");
+        LOG.warning("---------Called SegnalazioneDAO.save----------");
         try (Connection connection = ConPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(
                      "INSERT INTO segnalazione "
@@ -159,5 +160,12 @@ public final class SegnalazioneDao implements DAO<Segnalazione> {
         s.setSegnalatore(new Utente());
         s.setDescrizione(resultSet.getString(""));
         return s;
+    }
+
+    @Override
+    public int fillPreparedStatement(final PreparedStatement preparedStatement,
+                                     final Segnalazione entity)
+            throws SQLException {
+        return 0;
     }
 }
