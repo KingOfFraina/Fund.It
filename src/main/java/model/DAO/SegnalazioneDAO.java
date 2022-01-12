@@ -21,27 +21,6 @@ public final class SegnalazioneDAO
      */
     private static final Logger LOG =
             Logger.getLogger("SegnalazioneDAO");
-    /**
-     * Costante indica il primo parametro di un PreparedStatement.
-     */
-    private static final int FIRST_PARAMETER = 1;
-    /**
-     * Costante che indica il secondo parametro di un PreparedStatement.
-     */
-    private static final int SECOND_PARAMETER = 2;
-    /**
-     * Costante che indica il terzo parametro di un PreparedStatement.
-     */
-    private static final int THIRD_PARAMETER = 3;
-    /**
-     * Costante che indica il quarto parametro di un PreparedStatement.
-     */
-    private static final int FOURTH_PARAMETER = 4;
-    /**
-     * Costante che indica il quinto parametro di un PreparedStatement.
-     */
-    private static final int FIFTH_PARAMETER = 5;
-
 
     @Override
     public Segnalazione getById(final int id) {
@@ -88,20 +67,7 @@ public final class SegnalazioneDAO
                              + "values (?, ?, ?, ?, ?)",
                      PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            statement.setDate(
-                    FIRST_PARAMETER, (java.sql.Date) entity.getDataOra());
-
-            statement.setString(
-                    SECOND_PARAMETER, entity.getDescrizione());
-
-            statement.setInt(
-                    THIRD_PARAMETER, entity.getSegnalatore().getIdUtente());
-
-            statement.setInt(
-                    FOURTH_PARAMETER, entity.getSegnalato().getIdUtente());
-
-            statement.setString(
-                    FIFTH_PARAMETER, entity.getStatoSegnalazione().toString());
+            fillPreparedStatement(statement, entity);
 
             int ret = statement.executeUpdate();
             ResultSet set = statement.getGeneratedKeys();
@@ -166,6 +132,16 @@ public final class SegnalazioneDAO
     public int fillPreparedStatement(final PreparedStatement preparedStatement,
                                      final Segnalazione entity)
             throws SQLException {
-        return 0;
+        int index = 1;
+
+        preparedStatement.setDate(index++, (java.sql.Date) entity.getDataOra());
+        preparedStatement.setString(index++, entity.getDescrizione());
+        preparedStatement.setInt(index++,
+                entity.getSegnalatore().getIdUtente());
+        preparedStatement.setInt(index++, entity.getSegnalato().getIdUtente());
+        preparedStatement.setString(index++,
+                entity.getStatoSegnalazione().toString());
+
+        return index;
     }
 }
