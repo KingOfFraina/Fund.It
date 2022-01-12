@@ -16,15 +16,10 @@ import java.util.logging.Logger;
 
 public final class SegnalazioneDAO
         implements DAO<Segnalazione>, DAOHelper<Segnalazione> {
-    /**
-     * Logger di classe.
-     */
-    private static final Logger LOG =
-            Logger.getLogger("SegnalazioneDAO");
+
 
     @Override
     public Segnalazione getById(final int id) {
-        LOG.warning("---------Called SegnalazioneDAO.getById----------");
         try (Connection connection = ConPool.getInstance().getConnection();
              PreparedStatement statement =
                      connection.prepareStatement(
@@ -41,7 +36,6 @@ public final class SegnalazioneDAO
 
     @Override
     public List<Segnalazione> getAll() {
-        LOG.warning("---------Called SegnalazioneDAO.getAll----------");
         List<Segnalazione> list;
         try (Connection connection = ConPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement("")) {
@@ -58,7 +52,6 @@ public final class SegnalazioneDAO
 
     @Override
     public boolean save(final Segnalazione entity) {
-        LOG.warning("---------Called SegnalazioneDAO.save----------");
         try (Connection connection = ConPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(
                      "INSERT INTO segnalazione "
