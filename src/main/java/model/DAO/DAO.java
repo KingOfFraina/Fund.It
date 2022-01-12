@@ -1,7 +1,5 @@
 package model.DAO;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 public interface DAO<T> {
@@ -37,12 +35,4 @@ public interface DAO<T> {
     * true --> se l'operazione va a buon fine
     */
    boolean delete(T entity);
-
-   /**
-    * @param resultSet resultSet della query eseguita
-    * @param alias eventuale alias del field
-    * @return l'istanza della della classe T popolata con le informazioni
-    * presenti nel resultSet
-    */
-   T extract(ResultSet resultSet, String alias) throws SQLException;
 }

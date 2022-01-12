@@ -2,6 +2,7 @@ package model.DAO;
 
 import model.beans.Utente;
 import model.storage.ConPool;
+import java.sql.Date;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class UtenteDAO implements DAO<Utente> {
+public final class UtenteDAO implements DAO<Utente>, DAOHelper<Utente> {
    @Override
    public Utente getById(final int id) {
       Utente utente = null;
@@ -62,14 +63,58 @@ public final class UtenteDAO implements DAO<Utente> {
    }
 
    @Override
-   public boolean save(final Utente entity) {
-      //TODO
+   public boolean update(final Utente entity) {
+      if (entity != null) {
+         try (Connection connection =
+                      ConPool.getInstance().getConnection()) {
+            if (connection != null) {
+               String query =
+                       "UPDATE utente SET dataBan = ?,admin = ?,fotoProfilo = ?"
+                               + ", password = ?, telefono = ?, nome = ?, "
+                               + "cognome = ?, email = ?, strada = ?, città = ?"
+                               + ", cap = ?, cf = ?, dataDiNascita = ?"
+                               + "WHERE idUtente = ?";
+
+               try (PreparedStatement preparedStatement =
+                            connection.prepareStatement(query)) {
+
+                  int index = fillPreparedStatement(preparedStatement, entity);
+                  preparedStatement.setInt(index, entity.getIdUtente());
+
+                  return preparedStatement.executeUpdate() > 0;
+               }
+            }
+         } catch (SQLException e) {
+            e.printStackTrace();
+         }
+      }
       return false;
    }
 
    @Override
-   public boolean update(final Utente entity) {
-      //TODO
+   public boolean save(final Utente entity) {
+      if (entity != null) {
+         try (Connection connection =
+                      ConPool.getInstance().getConnection()) {
+            if (connection != null) {
+               String query =
+                       "INSERT INTO utente (dataBan, admin, fotoProfilo, "
+                               + "password, telefono, nome, cognome, email,"
+                               + " strada, città, cap, cf, dataDiNascita) "
+                               + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+               try (PreparedStatement preparedStatement =
+                            connection.prepareStatement(query)) {
+
+                  fillPreparedStatement(preparedStatement, entity);
+
+                  return preparedStatement.executeUpdate() > 0;
+               }
+            }
+         } catch (SQLException e) {
+            e.printStackTrace();
+         }
+      }
       return false;
    }
 
@@ -97,6 +142,7 @@ public final class UtenteDAO implements DAO<Utente> {
       return false;
    }
 
+
    @Override
    public Utente extract(final ResultSet resultSet, final String alias)
            throws SQLException {
@@ -116,7 +162,8 @@ public final class UtenteDAO implements DAO<Utente> {
          utente.setCitta(resultSet.getString(tableAlias + "citta"));
          utente.setCognome(resultSet.getString(tableAlias + "cognome"));
          utente.setDataBan(resultSet.getDate(tableAlias + "dataBan"));
-         utente.setDataDiNascita(resultSet.getDate(tableAlias + "dataDiNascita"));
+         utente.setDataDiNascita(resultSet.getDate(tableAlias
+                 + "dataDiNascita"));
          utente.setEmail(resultSet.getString(tableAlias + "email"));
          utente.setFotoProfilo(resultSet.getString(tableAlias + "fotoProfilo"));
          utente.setIdUtente(resultSet.getInt(tableAlias + "idUtente"));
@@ -130,5 +177,29 @@ public final class UtenteDAO implements DAO<Utente> {
       }
 
       return utente;
+   }
+
+   @Override
+   public int fillPreparedStatement(final PreparedStatement preparedStatement,
+                                    final Utente entity) throws SQLException {
+      int index = 1;
+
+      preparedStatement.setDate(index++,
+              (Date) entity.getDataBan());
+      preparedStatement.setBoolean(index++, entity.isAdmin());
+      preparedStatement.setString(index++, entity.getFotoProfilo());
+      preparedStatement.setString(index++, entity.getPassword());
+      preparedStatement.setString(index++, entity.getTelefono());
+      preparedStatement.setString(index++, entity.getNome());
+      preparedStatement.setString(index++, entity.getCognome());
+      preparedStatement.setString(index++, entity.getEmail());
+      preparedStatement.setString(index++, entity.getStrada());
+      preparedStatement.setString(index++, entity.getCitta());
+      preparedStatement.setString(index++, entity.getCap());
+      preparedStatement.setString(index++, entity.getCf());
+      preparedStatement.setDate(index++,
+              (Date) entity.getDataDiNascita());
+
+      return index;
    }
 }
