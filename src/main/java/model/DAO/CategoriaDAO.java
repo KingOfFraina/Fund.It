@@ -10,8 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class CategoriaDAO implements DAO<Categoria>,
-        DAOHelper<Categoria> {
+public final class CategoriaDAO implements DAOHelper<Categoria> {
    @Override
    public Categoria getById(final int id) {
       Categoria c = null;

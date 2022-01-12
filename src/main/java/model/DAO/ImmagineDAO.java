@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ImmagineDAO implements DAO<Immagine>, DAOHelper<Immagine> {
+public final class ImmagineDAO implements DAOHelper<Immagine> {
    @Override
    public Immagine getById(final int id) {
       Immagine immagine = null;

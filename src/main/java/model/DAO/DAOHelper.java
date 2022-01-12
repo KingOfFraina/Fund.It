@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public interface DAOHelper<T> {
+public interface DAOHelper<T> extends DAO<T> {
    /**
     * @param resultSet resultSet della query eseguita
     * @param alias     eventuale alias del field

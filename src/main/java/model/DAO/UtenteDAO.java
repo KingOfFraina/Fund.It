@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class UtenteDAO implements DAO<Utente>, DAOHelper<Utente> {
+public final class UtenteDAO implements DAOHelper<Utente> {
    @Override
    public Utente getById(final int id) {
       Utente utente = null;

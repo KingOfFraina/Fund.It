@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 public final class SegnalazioneDAO
-        implements DAO<Segnalazione>, DAOHelper<Segnalazione> {
+        implements DAOHelper<Segnalazione> {
 
 
     @Override
