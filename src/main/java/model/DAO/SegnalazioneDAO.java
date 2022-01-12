@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 public final class SegnalazioneDAO
         implements DAO<Segnalazione>, DAOHelper<Segnalazione> {
