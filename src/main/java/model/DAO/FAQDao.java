@@ -10,13 +10,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class FAQDao implements DAOHelper<FAQ> {
+public final class FAQDao implements DAOHelper<FAQ> {
 
    @Override
-   public FAQ getById(int id) {
+   public FAQ getById(final int id) {
 
       try (Connection con = ConPool.getInstance().getConnection()) {
-         try (PreparedStatement ps = con.prepareStatement("SELECT * FROM faq WHERE idFaq = ?")) {
+         try (PreparedStatement ps = con.prepareStatement("SELECT * "
+                 + "FROM faq WHERE idFaq = ?")) {
             ps.setInt(0, id);
 
             ResultSet rs = ps.executeQuery();
@@ -39,13 +40,16 @@ public class FAQDao implements DAOHelper<FAQ> {
    public List<FAQ> getAll() {
 
       try (Connection con = ConPool.getInstance().getConnection()) {
-         try (PreparedStatement ps = con.prepareStatement("SELECT * FROM faq")) {
+         try (PreparedStatement ps =
+                      con.prepareStatement("SELECT * FROM faq")) {
             ResultSet rs = ps.executeQuery();
 
             List<FAQ> retrieved = null;
 
             while (rs.next()) {
-               retrieved.add(extract(rs, ""));
+               if (retrieved != null) {
+                  retrieved.add(extract(rs, ""));
+               }
             }
 
             return retrieved;
@@ -57,43 +61,84 @@ public class FAQDao implements DAOHelper<FAQ> {
    }
 
    @Override
-   public boolean save(FAQ entity) {
-      if (entity == null)
-         return false;
+   public boolean save(final FAQ entity) {
+      if (entity != null) {
+         try (Connection con = ConPool.getInstance().getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("INSERT INTO "
+                    + "faq (domanda, risposta, idUtente) VALUES (?,?,?)")) {
 
-      try (Connection con = ConPool.getInstance().getConnection()) {
-         try (PreparedStatement ps = con.prepareStatement("INSERT INTO faq (domanda, risposta, idUtente) VALUES (?,?,?)")) {
+               fillPreparedStatement(ps, entity);
 
-            fillPreparedStatement(ps, entity);
-
-            if (ps.executeUpdate() == 0) {
-               return false;
+               return ps.executeUpdate() > 0;
             }
-            return true;
+         } catch (SQLException throwables) {
+            throwables.printStackTrace();
          }
-      } catch (SQLException throwables) {
-         throwables.printStackTrace();
       }
       return false;
    }
 
    @Override
-   public boolean update(FAQ entity) {
+   public boolean update(final FAQ entity) {
+      if (entity != null) {
+         try (Connection connection =
+                      ConPool.getInstance().getConnection()) {
+            if (connection != null) {
+               String query =
+                       "UPDATE faq SET domanda = ?, risposta = ?, idUtente = ?"
+                               + "WHERE idFaq = ?";
+
+               try (PreparedStatement preparedStatement =
+                            connection.prepareStatement(query)) {
+
+                  int index = fillPreparedStatement(preparedStatement, entity);
+                  preparedStatement.setInt(index,
+                          entity.getUtenteCreatore().getIdUtente());
+
+                  return preparedStatement.executeUpdate() > 0;
+               }
+            }
+         } catch (SQLException e) {
+            e.printStackTrace();
+         }
+      }
       return false;
    }
 
    @Override
-   public boolean delete(FAQ entity) {
+   public boolean delete(final FAQ entity) {
+      if (entity != null) {
+         try (Connection connection =
+                      ConPool.getInstance().getConnection()) {
+            if (connection != null) {
+               String query =
+                       "DELETE FROM faq WHERE idFaq = ?";
+
+               try (PreparedStatement preparedStatement =
+                            connection.prepareStatement(query)) {
+
+                  preparedStatement.setInt(1, entity.getIdFaq());
+
+                  return preparedStatement.executeUpdate() > 0;
+               }
+            }
+         } catch (SQLException e) {
+            e.printStackTrace();
+         }
+      }
       return false;
    }
 
    @Override
-   public FAQ extract(ResultSet resultSet, String alias) throws SQLException {
+   public FAQ extract(final ResultSet resultSet, final String alias)
+           throws SQLException {
       if (resultSet != null) {
+         String tableAlias = "";
          FAQ fq = new FAQ();
 
-         if (!alias.isEmpty())
-            alias += ".";
+         if (alias != null) {
+            tableAlias = alias + ".";
+         }
 
          fq.setIdFaq(resultSet.getInt(alias + "idFaq"));
          fq.setDomanda(resultSet.getString(alias + "domanda"));
@@ -116,7 +161,8 @@ public class FAQDao implements DAOHelper<FAQ> {
 
       preparedStatement.setString(index++, entity.getDomanda());
       preparedStatement.setString(index++, entity.getRisposta());
-      preparedStatement.setInt(index++, entity.getUtenteCreatore().getIdUtente());
+      preparedStatement.setInt(index++,
+              entity.getUtenteCreatore().getIdUtente());
 
       return index;
    }
