@@ -126,7 +126,7 @@ public final class CategoriaDAO implements DAOHelper<Categoria> {
          Categoria c = new Categoria();
          String alias2 = "";
 
-         if (!alias.isEmpty()) {
+         if (alias != null && !alias.isEmpty()) {
             alias2 = alias + ".";
          }
 
