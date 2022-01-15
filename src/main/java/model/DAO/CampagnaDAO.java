@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class CampagnaDAO implements DAO<Campagna>, DAOHelper<Campagna> {
+public final class CampagnaDAO
+        implements DAOHelper<Campagna> {
     /**
      * @param id rappresenta l'identificativo dell'entity
      * @return null se non viene trovato nessun risultato,
@@ -78,7 +79,12 @@ public class CampagnaDAO implements DAO<Campagna>, DAOHelper<Campagna> {
                                      + "VALUES (?,?,?,?,?,?,?)",
                              PreparedStatement.RETURN_GENERATED_KEYS)) {
             fillPreparedStatement(statement, entity);
+
             ret = statement.executeUpdate();
+            ResultSet set = statement.getGeneratedKeys();
+            if (set.next()) {
+                entity.setIdCampagna(set.getInt(0));
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -107,6 +113,8 @@ public class CampagnaDAO implements DAO<Campagna>, DAOHelper<Campagna> {
             statement.setDouble(index++, entity.getSommaRaccolta());
             statement.setDouble(index++, entity.getSommaTarget());
             statement.setInt(index++, entity.getCategoria().getIdCategoria());
+
+            ret = statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

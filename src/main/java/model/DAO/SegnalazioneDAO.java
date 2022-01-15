@@ -15,8 +15,11 @@ import java.util.List;
 
 public final class SegnalazioneDAO
         implements DAOHelper<Segnalazione> {
-
-
+    /**
+     * @param id rappresenta l'identificativo dell'entity
+     * @return null se non viene trovato nessun risultato,
+     * un'istanza di T nel caso in cui viene trovato un risultato
+     */
     @Override
     public Segnalazione getById(final int id) {
         try (Connection connection = ConPool.getInstance().getConnection();
@@ -27,12 +30,18 @@ public final class SegnalazioneDAO
                                      + " WHERE s.idSegnalazione = ?")) {
             ResultSet set = statement.executeQuery();
 
-            return extract(set, "s");
+            if (set.next()) {
+                return extract(set, "s");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return null;
     }
 
+    /**
+     * @return una lista di entity T
+     */
     @Override
     public List<Segnalazione> getAll() {
         String sql = "SELECT * FROM segnalazione";
@@ -50,6 +59,11 @@ public final class SegnalazioneDAO
         return list;
     }
 
+    /**
+     * @param entity l'istanza da salvare
+     * @return false --> se l'operazione non va a buon fine,
+     * true --> se l'operazione va a buon fine
+     */
     @Override
     public boolean save(final Segnalazione entity) {
         try (Connection connection = ConPool.getInstance().getConnection();
@@ -61,11 +75,9 @@ public final class SegnalazioneDAO
                              + "values (?, ?, ?, ?, ?, ?)",
                      PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            fillPreparedStatement(statement, entity);
-
+            int ret1 = fillPreparedStatement(statement, entity);
             int ret = statement.executeUpdate();
             ResultSet set = statement.getGeneratedKeys();
-
             if (set.next()) {
                 entity.setIdSegnalazione(set.getInt(0));
             }
@@ -75,6 +87,11 @@ public final class SegnalazioneDAO
         }
     }
 
+    /**
+     * @param entity l'istanza da aggiornare
+     * @return false --> se l'operazione non va a buon fine,
+     * true --> se l'operazione va a buon fine
+     */
     @Override
     public boolean update(final Segnalazione entity) {
         int ret;
@@ -94,6 +111,11 @@ public final class SegnalazioneDAO
         return ret > 0;
     }
 
+    /**
+     * @param entity l'istanza da eliminare
+     * @return false --> se l'operazione non va a buon fine,
+     * true --> se l'operazione va a buon fine
+     */
     @Override
     public boolean delete(final Segnalazione entity) {
         int ret;
@@ -111,6 +133,13 @@ public final class SegnalazioneDAO
         return ret > 0;
     }
 
+    /**
+     * @param resultSet resultSet della query eseguita
+     * @param alias     eventuale alias del field
+     * @return l'istanza della della classe T popolata con le informazioni
+     * presenti nel resultSet
+     * @throws SQLException eccezione lanciata in caso di problemi
+     */
     @Override
     public Segnalazione extract(final ResultSet resultSet, final String alias)
             throws SQLException {
@@ -133,6 +162,12 @@ public final class SegnalazioneDAO
         return s;
     }
 
+    /**
+     * @param preparedStatement il prepared Statement da popolare
+     * @param entity            l'entity sorgente dei dati
+     * @return l'index del campo successivo da riempire
+     * @throws SQLException eccezione lanciata in caso di problemi
+     */
     @Override
     public int fillPreparedStatement(final PreparedStatement preparedStatement,
                                      final Segnalazione entity)
