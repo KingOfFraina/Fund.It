@@ -1,5 +1,6 @@
 package model.DAO;
 
+import model.beans.Campagna;
 import model.beans.Segnalazione;
 import model.beans.StatoSegnalazione;
 import model.beans.Utente;
@@ -10,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public final class SegnalazioneDAO
@@ -35,9 +35,10 @@ public final class SegnalazioneDAO
 
     @Override
     public List<Segnalazione> getAll() {
+        String sql = "SELECT * FROM segnalazione";
         List<Segnalazione> list;
         try (Connection connection = ConPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement("")) {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             list = new ArrayList<>();
             ResultSet set = statement.executeQuery();
             while (set.next()) {
@@ -55,8 +56,9 @@ public final class SegnalazioneDAO
              PreparedStatement statement = connection.prepareStatement(
                      "INSERT INTO segnalazione "
                              + "(DataOra, descrizione,"
-                             + " idUtenteSegnalatore, idUtenteSegnalato, Stato)"
-                             + "values (?, ?, ?, ?, ?)",
+                             + " idUtenteSegnalatore,"
+                             + " idUtenteSegnalato, Stato, idCampagna)"
+                             + "values (?, ?, ?, ?, ?, ?)",
                      PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             fillPreparedStatement(statement, entity);
@@ -96,9 +98,11 @@ public final class SegnalazioneDAO
     public boolean delete(final Segnalazione entity) {
         int ret;
         try (Connection connection = ConPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement("")) {
-
+             PreparedStatement statement = connection.prepareStatement(
+                     "DELETE FROM segnalazione "
+                             + " WHERE idSegnalazione = ?")) {
             statement.setInt(1, entity.getIdSegnalazione());
+
 
             ret = statement.executeUpdate();
         } catch (SQLException e) {
@@ -111,12 +115,20 @@ public final class SegnalazioneDAO
     public Segnalazione extract(final ResultSet resultSet, final String alias)
             throws SQLException {
         Segnalazione s = new Segnalazione();
-        s.setIdSegnalazione(resultSet.getInt(""));
-        s.setDataOra(new Date());
+        s.setIdSegnalazione(resultSet.getInt(alias + ".idSegnalazione"));
+        s.setDataOra(resultSet.getDate(alias + ".DataOra"));
         s.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
-        s.setSegnalato(new Utente());
-        s.setSegnalatore(new Utente());
-        s.setDescrizione(resultSet.getString(""));
+        Utente segnalato = new Utente();
+        segnalato.setIdUtente(resultSet.getInt(alias + ".idUtenteSegnalato"));
+        s.setSegnalato(segnalato);
+        Utente segnalatore = new Utente();
+        segnalatore.setIdUtente(
+                resultSet.getInt(alias + ".idUtenteSegnalatore"));
+        s.setSegnalatore(segnalatore);
+        s.setDescrizione(resultSet.getString(alias + ".descrizione"));
+        Campagna c = new Campagna();
+        c.setIdCampagna(resultSet.getInt(alias + ".idCampagna"));
+        s.setCampagnaSegnalata(c);
         return s;
     }
 
@@ -125,7 +137,6 @@ public final class SegnalazioneDAO
                                      final Segnalazione entity)
             throws SQLException {
         int index = 1;
-
         preparedStatement.setDate(index++, (java.sql.Date) entity.getDataOra());
         preparedStatement.setString(index++, entity.getDescrizione());
         preparedStatement.setInt(index++,
@@ -133,7 +144,8 @@ public final class SegnalazioneDAO
         preparedStatement.setInt(index++, entity.getSegnalato().getIdUtente());
         preparedStatement.setString(index++,
                 entity.getStatoSegnalazione().toString());
-
+        preparedStatement.setInt(index++,
+                entity.getCampagnaSegnalata().getIdCampagna());
         return index;
     }
 }
