@@ -29,6 +29,10 @@ public final class Segnalazione {
      * Riferimento all'oggetto utente che viene segnalato.
      */
     private Utente segnalato;
+    /**
+     * Riferimento all'oggetto campagna che viene segnalata.
+     */
+    private Campagna campagnaSegnalata;
 
     /**
      * @return int Id attuale della segnalazione
@@ -114,6 +118,20 @@ public final class Segnalazione {
         this.segnalato = utente;
     }
 
+    /**
+     * @return Campagna istanza di Campagna che viene segnalata.
+     */
+    public Campagna getCampagnaSegnalata() {
+        return campagnaSegnalata;
+    }
+
+    /**
+     * @param campagna Istanza di campagna da segnalare.
+     */
+    public void setCampagnaSegnalata(final Campagna campagna) {
+        this.campagnaSegnalata = campagna;
+    }
+
     @Override
     public String toString() {
         return "Segnalazione{"
@@ -121,8 +139,9 @@ public final class Segnalazione {
                 + ", dataOra=" + dataOra
                 + ", descrizione='" + descrizione + '\''
                 + ", statoSegnalazione=" + statoSegnalazione
-                + ", segnalatore=" + segnalatore
-                + ", segnalato=" + segnalato
+                + ", segnalatore=" + segnalatore.getIdUtente()
+                + ", segnalato=" + segnalato.getIdUtente()
+                + ", campagna=" + campagnaSegnalata.getIdCampagna()
                 + '}';
     }
 }
