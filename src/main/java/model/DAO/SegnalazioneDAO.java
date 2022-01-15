@@ -117,7 +117,8 @@ public final class SegnalazioneDAO
         Segnalazione s = new Segnalazione();
         s.setIdSegnalazione(resultSet.getInt(alias + ".idSegnalazione"));
         s.setDataOra(resultSet.getDate(alias + ".DataOra"));
-        s.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
+        s.setStatoSegnalazione(StatoSegnalazione.valueOf(
+                resultSet.getString(alias + ".Stato")));
         Utente segnalato = new Utente();
         segnalato.setIdUtente(resultSet.getInt(alias + ".idUtenteSegnalato"));
         s.setSegnalato(segnalato);

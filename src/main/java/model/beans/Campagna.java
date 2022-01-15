@@ -8,6 +8,10 @@ public final class Campagna {
      */
     private int idCampagna;
     /**
+     * titolo della campagna.
+     */
+    private String titolo;
+    /**
      * stato della campagna.
      */
     private StatoCampagna stato;
@@ -157,7 +161,6 @@ public final class Campagna {
     }
 
     /**
-     *
      * @return lista delle donazioni.
      */
     public List<Donazione> getDonazioni() {
@@ -165,7 +168,6 @@ public final class Campagna {
     }
 
     /**
-     *
      * @param importo lista delle donazioni.
      */
     public void setDonazioni(final List<Donazione> importo) {
@@ -173,7 +175,6 @@ public final class Campagna {
     }
 
     /**
-     *
      * @return lista delle segnalazioni.
      */
     public List<Segnalazione> getSegnalazioni() {
@@ -187,11 +188,27 @@ public final class Campagna {
         this.segnalazioni = reports;
     }
 
+    /**
+     * @return titolo della campagna.
+     */
+    public String getTitolo() {
+        return titolo;
+    }
+
+    /**
+     * @param title titolo della campagna
+     */
+    public void setTitolo(final String title) {
+        this.titolo = title;
+    }
+
     @Override
     public String toString() {
         return "Campagna{"
                 + "idCampagna="
                 + idCampagna
+                + ", titolo="
+                + titolo
                 + ", stato="
                 + stato
                 + ", descrizione='"
@@ -201,9 +218,9 @@ public final class Campagna {
                 + ", sommaTarget="
                 + sommaTarget
                 + ", categoria="
-                + categoria
+                + categoria.getIdCategoria()
                 + ", utente="
-                + utente
+                + utente.getIdUtente()
                 + '}';
     }
 }
