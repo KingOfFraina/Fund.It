@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public final class FAQDao implements DAOHelper<FAQ> {
+public final class FAQDAO implements DAOHelper<FAQ> {
 
    @Override
    public FAQ getById(final int id) {
