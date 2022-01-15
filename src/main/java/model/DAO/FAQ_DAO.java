@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public final class FAQDAO implements DAOHelper<FAQ> {
+public final class FAQ_DAO implements DAOHelper<FAQ> {
 
    @Override
    public FAQ getById(final int id) {
@@ -47,9 +47,7 @@ public final class FAQDAO implements DAOHelper<FAQ> {
             List<FAQ> retrieved = null;
 
             while (rs.next()) {
-               if (retrieved != null) {
                   retrieved.add(extract(rs, ""));
-               }
             }
 
             return retrieved;
