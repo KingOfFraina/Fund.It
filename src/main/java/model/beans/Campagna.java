@@ -1,8 +1,10 @@
 package model.beans;
 
+import model.beans.proxyInterfaces.CampagnaInterface;
+
 import java.util.List;
 
-public final class Campagna {
+public final class Campagna implements CampagnaInterface {
     /**
      * id della campagna.
      */

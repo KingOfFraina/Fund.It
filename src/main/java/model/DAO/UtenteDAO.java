@@ -160,7 +160,7 @@ public final class UtenteDAO implements DAO<Utente> {
          utente.setAdmin(resultSet.getBoolean(tableAlias + "admin"));
          utente.setCap(resultSet.getString(tableAlias + "cap"));
          utente.setCf(resultSet.getString(tableAlias + "cf"));
-         utente.setCitta(resultSet.getString(tableAlias + "citta"));
+         utente.setCitta(resultSet.getString(tableAlias + "città"));
          utente.setCognome(resultSet.getString(tableAlias + "cognome"));
          utente.setDataBan(resultSet.getDate(tableAlias + "dataBan"));
          utente.setDataDiNascita(resultSet.getDate(tableAlias
@@ -172,9 +172,9 @@ public final class UtenteDAO implements DAO<Utente> {
          utente.setPassword(resultSet.getString(tableAlias + "password"));
          utente.setStrada(resultSet.getString(tableAlias + "strada"));
          utente.setTelefono(resultSet.getString(tableAlias + "telefono"));
-         utente.setCampagnaList(null);
-         utente.setDonazioniList(null);
-         utente.setSegnalazioneList(null);
+         utente.setCampagne(null);
+         utente.setDonazioni(null);
+         utente.setSegnalazioni(null);
       }
 
       return utente;

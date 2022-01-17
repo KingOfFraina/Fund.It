@@ -1,25 +1,22 @@
 package controller;
 
+import model.beans.proxies.CampagnaProxy;
+import model.DAO.CampagnaDAO;
+import model.beans.*;
 import model.storage.ConPool;
 
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
-import java.sql.*;
 
 @WebServlet(name = "Servlet", value = "/Servlet")
 public class Servlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Connection c = ConPool.getInstance().getConnection();
-            PreparedStatement ps = c.prepareStatement("SELECT * FROM utente");
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            System.out.println(rs.getString("nome") + rs.getString("cognome"));
+        Campagna campagna = new CampagnaDAO().getById(1);
+        CampagnaProxy segnalazioneProxy = new CampagnaProxy(campagna);
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        for(Segnalazione i : segnalazioneProxy.getSegnalazioni())
+            System.out.println(i);
     }
 
     @Override

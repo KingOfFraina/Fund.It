@@ -1,73 +1,75 @@
 package model.beans;
 
+import model.beans.proxyInterfaces.UtenteInterface;
+
 import java.util.Date;
 import java.util.List;
 
-public final class Utente {
-    /**
-     * Id dell'utente.
-     */
-    private int idUtente;
-    /**
-     * Data del ban dell'utente.
-     */
-    private Date dataBan;
-    /**
-     * Booleano che identifica se l'utente è admin oppure no.
-     */
-    private boolean admin;
-    /**
-     * Path della fotoProfilo.
-     */
-    private String fotoProfilo;
-    /**
-     * Password dell'utente.
-     */
-    private String password;
-    /**
-     * Numero di telefono.
-     */
-    private String telefono;
-    /**
-     * Nome dell'utente.
-     */
-    private String nome;
-    /**
-     * Cognome dell'utente.
-     */
-    private String cognome;
-    /**
-     * Email dell'utente.
-     */
-    private String email;
-    /**
-     * Strada dell'abitazione dell'utente.
-     */
-    private String strada;
-    /**
-     * Città dell'utente.
-     */
-    private String citta;
-    /**
-     * Cap dell'utente.
-     */
-    private String cap;
-    /**
-     * Codice Fiscale dell'utente.
-     */
-    private String cf;
-    /**
-     * Data di nascita dell'utente.
-     */
-    private Date dataDiNascita;
-    /**
-     * Lista delle donazioni effettuate dall'utente.
-     */
-    private List<Donazione> donazioniList;
-    /**
-     * Lista delle segnalazioni effettuate.
-     */
-    private List<Segnalazione> segnalazioneList;
+public final class Utente implements UtenteInterface {
+   /**
+    * Id dell'utente.
+    */
+   private int idUtente;
+   /**
+    * Data del ban dell'utente.
+    */
+   private Date dataBan;
+   /**
+    * Booleano che identifica se l'utente è admin oppure no.
+    */
+   private boolean admin;
+   /**
+    * Path della fotoProfilo.
+    */
+   private String fotoProfilo;
+   /**
+    * Password dell'utente.
+    */
+   private String password;
+   /**
+    * Numero di telefono.
+    */
+   private String telefono;
+   /**
+    * Nome dell'utente.
+    */
+   private String nome;
+   /**
+    * Cognome dell'utente.
+    */
+   private String cognome;
+   /**
+    * Email dell'utente.
+    */
+   private String email;
+   /**
+    * Strada dell'abitazione dell'utente.
+    */
+   private String strada;
+   /**
+    * Città dell'utente.
+    */
+   private String citta;
+   /**
+    * Cap dell'utente.
+    */
+   private String cap;
+   /**
+    * Codice Fiscale dell'utente.
+    */
+   private String cf;
+   /**
+    * Data di nascita dell'utente.
+    */
+   private Date dataDiNascita;
+   /**
+    * Lista delle donazioni effettuate dall'utente.
+    */
+   private List<Donazione> donazioni;
+   /**
+    * Lista delle segnalazioni effettuate.
+    */
+   private List<Segnalazione> segnalazioni;
 
     /**
      * Lista delle campagne avviate dall'utente.
@@ -284,19 +286,20 @@ public final class Utente {
         this.donazioniList = dList;
     }
 
-    /**
-     * @return Lista effettuate.
-     */
-    public List<Segnalazione> getSegnalazioneList() {
-        return segnalazioneList;
-    }
+   /**
+    * @return Lista effettuate.
+    */
+   @Override
+   public List<Segnalazione> getSegnalazioni() {
+      return segnalazioni;
+   }
 
-    /**
-     * @param sList List effettuate.
-     */
-    public void setSegnalazioneList(final List<Segnalazione> sList) {
-        this.segnalazioneList = sList;
-    }
+   /**
+    * @param sList List effettuate.
+    */
+   public void setSegnalazioni(final List<Segnalazione> sList) {
+      this.segnalazioni = sList;
+   }
 
     /**
      * @return Lista delle campagne avviate dall'utente.

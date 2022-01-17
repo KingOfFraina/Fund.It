@@ -78,7 +78,7 @@ public final class Donazione {
     * @param newCommento prende il commento da inserire nella donazione
     */
    public void setCommento(final String newCommento) {
-      this.commento = commento;
+      this.commento = newCommento;
    }
 
    /**
@@ -92,7 +92,7 @@ public final class Donazione {
     * @param newSommaDonata prende la somma donata
     */
    public void setSommaDonata(final double newSommaDonata) {
-      this.sommaDonata = sommaDonata;
+      this.sommaDonata = newSommaDonata;
    }
 
    /**
@@ -162,7 +162,7 @@ public final class Donazione {
               + ", sommaDonata=" + sommaDonata
               + ", anonimo=" + anonimo
               + ", utente=" + utente
-              + ", campagna=" + campagna
+              + ", campagna=" + campagna.getIdCampagna()
               + ", dataOra=" + dataOra
               + '}';
    }

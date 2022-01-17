@@ -64,7 +64,7 @@ public final class Immagine {
     @Override
     public String toString() {
         return "Immagine{"
-                + "campagna=" + campagna
+                + "campagna=" + campagna.getIdCampagna()
                 + ", path='" + path + '\''
                 + ", id=" + id
                 + '}';

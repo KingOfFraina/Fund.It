@@ -29,7 +29,7 @@ public final class CampagnaDAO
                    + " WHERE idCampagna = ?")) {
          int index = 1;
 
-         statement.setInt(++index, id);
+         statement.setInt(index, id);
 
          ResultSet set = statement.executeQuery();
          if (set.next()) {
@@ -165,7 +165,7 @@ public final class CampagnaDAO
       Campagna c = new Campagna();
       c.setIdCampagna(resultSet.getInt(alias + ".idCampagna"));
       c.setStato(StatoCampagna.valueOf(
-              resultSet.getString(alias + ".Stato")));
+              resultSet.getString(alias + ".Stato").toUpperCase()));
       c.setTitolo(resultSet.getString(alias + ".titolo"));
       c.setDescrizione(resultSet.getString(alias + ".descrizione"));
       c.setSommaRaccolta(resultSet.getDouble(alias + ".sommaRaccolta"));

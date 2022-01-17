@@ -44,7 +44,7 @@ public final class SegnalazioneDAO
     */
    @Override
    public List<Segnalazione> getAll() {
-      String sql = "SELECT * FROM segnalazione";
+      String sql = "SELECT * FROM segnalazione AS s";
       List<Segnalazione> list;
       try (Connection connection = ConPool.getInstance().getConnection();
            PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -158,7 +158,7 @@ public final class SegnalazioneDAO
       s.setIdSegnalazione(resultSet.getInt(alias + ".idSegnalazione"));
       s.setDataOra(resultSet.getDate(alias + ".DataOra"));
       s.setStatoSegnalazione(StatoSegnalazione.valueOf(
-              resultSet.getString(alias + ".Stato")));
+              resultSet.getString(alias + ".Stato").toUpperCase()));
       Utente segnalato = new Utente();
       segnalato.setIdUtente(resultSet.getInt(alias + ".idUtenteSegnalato"));
       s.setSegnalato(segnalato);

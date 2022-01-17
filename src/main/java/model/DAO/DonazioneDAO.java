@@ -165,7 +165,8 @@ public final class DonazioneDAO implements DAO<Donazione> {
             tableAlias = alias + ".";
          }
 
-         donazione.setDataOra(resultSet.getDate(tableAlias + "DataOra"));
+         donazione.setIdDonazione(resultSet.getInt(tableAlias + "idDonazione"));
+         donazione.setDataOra(resultSet.getTimestamp(tableAlias + "DataOra"));
          donazione.setRicevuta(resultSet.getString(tableAlias + "ricevuta"));
          donazione.setSommaDonata(resultSet.getDouble(tableAlias
                  + "sommaDonata"));
