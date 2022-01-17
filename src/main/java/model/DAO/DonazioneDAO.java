@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class DonazioneDAO implements DAOHelper<Donazione> {
+public final class DonazioneDAO implements DAO<Donazione> {
 
    @Override
    public Donazione getById(final int id) {
@@ -77,7 +77,18 @@ public final class DonazioneDAO implements DAOHelper<Donazione> {
                try (PreparedStatement preparedStatement =
                             connection.prepareStatement(query)) {
 
-                  fillPreparedStatement(preparedStatement, entity);
+                  int index = 1;
+
+                  preparedStatement.setDate(index++,
+                          (Date) entity.getDataOra());
+                  preparedStatement.setString(index++, entity.getRicevuta());
+                  preparedStatement.setDouble(index++, entity.getSommaDonata());
+                  preparedStatement.setString(index++, entity.getCommento());
+                  preparedStatement.setBoolean(index++, entity.isAnonimo());
+                  preparedStatement.setInt(index++,
+                          entity.getUtente().getIdUtente());
+                  preparedStatement.setInt(index++,
+                          entity.getCampagna().getIdCampagna());
 
                   return preparedStatement.executeUpdate() > 0;
                }
@@ -96,15 +107,15 @@ public final class DonazioneDAO implements DAOHelper<Donazione> {
                       ConPool.getInstance().getConnection()) {
             if (connection != null) {
                String query =
-                       "UPDATE donazione SET DataOra = ?, ricevuta = ?, "
-                               + "sommaDonata = ?, commento = ?, anonimo = ?"
-                               + ", idUtente = ?, idCampagna = ?"
+                       "UPDATE donazione SET sommaDonata = ?"
                                + "WHERE idDonazione = ?";
 
                try (PreparedStatement preparedStatement =
                             connection.prepareStatement(query)) {
 
-                  int index = fillPreparedStatement(preparedStatement, entity);
+                  int index = 1;
+
+                  preparedStatement.setDouble(index++, entity.getSommaDonata());
                   preparedStatement.setInt(index, entity.getIdDonazione());
 
                   return preparedStatement.executeUpdate() > 0;
@@ -172,23 +183,5 @@ public final class DonazioneDAO implements DAOHelper<Donazione> {
       }
 
       return donazione;
-   }
-
-   @Override
-   public int fillPreparedStatement(final PreparedStatement preparedStatement,
-                                    final Donazione entity)
-           throws SQLException {
-      int index = 1;
-
-      preparedStatement.setDate(index++,
-              (Date) entity.getDataOra());
-      preparedStatement.setString(index++, entity.getRicevuta());
-      preparedStatement.setDouble(index++, entity.getSommaDonata());
-      preparedStatement.setString(index++, entity.getCommento());
-      preparedStatement.setBoolean(index++, entity.isAnonimo());
-      preparedStatement.setInt(index++, entity.getUtente().getIdUtente());
-      preparedStatement.setInt(index++, entity.getCampagna().getIdCampagna());
-
-      return index;
    }
 }

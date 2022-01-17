@@ -2,6 +2,7 @@ package model.DAO;
 
 import model.beans.Utente;
 import model.storage.ConPool;
+
 import java.sql.Date;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class UtenteDAO implements DAOHelper<Utente> {
+public final class UtenteDAO implements DAO<Utente> {
    @Override
    public Utente getById(final int id) {
       Utente utente = null;
@@ -179,9 +180,8 @@ public final class UtenteDAO implements DAOHelper<Utente> {
       return utente;
    }
 
-   @Override
-   public int fillPreparedStatement(final PreparedStatement preparedStatement,
-                                    final Utente entity) throws SQLException {
+   private int fillPreparedStatement(final PreparedStatement preparedStatement,
+                                     final Utente entity) throws SQLException {
       int index = 1;
 
       preparedStatement.setDate(index++,

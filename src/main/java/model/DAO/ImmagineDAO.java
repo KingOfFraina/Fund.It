@@ -3,6 +3,7 @@ package model.DAO;
 import model.beans.Campagna;
 import model.beans.Immagine;
 import model.storage.ConPool;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ImmagineDAO implements DAOHelper<Immagine> {
+public final class ImmagineDAO implements DAO<Immagine> {
    @Override
    public Immagine getById(final int id) {
       Immagine immagine = null;
@@ -74,7 +75,11 @@ public final class ImmagineDAO implements DAOHelper<Immagine> {
                try (PreparedStatement preparedStatement =
                             connection.prepareStatement(query)) {
 
-                  fillPreparedStatement(preparedStatement, entity);
+                  int index = 1;
+
+                  preparedStatement.setInt(index++,
+                          entity.getCampagna().getIdCampagna());
+                  preparedStatement.setString(index++, entity.getPath());
 
                   return preparedStatement.executeUpdate() > 0;
                }
@@ -93,11 +98,14 @@ public final class ImmagineDAO implements DAOHelper<Immagine> {
                       ConPool.getInstance().getConnection()) {
             if (connection != null) {
                String query = "UPDATE immagine "
-                       + "SET idCampagna = ? , path = ? WHERE idImmagine = ?";
+                       + "SET path = ? WHERE idImmagine = ?";
 
                try (PreparedStatement preparedStatement =
                             connection.prepareStatement(query)) {
-                  int index = fillPreparedStatement(preparedStatement, entity);
+
+                  int index = 1;
+
+                  preparedStatement.setString(index++, entity.getPath());
 
                   preparedStatement.setInt(index, entity.getId());
 
@@ -157,17 +165,5 @@ public final class ImmagineDAO implements DAOHelper<Immagine> {
       }
 
       return immagine;
-   }
-
-   @Override
-   public int fillPreparedStatement(final PreparedStatement preparedStatement,
-                                    final Immagine entity) throws SQLException {
-      int index = 1;
-
-      preparedStatement.setInt(index++,
-              entity.getCampagna().getIdCampagna());
-      preparedStatement.setString(index++, entity.getPath());
-
-      return index;
    }
 }

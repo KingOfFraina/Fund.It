@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class CategoriaDAO implements DAOHelper<Categoria> {
+public final class CategoriaDAO implements DAO<Categoria> {
    @Override
    public Categoria getById(final int id) {
       Categoria c = null;
@@ -64,7 +64,7 @@ public final class CategoriaDAO implements DAOHelper<Categoria> {
                             con.prepareStatement("INSERT INTO "
                                     + "categoria (nomeCategoria) VALUES (?)")) {
 
-                  fillPreparedStatement(stmt, entity);
+                  stmt.setString(1, entity.getNome());
 
                   return stmt.executeUpdate() > 0;
                }
@@ -86,8 +86,9 @@ public final class CategoriaDAO implements DAOHelper<Categoria> {
                                     + "SET nomeCategoria = ? "
                                     + "WHERE idCategoria = ?")) {
 
-                  int index = fillPreparedStatement(stmt, entity);
+                  int index = 1;
 
+                  stmt.setString(index++, entity.getNome());
                   stmt.setInt(index, entity.getIdCategoria());
 
                   return stmt.executeUpdate() > 0;
@@ -135,16 +136,5 @@ public final class CategoriaDAO implements DAOHelper<Categoria> {
          return c;
       }
       return null;
-   }
-
-   @Override
-   public int fillPreparedStatement(final PreparedStatement preparedStatement,
-                                    final Categoria entity)
-           throws SQLException {
-      int index = 1;
-
-      preparedStatement.setString(1, entity.getNome());
-
-      return index;
    }
 }

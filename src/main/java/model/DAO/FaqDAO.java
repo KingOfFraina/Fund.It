@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public final class FAQ_DAO implements DAOHelper<FAQ> {
+public final class FaqDAO implements DAO<FAQ> {
 
    @Override
    public FAQ getById(final int id) {
@@ -65,7 +65,11 @@ public final class FAQ_DAO implements DAOHelper<FAQ> {
             try (PreparedStatement ps = con.prepareStatement("INSERT INTO "
                     + "faq (domanda, risposta, idUtente) VALUES (?,?,?)")) {
 
-               fillPreparedStatement(ps, entity);
+               int index = 1;
+
+               ps.setString(index++, entity.getDomanda());
+               ps.setString(index++, entity.getRisposta());
+               ps.setInt(index, entity.getUtenteCreatore().getIdUtente());
 
                return ps.executeUpdate() > 0;
             }
@@ -89,9 +93,11 @@ public final class FAQ_DAO implements DAOHelper<FAQ> {
                try (PreparedStatement preparedStatement =
                             connection.prepareStatement(query)) {
 
-                  int index = fillPreparedStatement(preparedStatement, entity);
-                  preparedStatement.setInt(index,
-                          entity.getUtenteCreatore().getIdUtente());
+                  int index = 1;
+
+                  preparedStatement.setString(index++, entity.getDomanda());
+                  preparedStatement.setString(index++, entity.getRisposta());
+                  preparedStatement.setInt(index, entity.getIdFaq());
 
                   return preparedStatement.executeUpdate() > 0;
                }
@@ -150,18 +156,5 @@ public final class FAQ_DAO implements DAOHelper<FAQ> {
       }
 
       return null;
-   }
-
-   @Override
-   public int fillPreparedStatement(final PreparedStatement preparedStatement,
-                                    final FAQ entity) throws SQLException {
-      int index = 1;
-
-      preparedStatement.setString(index++, entity.getDomanda());
-      preparedStatement.setString(index++, entity.getRisposta());
-      preparedStatement.setInt(index++,
-              entity.getUtenteCreatore().getIdUtente());
-
-      return index;
    }
 }
