@@ -1,8 +1,10 @@
 package model.beans;
 
+import model.beans.proxyInterfaces.DonazioneInterface;
+
 import java.util.Date;
 
-public final class Donazione {
+public final class Donazione implements DonazioneInterface {
    /**
     * rappresenta l'ID della donazione.
     */
