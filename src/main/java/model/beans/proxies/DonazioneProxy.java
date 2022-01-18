@@ -8,19 +8,20 @@ import model.beans.Donazione;
 import model.beans.Utente;
 import model.beans.proxyInterfaces.DonazioneInterface;
 
-public class DonazioneProxy implements DonazioneInterface {
+public final class DonazioneProxy implements DonazioneInterface {
 
    private Donazione donazione;
 
-   public DonazioneProxy(Donazione donazione) {
-      this.donazione = donazione;
+   public DonazioneProxy(final Donazione newDonazione) {
+      this.donazione = newDonazione;
    }
 
    @Override
    public Campagna getCampagna() {
-      if(donazione.getCampagna().getCategoria() == null) {
+      if (donazione.getCampagna().getCategoria() == null) {
          DAO campagnaDAO = new CampagnaDAO();
-         donazione.setCampagna((Campagna) campagnaDAO.getById(donazione.getCampagna().getIdCampagna()));
+         donazione.setCampagna((Campagna)
+                 campagnaDAO.getById(donazione.getCampagna().getIdCampagna()));
       }
 
       return donazione.getCampagna();
@@ -28,9 +29,10 @@ public class DonazioneProxy implements DonazioneInterface {
 
    @Override
    public Utente getUtente() {
-      if(donazione.getUtente().getCf().isEmpty()) {
+      if (donazione.getUtente().getCf().isEmpty()) {
          DAO uetnteDAO = new UtenteDAO();
-         donazione.setUtente((Utente) uetnteDAO.getById(donazione.getUtente().getIdUtente()));
+         donazione.setUtente((Utente)
+                 uetnteDAO.getById(donazione.getUtente().getIdUtente()));
       }
 
       return donazione.getUtente();
