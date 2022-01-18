@@ -61,7 +61,7 @@
 
 <!-- Div immagine e pulsante-->
 
-<div class="container my-5 mx-3">
+<div id = "container" class="container my-5 mx-3">
     <img src="./img/group_selfie.svg" alt="">
     <button id = "scopri" type="submit" class="btn btn-primary btn-lg mx-5 my-5 text-center" onclick="location.href = '#'">
         Scopri di pi&ugrave
