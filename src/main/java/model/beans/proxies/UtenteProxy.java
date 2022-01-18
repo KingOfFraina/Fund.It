@@ -5,6 +5,7 @@ import model.DAO.CampagnaDAO;
 import model.DAO.DonazioneDAO;
 import model.DAO.SegnalazioneDAO;
 
+import model.DAO.UtenteDAO;
 import model.beans.Campagna;
 import model.beans.Donazione;
 import model.beans.Segnalazione;
@@ -32,7 +33,14 @@ public final class UtenteProxy implements UtenteInterface {
 
         if (segnalazioni == null) {
             SegnalazioneDAO dao = new SegnalazioneDAO();
-            utente.setSegnalazioni(dao.getAll());
+            UtenteDAO dao2 = new UtenteDAO();
+            segnalazioni = dao.getAll();
+            segnalazioni.forEach(it -> {
+                it.setSegnalatore(utente);
+                it.setSegnalato(dao2.getById(it.getSegnalato().getIdUtente()));
+            });
+
+            utente.setSegnalazioni(segnalazioni);
         }
 
         return utente.getSegnalazioni();
@@ -44,7 +52,9 @@ public final class UtenteProxy implements UtenteInterface {
 
         if (donazioni == null) {
             DonazioneDAO dao = new DonazioneDAO();
-            utente.setDonazioni(dao.getAll());
+            donazioni = dao.getAll();
+            donazioni.forEach((it) -> it.setUtente(utente));
+            utente.setDonazioni(donazioni);
         }
 
         return utente.getDonazioni();
@@ -56,6 +66,8 @@ public final class UtenteProxy implements UtenteInterface {
 
         if (campagne == null) {
             CampagnaDAO dao = new CampagnaDAO();
+            campagne = dao.getAll();
+            campagne.forEach((it) -> it.setUtente(utente));
             utente.setCampagne(dao.getAll());
         }
 
