@@ -166,4 +166,30 @@ public final class ImmagineDAO implements DAO<Immagine> {
 
       return immagine;
    }
+
+   public List<Immagine> getByIdCampagna(final int idCampagna) {
+      List<Immagine> immagineList = null;
+
+      try (Connection connection = ConPool.getInstance().getConnection()) {
+         if (connection != null) {
+            immagineList = new ArrayList<>();
+
+            String query = "SELECT * FROM immagine WHERE idCampagna = ?";
+
+            try (PreparedStatement preparedStatement =
+                         connection.prepareStatement(query)) {
+               preparedStatement.setInt(1, idCampagna);
+               ResultSet resultSet = preparedStatement.executeQuery();
+
+               while (resultSet.next()) {
+                  immagineList.add(extract(resultSet, null));
+               }
+            }
+         }
+      } catch (SQLException e) {
+         e.printStackTrace();
+      }
+
+      return immagineList;
+   }
 }

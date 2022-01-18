@@ -2,8 +2,8 @@ package model.DAO;
 
 import model.beans.Campagna;
 import model.beans.Segnalazione;
-import model.beans.StatoSegnalazione;
 import model.beans.Utente;
+import model.beans.StatoSegnalazione;
 import model.storage.ConPool;
 
 import java.sql.Connection;
@@ -171,5 +171,31 @@ public final class SegnalazioneDAO
       c.setIdCampagna(resultSet.getInt(alias + ".idCampagna"));
       s.setCampagnaSegnalata(c);
       return s;
+   }
+
+   public List<Segnalazione> getByIdCampagna(final int idCampagna) {
+      List<Segnalazione> segnalazioneList = null;
+
+      try (Connection connection = ConPool.getInstance().getConnection()) {
+         if (connection != null) {
+            segnalazioneList = new ArrayList<>();
+
+            String query = "SELECT * FROM segnalazione WHERE idCampagna = ?";
+
+            try (PreparedStatement preparedStatement =
+                         connection.prepareStatement(query)) {
+               preparedStatement.setInt(1, idCampagna);
+               ResultSet resultSet = preparedStatement.executeQuery();
+
+               while (resultSet.next()) {
+                  segnalazioneList.add(extract(resultSet, null));
+               }
+            }
+         }
+      } catch (SQLException e) {
+         e.printStackTrace();
+      }
+
+      return segnalazioneList;
    }
 }

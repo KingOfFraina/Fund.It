@@ -185,4 +185,30 @@ public final class DonazioneDAO implements DAO<Donazione> {
 
       return donazione;
    }
+
+   public List<Donazione> getByIdCampagna(final int idCampagna) {
+      List<Donazione> donazioneList = null;
+
+      try (Connection connection = ConPool.getInstance().getConnection()) {
+         if (connection != null) {
+            donazioneList = new ArrayList<>();
+
+            String query = "SELECT * FROM donazione WHERE idCampagna = ?";
+
+            try (PreparedStatement preparedStatement =
+                         connection.prepareStatement(query)) {
+               preparedStatement.setInt(1, idCampagna);
+               ResultSet resultSet = preparedStatement.executeQuery();
+
+               while (resultSet.next()) {
+                  donazioneList.add(extract(resultSet, null));
+               }
+            }
+         }
+      } catch (SQLException e) {
+         e.printStackTrace();
+      }
+
+      return donazioneList;
+   }
 }

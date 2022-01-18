@@ -15,62 +15,62 @@ import model.beans.proxyInterfaces.UtenteInterface;
 import java.util.List;
 
 public final class UtenteProxy implements UtenteInterface {
-    /**
-     * Istanza di utente.
-     */
-    private Utente utente;
+   /**
+    * Istanza di utente.
+    */
+   private Utente utente;
 
-    /**
-     * @param u istanza di Utente
-     */
-    public UtenteProxy(final Utente u) {
-        this.utente = u;
-    }
+   /**
+    * @param u istanza di Utente
+    */
+   public UtenteProxy(final Utente u) {
+      this.utente = u;
+   }
 
-    @Override
-    public List<Segnalazione> getSegnalazioni() {
-        List<Segnalazione> segnalazioni = utente.getSegnalazioni();
+   @Override
+   public List<Segnalazione> getSegnalazioni() {
+      List<Segnalazione> segnalazioni = utente.getSegnalazioni();
 
-        if (segnalazioni == null) {
-            SegnalazioneDAO dao = new SegnalazioneDAO();
-            UtenteDAO dao2 = new UtenteDAO();
-            segnalazioni = dao.getAll();
-            segnalazioni.forEach(it -> {
-                it.setSegnalatore(utente);
-                it.setSegnalato(dao2.getById(it.getSegnalato().getIdUtente()));
-            });
+      if (segnalazioni == null) {
+         SegnalazioneDAO dao = new SegnalazioneDAO();
+         UtenteDAO dao2 = new UtenteDAO();
+         segnalazioni = dao.getAll();
+         segnalazioni.forEach(it -> {
+            it.setSegnalatore(utente);
+            it.setSegnalato(dao2.getById(it.getSegnalato().getIdUtente()));
+         });
 
-            utente.setSegnalazioni(segnalazioni);
-        }
+         utente.setSegnalazioni(segnalazioni);
+      }
 
-        return utente.getSegnalazioni();
-    }
+      return utente.getSegnalazioni();
+   }
 
-    @Override
-    public List<Donazione> getDonazioni() {
-        List<Donazione> donazioni = utente.getDonazioni();
+   @Override
+   public List<Donazione> getDonazioni() {
+      List<Donazione> donazioni = utente.getDonazioni();
 
-        if (donazioni == null) {
-            DonazioneDAO dao = new DonazioneDAO();
-            donazioni = dao.getAll();
-            donazioni.forEach((it) -> it.setUtente(utente));
-            utente.setDonazioni(donazioni);
-        }
+      if (donazioni == null) {
+         DonazioneDAO dao = new DonazioneDAO();
+         donazioni = dao.getAll();
+         donazioni.forEach((it) -> it.setUtente(utente));
+         utente.setDonazioni(donazioni);
+      }
 
-        return utente.getDonazioni();
-    }
+      return utente.getDonazioni();
+   }
 
-    @Override
-    public List<Campagna> getCampagne() {
-        List<Campagna> campagne = utente.getCampagne();
+   @Override
+   public List<Campagna> getCampagne() {
+      List<Campagna> campagne = utente.getCampagne();
 
-        if (campagne == null) {
-            CampagnaDAO dao = new CampagnaDAO();
-            campagne = dao.getAll();
-            campagne.forEach((it) -> it.setUtente(utente));
-            utente.setCampagne(dao.getAll());
-        }
+      if (campagne == null) {
+         CampagnaDAO dao = new CampagnaDAO();
+         campagne = dao.getAll();
+         campagne.forEach((it) -> it.setUtente(utente));
+         utente.setCampagne(dao.getAll());
+      }
 
-        return utente.getCampagne();
-    }
+      return utente.getCampagne();
+   }
 }

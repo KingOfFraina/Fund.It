@@ -1,7 +1,6 @@
 package model.beans.proxies;
 
 
-import model.DAO.DAO;
 import model.DAO.DonazioneDAO;
 import model.DAO.ImmagineDAO;
 import model.DAO.SegnalazioneDAO;
@@ -22,6 +21,7 @@ public final class CampagnaProxy implements CampagnaInterface {
 
    /**
     * costruttore.
+    *
     * @param newCampagna campagna
     */
    public CampagnaProxy(final Campagna newCampagna) {
@@ -32,8 +32,9 @@ public final class CampagnaProxy implements CampagnaInterface {
    public List<Immagine> getImmagini() {
 
       if (campagna.getImmagini() == null) {
-         DAO immagineDAO = new ImmagineDAO();
-         List<Immagine> immagineList = immagineDAO.getAll();
+         ImmagineDAO immagineDAO = new ImmagineDAO();
+         List<Immagine> immagineList =
+                 immagineDAO.getByIdCampagna(campagna.getIdCampagna());
 
          immagineList.forEach(i -> i.setCampagna(campagna));
 
@@ -46,8 +47,9 @@ public final class CampagnaProxy implements CampagnaInterface {
    @Override
    public List<Donazione> getDonazioni() {
       if (campagna.getDonazioni() == null) {
-         DAO donazioneDAO = new DonazioneDAO();
-         List<Donazione> donazioneList = donazioneDAO.getAll();
+         DonazioneDAO donazioneDAO = new DonazioneDAO();
+         List<Donazione> donazioneList =
+                 donazioneDAO.getByIdCampagna(campagna.getIdCampagna());
 
          donazioneList.forEach(d -> d.setCampagna(campagna));
 
@@ -60,8 +62,9 @@ public final class CampagnaProxy implements CampagnaInterface {
    @Override
    public List<Segnalazione> getSegnalazioni() {
       if (campagna.getSegnalazioni() == null) {
-         DAO segnalazioneDAO = new SegnalazioneDAO();
-         List<Segnalazione> segnalazioneList = segnalazioneDAO.getAll();
+         SegnalazioneDAO segnalazioneDAO = new SegnalazioneDAO();
+         List<Segnalazione> segnalazioneList =
+                 segnalazioneDAO.getByIdCampagna(campagna.getIdCampagna());
 
          segnalazioneList.forEach(s -> s.setCampagnaSegnalata(campagna));
 
