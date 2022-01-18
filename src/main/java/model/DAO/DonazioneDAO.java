@@ -20,14 +20,14 @@ public final class DonazioneDAO implements DAO<Donazione> {
       try (Connection con = ConPool.getInstance().getConnection()) {
          try (PreparedStatement ps = con.prepareStatement("SELECT * "
                  + "FROM donazione WHERE idDonazione = ?")) {
-            ps.setInt(0, id);
+            ps.setInt(1, id);
 
             ResultSet rs = ps.executeQuery();
 
             Donazione retrieved = null;
 
             if (rs.next()) {
-               retrieved = extract(rs, "");
+               retrieved = extract(rs, null);
             }
 
             return retrieved;

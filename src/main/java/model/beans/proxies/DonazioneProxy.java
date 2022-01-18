@@ -35,7 +35,7 @@ public final class DonazioneProxy implements DonazioneInterface {
 
    @Override
    public Utente getUtente() {
-      if (donazione.getUtente().getCf().isEmpty()) {
+      if (donazione.getUtente().getCf() == null) {
          DAO uetnteDAO = new UtenteDAO();
          donazione.setUtente((Utente)
                  uetnteDAO.getById(donazione.getUtente().getIdUtente()));
