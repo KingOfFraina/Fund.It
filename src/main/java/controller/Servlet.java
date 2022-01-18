@@ -27,10 +27,6 @@ public class Servlet extends HttpServlet {
 
         for (Segnalazione s1 : proxy.getSegnalazioni())
             System.out.println(s1);
-        for (Segnalazione s1 : proxy.getSegnalazioni())
-            System.out.println(s1);
-        for (Segnalazione s1 : proxy.getSegnalazioni())
-            System.out.println(s1);
     }
 
     @Override
