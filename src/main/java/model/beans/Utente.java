@@ -2,6 +2,10 @@ package model.beans;
 
 import model.beans.proxyInterfaces.UtenteInterface;
 
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 
@@ -315,6 +319,25 @@ public final class Utente implements UtenteInterface {
     */
    public void setCampagne(final List<Campagna> cList) {
       this.campagne = cList;
+   }
+
+   /**
+    * @param newPassword la password su cui viene eseguita la funzione di hash.
+    */
+   public void createPasswordHash(final String newPassword) {
+
+      MessageDigest digest = null;
+
+      try {
+         digest = MessageDigest.getInstance("SHA-256");
+      } catch (NoSuchAlgorithmException e) {
+         e.printStackTrace();
+      }
+
+      digest.reset();
+      digest.update(newPassword.getBytes(StandardCharsets.UTF_8));
+
+      password = String.format("%040x", new BigInteger(1, digest.digest()));
    }
 
    @Override
