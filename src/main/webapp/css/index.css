@@ -1,0 +1,22 @@
+.scopri{
+    background-color: #00AB98;
+    border-color: #00AB98;
+    color: white;
+    width: 350px;
+    height: 70px;
+    font-size: 25px;
+}
+
+.img{
+    width: 750px;
+    margin-top: 50px;
+}
+
+.logo{
+    font-family: Comfortaa, cursive;
+    font-size: 40px;
+}
+
+.white-text{
+    color: white;
+}
