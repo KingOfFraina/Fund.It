@@ -7,8 +7,18 @@ import model.beans.Segnalazione;
 import java.util.List;
 
 public interface UtenteInterface {
-   //TODO
+   /**
+    * @return lista delle segnalazioni effettuate.
+    */
    List<Segnalazione> getSegnalazioni();
+
+   /**
+    * @return lista delle donazioni effettuate.
+    */
    List<Donazione> getDonazioni();
+
+   /**
+    * @return lista delle campagne create.
+    */
    List<Campagna> getCampagne();
 }

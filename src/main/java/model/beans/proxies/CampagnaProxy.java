@@ -15,8 +15,15 @@ import java.util.List;
 
 public final class CampagnaProxy implements CampagnaInterface {
 
+   /**
+    * riferimento alla campagna.
+    */
    private Campagna campagna;
 
+   /**
+    * costruttore.
+    * @param newCampagna campagna
+    */
    public CampagnaProxy(final Campagna newCampagna) {
       this.campagna = newCampagna;
    }

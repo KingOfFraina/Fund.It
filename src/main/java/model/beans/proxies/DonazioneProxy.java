@@ -9,9 +9,15 @@ import model.beans.Utente;
 import model.beans.proxyInterfaces.DonazioneInterface;
 
 public final class DonazioneProxy implements DonazioneInterface {
-
+   /**
+    * donazione.
+    */
    private Donazione donazione;
 
+   /**
+    * costruttore.
+    * @param newDonazione donazione.
+    */
    public DonazioneProxy(final Donazione newDonazione) {
       this.donazione = newDonazione;
    }
