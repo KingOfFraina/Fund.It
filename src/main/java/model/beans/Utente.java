@@ -316,4 +316,27 @@ public final class Utente implements UtenteInterface {
    public void setCampagne(final List<Campagna> cList) {
       this.campagne = cList;
    }
+
+   @Override
+   public String toString() {
+      return "Utente{"
+              + "idUtente=" + idUtente
+              + ", dataBan=" + dataBan
+              + ", admin=" + admin
+              + ", fotoProfilo='" + fotoProfilo + '\''
+              + ", password='" + password + '\''
+              + ", telefono='" + telefono + '\''
+              + ", nome='" + nome + '\''
+              + ", cognome='" + cognome + '\''
+              + ", email='" + email + '\''
+              + ", strada='" + strada + '\''
+              + ", citta='" + citta + '\''
+              + ", cap='" + cap + '\''
+              + ", cf='" + cf + '\''
+              + ", dataDiNascita=" + dataDiNascita
+              + ", donazioni=" + donazioni
+              + ", segnalazioni=" + segnalazioni
+              + ", campagne=" + campagne
+              + '}';
+   }
 }
