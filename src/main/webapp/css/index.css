@@ -1,4 +1,4 @@
-.scopri{
+#scopri{
     background-color: #00AB98;
     border-color: #00AB98;
     color: white;
@@ -19,4 +19,9 @@
 
 .white-text{
     color: white;
+}
+
+#scopri:hover{
+    background-color: #008798;
+    border-color: #008798;
 }

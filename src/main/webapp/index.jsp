@@ -39,7 +39,7 @@
                     <a class="nav-link active" href="#">In Evidenza</a>
                 </li>
                 <li class="nav-item mx-4">
-                    <a class="nav-link active">Contatti</a>
+                    <a class="nav-link active" href="#">Contatti</a>
                 </li>
             </ul>
         </div>
@@ -63,7 +63,7 @@
 
 <div class="container my-5 mx-3">
     <img src="./img/group_selfie.svg" alt="">
-    <button type="submit" class="btn btn-primary btn-lg mx-5 my-5 text-center scopri" onclick="location.href = '#'">
+    <button id = "scopri" type="submit" class="btn btn-primary btn-lg mx-5 my-5 text-center" onclick="location.href = '#'">
         Scopri di pi&ugrave
     </button>
 </div>
@@ -72,7 +72,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
-
 
 </body>
 </html>
