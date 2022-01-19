@@ -6,35 +6,31 @@ import java.util.List;
 
 public interface UtenteService {
     /**
-     *
      * @param id
      * @return TODO
      */
     Utente visualizzaDashboardUtente(int id);
 
     /**
-     *
-     * @param modify idUtente da modificare.
+     * @param utente da modificare.
      * @return esito operazione.
      */
-    boolean modificaProfilo(int modify);
+    boolean modificaProfilo(Utente utente);
 
     /**
-     *
      * @param richiedente idUtente della lista completa utenti.
      * @return null se il richiedente non è admin. List di Utente se è admin.
      */
     List<Utente> visualizzaUtenti(int richiedente);
 
     /**
-     *
-     * @param soggetto idUtente di cui va modificato lo stato.
+     * @param richiedente idUtente di chi ha ordinato l'operazione.
+     * @param soggetto    idUtente di cui va modificato lo stato.
      * @return esito dell'operazione.
      */
-    boolean promuoviDeclassaUtente(int soggetto);
+    boolean promuoviDeclassaUtente(int richiedente, int soggetto);
 
     /**
-     *
      * @param idCattivone da bannare.
      * @return esito operazione.
      */
