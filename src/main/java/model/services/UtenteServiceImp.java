@@ -8,7 +8,7 @@ import java.util.List;
 
 public class UtenteServiceImp implements UtenteService {
     /**
-     * @param id
+     * @param id idUtente.
      * @return TODO
      */
     @Override
@@ -27,7 +27,7 @@ public class UtenteServiceImp implements UtenteService {
     }
 
     /**
-     * @param richiedente idUtente della lista completa utenti.
+     * @param richiedente della lista completa utenti.
      * @return null se il richiedente non è admin. List di Utente se è admin.
      */
     @Override

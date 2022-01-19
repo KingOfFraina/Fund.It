@@ -18,7 +18,7 @@ public interface UtenteService {
     boolean modificaProfilo(Utente utente);
 
     /**
-     * @param richiedente idUtente della lista completa utenti.
+     * @param richiedente della lista completa utenti.
      * @return null se il richiedente non è admin. List di Utente se è admin.
      */
     List<Utente> visualizzaUtenti(int richiedente);
