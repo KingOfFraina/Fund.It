@@ -52,7 +52,7 @@ public final class UtenteProxy implements UtenteInterface {
 
       if (donazioni == null) {
          DonazioneDAO dao = new DonazioneDAO();
-         donazioni = dao.getAll();
+         donazioni = dao.getAllByUtente(utente.getIdUtente());
          donazioni.forEach((it) -> it.setUtente(utente));
          utente.setDonazioni(donazioni);
       }

@@ -19,11 +19,8 @@ public interface DonazioniService {
     List<Donazione> visualizzaDonazioni(Utente u);
 
     /**
-     * @param commento testo del commento.
-     * @param anonimo true il commento viene pubblicato come anonimo,
-     *                false altrimenti.
-     * @param u utente che decide di commentare.
+     * @param d donazione aggiornata con il commento
      * @return esito dell'inserimento del commento.
      */
-    boolean commenta(String commento, boolean anonimo, Utente u);
+    boolean commenta(Donazione d);
 }
