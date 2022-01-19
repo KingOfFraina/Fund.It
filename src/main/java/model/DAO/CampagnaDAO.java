@@ -178,4 +178,33 @@ public final class CampagnaDAO
         c.setUtente(utente);
         return c;
     }
+
+    /**
+     * Permette la ricerca di campagne.
+     *
+     * @param text una stringa per effettuare la ricerca
+     * @return la lista di campagne che soddisfano il parametro passato
+     */
+    public List<Campagna> getByKeyword(final String text) {
+        List<Campagna> campagnaList = null;
+
+        try (Connection connection = ConPool.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                     "SELECT * FROM campagna c where UPPER("
+                             + "'%'?'%') LIKE UPPER(CONCAT(c.idCampagna, "
+                             + "c.titolo, c.descrizione))"
+             )) {
+
+            statement.setString(1, text);
+
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                campagnaList.add(extract(set, "c"));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return campagnaList;
+    }
 }

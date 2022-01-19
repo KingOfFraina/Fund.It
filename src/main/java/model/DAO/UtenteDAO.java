@@ -102,7 +102,7 @@ public final class UtenteDAO implements DAO<Utente> {
                             "INSERT INTO utente (dataBan, admin, fotoProfilo, "
                                     + "password, telefono, nome, cognome, email,"
                                     + " strada, città, cap, cf, dataDiNascita) "
-                                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
                     try (PreparedStatement preparedStatement =
                                  connection.prepareStatement(query)) {
