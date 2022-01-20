@@ -1,4 +1,4 @@
-<!doctype html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html lang="en">
 <head>
 
@@ -10,20 +10,23 @@
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
     <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href = "./css/general.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600&display=swap" rel="stylesheet">
 
     <title>Fund.it</title>
 </head>
-<body style="background-color: black; text-align: center">
+<body>
 
 <!--Navbar-->
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-black">
+<!--Navbar-->
+
+<nav class="navbar navbar-expand-lg navbar-light navbar-fund-it">
 
     <div class="container-fluid">
-        <a class="navbar-brand logo" href="${pageContext.request.contextPath}/Servlet"
-           style="color: #00AB98;">Fund.it</a>
+        <a class="navbar-brand logo logo-style" href="#" style="color: #00AB98;">Fund.it</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -32,27 +35,29 @@
             <ul class="navbar-nav">
 
                 <li class="nav-item mx-4">
-                    <a class="nav-link active" aria-current="page" href="#">Chi Siamo</a>
+                    <a class="nav-link active text-black navbar-text" aria-current="page" href="#">Chi Siamo</a>
                 </li>
                 <li class="nav-item mx-4">
-                    <a class="nav-link active" href="#">Profilo</a>
+                    <a class="nav-link active text-black navbar-text" href="#">Profilo</a>
                 </li>
                 <li class="nav-item mx-4">
-                    <a class="nav-link active" href="#">In Evidenza</a>
+                    <a class="nav-link active text-black navbar-text" href="#">In Evidenza</a>
                 </li>
                 <li class="nav-item mx-4">
-                    <a class="nav-link active" href="#">Contatti</a>
+                    <a class="nav-link active text-black navbar-text" href="#">Contatti</a>
                 </li>
             </ul>
+
+            <a class="login-logout-font" href=#><i class="fas fa-sign-in-alt login-logout"></i> Login</a>
+
         </div>
     </div>
 </nav>
 
-<div class="container" style="text-align: center;">
     <!-- div testo e presentazione-->
 
     <div class="container my-5 text-center">
-        <h1 id="paragraph" class="white-text">
+        <h1 id="paragraph" class="text-black">
             Raccolte fondi e
             finanziamenti per
             sostenere gli sforzi di
@@ -67,8 +72,8 @@
     <div id="container" class="container my-5 mx-3">
 
         <img src="./img/group_selfie.svg" alt="">
-        <button id="scopri" type="submit" class="btn btn-primary btn-lg mx-5 my-5 text-center"
-                onclick="location.href = '#'">
+        <button id = "scopri" type="submit" class="btn btn-primary btn-lg mx-5 my-5"
+                onclick="location.href = '${pageContext.request.contextPath}/ServletProva'">
             Scopri di pi&ugrave
         </button>
     </div>

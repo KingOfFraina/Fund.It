@@ -1,0 +1,34 @@
+.navbar-fund-it{
+    background-color: #f5ede8;  box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+}
+
+body{
+    background-image: linear-gradient(#fbf8f6, #f5ede8);
+}
+
+.logo-style{
+    font-family: Comfortaa, cursive;
+    font-size: 45px;
+}
+
+.navbar-text{
+    font-size: 22px;
+    font-family: Comfortaa, cursive;
+}
+
+.login-logout{
+    margin-left: 350px;
+    font-size: 22px;
+    color: black;
+}
+
+.login-logout-font{
+    text-decoration: none;
+    color: black;
+    font-family: Comfortaa, cursive;
+    font-size: 22px;
+}
+
+.login-logout-font:hover{
+    font-size: 24px;
+}

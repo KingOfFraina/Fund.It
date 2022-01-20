@@ -1,0 +1,65 @@
+.slogan{
+    margin-top: 70px;
+}
+
+.profile-data{
+    font-size: 25px;
+    margin-left: 250px;
+    margin-top: 4px;
+    text-decoration: underline;
+}
+
+.searchbar{
+    width:500px;
+    height:60px;
+    font-size: 25px;
+    margin-bottom: 80px;
+}
+
+.wrapper {
+    text-align: center;
+}
+
+.center {
+    margin-top: 100px;
+    display: inline-block;
+}
+
+.categoria{
+    font-size: 100px;
+    color: #00AB98;
+
+}
+
+.categoria:hover{
+    font-size: 101px;
+}
+
+#crea{
+    background-color: #00AB98;
+    border-color: black;
+    border-width: 2px;
+    color: white;
+    width: 350px;
+    height: 70px;
+    font-size: 25px;
+}
+
+#crea:hover{
+    box-shadow: 4px 4px 2px 2px rgba(0,0,0,.2);
+    background-color: #00AB98;
+}
+
+.targa{
+    margin-top: 30px;
+    font-size: 25px;
+    color:black;
+}
+
+.central-container{
+    width: 100%;
+    background-color: #f5ede8;
+    padding-top: 5px;
+    padding-bottom: 30px;
+}
+
