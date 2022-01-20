@@ -82,13 +82,17 @@ public final class DonazioneDAO implements DAO<Donazione> {
 
                         preparedStatement.setDate(index++,
                                 (Date) entity.getDataOra());
-                        preparedStatement.setString(index++, entity.getRicevuta());
-                        preparedStatement.setDouble(index++, entity.getSommaDonata());
-                        preparedStatement.setString(index++, entity.getCommento());
-                        preparedStatement.setBoolean(index++, entity.isAnonimo());
+                        preparedStatement.setString(index++,
+                                entity.getRicevuta());
+                        preparedStatement.setDouble(index++,
+                                entity.getSommaDonata());
+                        preparedStatement.setString(index++,
+                                entity.getCommento());
+                        preparedStatement.setBoolean(index++,
+                                entity.isAnonimo());
                         preparedStatement.setInt(index++,
                                 entity.getUtente().getIdUtente());
-                        preparedStatement.setInt(index++,
+                        preparedStatement.setInt(index,
                                 entity.getCampagna().getIdCampagna());
 
                         return preparedStatement.executeUpdate() > 0;
@@ -116,8 +120,10 @@ public final class DonazioneDAO implements DAO<Donazione> {
 
                         int index = 1;
 
-                        preparedStatement.setDouble(index++, entity.getSommaDonata());
-                        preparedStatement.setInt(index, entity.getIdDonazione());
+                        preparedStatement.setDouble(index++,
+                                entity.getSommaDonata());
+                        preparedStatement.setInt(index,
+                                entity.getIdDonazione());
 
                         return preparedStatement.executeUpdate() > 0;
                     }
@@ -166,8 +172,10 @@ public final class DonazioneDAO implements DAO<Donazione> {
                 tableAlias = alias + ".";
             }
 
-            donazione.setIdDonazione(resultSet.getInt(tableAlias + "idDonazione"));
-            donazione.setDataOra(resultSet.getTimestamp(tableAlias + "DataOra"));
+            donazione.setIdDonazione(resultSet.getInt(tableAlias
+                    + "idDonazione"));
+            donazione.setDataOra(resultSet.getTimestamp(tableAlias
+                    + "DataOra"));
             donazione.setRicevuta(resultSet.getString(tableAlias + "ricevuta"));
             donazione.setSommaDonata(resultSet.getDouble(tableAlias
                     + "sommaDonata"));
@@ -189,7 +197,7 @@ public final class DonazioneDAO implements DAO<Donazione> {
 
     /**
      * @param idCampagna id della campagna.
-     * @return lista delle donazioni relative ad una campagna.
+     * @return lista delle donazioni relative a una campagna.
      */
     public List<Donazione> getByIdCampagna(final int idCampagna) {
         List<Donazione> donazioneList = null;
