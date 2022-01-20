@@ -43,6 +43,33 @@ public final class CampagnaDAO
     }
 
     /**
+     * @param idUtente id dell'utente della quale si vogliono
+     *                trovare le campagne
+     * @return lista di campagne create dall'utente
+     */
+    public List<Campagna> getByIdUtente(final int idUtente) {
+        List<Campagna> list;
+        try (Connection connection = ConPool.getInstance().getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement("SELECT *"
+                             + " FROM campagna AS c"
+                             + " WHERE c.idUtente = ?")) {
+
+            statement.setInt(1, idUtente);
+            list = new ArrayList<>();
+
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                list.add(extract(set, "c"));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
+
+    /**
      * @return una lista di entity T
      */
     @Override
@@ -79,16 +106,16 @@ public final class CampagnaDAO
                                      + "VALUES (?,?,?,?,?,?,?)",
                              PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            int index = 1;
-            statement.setInt(index++, entity.getIdCampagna());
-            statement.setString(index++, entity.getStato().toString());
-            statement.setString(index++, entity.getTitolo());
-            statement.setString(index++, entity.getDescrizione());
-            statement.setDouble(index++, entity.getSommaRaccolta());
-            statement.setDouble(index++, entity.getSommaTarget());
-            statement.setInt(index++,
+            int index = 0;
+            statement.setInt(++index, entity.getIdCampagna());
+            statement.setString(++index, entity.getStato().toString());
+            statement.setString(++index, entity.getTitolo());
+            statement.setString(++index, entity.getDescrizione());
+            statement.setDouble(++index, entity.getSommaRaccolta());
+            statement.setDouble(++index, entity.getSommaTarget());
+            statement.setInt(++index,
                     entity.getCategoria().getIdCategoria());
-            statement.setInt(index++, entity.getUtente().getIdUtente());
+            statement.setInt(++index, entity.getUtente().getIdUtente());
 
             ret = statement.executeUpdate();
             ResultSet set = statement.getGeneratedKeys();
@@ -114,15 +141,15 @@ public final class CampagnaDAO
                      connection.prepareStatement("UPDATE campagna SET"
                              + " Stato = ?, titolo = ?, descrizione = ?,"
                              + " sommaRaccolta = ?, sommaTarget = ?,"
-                             + " idCategoria = ?, idUtente = ?"
+                             + " idCategoria = ?"
                              + " WHERE idCampagna = ?")) {
-            int index = 1;
-            statement.setString(index++, entity.getStato().toString());
-            statement.setString(index++, entity.getTitolo());
-            statement.setString(index++, entity.getDescrizione());
-            statement.setDouble(index++, entity.getSommaRaccolta());
-            statement.setDouble(index++, entity.getSommaTarget());
-            statement.setInt(index++, entity.getCategoria().getIdCategoria());
+            int index = 0;
+            statement.setString(++index, entity.getStato().toString());
+            statement.setString(++index, entity.getTitolo());
+            statement.setString(++index, entity.getDescrizione());
+            statement.setDouble(++index, entity.getSommaRaccolta());
+            statement.setDouble(++index, entity.getSommaTarget());
+            statement.setInt(++index, entity.getCategoria().getIdCategoria());
 
             ret = statement.executeUpdate();
         } catch (SQLException e) {
@@ -147,7 +174,7 @@ public final class CampagnaDAO
             ret = statement.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return ret > 0;
     }

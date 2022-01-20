@@ -10,7 +10,7 @@ import model.beans.proxyInterfaces.SegnalazioneInterface;
 
 public final class SegnalazioneProxy implements SegnalazioneInterface {
     /**
-     * Variabile che mantiene un oggetto di tipo Segnalazione
+     * Variabile che mantiene un oggetto di tipo Segnalazione.
      */
     private Segnalazione segnalazione;
 

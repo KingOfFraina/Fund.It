@@ -2,11 +2,10 @@ package model.services;
 
 import model.beans.Campagna;
 import model.beans.Segnalazione;
-import model.beans.Utente;
 
 import java.util.List;
 
-public interface SegnalazioneService {
+public interface SegnalazioniService {
     /**
      * @param richiedente id del richiedente della lista segnalazioni.
      * @return una collezione di tutte le segnalazioni effettuate.

@@ -70,8 +70,9 @@ public final class DonazioneDAO implements DAO<Donazione> {
                          ConPool.getInstance().getConnection()) {
                 if (connection != null) {
                     String query =
-                            "INSERT INTO donazione (DataOra, ricevuta, sommaDonata, "
-                                    + "commento, anonimo, idUtente, idCampagna) "
+                            "INSERT INTO donazione (DataOra, ricevuta,"
+                                    + " sommaDonata, commento, anonimo,"
+                                    + " idUtente, idCampagna) "
                                     + "VALUES (?,?,?,?,?,?,?)";
 
                     try (PreparedStatement preparedStatement =
