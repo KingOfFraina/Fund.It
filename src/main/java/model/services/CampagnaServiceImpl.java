@@ -40,7 +40,7 @@ public final class CampagnaServiceImpl implements CampagnaService {
 
    @Override
    public List<Campagna> visualizzaCampagne(final int size, final int offset) {
-      return null;
+      return dao.getBySizeOffset(size, offset);
    }
 
    @Override
