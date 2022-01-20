@@ -4,8 +4,10 @@ import model.DAO.DAO;
 import model.DAO.SegnalazioneDAO;
 import model.beans.Campagna;
 import model.beans.Segnalazione;
+import model.beans.StatoSegnalazione;
+import model.beans.Utente;
 
-
+import java.sql.Timestamp;
 import java.util.List;
 
 public class SegnalazioniServiceImpl implements SegnalazioniService {
@@ -26,33 +28,59 @@ public class SegnalazioniServiceImpl implements SegnalazioniService {
 
 
     /**
-     * @param richiedente id del richiedente della lista segnalazioni.
-     * @return una collezione di tutte le segnalazioni effettuate.
+     * @return lista delle segnalazioni effettuate dall'utente
      */
     @Override
-    public List<Segnalazione> trovaSegnalazioni(final int richiedente) {
-        return null;
+    public List<Segnalazione> trovaSegnalazioni() {
+        return dao.getAll();
     }
 
     /**
-     * @param richiedente idUtente del richiedente del servizio.
-     * @param s           Istanza di Segnalazione da risolvere.
-     * @return true se la segnalazione è stata
-     * risolta senza errori, false altrimenti.
+     * @param idSegnalazione id della segnalazione interessata
+     * @return istanza di segnalazione
      */
     @Override
-    public boolean risolviSegnalazione(final int richiedente,
-                                       final Segnalazione s) {
-        return false;
+    public Segnalazione trovaSegnalazione(final int idSegnalazione) {
+        return dao.getById(idSegnalazione);
     }
 
     /**
-     * @param campagna    Istanza di Campagna da segnalare.
-     * @param segnalatore Id di Utente che segnala la campagna.
-     * @return true se la segnalazione è stata inserita, false altrimenti.
+     * @param idSegnalazione intero che rappresenta l'id della segnalazione
+     * @param stato          Il nuovo stato della segnalazione
+     * @return true se l'operazione è andata a buon fine, false altrimenti
      */
     @Override
-    public boolean segnalaCampagna(final Campagna campagna, final int segnalatore) {
-        return false;
+    public boolean risolviSegnalazione(final int idSegnalazione,
+                                       final StatoSegnalazione stato) {
+        Segnalazione s = dao.getById(idSegnalazione);
+        if (s == null) {
+            throw new RuntimeException("Segnalazione non trovata con id: "
+                    + idSegnalazione);
+        }
+        s.setStatoSegnalazione(stato);
+        return dao.update(s);
+    }
+
+    /**
+     * @param campagna    istanza di Campagna da segnalare
+     * @param segnalatore istanza di Utente che effettua la segnalazionr
+     * @param descrizione Stringa di descrizione della segnalazione
+     * @return true se l'operazione è andata a buon fine, false altrimenti
+     */
+    @Override
+    public boolean segnalaCampagna(final Campagna campagna,
+                                   final Utente segnalatore,
+                                   final String descrizione) {
+        if (campagna == null || segnalatore == null) {
+            throw new RuntimeException("Campagna o segnalatore sono null");
+        }
+        Segnalazione s = new Segnalazione();
+        s.setCampagnaSegnalata(campagna);
+        s.setSegnalato(campagna.getUtente());
+        s.setSegnalatore(segnalatore);
+        s.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
+        s.setDataOra(new Timestamp(System.currentTimeMillis()));
+        s.setDescrizione(descrizione);
+        return dao.save(s);
     }
 }

@@ -75,16 +75,16 @@ public final class SegnalazioneDAO
                              + "values (?, ?, ?, ?, ?, ?)",
                      PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            int index = 1;
+            int index = 0;
 
-            statement.setDate(index++, (java.sql.Date) entity.getDataOra());
-            statement.setString(index++, entity.getDescrizione());
-            statement.setInt(index++,
+            statement.setDate(++index, (java.sql.Date) entity.getDataOra());
+            statement.setString(++index, entity.getDescrizione());
+            statement.setInt(++index,
                     entity.getSegnalatore().getIdUtente());
-            statement.setInt(index++, entity.getSegnalato().getIdUtente());
-            statement.setString(index++,
+            statement.setInt(++index, entity.getSegnalato().getIdUtente());
+            statement.setString(++index,
                     entity.getStatoSegnalazione().toString());
-            statement.setInt(index++,
+            statement.setInt(++index,
                     entity.getCampagnaSegnalata().getIdCampagna());
 
             int ret = statement.executeUpdate();
