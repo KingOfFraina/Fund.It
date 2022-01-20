@@ -15,8 +15,8 @@
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./css/main_page.css">
-    <link rel="stylesheet" href = "./css/general.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main_page.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/general.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
     <title>Fund.it</title>

@@ -10,7 +10,7 @@
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
     <link rel="stylesheet" href="./css/index.css">
-    <link rel="stylesheet" href = "./css/general.css">
+    <link rel="stylesheet" href="./css/general.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600&display=swap" rel="stylesheet">
@@ -54,29 +54,29 @@
     </div>
 </nav>
 
-    <!-- div testo e presentazione-->
+<!-- div testo e presentazione-->
 
-    <div class="container my-5 text-center">
-        <h1 id="paragraph" class="text-black">
-            Raccolte fondi e
-            finanziamenti per
-            sostenere gli sforzi di
-            persone
-            e organizzazioni.
-        </h1>
+<div class="container my-5 text-center">
+    <h1 id="paragraph" class="text-black">
+        Raccolte fondi e
+        finanziamenti per
+        sostenere gli sforzi di
+        persone
+        e organizzazioni.
+    </h1>
 
-    </div>
+</div>
 
-    <!-- Div immagine e pulsante-->
+<!-- Div immagine e pulsante-->
 
-    <div id="container" class="container my-5 mx-3">
+<div id="container" class="container my-5 mx-3">
 
-        <img src="./img/group_selfie.svg" alt="">
-        <button id = "scopri" type="submit" class="btn btn-primary btn-lg mx-5 my-5"
-                onclick="location.href = '${pageContext.request.contextPath}/ServletProva'">
-            Scopri di pi&ugrave
-        </button>
-    </div>
+    <img src="./img/group_selfie.svg" alt="">
+    <button id="scopri" type="submit" class="btn btn-primary btn-lg mx-5 my-5"
+            onclick="location.href = '${pageContext.request.contextPath}/ServletProva'">
+        Scopri di pi&ugrave
+    </button>
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
