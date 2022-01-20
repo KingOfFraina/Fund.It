@@ -6,25 +6,19 @@ import model.beans.Campagna;
 import java.util.List;
 
 public final class CampagnaServiceImpl implements CampagnaService {
-
-   /**
-    * Contiene il riferimento al dao di campagna.
-    */
-   private static CampagnaDAO dao = new CampagnaDAO();
-
    @Override
    public boolean creazioneCampagna(final Campagna campagna) {
-      return dao.save(campagna);
+      return new CampagnaDAO().save(campagna);
    }
 
    @Override
    public boolean modificaCampagna(final Campagna campagna) {
-      return dao.update(campagna);
+      return new CampagnaDAO().update(campagna);
    }
 
    @Override
    public String condividiCampagna(final int idCampagna) {
-      Campagna campagna = dao.getById(idCampagna);
+      Campagna campagna = new CampagnaDAO().getById(idCampagna);
 
       if (campagna != null) {
          return campagna.getTitolo();
@@ -35,12 +29,12 @@ public final class CampagnaServiceImpl implements CampagnaService {
 
    @Override
    public List<Campagna> ricercaCampagna(final String text) {
-      return dao.getByKeyword(text);
+      return new CampagnaDAO().getByKeyword(text);
    }
 
    @Override
    public List<Campagna> visualizzaCampagne(final int size, final int offset) {
-      return null;
+      return new CampagnaDAO().getBySizeOffset(size, offset);
    }
 
    @Override

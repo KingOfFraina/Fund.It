@@ -218,11 +218,41 @@ public final class CampagnaDAO
         try (Connection connection = ConPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(
                      "SELECT * FROM campagna c where UPPER("
-                             + "'%'?'%') LIKE UPPER(CONCAT(c.idCampagna, "
+                             + "?) LIKE UPPER(CONCAT(c.idCampagna, "
                              + "c.titolo, c.descrizione))"
              )) {
 
-            statement.setString(1, text);
+            statement.setString(1, "%" + text + "%");
+
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                campagnaList.add(extract(set, "c"));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return campagnaList;
+    }
+
+    /**
+     * Permette la ricerca di una porzione precisa delle campagne presenti.
+     * @param size il numero di campagne da recuperare
+     * @param offset il punto da cui iniziare il recupero
+     * @return la lista delle campagne che soddisfano i parametri passati
+     */
+    public List<Campagna> getBySizeOffset(final int size, final int offset) {
+        List<Campagna> campagnaList = null;
+
+        try (Connection connection = ConPool.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                     "SELECT * FROM campagna c LIMIT ?, ?"
+             )) {
+
+            int index = 1;
+
+            statement.setInt(index++, size);
+            statement.setInt(index, offset);
 
             ResultSet set = statement.executeQuery();
             while (set.next()) {
