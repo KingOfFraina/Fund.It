@@ -6,31 +6,20 @@ import model.beans.Utente;
 
 import java.util.List;
 
-public final class DonazioniServiceImp implements DonazioniService {
-    /**
-     * dao utilizzato.
-     */
-    private DonazioneDAO dao;
-
-    /**
-     * costruttore.
-     */
-    public DonazioniServiceImp() {
-        this.dao = new DonazioneDAO();
-    }
+public final class DonazioniServiceImpl implements DonazioniService {
 
     @Override
     public boolean effettuaDonazione(final Donazione d) {
-        return dao.save(d);
+        return new DonazioneDAO().save(d);
     }
 
     @Override
     public List<Donazione> visualizzaDonazioni(final Utente u) {
-        return dao.getAllByUtente(u.getIdUtente());
+        return new DonazioneDAO().getAllByUtente(u.getIdUtente());
     }
 
     @Override
     public boolean commenta(final Donazione d) {
-        return dao.update(d);
+        return new DonazioneDAO().update(d);
     }
 }

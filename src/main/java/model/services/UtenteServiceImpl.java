@@ -6,7 +6,7 @@ import model.beans.Utente;
 import java.util.Date;
 import java.util.List;
 
-public class UtenteServiceImp implements UtenteService {
+public class UtenteServiceImpl implements UtenteService {
    /**
     * @param id idUtente.
     * @return l'istanza di utente presente nel database
