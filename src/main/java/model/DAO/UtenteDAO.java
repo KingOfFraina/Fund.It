@@ -37,6 +37,26 @@ public final class UtenteDAO implements DAO<Utente> {
         return utente;
     }
 
+    public Utente doLogin(final Utente utente) {
+        try (Connection connection = ConPool.getInstance().getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement("SELECT *"
+                             + "FROM utente WHERE email = ? AND password = ?")) {
+
+            statement.setString(1, utente.getEmail());
+            utente.createPasswordHash(utente.getPassword());
+            statement.setString(2, utente.getPassword());
+
+            ResultSet set = statement.executeQuery();
+            if (set.next()) {
+                return extract(set, "");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
     @Override
     public List<Utente> getAll() {
         List<Utente> utenteList = null;

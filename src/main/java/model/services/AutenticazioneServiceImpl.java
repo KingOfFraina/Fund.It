@@ -1,5 +1,7 @@
 package model.services;
 
+import model.DAO.DAO;
+import model.DAO.UtenteDAO;
 import model.beans.Utente;
 
 
@@ -7,10 +9,21 @@ import javax.servlet.http.HttpSession;
 
 public class AutenticazioneServiceImpl implements AutenticazioneService {
 
+    /**
+     * Wrapper di HttpSession.
+     */
     private final HttpSession sessionWrapper;
+    /**
+     * Wrapper di UtenteDAO.
+     */
+    private final DAO<Utente> dao;
 
-    public AutenticazioneServiceImpl(HttpSession session) {
+    /**
+     * @param session Sessione attuale dell'utente
+     */
+    public AutenticazioneServiceImpl(final HttpSession session) {
         this.sessionWrapper = session;
+        this.dao = new UtenteDAO();
     }
 
     /**
@@ -18,8 +31,12 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
      * @return true se l'operazione è andata a buon fine, false altrimenti
      */
     @Override
-    public boolean login(Utente utente) {
-        return false;
+    public boolean login(final Utente utente) {
+        if (utente == null) {
+            throw new RuntimeException("Utente null");
+        }
+        UtenteDAO userDao = (UtenteDAO) dao;
+        return userDao.doLogin(utente) != null;
     }
 
     /**
@@ -27,8 +44,11 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
      * @return true se l'operazione va a buon fine, false altrimenti
      */
     @Override
-    public boolean registrazione(Utente utente) {
-        return false;
+    public boolean registrazione(final Utente utente) {
+        if (utente == null) {
+            throw new RuntimeException("Utente null");
+        }
+        return dao.save(utente);
     }
 
     /**
@@ -36,7 +56,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
      * @return true se l'operazione va a buon fine, false altrimenti
      */
     @Override
-    public boolean logout(Utente utente) {
+    public boolean logout(final Utente utente) {
         sessionWrapper.removeAttribute("");
         return false;
     }
