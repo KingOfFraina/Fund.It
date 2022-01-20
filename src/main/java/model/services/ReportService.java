@@ -6,7 +6,7 @@ import java.util.Iterator;
 
 public interface ReportService {
    /**
-    * Queto metodo permette la creazione di un nuovo report.
+    * Questo metodo permette la creazione di un nuovo report.
     * @param request la destinazione del report
     * @param tipoReport il tipo di report (vedi TipoReport)
     * @param titolo il titolo del report
@@ -19,15 +19,15 @@ public interface ReportService {
          request.setAttribute("tipoReport", tipoReport.toString());
          request.setAttribute("titoloReport", titolo);
 
-         String body = "";
+         StringBuilder body = new StringBuilder();
 
          for (Iterator<String> it = Arrays.stream(arguments).iterator();
               it.hasNext();) {
 
-            body += it.next() + "\n";
+            body.append(it.next()).append("\n");
          }
 
-         request.setAttribute("bodyReport", body);
+         request.setAttribute("bodyReport", body.toString());
          return true;
       }
 
