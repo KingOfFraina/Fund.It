@@ -17,6 +17,7 @@
     <title>Fund.it</title>
 </head>
 <body>
+<!--Navbar-->
 <nav class="navbar navbar-expand-lg navbar-light navbar-fund-it">
 
     <div class="container-fluid">
@@ -48,6 +49,7 @@
     </div>
 </nav>
 
+<!--Titolo-->
 <div class="container my-5">
     <h1 class="text-black text-center"> Aiutaci a finanziare la nostra start-up</h1>
 </div>
@@ -64,10 +66,7 @@
                              class="d-block w-100" alt="...">
                     </div>
                     <div class="carousel-item">
-                        <img src="" class="d-block w-100" alt="...">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="" class="d-block w-100" alt="...">
+                        <img src="${pageContext.request.contextPath}/img/team.jpg" class="d-block w-100" alt="...">
                     </div>
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
@@ -191,6 +190,10 @@
 
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
 
 </body>
 

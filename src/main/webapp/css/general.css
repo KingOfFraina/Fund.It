@@ -10,6 +10,8 @@ body{
 .logo-style{
     font-family: Comfortaa, cursive;
     font-size: 45px;
+    color: #00AB98;
+    text-decoration: none;
 }
 
 .navbar-text{

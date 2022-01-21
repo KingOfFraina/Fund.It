@@ -1,0 +1,19 @@
+.div-login{
+    background-color: #f5ede8;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+    border-radius: 2%;
+    height: fit-content;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.pulsante{
+    background-color: #00AB98;
+    border-color: #00AB98;
+}
+
+.pulsante:hover{
+    box-shadow: 2px 2px 1px 1px rgba(0,0,0,.2);
+    background-color: #00AB98;
+    border-color: #00AB98;
+}

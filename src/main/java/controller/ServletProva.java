@@ -9,7 +9,7 @@ import java.io.IOException;
 public class ServletProva extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String address = "/WEB-INF/results/campagna.jsp";
+        String address = "/WEB-INF/results/login.jsp";
         RequestDispatcher dispatcher = request.getRequestDispatcher(address);
         dispatcher.forward(request, response);
     }
