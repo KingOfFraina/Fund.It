@@ -1,6 +1,7 @@
 package controller;
 
 import model.beans.Utente;
+import model.services.AutenticazioneService;
 import model.services.AutenticazioneServiceImpl;
 
 import javax.servlet.RequestDispatcher;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+
 @WebServlet(name = "AutenticazioneController",
         value = "/AutenticazioneController/*")
 public final class AutenticazioneController extends HttpServlet {
@@ -22,9 +24,14 @@ public final class AutenticazioneController extends HttpServlet {
             throws ServletException, IOException {
 
         String path = request.getPathInfo();
-
+        HttpSession session = request.getSession();
         String resource = "/";
 
+
+        if (session.getAttribute("utente") != null) {
+            response.sendRedirect(getServletContext().getContextPath() + "/index.jsp");
+            return;
+        }
 
         if (path.equals("/login")) {
             resource = "/login.jsp";
@@ -68,7 +75,7 @@ public final class AutenticazioneController extends HttpServlet {
             utente.setEmail(request.getParameter("email"));
             utente.createPasswordHash(request.getParameter("password"));
 
-            AutenticazioneServiceImpl autenticazioneService =
+            AutenticazioneService autenticazioneService =
                     new AutenticazioneServiceImpl(request.getSession(true));
             utente = autenticazioneService.login(utente);
         }
