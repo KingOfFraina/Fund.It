@@ -23,12 +23,13 @@ public class AutenticazioneController extends HttpServlet {
       String resource = "/";
 
 
-      if(path.equals("/login")) {
+      if (path.equals("/login")) {
          resource = "/login.jsp";
       } else if (path.equals("/registrazione")) {
          resource = "/registrazione.jsp";
       } else {
-         response.sen
+         response.sendError(HttpServletResponse.SC_NOT_FOUND, "Risorsa non trovata");
+         return
       }
 
       switch (path) {
@@ -48,15 +49,21 @@ public class AutenticazioneController extends HttpServlet {
    }
 
    @Override
-   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   protected void doPost(HttpServletRequest request, HttpServletResponse response)
+           throws ServletException, IOException {
 
+      switch (request.getPathInfo()) {
+         case "/login":
+            login(request, response);
+            break;
+      }
    }
 
    private void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
       HttpSession session = request.getSession(true);
       Utente utente = (Utente) session.getAttribute("utente");
 
-      if(utente == null) {
+      if (utente == null) {
          utente = new Utente();
          utente.setEmail(request.getParameter("email"));
          utente.createPasswordHash(request.getParameter("password"));
