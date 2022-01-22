@@ -5,7 +5,8 @@
         <!--nome-->
         <div class="col">
             <label for="inputNome" class="form-label">Nome</label>
-            <input name="nome" type="text" class="form-control" id="inputNome" placeholder="Mario" required>
+            <input name="nome" type="text" class="form-control" id="inputNome" placeholder="Mario"
+                   pattern = "^[A-Za-zà-ź \s]{2,50}$" required>
             <div class=invalid-feedback>
                 Formato nome non corretto
             </div>
@@ -14,7 +15,8 @@
         <!--cognome-->
         <div class="col">
             <label for="inputCognome" class="form-label">Cognome</label>
-            <input name="cognome" type="text" class="form-control" id="inputCognome" placeholder="Rossi" required>
+            <input name="cognome" type="text" class="form-control" id="inputCognome" placeholder="Rossi"
+                   pattern="^[A-Za-zà-ź \s]{2,50}$" required>
             <div class=invalid-feedback>
                 Formato cognome non corretto
             </div>
@@ -25,9 +27,11 @@
     <div class="row mt-4">
         <!--email-->
         <div class="col">
-            <label for="inputEmail1" class="form-label">Indirizzo email</label>
-            <input name="email" type="email" class="form-control" id="inputEmail1" aria-describedby="emailHelp"
-                   placeholder="mario.rossi@example.it" required>
+            <label for="inputEmail" class="form-label">Indirizzo email</label>
+            <input name="email" type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp"
+                   placeholder="mario.rossi@example.it"
+                   pattern = "^[a-zA-Z0-9.!#$%&’*+\=?^_`{|}~-]{1,29}+@[a-zA-Z0-9-]{1,29}+(?:\.[a-zA-Z0-9-]+){1,10}$"
+                   onkeyup="checkEmails()" required>
             <div class=invalid-feedback>
                 Formato email non corretto
             </div>
@@ -37,10 +41,8 @@
         <!--Conferma email-->
         <div class="col">
             <label for="inputConfermaEmail" class="form-label">Conferma Email</label>
-            <input name="conferma-email" type="text" class="form-control" id="inputConfermaEmail" required>
-            <div class=invalid-feedback>
-                Le email non corrispondono
-            </div>
+            <input name="conferma-email" type="text" class="form-control" id="inputConfermaEmail" onkeyup="checkEmails()" required>
+            <span id='messageEmail'></span>
         </div>
     </div>
 
@@ -50,7 +52,7 @@
         <!--Password-->
         <div class="col">
             <label for="inputPassword" class="form-label">Password</label>
-            <input name="password" type="password" class="form-control" id="inputPassword" required>
+            <input name="password" type="password" class="form-control" onkeyup="checkPasswords();" id="inputPassword" required>
             <div class=invalid-feedback>
                 La password deve essere di almeno 8 caratteri, contenere almeno una lettera maiuscola e una minuscola e
                 un carattere speciale.
@@ -60,7 +62,8 @@
         <!--Conferma Password-->
         <div class="col">
             <label for="confermaInputPassword" class="form-label"> Conferma Password</label>
-            <input name="password" type="password" class="form-control" id="confermaInputPassword" required>
+            <input name="password" type="password" class="form-control" id="confermaInputPassword"  onkeyup="checkPasswords();" required>
+            <span id='message'></span>
         </div>
     </div>
     <!--Fine password e conferma-->

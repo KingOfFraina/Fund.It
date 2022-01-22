@@ -28,7 +28,7 @@
 <!--Nav-Logo-->
 <nav class="navbar-fund-it text-center">
     <div>
-        <a class="logo-style" style = "text-decoration: none; color: #00AB98">Fund.it</a>
+        <a class="logo-style" style="text-decoration: none; color: #00AB98">Fund.it</a>
     </div>
 </nav>
 
@@ -36,14 +36,15 @@
 <div class="container">
     <div class="row">
         <div class="col-6">
-            <div id = "form-div" class="container my-5 div-login">
-                <form id = "form" class = "needs-validation" novalidate method="post" action="${pageContext.request.contextPath}/AutenticazioneController/login">
+            <div id="form-div" class="container my-5 div-login">
+                <form id="form" class="needs-validation" novalidate>
 
                     <!--email-->
                     <div>
                         <label for="exampleInputEmail1" class="form-label">Indirizzo email</label>
-                        <input  name = "email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
-                        <div class = invalid-feedback>
+                        <input name="email" type="email" class="form-control" id="exampleInputEmail1"
+                               aria-describedby="emailHelp"  pattern = "^[a-zA-Z0-9.!#$%&’*+\=?^_`{|}~-]{1,29}+@[a-zA-Z0-9-]{1,29}+(?:\.[a-zA-Z0-9-]+){1,10}$" required>
+                        <div class=invalid-feedback>
                             Formato email non corretto
                         </div>
                         <div id="emailHelp" class="form-text">Non condivideremo la tua email con nessuno</div>
@@ -53,14 +54,16 @@
                     <!--password-->
                     <div>
                         <label for="exampleInputPassword1" class="form-label mt-4">Password</label>
-                        <input name = "password" type="password" class="form-control" id="exampleInputPassword1" required>
-                        <div class = invalid-feedback>
+                        <input name="password" type="password" class="form-control" id="exampleInputPassword1"
+                               pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._])[A-Za-z\d@$!%*?&._]{8,32}$"
+                               required>
+                        <div class=invalid-feedback>
                             Formato password non corretto
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary pulsante mt-4 mb-3">Login</button>
                 </form>
-                <a href = "#" class = "text-black" onclick="loadForm()">Non sei registrato? Iscriviti ora!</a>
+                <a href="#" class="text-black" onclick="loadForm()">Non sei registrato? Iscriviti ora!</a>
             </div>
         </div>
         <div class="col-6 mt-5">
@@ -69,8 +72,9 @@
     </div>
 </div>
 
-<script type = "text/javascript" src = ${pageContext.request.contextPath}/js/form-validation-style.js></script>
-<script type = "text/javascript" src = ${pageContext.request.contextPath}/js/registrazione.js></script>
+<script type="text/javascript" src=${pageContext.request.contextPath}/js/form-validation-style.js></script>
+<script type="text/javascript" src=${pageContext.request.contextPath}/js/registrazione.js></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
 </body>
