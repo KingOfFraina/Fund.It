@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.Date;
 
 
 @WebServlet(name = "AutenticazioneController",
@@ -58,9 +59,14 @@ public final class AutenticazioneController extends HttpServlet {
             case "/login":
                 login(request, response);
                 break;
-            default:
-                System.out.println("default clause");
+            case "/registrazione":
+                registrazione(request, response);
                 break;
+
+            default:
+                response.sendError(
+                        HttpServletResponse.SC_NOT_FOUND, "Risorsa non trovata");
+                return;
         }
     }
 
@@ -75,7 +81,7 @@ public final class AutenticazioneController extends HttpServlet {
             utente.setEmail(request.getParameter("email"));
             utente.createPasswordHash(request.getParameter("password"));
 
-            AutenticazioneService autenticazioneService =
+            AutenticazioneServiceImpl autenticazioneService =
                     new AutenticazioneServiceImpl(request.getSession(true));
             utente = autenticazioneService.login(utente);
         }
@@ -86,6 +92,36 @@ public final class AutenticazioneController extends HttpServlet {
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/AutenticazioneController/login");
+        }
+    }
+
+    private void registrazione(final HttpServletRequest request,
+                               final HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+
+        if (session.isNew()) {
+            Utente utente = new Utente();
+
+            if (request.getParameter("password").equals(request.getParameter("confermaPassword")) && request.getParameter("email").equals(request.getParameter("confermaEmail"))) {
+                utente.createPasswordHash(request.getParameter("password"));
+                utente.setEmail(request.getParameter("email"));
+                utente.setNome(request.getParameter("nome"));
+                utente.setCognome(request.getParameter("cognome"));
+                utente.setDataDiNascita(Date.valueOf(request.getParameter("dataDiNascita")));
+                utente.setTelefono(request.getParameter("telefono"));
+                utente.setStrada(request.getParameter("indirizzo"));
+                utente.setCitta(request.getParameter("citta"));
+                utente.setCap(request.getParameter("cap"));
+                utente.setCf(request.getParameter("cf"));
+                utente.setFotoProfilo(request.getParameter("fotoProfilo"));
+
+
+            } else {
+                response.sendRedirect(
+                        getServletContext().getContextPath()
+                                + "/AutenticazioneController/registrazione");
+            }
+
         }
     }
 }
