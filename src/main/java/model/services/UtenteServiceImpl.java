@@ -35,9 +35,7 @@ public class UtenteServiceImpl implements UtenteService {
         if (richiedente.getIdUtente() < 0) {
             return null;
         }
-        if (!richiedente.isAdmin()) {
-            return null;
-        }
+
         UtenteDAO dao = new UtenteDAO();
         List<Utente> list = dao.getAll();
 
