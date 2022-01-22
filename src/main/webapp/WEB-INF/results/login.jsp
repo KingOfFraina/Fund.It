@@ -42,7 +42,7 @@
                     <!--email-->
                     <div>
                         <label for="exampleInputEmail1" class="form-label">Indirizzo email</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                        <input  name = "email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
                         <div class = invalid-feedback>
                             Formato email non corretto
                         </div>
@@ -53,7 +53,7 @@
                     <!--password-->
                     <div>
                         <label for="exampleInputPassword1" class="form-label mt-4">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" required>
+                        <input name = "password" type="password" class="form-control" id="exampleInputPassword1" required>
                         <div class = invalid-feedback>
                             Formato password non corretto
                         </div>
