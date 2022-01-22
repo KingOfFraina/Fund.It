@@ -14,7 +14,7 @@
         <!--cognome-->
         <div class="col">
             <label for="inputCognome" class="form-label">Cognome</label>
-            <input name="nome" type="text" class="form-control" id="inputCognome" placeholder="Rossi" required>
+            <input name="cognome" type="text" class="form-control" id="inputCognome" placeholder="Rossi" required>
             <div class=invalid-feedback>
                 Formato cognome non corretto
             </div>

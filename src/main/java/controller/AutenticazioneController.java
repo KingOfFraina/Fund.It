@@ -97,9 +97,9 @@ public final class AutenticazioneController extends HttpServlet {
 
     private void registrazione(final HttpServletRequest request,
                                final HttpServletResponse response) throws IOException {
-        HttpSession session = request.getSession(true);
+        HttpSession session = request.getSession();
 
-        if (session.isNew()) {
+        if (session.getAttribute("utente") == null) {
             Utente utente = new Utente();
 
             if (request.getParameter("password").equals(request.getParameter("confermaPassword")) && request.getParameter("email").equals(request.getParameter("confermaEmail"))) {
@@ -115,13 +115,20 @@ public final class AutenticazioneController extends HttpServlet {
                 utente.setCf(request.getParameter("cf"));
                 utente.setFotoProfilo(request.getParameter("fotoProfilo"));
 
+                AutenticazioneServiceImpl autenticazioneService =
+                        new AutenticazioneServiceImpl(request.getSession(true));
 
+                System.out.println(autenticazioneService.registrazione(utente));
+                session.setAttribute("utente", utente);
             } else {
                 response.sendRedirect(
                         getServletContext().getContextPath()
                                 + "/AutenticazioneController/registrazione");
             }
 
+        }
+        else {
+            response.sendRedirect(getServletContext().getContextPath() + "/index.jsp");
         }
     }
 }
