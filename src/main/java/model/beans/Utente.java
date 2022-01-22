@@ -242,10 +242,10 @@ public final class Utente implements UtenteInterface {
    }
 
    /**
-    * @param cappello Cap dell'utente.
+    * @param newCap Cap dell'utente.
     */
-   public void setCap(final String cappello) {
-      this.cap = cappello;
+   public void setCap(final String newCap) {
+      this.cap = newCap;
    }
 
    /**
