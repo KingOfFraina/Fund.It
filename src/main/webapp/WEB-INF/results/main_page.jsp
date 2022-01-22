@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main_page.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/general.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-
+    <link rel="icon" href="${pageContext.request.contextPath}/img/piggy-bank-solid.png">
     <title>Fund.it</title>
 </head>
 

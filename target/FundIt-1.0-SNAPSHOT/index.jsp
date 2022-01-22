@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600&display=swap" rel="stylesheet">
-
+    <link rel="icon" href="${pageContext.request.contextPath}/img/piggy-bank-solid.png">
     <title>Fund.it</title>
 </head>
 <body>
@@ -48,7 +48,7 @@
                 </li>
             </ul>
 
-            <a class="login-logout-font" href="${pageContext.request.contextPath}/ServletProva"><i class="fas fa-sign-in-alt login-logout"></i> Login</a>
+            <a class="login-logout-font" href="${pageContext.request.contextPath}/AutenticazioneController/login"><i class="fas fa-sign-in-alt login-logout"></i> Login</a>
 
         </div>
     </div>
@@ -73,7 +73,7 @@
 
     <img src="./img/group_selfie.svg" alt="">
     <button id="scopri" type="submit" class="btn btn-primary btn-lg mx-5 my-5"
-            onclick="location.href = '${pageContext.request.contextPath}/ServletProva'">
+            onclick="location.href = '${pageContext.request.contextPath}/AutenticazioneController/login'">
         Scopri di pi&ugrave
     </button>
 </div>

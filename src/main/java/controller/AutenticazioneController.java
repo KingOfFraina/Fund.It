@@ -138,7 +138,7 @@ public final class AutenticazioneController extends HttpServlet {
          } else {
             response.sendRedirect(
                     getServletContext().getContextPath()
-                            + "/AutenticazioneController/registrazione");
+                            + "/AutenticazioneController/login"); //REINDIRIZZAMENTO VERSO LA SERVLET
          }
 
       } else {

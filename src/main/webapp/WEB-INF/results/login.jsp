@@ -63,7 +63,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary pulsante mt-4 mb-3">Login</button>
                 </form>
-                <a href="#" class="text-black" onclick="loadForm()">Non sei registrato? Iscriviti ora!</a>
+                <a  class="text-black" href="${pageContext.request.contextPath}/AutenticazioneController/registrazione" >Non sei registrato? Iscriviti ora!</a>
             </div>
         </div>
         <div class="col-6 mt-5">

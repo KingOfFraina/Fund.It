@@ -7,7 +7,9 @@ Array.prototype.slice.call(forms).forEach(function (form) {
             event.stopPropagation();
         }
         form.classList.add("was-validated");
+        event.stopPropagation();
     }, false);
+
 });
 
 var checkPasswords = function () {
