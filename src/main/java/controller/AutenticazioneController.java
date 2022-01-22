@@ -43,7 +43,8 @@ public final class AutenticazioneController extends HttpServlet {
             break;
          case "/logout":
             session.invalidate();
-            response.sendRedirect(getServletContext().getContextPath() + "/index.jsp");
+            response.sendRedirect(getServletContext().getContextPath()
+                    + "/index.jsp");
             return;
          default:
             response.sendError(
