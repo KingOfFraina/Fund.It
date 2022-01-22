@@ -123,5 +123,12 @@
         </div>
     </div>
 
+    <div class="row mt-4">
+        <div class="col">
+            <label for="formFile" class="form-label">Immagine del profilo</label>
+            <input name="file" class="form-control" type="file" id="formFile">
+        </div>
+    </div>
+
     <button type="submit" class="btn btn-primary pulsante mt-4 mb-3">Registrati</button>
 </form>

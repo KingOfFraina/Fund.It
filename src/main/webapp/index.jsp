@@ -23,7 +23,7 @@
 
 <!--Navbar-->
 
-<nav class="navbar navbar-expand-lg navbar-light navbar-fund-it">
+<nav class="navbar navbar-expand-lg navbar-light navbar-fund-it sticky-top">
 
     <div class="container-fluid">
         <a class="navbar-brand logo logo-style" href="#" style="color: #00AB98;">Fund.it</a>

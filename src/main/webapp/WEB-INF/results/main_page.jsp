@@ -156,7 +156,7 @@
 
 <div class="container my-2"
      style="background-image: url(./img/undraw_before_dawn_re_hp4m.svg); padding-bottom: 355px; background-repeat: no-repeat;">
-    <div class="row">
+    <div class="row text-center">
         <div class="col-sm">
             <div class="card" style="width: 18rem;">
                 <img class="card-img-top" src="./img/thumb2-santa-chiara-4k-church-archeological-museum-naples.jpg"
@@ -170,7 +170,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm">
+        <div class="col">
             <div class="card" style="width: 18rem;">
                 <img class="card-img-top" src="./img/team.jpg" alt="Card image cap">
                 <div class="card-body">
@@ -182,7 +182,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm">
+        <div class="col">
             <div class="card" style="width: 18rem;">
                 <img class="card-img-top" src="./img/2560x1600_ash-black-cat-kitten-with-stare-look-4k-cat.jpg"
                      alt="Card image cap">
