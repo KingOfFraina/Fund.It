@@ -52,12 +52,11 @@ public final class UtenteDAO implements DAO<Utente> {
                            + "AND password = ?")) {
 
          statement.setString(1, utente.getEmail());
-         utente.createPasswordHash(utente.getPassword());
          statement.setString(2, utente.getPassword());
 
          ResultSet set = statement.executeQuery();
          if (set.next()) {
-            return extract(set, "");
+            return extract(set, null);
          }
       } catch (SQLException e) {
          throw new RuntimeException(e);

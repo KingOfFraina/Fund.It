@@ -28,15 +28,15 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
 
     /**
      * @param utente Istanza di Utente che desidera fare il login
-     * @return true se l'operazione è andata a buon fine, false altrimenti
+     * @return un'instanza della classe utente
      */
     @Override
-    public boolean login(final Utente utente) {
+    public Utente login(final Utente utente) {
         if (utente == null) {
             throw new RuntimeException("Utente null");
         }
         UtenteDAO userDao = (UtenteDAO) dao;
-        return userDao.doLogin(utente) != null;
+        return userDao.doLogin(utente);
     }
 
     /**
@@ -57,7 +57,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
      */
     @Override
     public boolean logout(final Utente utente) {
-        sessionWrapper.removeAttribute("");
+        sessionWrapper.invalidate();
         return false;
     }
 }
