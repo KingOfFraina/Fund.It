@@ -96,7 +96,6 @@ public final class AutenticazioneController extends HttpServlet {
 
       if (utente != null) {
          session.setAttribute("utente", utente);
-         System.out.println(session.getAttribute("utente"));
       } else {
          response.sendRedirect(
                  getServletContext().getContextPath()
