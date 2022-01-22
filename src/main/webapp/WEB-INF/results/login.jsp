@@ -37,7 +37,7 @@
     <div class="row">
         <div class="col-6">
             <div id="form-div" class="container my-5 div-login">
-                <form id="form" class="needs-validation" novalidate>
+                <form id="form" class="needs-validation" novalidate action="${pageContext.request.contextPath}/AutenticazioneController/login" method="post">
 
                     <!--email-->
                     <div>

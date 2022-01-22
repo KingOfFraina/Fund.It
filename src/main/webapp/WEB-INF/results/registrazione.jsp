@@ -1,4 +1,4 @@
-<form id="form" class="needs-validation" novalidate>
+<form id="form" class="needs-validation" novalidate method="post" action="${pageContext.request.contextPath}/AutenticazioneController/registrazione">
 
     <!--Nome e Cognome-->
     <div class="row">
@@ -41,7 +41,7 @@
         <!--Conferma email-->
         <div class="col">
             <label for="inputConfermaEmail" class="form-label">Conferma Email</label>
-            <input name="conferma-email" type="text" class="form-control" id="inputConfermaEmail" onkeyup="checkEmails()" required>
+            <input name="confermaEmail" type="text" class="form-control" id="inputConfermaEmail" onkeyup="checkEmails()" required>
             <span id='messageEmail'></span>
         </div>
     </div>
@@ -62,7 +62,7 @@
         <!--Conferma Password-->
         <div class="col">
             <label for="confermaInputPassword" class="form-label"> Conferma Password</label>
-            <input name="password" type="password" class="form-control" id="confermaInputPassword"  onkeyup="checkPasswords();" required>
+            <input name="confermaPassword" type="password" class="form-control" id="confermaInputPassword"  onkeyup="checkPasswords();" required>
             <span id='message'></span>
         </div>
     </div>
@@ -72,7 +72,7 @@
     <div class="row mt-4">
         <div class="col">
             <label for="inputData" class="form-label">Data di nascita</label>
-            <input name="data" type="date" class="form-control" id="inputData" placeholder="DD/MM/YY" required>
+            <input name="dataDiNascita" type="date" class="form-control" id="inputData" placeholder="DD/MM/YY" required>
         </div>
     </div>
 
@@ -101,7 +101,7 @@
 
         <div class="col">
             <label for="inputCittà" class="form-label">Citt&agrave</label>
-            <input name="città" type="text" class="form-control" id="inputCittà" placeholder="Roma" required>
+            <input name="citta" type="text" class="form-control" id="inputCittà" placeholder="Roma" required>
             <div class=invalid-feedback>
                 Formato Città non corretto
             </div>
@@ -119,7 +119,7 @@
     <div class="row mt-4">
         <div class="col">
             <label for="inputCF" class="form-label">Codice Fiscale</label>
-            <input name="cap" type="text" class="form-control" id="inputCF" placeholder="RSSMRA80A01H501U" required>
+            <input name="cf" type="text" class="form-control" id="inputCF" placeholder="RSSMRA80A01H501U" required>
             <div class=invalid-feedback>
                 Formato Codice Fiscale non corretto
             </div>
@@ -129,7 +129,7 @@
     <div class="row mt-4">
         <div class="col">
             <label for="formFile" class="form-label">Immagine del profilo</label>
-            <input name="file" class="form-control" type="file" id="formFile">
+            <input name="fotoProfilo" class="form-control" type="file" id="formFile">
         </div>
     </div>
 
