@@ -1,7 +1,7 @@
 package controller;
 
 import model.beans.Utente;
-import model.services.AutenticazioneService;
+
 import model.services.AutenticazioneServiceImpl;
 
 import javax.servlet.RequestDispatcher;
@@ -30,22 +30,30 @@ public final class AutenticazioneController extends HttpServlet {
 
 
         if (session.getAttribute("utente") != null) {
-            response.sendRedirect(getServletContext().getContextPath() + "/index.jsp");
+            response.sendRedirect(
+                    getServletContext().getContextPath() + "/index.jsp");
             return;
         }
 
-        if (path.equals("/login")) {
-            resource = "/login.jsp";
-        } else if (path.equals("/registrazione")) {
-            resource = "/registrazione.jsp";
-        } else {
-            response.sendError(
-                    HttpServletResponse.SC_NOT_FOUND, "Risorsa non trovata");
-            return;
+        switch (path) {
+            case "/login":
+                resource = "/WEB-INF/results/login.jsp";
+                break;
+            case "/registrazione":
+                resource = "/WEB-INF/results/registrazione.jsp";
+                break;
+            case "/logout":
+                session.invalidate();
+                response.sendRedirect(getServletContext().getContextPath() + "/index.jsp");
+                return;
+            default:
+                response.sendError(
+                        HttpServletResponse.SC_NOT_FOUND, "Risorsa non trovata");
+                return;
         }
 
         RequestDispatcher dispatcher =
-                request.getRequestDispatcher("/WEB-INF/results" + resource);
+                request.getRequestDispatcher(resource);
         dispatcher.forward(request, response);
 
     }
@@ -65,7 +73,8 @@ public final class AutenticazioneController extends HttpServlet {
 
             default:
                 response.sendError(
-                        HttpServletResponse.SC_NOT_FOUND, "Risorsa non trovata");
+                        HttpServletResponse.SC_NOT_FOUND,
+                        "Risorsa non trovata");
                 return;
         }
     }
@@ -96,18 +105,23 @@ public final class AutenticazioneController extends HttpServlet {
     }
 
     private void registrazione(final HttpServletRequest request,
-                               final HttpServletResponse response) throws IOException {
+                               final HttpServletResponse response)
+            throws IOException {
         HttpSession session = request.getSession();
 
         if (session.getAttribute("utente") == null) {
             Utente utente = new Utente();
 
-            if (request.getParameter("password").equals(request.getParameter("confermaPassword")) && request.getParameter("email").equals(request.getParameter("confermaEmail"))) {
+            if (request.getParameter("password").equals(
+                    request.getParameter("confermaPassword"))
+                    && request.getParameter("email").equals(
+                    request.getParameter("confermaEmail"))) {
                 utente.createPasswordHash(request.getParameter("password"));
                 utente.setEmail(request.getParameter("email"));
                 utente.setNome(request.getParameter("nome"));
                 utente.setCognome(request.getParameter("cognome"));
-                utente.setDataDiNascita(Date.valueOf(request.getParameter("dataDiNascita")));
+                utente.setDataDiNascita(
+                        Date.valueOf(request.getParameter("dataDiNascita")));
                 utente.setTelefono(request.getParameter("telefono"));
                 utente.setStrada(request.getParameter("indirizzo"));
                 utente.setCitta(request.getParameter("citta"));
@@ -126,9 +140,9 @@ public final class AutenticazioneController extends HttpServlet {
                                 + "/AutenticazioneController/registrazione");
             }
 
-        }
-        else {
-            response.sendRedirect(getServletContext().getContextPath() + "/index.jsp");
+        } else {
+            response.sendRedirect(
+                    getServletContext().getContextPath() + "/index.jsp");
         }
     }
 }
