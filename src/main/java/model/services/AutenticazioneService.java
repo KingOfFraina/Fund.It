@@ -2,9 +2,6 @@ package model.services;
 
 import model.beans.Utente;
 
-/**
- *
- */
 public interface AutenticazioneService {
 
     /**
