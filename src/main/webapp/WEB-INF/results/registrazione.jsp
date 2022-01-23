@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Francesco
-  Date: 21/01/2022
-  Time: 16:47
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -15,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login-registrazione.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/general.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -28,7 +21,8 @@
 <!--Nav-Logo-->
 <nav class="navbar-fund-it text-center">
     <div>
-        <a class="logo-style" style="text-decoration: none; color: #00AB98">Fund.it</a>
+        <a href="${pageContext.request.contextPath}/index.jsp" class="logo-style"
+           style="text-decoration: none; color: #00AB98">Fund.it</a>
     </div>
 </nav>
 
@@ -37,6 +31,12 @@
     <div class="row">
         <div class="col-6">
             <div id="form-div" class="container my-5 div-login">
+                <div class="row" style="width: fit-content; margin-left: 550px">
+                    <button id="back" class="btn btn-primary mt-4 mb-3"
+                            onclick="location.href = '${pageContext.request.contextPath}/AutenticazioneController/login'">
+                        <i class="fas fa-arrow-left"></i></button>
+                </div>
+
                 <form id="form" class="needs-validation" novalidate method="post"
                       action="${pageContext.request.contextPath}/AutenticazioneController/registrazione">
 
@@ -184,7 +184,7 @@
                     <div class="row mt-4">
                         <div class="col">
                             <label for="formFile" class="form-label">Immagine del profilo</label>
-                            <input name="fotoProfilo" class="form-control" type="file" id="formFile">
+                            <input name="fotoProfilo" class="form-control" type="file" id="formFile" oninput="">
                         </div>
                     </div>
 
@@ -198,7 +198,7 @@
     </div>
 </div>
 
-<script type="text/javascript" src=${pageContext.request.contextPath}/js/form-validation-style.js></script>
+<script type="text/javascript" src=${pageContext.request.contextPath}/js/form-validation.js></script>
 <script type="text/javascript" src=${pageContext.request.contextPath}/js/registrazione.js></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 

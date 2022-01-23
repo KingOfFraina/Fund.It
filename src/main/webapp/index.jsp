@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html lang="en">
 <head>
 
@@ -48,7 +49,18 @@
                 </li>
             </ul>
 
-            <a class="login-logout-font" href="${pageContext.request.contextPath}/AutenticazioneController/login"><i class="fas fa-sign-in-alt login-logout"></i> Login</a>
+            <c:choose>
+                <c:when test="${sessionScope.utente != null}">
+                    <a class="login-logout-font"
+                       href="${pageContext.request.contextPath}/AutenticazioneController/logout"><i
+                            class="fas fa-sign-out-alt login-logout"></i> Logout</a>
+                </c:when>
+                <c:otherwise>
+                    <a class="login-logout-font"
+                       href="${pageContext.request.contextPath}/AutenticazioneController/login"><i
+                            class="fas fa-sign-in-alt login-logout"></i> Login</a>
+                </c:otherwise>
+            </c:choose>
 
         </div>
     </div>
