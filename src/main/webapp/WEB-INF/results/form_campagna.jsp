@@ -70,14 +70,15 @@
                         <i class="fas fa-arrow-left"></i></button>
                 </div>
 
-                <form id="form" class="needs-validation" novalidate method="post"
-                      action="${pageContext.request.contextPath}/AutenticazioneController/registrazione">
+                <form id="form" class="needs-validation" novalidate method="post">
+
+                    <input type="hidden" value="${requestScope.campagna.idCampagna}" name="idCampagna">
 
                     <!--Titolo della campagna-->
                     <div class="col">
                         <label for="inputTitolo" class="form-label">Titolo</label>
                         <input name="titolo" type="text" class="form-control" id="inputTitolo"
-                               placeholder="Dai un titolo alla tua campagna!" required>
+                               placeholder="Dai un titolo alla tua campagna!" required value="${requestScope.campagna.titolo}">
                         <div class=invalid-feedback>
                             Formato nome non corretto
                         </div>
@@ -87,7 +88,7 @@
                     <div class = "col mt-4">
                         <label for="inputDescrizione" class="form-label">Descrizione</label>
                         <div class="form-floating">
-                            <textarea name = "descrizione" class="form-control" placeholder="Descrivi la tua campagna" id="inputDescrizione" maxlength="3000" style="height: 100px" required></textarea>
+                            <textarea name = "descrizione" class="form-control" placeholder="Descrivi la tua campagna" id="inputDescrizione" maxlength="3000" style="height: 100px" required>${requestScope.campagna.descrizione}</textarea>
                         </div>
                         <div class=invalid-feedback>
                             La descrizione deve essere lunga max. 3000 caratteri
@@ -100,7 +101,16 @@
                         <select name = "idCategoria" id = "selectCategorie" class="form-select" aria-label="Default select example">
                             <option selected disabled>Seleziona la categoria della tua raccolta</option>
                             <c:forEach items="${categorie}" var="cat">
-                                <option value="${cat.idCategoria}">cat.nome</option>
+                                <c:choose>
+                                    <c:when test="${requestScope.campagna.categoria.idCategoria == cat.idCategoria}">
+                                        <option selected value="${cat.idCategoria}">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="${cat.idCategoria}">
+                                    </c:otherwise>
+                                </c:choose>
+                                ${cat.nome}
+                                </option>
                             </c:forEach>
                         </select>
                     </div>
@@ -108,7 +118,7 @@
                     <div class = "col mt-4">
                         <label for="inputTarget" class="form-label">Somma da raggiungere</label>
                         <input name="sommaTarget" type="number" class="form-control" id="inputTarget"
-                               placeholder="10" required>
+                               placeholder="10" required value="${requestScope.campagna.sommaTarget}">
                     </div>
 
                     <!--File-->
@@ -116,7 +126,14 @@
                         <label for="formFileMultiple" class="form-label">Allega immagini per la tua campagna</label>
                         <input class="form-control" type="file" id="formFileMultiple" multiple>
                     </div>
-                    <button type="submit" class="btn btn-primary pulsante mt-4 mb-3">Crea campagna</button>
+                    <c:choose>
+                        <c:when test="${requestScope.campagna != null}">
+                            <button type="submit" class="btn btn-primary pulsante mt-4 mb-3" formaction="${pageContext.request.contextPath}/GestioneCampagnaController/modificaCampagna">Salva modifiche</button>
+                        </c:when>
+                        <c:otherwise>
+                            <button type="submit" class="btn btn-primary pulsante mt-4 mb-3" formaction="${pageContext.request.contextPath}/GestioneCampagnaController/creaCampagna">Crea campagna</button>
+                        </c:otherwise>
+                    </c:choose>
                 </form>
             </div>
         </div>
