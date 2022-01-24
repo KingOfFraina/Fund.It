@@ -46,10 +46,10 @@ public final class AutenticazioneController extends HttpServlet {
             case "/logout":
                 AutenticazioneService service =
                         new AutenticazioneServiceImpl(session);
-                if (service.logout(userSession)) {
-                    response.sendRedirect(getServletContext().getContextPath()
-                            + "/index.jsp");
-                }
+                service.logout(userSession);
+                response.sendRedirect(getServletContext().getContextPath()
+                        + "/index.jsp");
+
                 return;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND,
@@ -80,7 +80,7 @@ public final class AutenticazioneController extends HttpServlet {
                 response.sendError(
                         HttpServletResponse.SC_NOT_FOUND,
                         "Risorsa non trovata");
-                return;
+                break;
         }
     }
 
