@@ -6,10 +6,7 @@ import model.beans.Utente;
 import model.beans.StatoSegnalazione;
 import model.storage.ConPool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +74,7 @@ public final class SegnalazioneDAO
 
             int index = 0;
 
-            statement.setDate(++index, (java.sql.Date) entity.getDataOra());
+            statement.setDate(++index, new Date(entity.getDataOra().getTime()));
             statement.setString(++index, entity.getDescrizione());
             statement.setInt(++index,
                     entity.getSegnalatore().getIdUtente());
@@ -90,7 +87,7 @@ public final class SegnalazioneDAO
             int ret = statement.executeUpdate();
             ResultSet set = statement.getGeneratedKeys();
             if (set.next()) {
-                entity.setIdSegnalazione(set.getInt(0));
+                entity.setIdSegnalazione(set.getInt(1));
             }
             return (ret > 0);
         } catch (SQLException e) {
