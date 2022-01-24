@@ -58,11 +58,7 @@ public class UtenteServiceImpl implements UtenteService {
             return false;
         }
 
-        if (soggetto.isAdmin()) {
-            soggetto.setAdmin(false);
-        } else {
-            soggetto.setAdmin(true);
-        }
+        soggetto.setAdmin(!soggetto.isAdmin());
         dao.update(soggetto);
         return false;
     }

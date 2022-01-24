@@ -19,7 +19,7 @@ public interface AutenticazioneService {
 
    /**
     * @param utente Istanza di Utente che desidera fare il logout
-    * @return true se l'operazione va a buon fine, false altrimenti
+    *
     */
-   boolean logout(Utente utente);
+   void logout(Utente utente);
 }

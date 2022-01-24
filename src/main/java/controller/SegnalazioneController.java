@@ -73,9 +73,11 @@ public final class SegnalazioneController extends HttpServlet {
         switch (path) {
             case "/segnala":
                 Campagna c = campagnaService.trovaCampagna(Integer.parseInt(idCampagna));
-                Utente utente = (Utente) session.getAttribute("utente");
+                Utente utente = new Utente();
+                utente.setIdUtente(2);
                 if (segnalazioniService.segnalaCampagna(c, utente, descrizione)) {
-                    resource = "index.jsp";
+                    response.sendRedirect(getServletContext().getContextPath() + "/index.jsp");
+                    return;
                 } else {
                     System.out.println("segnalaCampagna returned false");
                 }
@@ -85,7 +87,6 @@ public final class SegnalazioneController extends HttpServlet {
                 break;
         }
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher(resource);
-        dispatcher.forward(request, response);
+
     }
 }

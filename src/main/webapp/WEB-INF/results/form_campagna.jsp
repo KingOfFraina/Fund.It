@@ -87,7 +87,7 @@
                     <div class = "col mt-4">
                         <label for="inputDescrizione" class="form-label">Descrizione</label>
                         <div class="form-floating">
-                            <textarea nome = "descrizione" class="form-control" placeholder="Descrivi la tua campagna" id="inputDescrizione" maxlength="3000" style="height: 100px" required></textarea>
+                            <textarea name = "descrizione" class="form-control" placeholder="Descrivi la tua campagna" id="inputDescrizione" maxlength="3000" style="height: 100px" required></textarea>
                         </div>
                         <div class=invalid-feedback>
                             La descrizione deve essere lunga max. 3000 caratteri

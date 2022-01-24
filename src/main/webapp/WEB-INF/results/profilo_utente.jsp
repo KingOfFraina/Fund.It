@@ -64,7 +64,7 @@
 <div id = "div-info" class = "container text-center my-5">
     <h2>Bentornato Marco!</h2>
     <img class = "propic" src="${pageContext.request.contextPath}/img/undraw_profile_pic_ic-5-t.svg" alt=""><br>
-    <button id = "visualizza" type="submit" class="btn btn-primary pulsante mt-4 mb-3">Visualizza informazioni profilo</button>
+    <button id = "visualizza" type="submit" class="btn btn-primary pulsante mt-4 mb-3" onclick="loadForm()">Visualizza informazioni profilo</button>
 </div>
 
 

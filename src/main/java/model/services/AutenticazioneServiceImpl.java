@@ -53,11 +53,10 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
 
     /**
      * @param utente Istanza di Utente che desidera fare il logout
-     * @return true se l'operazione va a buon fine, false altrimenti
      */
     @Override
-    public boolean logout(final Utente utente) {
+    public void logout(final Utente utente) {
         sessionWrapper.invalidate();
-        return false;
+
     }
 }
