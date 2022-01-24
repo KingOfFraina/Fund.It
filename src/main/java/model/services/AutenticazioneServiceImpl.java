@@ -57,6 +57,5 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     @Override
     public void logout(final Utente utente) {
         sessionWrapper.invalidate();
-
     }
 }

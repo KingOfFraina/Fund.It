@@ -3,8 +3,13 @@ package controller;
 
 import model.beans.Campagna;
 import model.beans.Segnalazione;
+import model.beans.StatoSegnalazione;
 import model.beans.Utente;
-import model.services.*;
+import model.services.CampagnaService;
+import model.services.CampagnaServiceImpl;
+import model.services.SegnalazioniService;
+import model.services.SegnalazioniServiceImpl;
+
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -60,26 +65,41 @@ public final class SegnalazioneController extends HttpServlet {
     @Override
     protected void doPost(final HttpServletRequest request,
                           final HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
 
         String path = request.getPathInfo();
         HttpSession session = request.getSession();
         String idCampagna = request.getParameter("idCampagna");
         CampagnaService campagnaService = new CampagnaServiceImpl();
         SegnalazioniService segnalazioniService = new SegnalazioniServiceImpl();
+        int idSegnalazione =
+                Integer.parseInt(request.getParameter("idSegnalazione"));
         String descrizione = request.getParameter("descrizione");
         String resource = "/";
 
         switch (path) {
             case "/segnala":
-                Campagna c = campagnaService.trovaCampagna(Integer.parseInt(idCampagna));
+                Campagna c = campagnaService.
+                        trovaCampagna(Integer.parseInt(idCampagna));
                 Utente utente = new Utente();
                 utente.setIdUtente(2);
-                if (segnalazioniService.segnalaCampagna(c, utente, descrizione)) {
-                    response.sendRedirect(getServletContext().getContextPath() + "/index.jsp");
+                if (segnalazioniService.
+                        segnalaCampagna(c, utente, descrizione)) {
+                    response.sendRedirect(
+                            getServletContext().getContextPath()
+                                    + "/index.jsp");
                     return;
                 } else {
                     System.out.println("segnalaCampagna returned false");
+                }
+                break;
+            case "/modifica":
+                if (segnalazioniService.
+                        risolviSegnalazione(idSegnalazione,
+                                StatoSegnalazione.RISOLTA)) {
+                    System.out.println("frate tutt appost");
+                } else {
+                    System.out.println("mannagg o bucchin");
                 }
                 break;
             default:

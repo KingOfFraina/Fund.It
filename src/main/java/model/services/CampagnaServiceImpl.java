@@ -43,7 +43,7 @@ public final class CampagnaServiceImpl implements CampagnaService {
     * @return istanza di Campagna avente come id idCampagna, null altrimenti
     */
    @Override
-   public Campagna trovaCampagna(int idCampagna) {
+   public Campagna trovaCampagna(final int idCampagna) {
       DAO<Campagna> dao = new CampagnaDAO();
       return dao.getById(idCampagna);
    }
