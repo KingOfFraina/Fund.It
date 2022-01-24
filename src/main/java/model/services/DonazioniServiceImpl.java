@@ -15,7 +15,9 @@ public final class DonazioniServiceImpl implements DonazioniService {
 
     @Override
     public List<Donazione> visualizzaDonazioni(final Utente u) {
-        return new DonazioneDAO().getAllByUtente(u.getIdUtente());
+        if(!u.isAdmin())
+            return new DonazioneDAO().getAllByUtente(u.getIdUtente());
+        return new DonazioneDAO().getAll();
     }
 
     @Override
