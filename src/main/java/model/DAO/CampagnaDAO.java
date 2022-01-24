@@ -106,21 +106,20 @@ public final class CampagnaDAO
                                      + "VALUES (?,?,?,?,?,?,?)",
                              PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            int index = 0;
-            statement.setInt(++index, entity.getIdCampagna());
-            statement.setString(++index, entity.getStato().toString());
-            statement.setString(++index, entity.getTitolo());
-            statement.setString(++index, entity.getDescrizione());
-            statement.setDouble(++index, entity.getSommaRaccolta());
-            statement.setDouble(++index, entity.getSommaTarget());
-            statement.setInt(++index,
+            int index = 1;
+            statement.setString(index++, entity.getStato().toString());
+            statement.setString(index++, entity.getTitolo());
+            statement.setString(index++, entity.getDescrizione());
+            statement.setDouble(index++, entity.getSommaRaccolta());
+            statement.setDouble(index++, entity.getSommaTarget());
+            statement.setInt(index++,
                     entity.getCategoria().getIdCategoria());
-            statement.setInt(++index, entity.getUtente().getIdUtente());
+            statement.setInt(index, entity.getUtente().getIdUtente());
 
             ret = statement.executeUpdate();
             ResultSet set = statement.getGeneratedKeys();
             if (set.next()) {
-                entity.setIdCampagna(set.getInt(0));
+                entity.setIdCampagna(set.getInt(1));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

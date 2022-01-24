@@ -15,20 +15,25 @@ import java.io.IOException;
 
 @WebServlet(name = "GestioneCampagnaController", value = "/GestioneCampagnaController/*")
 public class GestioneCampagnaController extends HttpServlet {
+   HttpSession session;
+
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       String resource = "/";
 
-      if (request.getSession(false).getAttribute("utente") == null) {
-         RequestDispatcher dispatcher =
-                 request.getRequestDispatcher("/WEB-INF/results/login.jsp");
-         dispatcher.forward(request, response);
+      session = request.getSession(false);
+
+      if (session == null || session.getAttribute("utente") == null) {
+         response.sendRedirect(
+                 getServletContext().getContextPath()
+                         + "/AutenticazioneController/login");
+         return;
       }
 
       switch (request.getPathInfo()) {
          case "/creaCampagna": {
             request.setAttribute("categorie", new CategoriaServiceImpl().visualizzaCategorie());
-            resource = "/WEB-INF/results/crea_campagna.jsp";
+            resource = "/WEB-INF/results/form_campagna.jsp";
             break;
          }
 
@@ -47,10 +52,12 @@ public class GestioneCampagnaController extends HttpServlet {
    @Override
    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-      if (request.getSession(false).getAttribute("utente") == null) {
-         RequestDispatcher dispatcher =
-                 request.getRequestDispatcher("/WEB-INF/results/login.jsp");
-         dispatcher.forward(request, response);
+      if (session == null && session.getAttribute("utente") == null) {
+         response.sendRedirect(
+                 getServletContext().getContextPath()
+                         + "/AutenticazioneController/login");
+
+         return;
       }
 
       switch (request.getPathInfo()) {
@@ -86,15 +93,17 @@ public class GestioneCampagnaController extends HttpServlet {
       categoria.setIdCategoria(Integer.parseInt(request.getParameter("idCategoria")));
 
       c.setCategoria(new CategoriaServiceImpl().visualizzaCategoria(categoria));
+      System.out.println(c);
 
       if (new CampagnaServiceImpl().creazioneCampagna(c)) {
          response.sendRedirect(
                  getServletContext().getContextPath() + "/index.jsp");
          return;
       } else {
-         RequestDispatcher dispatcher =
-                 request.getRequestDispatcher("/WEB-INF/results/crea_campagna.jsp");
-         dispatcher.forward(request, response);
+         response.sendRedirect(
+                 getServletContext().getContextPath()
+                         + "/GestioneCampagnaController/creaCampagna");
+         return;
       }
    }
 }
