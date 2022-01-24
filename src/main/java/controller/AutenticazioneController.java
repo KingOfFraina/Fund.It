@@ -2,6 +2,7 @@ package controller;
 
 import model.beans.Utente;
 
+import model.services.AutenticazioneService;
 import model.services.AutenticazioneServiceImpl;
 
 import javax.servlet.RequestDispatcher;
@@ -90,7 +91,7 @@ public final class AutenticazioneController extends HttpServlet {
             utente.setEmail(request.getParameter("email"));
             utente.createPasswordHash(request.getParameter("password"));
 
-            AutenticazioneServiceImpl autenticazioneService =
+            AutenticazioneService autenticazioneService =
                     new AutenticazioneServiceImpl(request.getSession(true));
             utente = autenticazioneService.login(utente);
         }
@@ -132,7 +133,7 @@ public final class AutenticazioneController extends HttpServlet {
                 utente.setCf(request.getParameter("cf"));
                 utente.setFotoProfilo(request.getParameter("fotoProfilo"));
 
-                AutenticazioneServiceImpl autenticazioneService =
+                AutenticazioneService autenticazioneService =
                         new AutenticazioneServiceImpl(session);
 
                 if (autenticazioneService.registrazione(utente)) {
