@@ -1,6 +1,7 @@
 package model.services;
 
 import model.DAO.CampagnaDAO;
+import model.DAO.DAO;
 import model.beans.Campagna;
 
 import java.util.List;
@@ -35,6 +36,16 @@ public final class CampagnaServiceImpl implements CampagnaService {
    @Override
    public List<Campagna> visualizzaCampagne(final int size, final int offset) {
       return new CampagnaDAO().getBySizeOffset(size, offset);
+   }
+
+   /**
+    * @param idCampagna id della campagna da cercare
+    * @return istanza di Campagna avente come id idCampagna, null altrimenti
+    */
+   @Override
+   public Campagna trovaCampagna(int idCampagna) {
+      DAO<Campagna> dao = new CampagnaDAO();
+      return dao.getById(idCampagna);
    }
 
    @Override

@@ -8,6 +8,7 @@ import model.beans.StatoSegnalazione;
 import model.beans.Utente;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 public class SegnalazioniServiceImpl implements SegnalazioniService {
@@ -79,7 +80,7 @@ public class SegnalazioniServiceImpl implements SegnalazioniService {
         s.setSegnalato(campagna.getUtente());
         s.setSegnalatore(segnalatore);
         s.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
-        s.setDataOra(new Timestamp(System.currentTimeMillis()));
+        s.setDataOra(new Date());
         s.setDescrizione(descrizione);
         return dao.save(s);
     }
