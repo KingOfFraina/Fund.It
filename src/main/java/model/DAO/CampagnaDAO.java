@@ -135,7 +135,7 @@ public final class CampagnaDAO
      */
     @Override
     public boolean update(final Campagna entity) {
-        int ret = 0;
+        int ret;
         try (Connection connection = ConPool.getInstance().getConnection();
              PreparedStatement statement =
                      connection.prepareStatement("UPDATE campagna SET"

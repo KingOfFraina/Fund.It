@@ -27,4 +27,12 @@ public interface CategoriaService {
     * @return la lista delle categorie
     */
    List<Categoria> visualizzaCategorie();
+
+   /**
+    * La funzione permette la ricerca di una categoria.
+    *
+    * @param categoria Il bean che contiene le informazioni della categoria
+    * @return il bean della categoria se esiste
+    */
+   Categoria visualizzaCategoria(Categoria categoria);
 }

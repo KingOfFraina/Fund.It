@@ -21,7 +21,7 @@ public final class CategoriaDAO implements DAO<Categoria> {
                                  + "WHERE idCategoria = ?")) {
                stmt.setInt(1, id);
                ResultSet resultSet = stmt.executeQuery();
-               while (resultSet.next()) {
+               if (resultSet.next()) {
                   c = extract(resultSet, null);
 
                }

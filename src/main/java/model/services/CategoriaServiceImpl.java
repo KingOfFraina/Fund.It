@@ -20,4 +20,10 @@ public final class CategoriaServiceImpl implements CategoriaService {
    public List<Categoria> visualizzaCategorie() {
       return new CategoriaDAO().getAll();
    }
+
+   @Override
+   public Categoria visualizzaCategoria(final Categoria categoria) {
+      return new CategoriaDAO().getById(categoria.getIdCategoria());
+   }
+
 }
