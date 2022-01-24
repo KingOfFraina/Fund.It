@@ -55,6 +55,13 @@ public interface CampagnaService {
     List<Campagna> visualizzaCampagne(int size, int offset);
 
     /**
+     *
+     * @param idCampagna id della campagna da cercare
+     * @return istanza di Campagna avente come id idCampagna, null altrimenti
+     */
+    Campagna trovaCampagna(int idCampagna);
+
+    /**
      * Permette la cancellazione della campagna esistente.
      *
      * @param campagna il bean che contiene informazioni sulla campagna
