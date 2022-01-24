@@ -84,7 +84,7 @@ public class GestioneUtenteController extends HttpServlet {
     private void visualizzaDashboard(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
 
-        if(session.getAttribute("utente") == null || !session.getAttribute("utente").getClass().getSimpleName().equals((new Utente()).getClass().getSimpleName())){
+        if(session.getAttribute("utente") == null || !session.getAttribute("utente").getClass().getSimpleName().equals(Utente.class.getSimpleName())){
             response.sendRedirect(request.getServletContext().getContextPath() + "/AutenticazioneController/login");
             return;
         }
