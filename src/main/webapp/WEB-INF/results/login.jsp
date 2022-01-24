@@ -1,30 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
+    <%@include file="../components/head.jsp" %>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login-registrazione.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/general.css">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600&display=swap" rel="stylesheet">
-    <title>Fund.it</title>
-    <link rel="icon" href="${pageContext.request.contextPath}/img/piggy-bank-solid.png">
 </head>
 <body>
 
-<!--Nav-Logo-->
-<nav class="navbar-fund-it text-center">
-    <div>
-        <a href="${pageContext.request.contextPath}/index.jsp" class="logo-style"
-           style="text-decoration: none; color: #00AB98">Fund.it</a>
-    </div>
-</nav>
+<%@include file="../components/simple-navbar.jsp" %>
 
 <!--Definizione colonne-->
 <div class="container">
@@ -74,6 +56,8 @@
         </div>
     </div>
 </div>
+
+<%@include file="../components/footer.jsp" %>
 
 <script type="text/javascript" src=${pageContext.request.contextPath}/js/form-validation.js></script>
 <script type="text/javascript" src=${pageContext.request.contextPath}/js/registrazione.js></script>

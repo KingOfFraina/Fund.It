@@ -30,4 +30,13 @@
     transform-origin: bottom;
 }
 
-#visualizza:oncl
+.pulsante{
+    background-color: #00AB98;
+    border-color: #00AB98;
+}
+
+.pulsante:hover{
+    box-shadow: 2px 2px 1px 1px rgba(0,0,0,.2);
+    background-color: #00AB98;
+    border-color: #00AB98;
+}
