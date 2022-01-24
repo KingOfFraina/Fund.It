@@ -62,9 +62,17 @@
 </nav>
 
 <div id = "div-info" class = "container text-center my-5">
-    <h2>Bentornato Marco!</h2>
-    <img class = "propic" src="${pageContext.request.contextPath}/img/undraw_profile_pic_ic-5-t.svg" alt=""><br>
-    <button id = "visualizza" type="submit" class="btn btn-primary pulsante mt-4 mb-3" onclick="loadForm()">Visualizza informazioni profilo</button>
+    <div id = "informazioni">
+        <h2>Bentornato ${utente.nome}!</h2>
+        <img class = "propic" src="${pageContext.request.contextPath}/img/undraw_profile_pic_ic-5-t.svg" alt=""><br>
+        <button id = "visualizza" type="submit" class="btn btn-primary pulsante mt-4 mb-3" onclick="showModifica()">Visualizza informazioni profilo</button>
+    </div>
+
+
+    <div id = "informazioni-modifica" hidden>
+        <%@include file="dati_utente.jsp"%>
+    </div>
+
 </div>
 
 
@@ -225,5 +233,6 @@
 
 <script type="text/javascript" src=${pageContext.request.contextPath}/js/form-validation.js></script>
 <script type="text/javascript" src=${pageContext.request.contextPath}/js/registrazione.js></script>
+<script type="text/javascript" src=${pageContext.request.contextPath}/js/profilo_utente.js></script>
 
 </html>

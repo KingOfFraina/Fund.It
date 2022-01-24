@@ -18,7 +18,6 @@ Array.prototype.slice.call(forms).forEach(function (form) {
         form.classList.add("was-validated");
         event.stopPropagation();
     }, false);
-
 });
 
 var checkPasswords = function () {
