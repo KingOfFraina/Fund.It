@@ -35,6 +35,7 @@ public final class AutenticazioneController extends HttpServlet {
             return;
         }
 
+        Utente userSession = (Utente) session.getAttribute("utente");
         switch (path) {
             case "/login":
                 resource = "/WEB-INF/results/login.jsp";
@@ -43,9 +44,12 @@ public final class AutenticazioneController extends HttpServlet {
                 resource = "/WEB-INF/results/registrazione.jsp";
                 break;
             case "/logout":
-                session.invalidate();
-                response.sendRedirect(getServletContext().getContextPath()
-                        + "/index.jsp");
+                AutenticazioneService service =
+                        new AutenticazioneServiceImpl(session);
+                if (service.logout(userSession)) {
+                    response.sendRedirect(getServletContext().getContextPath()
+                            + "/index.jsp");
+                }
                 return;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND,

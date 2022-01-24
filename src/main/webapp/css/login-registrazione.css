@@ -31,3 +31,8 @@
     background-color: #00AB98;
     border-color: #00AB98;
 }
+
+.pulsante:focus{
+    outline: 0;
+    background-color: #00AB98;
+}

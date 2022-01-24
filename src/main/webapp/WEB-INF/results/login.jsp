@@ -53,7 +53,6 @@
                     <div class="input-group mb-3">
 
                         <input name="password" type="password" class="form-control" id="exampleInputPassword1"
-                               placeholder="Recipient's username" aria-label="Recipient's username"
                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._])[A-Za-z\d@$!%*?&._]{8,32}$"
                                required>
                         <button style="background-color: #00AB98; color: white" class="btn btn-outline-secondary"
@@ -71,7 +70,7 @@
             </div>
         </div>
         <div class="col-6 mt-5">
-            <img src="${pageContext.request.contextPath}/img/undraw_login_re_4vu2.svg" alt="" style="width: 110%;">
+            <img class = "img-fluid" src="${pageContext.request.contextPath}/img/undraw_login_re_4vu2.svg" alt="" style="width: 110%;">
         </div>
     </div>
 </div>

@@ -31,7 +31,7 @@
     <div class="row">
         <div class="col-6">
             <div id="form-div" class="container my-5 div-login">
-                <div class="row" style="width: fit-content; margin-left: 550px">
+                <div class="row mb-3" style="width: fit-content; margin-left: 10px">
                     <button id="back" class="btn btn-primary mt-4 mb-3"
                             onclick="location.href = '${pageContext.request.contextPath}/AutenticazioneController/login'">
                         <i class="fas fa-arrow-left"></i></button>
@@ -193,7 +193,7 @@
             </div>
         </div>
         <div class="col-6 mt-5">
-            <img src="${pageContext.request.contextPath}/img/undraw_welcome_re_h3d9.svg" alt="" style="width: 110%;">
+            <img src="${pageContext.request.contextPath}/img/undraw_welcome_re_h3d9.svg" alt="" style="width: 110%; position: sticky; top:15px">
         </div>
     </div>
 </div>
