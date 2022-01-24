@@ -14,7 +14,8 @@ public interface DonazioniService {
 
     /**
      * @param u utente che ha effettuato le donazioni.
-     * @return lista delle donazioni effettuate da U se U non è admin, altrimenti lista completa delle donazioni.
+     * @return lista delle donazioni effettuate da U se U non è admin,
+     * altrimenti lista completa delle donazioni.
      */
     List<Donazione> visualizzaDonazioni(Utente u);
 
