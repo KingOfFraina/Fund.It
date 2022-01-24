@@ -47,11 +47,12 @@ public final class ConPool {
       return instance;
    }
 
-    /**
-     * Metodo per ottenere una connessione al database.
-     * @return Una Connection
-     * @throws SQLException Eccezione se qualcosa va storto
-     */
+   /**
+    * Metodo per ottenere una connessione al database.
+    *
+    * @return Una Connection
+    * @throws SQLException Eccezione se qualcosa va storto
+    */
    public Connection getConnection() throws SQLException {
       if (datasource == null) {
          PoolProperties p = new PoolProperties();
@@ -78,6 +79,11 @@ public final class ConPool {
     */
    public void closeDataSource() {
       if (datasource != null) {
+         try {
+            datasource.getConnection().close();
+         } catch (SQLException e) {
+            e.printStackTrace();
+         }
          datasource.close();
       }
    }

@@ -149,6 +149,7 @@ public final class CampagnaDAO
             statement.setDouble(++index, entity.getSommaRaccolta());
             statement.setDouble(++index, entity.getSommaTarget());
             statement.setInt(++index, entity.getCategoria().getIdCategoria());
+            statement.setInt(++index, entity.getIdCampagna());
 
             ret = statement.executeUpdate();
         } catch (SQLException e) {
