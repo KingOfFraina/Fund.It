@@ -32,7 +32,7 @@ public class UtenteServiceImpl implements UtenteService {
      */
     @Override
     public List<Utente> visualizzaUtenti(final Utente richiedente) {
-        if (richiedente.getIdUtente() < 0) {
+        if (richiedente.getIdUtente() < 0 || !richiedente.isAdmin()) {
             return null;
         }
 
