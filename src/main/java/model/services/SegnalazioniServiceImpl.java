@@ -7,7 +7,6 @@ import model.beans.Segnalazione;
 import model.beans.StatoSegnalazione;
 import model.beans.Utente;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
