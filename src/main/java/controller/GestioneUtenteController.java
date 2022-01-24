@@ -90,7 +90,7 @@ public class GestioneUtenteController extends HttpServlet {
         }
 
         UtenteService uts = new UtenteServiceImpl();
-        Utente ut = uts.visualizzaDashboardUtente(((Utente) request.getAttribute("utente")).getIdUtente());
+        Utente ut = uts.visualizzaDashboardUtente(((Utente) session.getAttribute("utente")).getIdUtente());
 
         UtenteInterface ui = new UtenteProxy(ut);
         ut.setDonazioni(ui.getDonazioni());
@@ -99,7 +99,7 @@ public class GestioneUtenteController extends HttpServlet {
         request.setAttribute("utente", ut);
 
         RequestDispatcher dispatcher =
-                request.getRequestDispatcher("/WEB-INF/results/profilo_utente.jsp");
+                request.getRequestDispatcher("/WEB-INF/results/dati_utente.jsp");
         dispatcher.forward(request, response);
         return;
     }
