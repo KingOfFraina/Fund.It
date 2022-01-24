@@ -39,7 +39,7 @@
                     <a class="nav-link active text-black navbar-text" aria-current="page" href="#">Chi Siamo</a>
                 </li>
                 <li class="nav-item mx-4">
-                    <a class="nav-link active text-black navbar-text" href="#">Profilo</a>
+                    <a class="nav-link active text-black navbar-text" href="${pageContext.request.contextPath}/Servlet">Profilo</a>
                 </li>
                 <li class="nav-item mx-4">
                     <a class="nav-link active text-black navbar-text" href="#">In Evidenza</a>

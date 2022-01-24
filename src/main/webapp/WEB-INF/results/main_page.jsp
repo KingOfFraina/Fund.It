@@ -201,7 +201,7 @@
 
 
 <!-- Footer -->
-<footer class="text-center text-lg-start bg-dark text-muted" style="margin-top: 0px;">
+<footer class="text-center text-lg-start bg-dark text-muted footer-fundit">
     <!-- Section: Social media -->
     <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
         <!-- Left -->

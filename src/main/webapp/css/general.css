@@ -35,3 +35,8 @@ body{
 .login-logout-font:hover{
     font-size: 24px;
 }
+
+.footer-fundit{
+    padding-top: 5px;
+    margin-top: 300px;
+}
