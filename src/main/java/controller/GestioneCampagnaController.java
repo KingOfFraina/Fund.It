@@ -8,18 +8,25 @@ import model.services.CampagnaServiceImpl;
 import model.services.CategoriaServiceImpl;
 import model.storage.ConPool;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.annotation.*;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet(name = "GestioneCampagnaController", value = "/GestioneCampagnaController/*")
-public class GestioneCampagnaController extends HttpServlet {
-   HttpSession session;
+@WebServlet(name = "GestioneCampagnaController",
+        value = "/GestioneCampagnaController/*")
+public final class GestioneCampagnaController extends HttpServlet {
 
    @Override
-   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   protected void doGet(final HttpServletRequest request,
+                        final HttpServletResponse response)
+           throws ServletException, IOException {
       String resource = "/";
+      HttpSession session;
 
       session = request.getSession(false);
 
@@ -31,11 +38,19 @@ public class GestioneCampagnaController extends HttpServlet {
       }
 
       switch (request.getPathInfo()) {
-         case "/creaCampagna": {
-            request.setAttribute("categorie", new CategoriaServiceImpl().visualizzaCategorie());
+         case "/creaCampagna":
+         case "/modificaCampagna":
+            String idCampagna = request.getParameter("idCampagna");
+
+            if (idCampagna != null) {
+               request.setAttribute("campagna", new CampagnaServiceImpl()
+                       .trovaCampagna(Integer.parseInt(idCampagna)));
+            }
+
+            request.setAttribute("categorie",
+                    new CategoriaServiceImpl().visualizzaCategorie());
             resource = "/WEB-INF/results/form_campagna.jsp";
             break;
-         }
 
          default:
             response.sendError(
@@ -50,7 +65,11 @@ public class GestioneCampagnaController extends HttpServlet {
    }
 
    @Override
-   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   protected void doPost(final HttpServletRequest request,
+                         final HttpServletResponse response)
+           throws ServletException, IOException {
+
+      HttpSession session = request.getSession(false);
 
       if (session == null && session.getAttribute("utente") == null) {
          response.sendRedirect(
@@ -63,6 +82,16 @@ public class GestioneCampagnaController extends HttpServlet {
       switch (request.getPathInfo()) {
          case "/creaCampagna":
             creaCampagna(request, response);
+            break;
+
+         case "/modificaCampagna":
+            String idCampagna = request.getParameter("idCampagna");
+
+            if (idCampagna != null) {
+               modificaCampagna(request, response, new CampagnaServiceImpl()
+                       .trovaCampagna(Integer.parseInt(idCampagna)));
+            }
+
             break;
 
          default:
@@ -79,31 +108,64 @@ public class GestioneCampagnaController extends HttpServlet {
       super.destroy();
    }
 
-   private void creaCampagna(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+   private void creaCampagna(final HttpServletRequest req,
+                             final HttpServletResponse res)
+           throws IOException {
 
+      Campagna c = extractCampagna(req);
+      c.setSommaRaccolta(0d);
+
+      if (new CampagnaServiceImpl().creazioneCampagna(c)) {
+         res.sendRedirect(
+                 getServletContext().getContextPath() + "/index.jsp");
+         return;
+      } else {
+         res.sendRedirect(
+                 getServletContext().getContextPath()
+                         + "/GestioneCampagnaController/creaCampagna");
+         return;
+      }
+   }
+
+   private Campagna extractCampagna(final HttpServletRequest request) {
       Campagna c = new Campagna();
+
       c.setStato(StatoCampagna.ATTIVA);
       c.setTitolo(request.getParameter("titolo"));
       c.setDescrizione(request.getParameter("descrizione"));
-      c.setSommaRaccolta(0d);
+
       c.setSommaTarget(Double.parseDouble(request.getParameter("sommaTarget")));
       c.setUtente((Utente) request.getSession(false).getAttribute("utente"));
 
       Categoria categoria = new Categoria();
-      categoria.setIdCategoria(Integer.parseInt(request.getParameter("idCategoria")));
+      categoria.setIdCategoria(Integer.parseInt(
+              request.getParameter("idCategoria")));
 
       c.setCategoria(new CategoriaServiceImpl().visualizzaCategoria(categoria));
-      System.out.println(c);
 
-      if (new CampagnaServiceImpl().creazioneCampagna(c)) {
-         response.sendRedirect(
-                 getServletContext().getContextPath() + "/index.jsp");
-         return;
-      } else {
-         response.sendRedirect(
-                 getServletContext().getContextPath()
-                         + "/GestioneCampagnaController/creaCampagna");
-         return;
+      return c;
+   }
+
+   private void modificaCampagna(final HttpServletRequest request,
+                                 final HttpServletResponse response,
+                                 final Campagna campagna)
+           throws IOException, ServletException {
+
+      Campagna c = extractCampagna(request);
+
+      if (c != null) {
+         c.setIdCampagna(campagna.getIdCampagna());
+         c.setSommaRaccolta(campagna.getSommaRaccolta());
+
+         if (new CampagnaServiceImpl().modificaCampagna(c)) {
+            response.sendRedirect(
+                    getServletContext().getContextPath() + "/index.jsp");
+            return;
+         } else {
+            request.getRequestDispatcher("/GestioneCampagnaController"
+                    + "/modificaCampagna").forward(request, response);
+            return;
+         }
       }
    }
 }
