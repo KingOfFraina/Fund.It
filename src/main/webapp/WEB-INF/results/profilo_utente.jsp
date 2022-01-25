@@ -17,28 +17,22 @@
             Visualizza informazioni profilo
         </button>
     </div>
-    <div id="informazioni-modifica" hidden>
+    <div id="informazioni-modifica" style="display: none">
         <%@include file="../components/dati_utente.jsp" %>
     </div>
 
 </div>
-<div class="row mt-5 text-center">
-    <div class="col div-option">
-        <a href="#"><img class="profile-option" style="width: 50%"
-                         src="${pageContext.request.contextPath}/img/undraw_transfer_money_rywa.svg" alt=""></a>
+
+<div class = "img-table">
+    <div id="div-select-images">
+        <%@include file="../components/user-option.jsp" %>
     </div>
-    <div class="col div-option">
-        <a href="#"><img class="profile-option" style="width: 45%;"
-                         src="${pageContext.request.contextPath}/img/undraw_personalization_re_grty.svg" alt=""></a>
+
+    <div id = "div-donation-table" style="display: none">
+        <%@include file="../components/table_user_donations.jsp" %>
     </div>
-</div>
-<div class="row mt-3 mb-5 text-center">
-    <div class="col">
-        <h3>Le mie donazioni</h3>
-    </div>
-    <div class="col">
-        <h3>Le mie campagne</h3>
-    </div>
+
+
 </div>
 
 <%@include file="../components/footer.jsp" %>

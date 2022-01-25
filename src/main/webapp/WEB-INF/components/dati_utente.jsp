@@ -2,16 +2,17 @@
 
 <c:choose>
     <c:when test="${sessionScope.utente != null}">
-        <div class="row mb-3" style="width: fit-content; margin-left: 10px; background-color: #00AB98; border-color: #00AB98">
+        <div class="row mb-3" style="width: fit-content; margin-left: 10px;">
             <button id="backII" class="btn btn-primary mt-4 mb-3 pulsante"
-                    onclick="location.href = '${pageContext.request.contextPath}/Servlet'">
+                    onclick="hideModifica()">
                 <i class="fas fa-arrow-left"></i></button>
         </div>
     </c:when>
     <c:otherwise>
         <div class="row mb-3" style="width: fit-content; margin-left: 10px">
             <button id="back" class="btn btn-primary mt-4 mb-3"
-                    onclick="location.href = '${pageContext.request.contextPath}/AutenticazioneController/login'">
+                    onclick="location.href = '${pageContext.request.contextPath}/AutenticazioneController/login'"
+                    style="background-color: #00AB98; border-color: #00AB98">
                 <i class="fas fa-arrow-left"></i></button>
         </div>
     </c:otherwise>
@@ -142,7 +143,7 @@
         <div class="col">
             <label for="inputCAP" class="form-label">CAP</label>
             <input name="cap" type="text" class="form-control" id="inputCAP" placeholder="00100"
-                   pattern="^[0-9]{5}$" value= "${utente.cap}" required>
+                   pattern="^[0-9]{5}$" value="${utente.cap}" required>
             <div class=invalid-feedback>
                 Formato CAP non corretto
             </div>
@@ -169,14 +170,16 @@
         </div>
     </div>
 
-   <c:choose>
+    <c:choose>
         <c:when test="${sessionScope.utente != null}">
             <button type="submit" class="btn btn-primary pulsante mt-4 mb-3"
-                    style="background-color: #00AB98; border-color: #00AB98;">Modifica</button>
+                    style="background-color: #00AB98; border-color: #00AB98;">Modifica
+            </button>
         </c:when>
         <c:otherwise>
             <button type="submit" class="btn btn-primary pulsante mt-4 mb-3"
-                    style="background-color: #00AB98; border-color: #00AB98;">Registrati</button>
+                    style="background-color: #00AB98; border-color: #00AB98;">Registrati
+            </button>
         </c:otherwise>
     </c:choose>
 
