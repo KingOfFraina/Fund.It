@@ -18,6 +18,7 @@ import java.io.IOException;
         value = "/GestioneCategorieController/*")
 public final class GestioneCategorieController extends HttpServlet {
 
+    @Override
     protected void doGet(final HttpServletRequest request,
                          final HttpServletResponse response)
             throws ServletException, IOException {
@@ -33,6 +34,7 @@ public final class GestioneCategorieController extends HttpServlet {
                 break;
             case "/visualizzaCategorie":
                 resource = "/WEB-INF/results/"; //todo path
+                visualizzaCategorie(request, response);
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND,
@@ -58,9 +60,6 @@ public final class GestioneCategorieController extends HttpServlet {
             case "/modificaCategoria":
                  modificaCategoria(request, response);
                 break;
-            case "/visualizzaCategorie":
-                 visualizzaCategorie(request, response);
-                break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND,
                         "Risorsa non trovata");
@@ -73,7 +72,6 @@ public final class GestioneCategorieController extends HttpServlet {
                                      final HttpServletResponse response) {
         CategoriaService cs = new CategoriaServiceImpl();
         request.setAttribute("categorieList", cs.visualizzaCategorie());
-        //todo forward
     }
 
     private void modificaCategoria(final HttpServletRequest request,
