@@ -53,6 +53,7 @@ public final class GestioneUtenteController extends HttpServlet {
         RequestDispatcher dispatcher =
                 request.getRequestDispatcher(resource);
         dispatcher.forward(request, response);
+        return;
     }
 
     @Override
@@ -82,7 +83,7 @@ public final class GestioneUtenteController extends HttpServlet {
                         "Risorsa non trovata");
                 return;
         }
-
+        return;
     }
 
     private void sospensioneUtente(final HttpServletRequest request,
