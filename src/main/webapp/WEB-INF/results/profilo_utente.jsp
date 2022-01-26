@@ -25,7 +25,7 @@
     </div>
 
     <form id="form" class="needs-validation" novalidate method="post"
-          action="">
+          action="${pageContext.request.contextPath}/GestioneUtenteController/modificaProfilo">
 
         <div id="informazioni-modifica" style="display: none">
             <%@include file="../components/dati_utente.jsp" %>

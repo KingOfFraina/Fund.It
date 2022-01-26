@@ -49,7 +49,7 @@ public final class UtenteDAO implements DAO<Utente> {
            PreparedStatement statement =
                    connection.prepareStatement("SELECT *"
                            + "FROM utente WHERE email = ? "
-                           + "AND password = ?")) {
+                           + "AND passwordhash = ?")) {
 
          statement.setString(1, utente.getEmail());
          statement.setString(2, utente.getPassword());
@@ -98,7 +98,7 @@ public final class UtenteDAO implements DAO<Utente> {
             if (connection != null) {
                String query =
                        "UPDATE utente SET dataBan = ?,admin = ?,fotoProfilo = ?"
-                               + ", password = ?, telefono = ?, nome = ?, "
+                               + ", passwordhash = ?, telefono = ?, nome = ?, "
                                + "cognome = ?, email = ?, strada = ?, città = ?"
                                + ", cap = ?, cf = ?, dataDiNascita = ?"
                                + "WHERE idUtente = ?";
@@ -109,6 +109,7 @@ public final class UtenteDAO implements DAO<Utente> {
                   int index = fillPreparedStatement(preparedStatement,
                           entity);
                   preparedStatement.setInt(index, entity.getIdUtente());
+                  System.out.println("we"); //todo debug
 
                   return preparedStatement.executeUpdate() > 0;
                }
@@ -128,7 +129,7 @@ public final class UtenteDAO implements DAO<Utente> {
             if (connection != null) {
                String query =
                        "INSERT INTO utente (dataBan, admin, fotoProfilo, "
-                               + "password, telefono, nome, cognome, email,"
+                               + "passwordhash, telefono, nome, cognome, email,"
                                + " strada, città, cap, cf, dataDiNascita) "
                                + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
@@ -198,7 +199,7 @@ public final class UtenteDAO implements DAO<Utente> {
          utente.setFotoProfilo(resultSet.getString(tableAlias + "fotoProfilo"));
          utente.setIdUtente(resultSet.getInt(tableAlias + "idUtente"));
          utente.setNome(resultSet.getString(tableAlias + "nome"));
-         utente.setPassword(resultSet.getString(tableAlias + "password"));
+         utente.setPassword(resultSet.getString(tableAlias + "passwordhash"));
          utente.setStrada(resultSet.getString(tableAlias + "strada"));
          utente.setTelefono(resultSet.getString(tableAlias + "telefono"));
          utente.setCampagne(null);

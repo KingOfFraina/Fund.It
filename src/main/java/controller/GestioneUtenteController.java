@@ -86,7 +86,7 @@ public final class GestioneUtenteController extends HttpServlet {
 
     private void modificaProfilo(final HttpServletRequest request,
                                 final HttpServletResponse response)
-            throws IOException {
+            throws IOException, ServletException {
         HttpSession session = request.getSession();
 
         if (session.getAttribute("utente") == null
@@ -122,15 +122,19 @@ public final class GestioneUtenteController extends HttpServlet {
                 Utente inSessione = (Utente) session.getAttribute("utente");
                 utente.setFotoProfilo(inSessione.getFotoProfilo());
             }
-
+            System.out.println("controlli ok"); //todo remove
         } else {
             response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
                     "Input errato");
             return;
         }
         UtenteService us = new UtenteServiceImpl();
-        us.modificaProfilo(utente);
 
+        System.out.println(us.modificaProfilo(utente)); //todo rimuovi sout
+
+        RequestDispatcher dispatcher =
+                request.getRequestDispatcher("/WEB-INF/results/profilo_utente.jsp");
+        dispatcher.forward(request, response);
     }
 
     private void sospensioneUtente(final HttpServletRequest request,
