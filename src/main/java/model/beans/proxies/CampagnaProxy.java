@@ -5,7 +5,12 @@ import model.DAO.DonazioneDAO;
 import model.DAO.ImmagineDAO;
 import model.DAO.SegnalazioneDAO;
 import model.DAO.UtenteDAO;
-import model.beans.*;
+
+import model.beans.Campagna;
+import model.beans.Donazione;
+import model.beans.Immagine;
+import model.beans.Segnalazione;
+import model.beans.Utente;
 import model.beans.proxyInterfaces.CampagnaInterface;
 
 import java.util.List;

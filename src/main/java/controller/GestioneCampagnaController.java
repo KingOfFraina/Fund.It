@@ -8,6 +8,7 @@ import model.beans.proxies.CampagnaProxy;
 import model.beans.proxyInterfaces.CampagnaInterface;
 import model.services.CampagnaService;
 import model.services.CampagnaServiceImpl;
+import model.services.CategoriaService;
 import model.services.CategoriaServiceImpl;
 import model.storage.ConPool;
 
@@ -30,6 +31,8 @@ public final class GestioneCampagnaController extends HttpServlet {
             throws ServletException, IOException {
         String resource = "/";
         HttpSession session;
+        CampagnaService service = new CampagnaServiceImpl();
+        CategoriaService categoriaService = new CategoriaServiceImpl();
 
         session = request.getSession(false);
 
@@ -46,17 +49,16 @@ public final class GestioneCampagnaController extends HttpServlet {
                 String idCampagna = request.getParameter("idCampagna");
 
                 if (idCampagna != null) {
-                    request.setAttribute("campagna", new CampagnaServiceImpl()
+                    request.setAttribute("campagna", service
                             .trovaCampagna(Integer.parseInt(idCampagna)));
                 }
 
                 request.setAttribute("categorie",
-                        new CategoriaServiceImpl().visualizzaCategorie());
+                        categoriaService.visualizzaCategorie());
                 resource = "/WEB-INF/results/form_campagna.jsp";
                 break;
             case "/campagna":
                 String id = request.getParameter("idCampagna");
-                CampagnaService service = new CampagnaServiceImpl();
                 Campagna c = service.trovaCampagna(Integer.parseInt(id));
                 CampagnaInterface proxy = new CampagnaProxy(c);
                 c.setUtente(proxy.getUtente());
@@ -81,6 +83,7 @@ public final class GestioneCampagnaController extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
+        CampagnaService service = new CampagnaServiceImpl();
 
         if (session == null && session.getAttribute("utente") == null) {
             response.sendRedirect(
@@ -99,17 +102,16 @@ public final class GestioneCampagnaController extends HttpServlet {
                 String idCampagna = request.getParameter("idCampagna");
 
                 if (idCampagna != null) {
-                    modificaCampagna(request, response, new CampagnaServiceImpl()
+                    modificaCampagna(request, response, service
                             .trovaCampagna(Integer.parseInt(idCampagna)));
                 }
 
                 break;
-
             default:
                 response.sendError(
                         HttpServletResponse.SC_NOT_FOUND,
                         "Risorsa non trovata");
-                return;
+                break;
         }
     }
 
@@ -129,12 +131,10 @@ public final class GestioneCampagnaController extends HttpServlet {
         if (new CampagnaServiceImpl().creazioneCampagna(c)) {
             res.sendRedirect(
                     getServletContext().getContextPath() + "/index.jsp");
-            return;
         } else {
             res.sendRedirect(
                     getServletContext().getContextPath()
                             + "/GestioneCampagnaController/creaCampagna");
-            return;
         }
     }
 
@@ -145,14 +145,16 @@ public final class GestioneCampagnaController extends HttpServlet {
         c.setTitolo(request.getParameter("titolo"));
         c.setDescrizione(request.getParameter("descrizione"));
 
-        c.setSommaTarget(Double.parseDouble(request.getParameter("sommaTarget")));
+        c.setSommaTarget(
+                Double.parseDouble(request.getParameter("sommaTarget")));
         c.setUtente((Utente) request.getSession(false).getAttribute("utente"));
 
         Categoria categoria = new Categoria();
         categoria.setIdCategoria(Integer.parseInt(
                 request.getParameter("idCategoria")));
 
-        c.setCategoria(new CategoriaServiceImpl().visualizzaCategoria(categoria));
+        c.setCategoria(
+                new CategoriaServiceImpl().visualizzaCategoria(categoria));
 
         return c;
     }
@@ -164,19 +166,15 @@ public final class GestioneCampagnaController extends HttpServlet {
 
         Campagna c = extractCampagna(request);
 
-        if (c != null) {
-            c.setIdCampagna(campagna.getIdCampagna());
-            c.setSommaRaccolta(campagna.getSommaRaccolta());
+        c.setIdCampagna(campagna.getIdCampagna());
+        c.setSommaRaccolta(campagna.getSommaRaccolta());
 
-            if (new CampagnaServiceImpl().modificaCampagna(c)) {
-                response.sendRedirect(
-                        getServletContext().getContextPath() + "/index.jsp");
-                return;
-            } else {
-                request.getRequestDispatcher("/GestioneCampagnaController"
-                        + "/modificaCampagna").forward(request, response);
-                return;
-            }
+        if (new CampagnaServiceImpl().modificaCampagna(c)) {
+            response.sendRedirect(
+                    getServletContext().getContextPath() + "/index.jsp");
+        } else {
+            request.getRequestDispatcher("/GestioneCampagnaController"
+                    + "/modificaCampagna").forward(request, response);
         }
     }
 }
