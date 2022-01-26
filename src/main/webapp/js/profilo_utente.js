@@ -4,6 +4,9 @@ function showModifica() {
 
     let y = document.getElementById("informazioni-modifica");
     y.style.display = "block";
+
+    let z = document.getElementById("backII");
+    z.style.display = "block";
 }
 
 function hideModifica() {
@@ -11,7 +14,10 @@ function hideModifica() {
     x.style.display = "none";
 
     var y = document.getElementById("informazioni");
-    y.style.display = "block"
+    y.style.display = "block";
+
+    let z = document.getElementById("backII");
+    z.style.display = "none";
 }
 
 function showDonationTable() {

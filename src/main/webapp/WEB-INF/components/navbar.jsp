@@ -8,7 +8,7 @@
 <nav class="navbar navbar-expand-lg navbar-light navbar-fund-it sticky-top">
 
     <div class="container-fluid">
-        <a class="navbar-brand logo logo-style" href="#" style="color: #00AB98;">Fund.it</a>
+        <a class="navbar-brand logo logo-style" href="${pageContext.request.contextPath}" style="color: #00AB98;">Fund.it</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -23,7 +23,7 @@
                     <c:choose>
                         <c:when test="${sessionScope.utente != null}">
                             <a class="nav-link active text-black navbar-text"
-                               href="${pageContext.request.contextPath}/Servlet">Profilo</a>
+                               href="${pageContext.request.contextPath}/GestioneUtenteController/visualizzaDashboard">Profilo</a>
                         </c:when>
 
                         <c:otherwise>

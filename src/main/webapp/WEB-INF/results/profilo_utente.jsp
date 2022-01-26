@@ -17,18 +17,35 @@
             Visualizza informazioni profilo
         </button>
     </div>
-    <div id="informazioni-modifica" style="display: none">
-        <%@include file="../components/dati_utente.jsp" %>
+
+    <div class="row mb-3" style="width: fit-content; margin-left: 10px;">
+        <button id="backII" class="btn btn-primary mt-4 mb-3 pulsante"
+                onclick="hideModifica()" style="display: none">
+            <i class="fas fa-arrow-left"></i></button>
     </div>
+
+    <form id="form" class="needs-validation" novalidate method="post"
+          action="">
+
+        <div id="informazioni-modifica" style="display: none">
+            <%@include file="../components/dati_utente.jsp" %>
+            <button type="submit" class="btn btn-primary pulsante mt-4 mb-3"
+                    style="background-color: #00AB98; border-color: #00AB98;">Modifica
+            </button>
+        </div>
+
+
+
+    </form>
 
 </div>
 
-<div class = "img-table">
+<div class="img-table">
     <div id="div-select-images">
         <%@include file="../components/user-option.jsp" %>
     </div>
 
-    <div id = "div-donation-table" style="display: none">
+    <div id="div-donation-table" style="display: none">
         <%@include file="../components/table_user_donations.jsp" %>
     </div>
 

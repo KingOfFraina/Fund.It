@@ -31,7 +31,7 @@ public final class GestioneUtenteController extends HttpServlet {
 
         switch (path) {
             case "/visualizzaDashboard":
-                resource = "/WEB-INF/results/"; //todo path
+                resource = "/WEB-INF/results/profilo_utente.jsp";
                 break;
             case "/modificaProfilo":
                 resource = "/WEB-INF/results/"; //todo path
@@ -146,9 +146,11 @@ public final class GestioneUtenteController extends HttpServlet {
                                                     rispettivi controller da parte della jsp*/
         request.setAttribute("utente", ut);
 
+        System.out.println(ut);
+
         RequestDispatcher dispatcher =
                 request.getRequestDispatcher(
-                        "/WEB-INF/results/dati_utente.jsp");
+                        "WEB-INF/results/profilo_utente.jsp");
         dispatcher.forward(request, response);
         return;
     }
