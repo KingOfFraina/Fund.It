@@ -71,6 +71,7 @@ public final class GestioneCategorieController extends HttpServlet {
     private void visualizzaCategorie(final HttpServletRequest request,
                                      final HttpServletResponse response) {
         CategoriaService cs = new CategoriaServiceImpl();
+
         request.setAttribute("categorieList", cs.visualizzaCategorie());
     }
 

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.Date;
 
 
 @WebServlet(name = "GestioneUtenteController",
@@ -32,9 +33,6 @@ public final class GestioneUtenteController extends HttpServlet {
         switch (path) {
             case "/visualizzaDashboard":
                 resource = "/WEB-INF/results/profilo_utente.jsp";
-                break;
-            case "/modificaProfilo":
-                resource = "/WEB-INF/results/"; //todo path
                 break;
             case "/visualizzaUtenti":
                 resource = "/WEB-INF/results/"; //todo path
@@ -67,7 +65,7 @@ public final class GestioneUtenteController extends HttpServlet {
                 visualizzaDashboard(request, response);
                 break;
             case "/modificaProfilo":
-                //todo meth
+                modificaProfilo(request, response);
                 break;
             case "/visualizzaUtenti":
                 visualizzaUtenti(request, response);
@@ -84,6 +82,55 @@ public final class GestioneUtenteController extends HttpServlet {
                 return;
         }
         return;
+    }
+
+    private void modificaProfilo(final HttpServletRequest request,
+                                final HttpServletResponse response)
+            throws IOException {
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("utente") == null
+                || !session.getAttribute("utente").getClass().getSimpleName().
+                equals(Utente.class.getSimpleName())) {
+            response.sendRedirect(request.getServletContext().getContextPath()
+                    + "/AutenticazioneController/login");
+            return;
+        }
+        Utente utente = new Utente();
+
+        if (request.getParameter("password").equals(
+                request.getParameter("confermaPassword"))
+                && request.getParameter("email").equals(
+                request.getParameter("confermaEmail"))) {
+            utente.createPasswordHash(request.getParameter("password"));
+            utente.setEmail(request.getParameter("email"));
+            utente.setNome(request.getParameter("nome"));
+            utente.setCognome(request.getParameter("cognome"));
+            utente.setDataDiNascita(
+                    Date.valueOf(request.getParameter("dataDiNascita")));
+            utente.setTelefono(request.getParameter("telefono"));
+            utente.setStrada(request.getParameter("indirizzo"));
+            utente.setCitta(request.getParameter("citta"));
+            utente.setCap(request.getParameter("cap"));
+            utente.setCf(request.getParameter("cf"));
+            String photo = request.getParameter("fotoProfilo");
+
+            if (photo != null
+                    && !photo.isBlank()) {
+                utente.setFotoProfilo(photo);
+            } else {
+                Utente inSessione = (Utente) session.getAttribute("utente");
+                utente.setFotoProfilo(inSessione.getFotoProfilo());
+            }
+
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
+                    "Input errato");
+            return;
+        }
+        UtenteService us = new UtenteServiceImpl();
+        us.modificaProfilo(utente);
+
     }
 
     private void sospensioneUtente(final HttpServletRequest request,
@@ -139,11 +186,6 @@ public final class GestioneUtenteController extends HttpServlet {
         Utente ut = uts.visualizzaDashboardUtente(
                 ((Utente) session.getAttribute("utente")).getIdUtente());
 
-        /*UtenteInterface ui = new UtenteProxy(ut);
-        ut.setDonazioni(ui.getDonazioni());
-        ut.setCampagne(ui.getCampagne());
-        ut.setSegnalazioni(ui.getSegnalazioni()); todo elimina, chiamata a
-                                                    rispettivi controller da parte della jsp*/
         request.setAttribute("utente", ut);
 
         System.out.println(ut);
