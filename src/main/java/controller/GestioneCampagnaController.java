@@ -36,12 +36,12 @@ public final class GestioneCampagnaController extends HttpServlet {
 
         session = request.getSession(false);
 
-        /*if (session == null || session.getAttribute("utente") == null) {
+        if (session == null || session.getAttribute("utente") == null) {
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/AutenticazioneController/login");
             return;
-        }*/
+        }
 
         switch (request.getPathInfo()) {
             case "/creaCampagna":

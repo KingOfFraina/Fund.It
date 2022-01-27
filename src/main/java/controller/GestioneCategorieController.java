@@ -68,6 +68,14 @@ public final class GestioneCategorieController extends HttpServlet {
         return;
     }
 
+    @Override
+    public void init() throws ServletException {
+        CategoriaService cs = new CategoriaServiceImpl();
+
+        this.getServletContext().setAttribute("categorieList", cs.visualizzaCategorie());
+        super.init();
+    }
+
     private void visualizzaCategorie(final HttpServletRequest request,
                                      final HttpServletResponse response) {
         CategoriaService cs = new CategoriaServiceImpl();
