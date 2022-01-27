@@ -1,8 +1,11 @@
 package model.beans.proxies;
 
 
-import model.DAO.*;
-
+import model.DAO.DAO;
+import model.DAO.DonazioneDAO;
+import model.DAO.ImmagineDAO;
+import model.DAO.SegnalazioneDAO;
+import model.DAO.UtenteDAO;
 import model.beans.Campagna;
 import model.beans.Donazione;
 import model.beans.Immagine;
@@ -52,7 +55,11 @@ public final class CampagnaProxy implements CampagnaInterface {
                     donazioneDAO.getByIdCampagna(campagna.getIdCampagna());
 
             donazioneList.forEach(d -> d.setCampagna(campagna));
-
+            double somma = donazioneList.stream().
+                    mapToDouble(Donazione::getSommaDonata).
+                    sum();
+            System.out.println(somma);
+            campagna.setSommaRaccolta(somma);
             campagna.setDonazioni(donazioneList);
         }
 
