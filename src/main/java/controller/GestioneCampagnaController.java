@@ -36,12 +36,12 @@ public final class GestioneCampagnaController extends HttpServlet {
 
         session = request.getSession(false);
 
-        if (session == null || session.getAttribute("utente") == null) {
+        /*if (session == null || session.getAttribute("utente") == null) {
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/AutenticazioneController/login");
             return;
-        }
+        }*/
 
         switch (request.getPathInfo()) {
             case "/creaCampagna":
@@ -62,6 +62,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                 Campagna c = service.trovaCampagna(Integer.parseInt(id));
                 CampagnaInterface proxy = new CampagnaProxy(c);
                 c.setUtente(proxy.getUtente());
+                c.setDonazioni(proxy.getDonazioni());
                 resource = "/WEB-INF/results/campagna.jsp";
                 request.setAttribute("campagna", c);
                 break;

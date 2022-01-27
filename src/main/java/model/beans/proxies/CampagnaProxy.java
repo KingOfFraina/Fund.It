@@ -1,10 +1,7 @@
 package model.beans.proxies;
 
 
-import model.DAO.DonazioneDAO;
-import model.DAO.ImmagineDAO;
-import model.DAO.SegnalazioneDAO;
-import model.DAO.UtenteDAO;
+import model.DAO.*;
 
 import model.beans.Campagna;
 import model.beans.Donazione;
@@ -69,7 +66,7 @@ public final class CampagnaProxy implements CampagnaInterface {
     public Utente getUtente() {
         Utente u = campagna.getUtente();
         if (u.getCf() == null) {
-            UtenteDAO dao = new UtenteDAO();
+            DAO<Utente> dao = new UtenteDAO();
             u = dao.getById(u.getIdUtente());
             campagna.setUtente(u);
         }
