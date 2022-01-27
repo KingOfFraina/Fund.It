@@ -55,17 +55,17 @@ public final class GestioneCategorieController extends HttpServlet {
 
         switch (path) {
             case "/inserisciCategoria":
-                 inserisciCategoria(request, response);
+                inserisciCategoria(request, response);
                 break;
             case "/modificaCategoria":
-                 modificaCategoria(request, response);
+                modificaCategoria(request, response);
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND,
                         "Risorsa non trovata");
-                return;
+                break;
         }
-        return;
+
     }
 
     @Override
