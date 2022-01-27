@@ -102,6 +102,7 @@ public final class GestioneUtenteController extends HttpServlet {
                 request.getParameter("confermaPassword"))
                 && request.getParameter("email").equals(
                 request.getParameter("confermaEmail"))) {
+            utente.setIdUtente(((Utente) session.getAttribute("utente")).getIdUtente());
             utente.createPasswordHash(request.getParameter("password"));
             utente.setEmail(request.getParameter("email"));
             utente.setNome(request.getParameter("nome"));
@@ -122,7 +123,6 @@ public final class GestioneUtenteController extends HttpServlet {
                 Utente inSessione = (Utente) session.getAttribute("utente");
                 utente.setFotoProfilo(inSessione.getFotoProfilo());
             }
-            System.out.println("controlli ok"); //todo remove
         } else {
             response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
                     "Input errato");
@@ -130,8 +130,8 @@ public final class GestioneUtenteController extends HttpServlet {
         }
         UtenteService us = new UtenteServiceImpl();
 
-        System.out.println(us.modificaProfilo(utente)); //todo rimuovi sout
-
+        us.modificaProfilo(utente);
+        session.setAttribute("utente", utente);
         RequestDispatcher dispatcher =
                 request.getRequestDispatcher("/WEB-INF/results/profilo_utente.jsp");
         dispatcher.forward(request, response);

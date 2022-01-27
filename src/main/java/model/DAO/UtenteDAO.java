@@ -109,7 +109,6 @@ public final class UtenteDAO implements DAO<Utente> {
                   int index = fillPreparedStatement(preparedStatement,
                           entity);
                   preparedStatement.setInt(index, entity.getIdUtente());
-                  System.out.println("we"); //todo debug
 
                   return preparedStatement.executeUpdate() > 0;
                }
