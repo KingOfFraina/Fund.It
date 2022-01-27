@@ -1,16 +1,21 @@
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <%@include file="../components/head.jsp" %>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/campagna.css">
 </head>
-<body>
-<!--Navbar-->
-<%@include file="../components/navbar.jsp" %>
+<body onload="percentage(${campagna.sommaTarget}, ${campagna.sommaRaccolta})">
 
-<!--Titolo-->
-<div class="container my-5">
-    <h1 class="text-black text-center"> Aiutaci a finanziare la nostra start-up</h1>
+<div>
+
+    <!--Navbar-->
+    <%@include file="../components/navbar.jsp" %>
+
+    <!--Titolo-->
+    <div class="container my-5">
+        <h1 class="text-black text-center"> ${campagna.titolo}</h1>
+    </div>
 </div>
 
 <!--Definizione colonne-->
@@ -43,22 +48,10 @@
 
             <!--Descrizione-->
             <div class="container div-campagna-info2">
-                <h4>Creata il 20/01/2022</h4>
+                <h4>Descrizione</h4>
                 <hr class="solid text-black">
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla congue neque quis lobortis hendrerit.
-                    Integer non blandit nulla, in molestie sem. Praesent luctus mollis maximus. Suspendisse eu est enim.
-                    Ut et massa et libero condimentum posuere. Quisque quis nunc quis lorem sollicitudin porttitor.
-                    Aenean hendrerit, lectus ullamcorper mattis vehicula, ligula enim blandit lorem, ut maximus eros
-                    ipsum id nisi. In tristique libero ex, a eleifend sem sodales sit amet. Maecenas viverra leo sed
-                    viverra tempor. Mauris faucibus placerat ante non viverra. Sed vulputate ut ligula id faucibus.
-
-                    Sed eu accumsan nunc. Duis posuere massa eu ipsum faucibus, at gravida lacus sodales. Praesent id
-                    diam ornare, dignissim quam id, malesuada nibh. Donec faucibus massa est, vehicula fermentum ipsum
-                    posuere et. In hac habitasse platea dictumst. Nam diam enim, rutrum pharetra justo ut, rhoncus
-                    dignissim lectus. Vivamus pretium, odio a malesuada mattis, quam leo convallis metus, eget placerat
-                    nibh tortor ut mauris. Suspendisse quis imperdiet nisl, vitae maximus eros. Praesent rhoncus
-                    interdum volutpat.
+                   ${campagna.descrizione}
                 </p>
 
             </div>
@@ -70,9 +63,9 @@
                 <hr class="solid text-black">
                 <a class="text-black" style="text-decoration: none; font-size: 23px"><i class="fas fa-user-alt"
                                                                                         style="font-size: 23px; color: #00AB98"></i>
-                    Mario Rossi</a><br>
+                    ${campagna.utente.nome} ${campagna.utente.cognome}</a><br>
                 <a class="text-black" style="text-decoration: none; font-size: 19px"> Organizzatore</a><br>
-                <a class="text-black" style="text-decoration: none; font-size: 19px"> Milano, Italia</a>
+                <a class="text-black" style="text-decoration: none; font-size: 19px"> ${campagna.utente.citta}, Italia</a>
             </div>
 
             <!--Commenti-->
@@ -109,21 +102,22 @@
             </div>
         </div>
 
-        <div class="col-4 div-campagna-info">
-            <a class="text-center goal">13.456 raccolti su 20.000</a>
+
+
+        <div class="col-4 div-campagna-info" style="top:15px">
+            <a class="text-center goal"><fmt:formatNumber type="number" maxFractionDigits="2" value="${campagna.sommaRaccolta}"/>&euro; raccolti su <fmt:formatNumber type="number" maxFractionDigits="2" value="${campagna.sommaTarget}"/>&euro;</a>
 
             <div class="progress" style="border-color: black; border-style: solid; border-width: 1px">
-                <div class="progress-bar" role="progressbar" style="width: 67%; background-color: #00AB98"
+                <div id = "progressbar" class="progress-bar" role="progressbar" style=" background-color: #00AB98"
                      aria-valuenow="67" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
 
             <div class="d-grid gap-2 my-3">
-                <button class="btn btn-primary pulsante" type="button">Condividi</button>
-                <button class="btn btn-primary pulsante" type="button">Fai una Donazione</button>
+                <button class="btn btn-primary pulsante" type="button" style=" background-color: #00AB98; border-color: #00AB98">Condividi</button>
+                <button class="btn btn-primary pulsante" type="button" style=" background-color: #00AB98; border-color: #00AB98">Fai una Donazione</button>
             </div>
 
-            <a style="font-size: 20px"><i class="fas fa-chart-line"></i> 10 persone hanno fatto una donazione a questa
-                campagna</a><br>
+            <a id = "donation-count" style="font-size: 20px")><i class="fas fa-chart-line"></i> ${fn:length(campagna.donazioni)} persone hanno donato a questa campagna</a><br>
 
             <div class="container my-4">
                 <hr class="solid text-black">
@@ -140,8 +134,8 @@
 
             <!--Visualizza donazioni-->
             <div class="d-grid gap-2 d-md-block text-center my-5">
-                <button class="btn btn-primary pulsante" type="button">Mostra tutto</button>
-                <button class="btn btn-primary pulsante" type="button">Vedi le Migliori <i class="far fa-star"></i>
+                <button class="btn btn-primary pulsante" type="button" style=" background-color: #00AB98; border-color: #00AB98">Mostra tutto</button>
+                <button class="btn btn-primary pulsante" type="button" style=" background-color: #00AB98; border-color: #00AB98">Vedi le Migliori <i class="far fa-star"></i>
                 </button>
             </div>
 
@@ -155,6 +149,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
+
+<script type="text/javascript" src=${pageContext.request.contextPath}/js/campagna.js></script>
 
 </body>
 

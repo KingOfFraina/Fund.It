@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(name = "GestioneCategorieController",
-        value = "/GestioneCategorieController/*")
+        value = "/GestioneCategorieController/*", loadOnStartup = 0)
 public final class GestioneCategorieController extends HttpServlet {
 
     @Override
@@ -73,7 +73,7 @@ public final class GestioneCategorieController extends HttpServlet {
         CategoriaService cs = new CategoriaServiceImpl();
 
         this.getServletContext().setAttribute("categorieList", cs.visualizzaCategorie());
-        super.init();
+
     }
 
     private void visualizzaCategorie(final HttpServletRequest request,

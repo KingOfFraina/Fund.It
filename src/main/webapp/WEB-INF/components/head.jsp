@@ -12,3 +12,5 @@
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600&display=swap" rel="stylesheet">
 <title>Fund.it</title>
 <link rel="icon" href="${pageContext.request.contextPath}/img/piggy-bank-solid.png">
+
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>

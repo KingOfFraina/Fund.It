@@ -77,7 +77,7 @@ public final class CampagnaProxy implements CampagnaInterface {
             campagna.setUtente(u);
         }
         return campagna.getUtente();
-    }
+}
 
     @Override
     public List<Segnalazione> getSegnalazioni() {

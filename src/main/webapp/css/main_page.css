@@ -9,21 +9,13 @@
     text-decoration: underline;
 }
 
-.searchbar{
+#searchbar{
     width:500px;
-    height:60px;
+    height:70px;
     font-size: 25px;
     margin-bottom: 80px;
 }
 
-.wrapper {
-    text-align: center;
-}
-
-.center {
-    margin-top: 100px;
-    display: inline-block;
-}
 
 .categoria{
     font-size: 100px;
@@ -62,3 +54,98 @@
     padding-bottom: 30px;
 }
 
+.wrapper {
+    display: flex;
+    align-items: stretch;
+}
+
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    min-height: 100vh;
+    background-color: #f5ede8;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+    color: black;
+    transition: all 0.3s;
+}
+
+#sidebar.active {
+    margin-left: -250px;
+}
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background-color: #ebdad0;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid #47748b;
+}
+
+#sidebar ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 1.1em;
+    display: block;
+}
+#sidebar ul li a:hover {
+    color: #7386D5;
+    background: #fff;
+}
+
+#sidebar ul li.active > a, a[aria-expanded="true"] {
+    color: #fff;
+    background: #6d7fcc;
+}
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #6d7fcc;
+}
+
+@media (min-width: 768px) {
+    #sidebar {
+        margin-left: -250px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+}
+
+.vertical-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+#sidebarCollapse, #sidebarCollapse2 {
+    background-color: #00AB98;
+    border-color: #00AB98;
+    color: white;
+
+}
+
+#sidebarCollapse2:hover, #sidebarCollapse:hover{
+    box-shadow: 2px 2px 1px 1px rgba(0,0,0,.2);
+    background-color: #00AB98;
+}
