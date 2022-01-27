@@ -34,9 +34,11 @@ public final class GestioneCampagnaController extends HttpServlet {
         CampagnaService service = new CampagnaServiceImpl();
         CategoriaService categoriaService = new CategoriaServiceImpl();
 
-        session = request.getSession(false);
+        session = request.getSession();
 
-        if (session == null || session.getAttribute("utente") == null) {
+        if (session.getAttribute("utente") == null
+                || !session.getAttribute("utente").getClass().getSimpleName().
+                equals(Utente.class.getSimpleName())) {
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/AutenticazioneController/login");
@@ -45,26 +47,15 @@ public final class GestioneCampagnaController extends HttpServlet {
 
         switch (request.getPathInfo()) {
             case "/creaCampagna":
-            case "/modificaCampagna":
-                String idCampagna = request.getParameter("idCampagna");
-
-                if (idCampagna != null) {
-                    request.setAttribute("campagna", service
-                            .trovaCampagna(Integer.parseInt(idCampagna)));
-                }
-
                 request.setAttribute("categorie",
                         categoriaService.visualizzaCategorie());
                 resource = "/WEB-INF/results/form_campagna.jsp";
                 break;
+            case "/modificaCampagna":
+                visualizzaModificaCampagna(request, response);
+                break;
             case "/campagna":
-                String id = request.getParameter("idCampagna");
-                Campagna c = service.trovaCampagna(Integer.parseInt(id));
-                CampagnaInterface proxy = new CampagnaProxy(c);
-                c.setUtente(proxy.getUtente());
-                c.setDonazioni(proxy.getDonazioni());
-                resource = "/WEB-INF/results/campagna.jsp";
-                request.setAttribute("campagna", c);
+                visualizzaCampagna(request, response);
                 break;
             default:
                 response.sendError(
@@ -77,7 +68,51 @@ public final class GestioneCampagnaController extends HttpServlet {
                 request.getRequestDispatcher(resource);
         dispatcher.forward(request, response);
     }
-
+    private void visualizzaCampagna(final HttpServletRequest request,
+                                    final HttpServletResponse response)
+            throws ServletException, IOException {
+        CampagnaService service = new CampagnaServiceImpl();
+        String id = request.getParameter("idCampagna");
+        Campagna c = service.trovaCampagna(Integer.parseInt(id));
+        CampagnaInterface proxy = new CampagnaProxy(c);
+        c.setUtente(proxy.getUtente());
+        c.setDonazioni(proxy.getDonazioni());
+        request.setAttribute("campagna", c);
+        RequestDispatcher dispatcher =
+                request.getRequestDispatcher("/WEB-INF/results/campagna.jsp");
+        dispatcher.forward(request, response);
+        return;
+    }
+    private void visualizzaModificaCampagna(final HttpServletRequest request,
+                                            final HttpServletResponse response)
+            throws ServletException, IOException {
+        CampagnaService service = new CampagnaServiceImpl();
+        CategoriaService categoriaService = new CategoriaServiceImpl();
+        Utente ut = (Utente) request.getSession().getAttribute("utente");
+        String idCampagna = request.getParameter("idCampagna");
+        int id = 0;
+        try {
+            id = Integer.parseInt(idCampagna);
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
+                    "Input errato");
+            e.printStackTrace();
+            return;
+        }
+        Campagna c = service.trovaCampagna(id);
+        if (c.getUtente().getIdUtente() != id) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                    "Non Autorizzato");
+            return;
+        }
+        request.setAttribute("campagna", c);
+        request.setAttribute("categorie",
+                categoriaService.visualizzaCategorie());
+        RequestDispatcher dispatcher =
+                request.getRequestDispatcher(
+                        "/WEB-INF/results/form_campagna.jsp");
+        dispatcher.forward(request, response);
+    }
     @Override
     protected void doPost(final HttpServletRequest request,
                           final HttpServletResponse response)

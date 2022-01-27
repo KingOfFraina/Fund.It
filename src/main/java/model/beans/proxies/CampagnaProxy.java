@@ -58,7 +58,6 @@ public final class CampagnaProxy implements CampagnaInterface {
             double somma = donazioneList.stream().
                     mapToDouble(Donazione::getSommaDonata).
                     sum();
-            System.out.println(somma);
             campagna.setSommaRaccolta(somma);
             campagna.setDonazioni(donazioneList);
         }
