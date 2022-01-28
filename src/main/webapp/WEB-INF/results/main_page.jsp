@@ -109,6 +109,7 @@
 </div>
 
 
+
 <%@include file="../components/footer.jsp" %>
 
 <%@include file="../components/main_page/script_imports.jsp" %>

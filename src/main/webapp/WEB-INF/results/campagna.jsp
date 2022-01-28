@@ -71,27 +71,18 @@
 
             <!--Commenti-->
             <div class="container my-4">
-                <h3>Commenti(3)</h3>
-                <div class="container commento">
-                    <hr class="solid text-black">
-                    <h4>Marco ha donato 50€</h4>
-                    <h5>Complimenti per l'idea, non vedo l'ora di vedere il vostro progetto finito!</h5>
-                    <hr class="solid text-black">
-                </div>
+                <h3>Commenti</h3>
 
-                <div class="container commento">
-                    <hr class="solid text-black">
-                    <h4>Anonimo ha donato 30€</h4>
-                    <h5>Grande progetto! Spero che raggiungiate il vostro obiettivo.</h5>
-                    <hr class="solid text-black">
-                </div>
-
-                <div class="container commento">
-                    <hr class="solid text-black">
-                    <h4>Marta ha donato 500€</h4>
-                    <h5>Bravissimi!</h5>
-                    <hr class="solid text-black">
-                </div>
+                <c:forEach items="${campagna.donazioni}" var="don">
+                    <c:if test="${don.commento != null}">
+                        <div class="container commento">
+                            <hr class="solid text-black">
+                            <h4>${don.utente.nome} ${don.utente.cognome} ha donato  <fmt:formatNumber type="number" maxFractionDigits="2" value="${don.sommaDonata}"/>&euro;</h4>
+                            <h5>"${don.commento}"</h5>
+                            <hr class="solid text-black">
+                        </div>
+                    </c:if>
+                </c:forEach>
 
                 <!--Segnalazione-->
                 <div class="container" style="margin-top: 120px">
@@ -133,16 +124,17 @@
 
             <!--Ultime donazioni-->
             <div class="container text-center" style="margin-top: 30px">
-                <!--TODO-->
-                <h6>Anonimo ha donato 500€ <span class="badge bg-white" style="color: #00AB98;">Migliore</span></h6>
-                <h6>Giovanni ha donato 10€ <span class="badge bg-white" style="color: #00AB98;">Nuovo</span></h6>
-                <h6>Anonimo ha donato 20€ <span class="badge bg-white" style="color: #00AB98;">Nuovo</span></h6>
-                <h6>Marco ha donato 10€ <span class="badge bg-white" style="color: #00AB98;">Nuovo</span></h6>
+
+                <c:forEach items="${campagna.donazioni}" begin = "${campagna.donazioni.size()-3}" var="don">
+                    <h6>${don.utente.nome} ha donato ${don.sommaDonata}&euro; <span class="badge bg-white" style="color: #00AB98;">Nuovo</span></h6>
+                </c:forEach>
+
             </div>
+
 
             <!--Visualizza donazioni-->
             <div class="d-grid gap-2 d-md-block text-center my-5">
-                <button class="btn btn-primary pulsante" type="button"
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
                         style=" background-color: #00AB98; border-color: #00AB98">Mostra tutto
                 </button>
                 <button class="btn btn-primary pulsante" type="button"
@@ -158,9 +150,13 @@
 
 <%@include file="../components/footer.jsp" %>
 
+<%@include file="../components/modal_donazioni.jsp" %>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
 
 <script type="text/javascript" src=${pageContext.request.contextPath}/js/campagna.js></script>
 
