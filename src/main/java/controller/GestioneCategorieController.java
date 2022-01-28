@@ -18,136 +18,137 @@ import java.io.IOException;
         value = "/GestioneCategorieController/*", loadOnStartup = 0)
 public final class GestioneCategorieController extends HttpServlet {
 
-    @Override
-    protected void doGet(final HttpServletRequest request,
+   @Override
+   protected void doGet(final HttpServletRequest request,
+                        final HttpServletResponse response)
+           throws ServletException, IOException {
+      String path = request.getPathInfo();
+      String resource = "/";
+
+      switch (path) {
+         case "/inserisciCategoria":
+            resource = "/WEB-INF/results/"; //todo path
+            break;
+         case "/modificaCategoria":
+            resource = "/WEB-INF/results/"; //todo path
+            break;
+         case "/visualizzaCategorie":
+            resource = "/WEB-INF/results/"; //todo path
+            visualizzaCategorie(request, response);
+            break;
+         default:
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,
+                    "Risorsa non trovata");
+            return;
+      }
+      RequestDispatcher dispatcher =
+              request.getRequestDispatcher(resource);
+      dispatcher.forward(request, response);
+      return;
+   }
+
+   @Override
+   protected void doPost(final HttpServletRequest request,
                          final HttpServletResponse response)
-            throws ServletException, IOException {
-        String path = request.getPathInfo();
-        String resource = "/";
+           throws IOException, ServletException {
+      String path = request.getPathInfo();
 
-        switch (path) {
-            case "/inserisciCategoria":
-                resource = "/WEB-INF/results/"; //todo path
-                break;
-            case "/modificaCategoria":
-                resource = "/WEB-INF/results/"; //todo path
-                break;
-            case "/visualizzaCategorie":
-                resource = "/WEB-INF/results/"; //todo path
-                visualizzaCategorie(request, response);
-                break;
-            default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                        "Risorsa non trovata");
-                return;
-        }
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher(resource);
-        dispatcher.forward(request, response);
-        return;
-    }
+      switch (path) {
+         case "/inserisciCategoria":
+            inserisciCategoria(request, response);
+            break;
+         case "/modificaCategoria":
+            modificaCategoria(request, response);
+            break;
+         default:
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,
+                    "Risorsa non trovata");
+            break;
+      }
 
-    @Override
-    protected void doPost(final HttpServletRequest request,
-                          final HttpServletResponse response)
-            throws IOException, ServletException {
-        String path = request.getPathInfo();
+   }
 
-        switch (path) {
-            case "/inserisciCategoria":
-                inserisciCategoria(request, response);
-                break;
-            case "/modificaCategoria":
-                modificaCategoria(request, response);
-                break;
-            default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                        "Risorsa non trovata");
-                break;
-        }
+   @Override
+   public void init() throws ServletException {
+      CategoriaService cs = new CategoriaServiceImpl();
 
-    }
+      this.getServletContext().setAttribute("categorieList",
+              cs.visualizzaCategorie());
 
-    @Override
-    public void init() throws ServletException {
-        CategoriaService cs = new CategoriaServiceImpl();
+   }
 
-        this.getServletContext().setAttribute("categorieList", cs.visualizzaCategorie());
+   private void visualizzaCategorie(final HttpServletRequest request,
+                                    final HttpServletResponse response) {
+      CategoriaService cs = new CategoriaServiceImpl();
 
-    }
+      request.setAttribute("categorieList", cs.visualizzaCategorie());
+   }
 
-    private void visualizzaCategorie(final HttpServletRequest request,
-                                     final HttpServletResponse response) {
-        CategoriaService cs = new CategoriaServiceImpl();
+   private void modificaCategoria(final HttpServletRequest request,
+                                  final HttpServletResponse response)
+           throws IOException {
+      HttpSession session = request.getSession();
 
-        request.setAttribute("categorieList", cs.visualizzaCategorie());
-    }
+      if (session.getAttribute("utente") == null
+              || !session.getAttribute("utente").getClass().getSimpleName().
+              equals(Utente.class.getSimpleName())) {
+         response.sendRedirect(request.getServletContext().getContextPath()
+                 + "/AutenticazioneController/login");
+         return;
+      }
+      Utente utente = (Utente) session.getAttribute("utente");
+      if (!utente.isAdmin()) {
+         response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                 "Non Autorizzato");
+         return;
+      }
 
-    private void modificaCategoria(final HttpServletRequest request,
+      if (request.getAttribute("categoria") == null
+              || !request.getAttribute("categoria").getClass().
+              getSimpleName().equals(Categoria.class.getSimpleName())) {
+         response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
+                 "Input errato");
+         return;
+      }
+      Categoria c = (Categoria) request.getAttribute("categoria");
+      CategoriaService cs = new CategoriaServiceImpl();
+      cs.modificaCategoria(c);
+      return;
+      //todo return
+   }
+
+   private void inserisciCategoria(final HttpServletRequest request,
                                    final HttpServletResponse response)
-            throws IOException {
-        HttpSession session = request.getSession();
+           throws IOException {
+      HttpSession session = request.getSession();
 
-        if (session.getAttribute("utente") == null
-                || !session.getAttribute("utente").getClass().getSimpleName().
-                equals(Utente.class.getSimpleName())) {
-            response.sendRedirect(request.getServletContext().getContextPath()
-                    + "/AutenticazioneController/login");
-            return;
-        }
-        Utente utente = (Utente) session.getAttribute("utente");
-        if (!utente.isAdmin()) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                    "Non Autorizzato");
-            return;
-        }
+      if (session.getAttribute("utente") == null
+              || !session.getAttribute("utente").getClass().getSimpleName().
+              equals(Utente.class.getSimpleName())) {
+         response.sendRedirect(request.getServletContext().getContextPath()
+                 + "/AutenticazioneController/login");
+         return;
+      }
+      Utente utente = (Utente) session.getAttribute("utente");
+      if (!utente.isAdmin()) {
+         response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                 "Non Autorizzato");
+         return;
+      }
 
-        if (request.getAttribute("categoria") == null
-                || !request.getAttribute("categoria").getClass().
-                getSimpleName().equals(Categoria.class.getSimpleName())) {
-            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
-                    "Input errato");
-            return;
-        }
-        Categoria c = (Categoria) request.getAttribute("categoria");
-        CategoriaService cs = new CategoriaServiceImpl();
-        cs.modificaCategoria(c);
-        return;
-        //todo return
-    }
+      String nomeCat = request.getParameter("nomeCategoria");
 
-    private void inserisciCategoria(final HttpServletRequest request,
-                                    final HttpServletResponse response)
-            throws IOException {
-        HttpSession session = request.getSession();
+      if (nomeCat == null || nomeCat.isBlank()) {
+         response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
+                 "Input errato");
+         return;
+      }
 
-        if (session.getAttribute("utente") == null
-                || !session.getAttribute("utente").getClass().getSimpleName().
-                equals(Utente.class.getSimpleName())) {
-            response.sendRedirect(request.getServletContext().getContextPath()
-                    + "/AutenticazioneController/login");
-            return;
-        }
-        Utente utente = (Utente) session.getAttribute("utente");
-        if (!utente.isAdmin()) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                    "Non Autorizzato");
-            return;
-        }
-
-        String nomeCat = request.getParameter("nomeCategoria");
-
-        if (nomeCat == null || nomeCat.isBlank()) {
-            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
-                    "Input errato");
-            return;
-        }
-
-        Categoria c = new Categoria();
-        c.setNome(nomeCat);
-        CategoriaService cs = new CategoriaServiceImpl();
-        cs.inserisciCategoria(c);
-        return; //todo return
-    }
+      Categoria c = new Categoria();
+      c.setNome(nomeCat);
+      CategoriaService cs = new CategoriaServiceImpl();
+      cs.inserisciCategoria(c);
+      return; //todo return
+   }
 
 }

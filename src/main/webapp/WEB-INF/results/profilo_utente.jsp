@@ -49,6 +49,9 @@
         <%@include file="../components/table_user_donations.jsp" %>
     </div>
 
+    <div id="div-campagna-table" style="display: none">
+        <%@include file="../components/table_user_campagne.jsp" %>
+    </div>
 
 </div>
 

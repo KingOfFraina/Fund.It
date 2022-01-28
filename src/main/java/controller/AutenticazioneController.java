@@ -20,138 +20,138 @@ import java.sql.Date;
         value = "/AutenticazioneController/*")
 public final class AutenticazioneController extends HttpServlet {
 
-    @Override
-    protected void doGet(final HttpServletRequest request,
-                         final HttpServletResponse response)
-            throws ServletException, IOException {
+   @Override
+   protected void doGet(final HttpServletRequest request,
+                        final HttpServletResponse response)
+           throws ServletException, IOException {
 
-        String path = request.getPathInfo();
-        HttpSession session = request.getSession();
-        String resource = "/";
+      String path = request.getPathInfo();
+      HttpSession session = request.getSession();
+      String resource = "/";
 
-        if (session.getAttribute("utente") != null && !path.equals("/logout")) {
-            response.sendRedirect(
-                    getServletContext().getContextPath() + "/index.jsp");
+      if (session.getAttribute("utente") != null && !path.equals("/logout")) {
+         response.sendRedirect(
+                 getServletContext().getContextPath() + "/index.jsp");
+         return;
+      }
+
+      Utente userSession = (Utente) session.getAttribute("utente");
+      switch (path) {
+         case "/login":
+            resource = "/WEB-INF/results/login.jsp";
+            break;
+         case "/registrazione":
+            resource = "/WEB-INF/results/registrazione.jsp";
+            break;
+         case "/logout":
+            AutenticazioneService service =
+                    new AutenticazioneServiceImpl(session);
+            service.logout(userSession);
+            response.sendRedirect(getServletContext().getContextPath()
+                    + "/index.jsp");
+
             return;
-        }
+         default:
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,
+                    "Risorsa non trovata");
+            return;
+      }
 
-        Utente userSession = (Utente) session.getAttribute("utente");
-        switch (path) {
-            case "/login":
-                resource = "/WEB-INF/results/login.jsp";
-                break;
-            case "/registrazione":
-                resource = "/WEB-INF/results/registrazione.jsp";
-                break;
-            case "/logout":
-                AutenticazioneService service =
-                        new AutenticazioneServiceImpl(session);
-                service.logout(userSession);
-                response.sendRedirect(getServletContext().getContextPath()
-                        + "/index.jsp");
+      RequestDispatcher dispatcher =
+              request.getRequestDispatcher(resource);
+      dispatcher.forward(request, response);
 
-                return;
-            default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                        "Risorsa non trovata");
-                return;
-        }
+   }
 
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher(resource);
-        dispatcher.forward(request, response);
+   @Override
+   protected void doPost(final HttpServletRequest request,
+                         final HttpServletResponse response)
+           throws IOException {
 
-    }
+      switch (request.getPathInfo()) {
+         case "/login":
+            login(request, response);
+            break;
+         case "/registrazione":
+            registrazione(request, response);
+            break;
 
-    @Override
-    protected void doPost(final HttpServletRequest request,
-                          final HttpServletResponse response)
-            throws IOException {
+         default:
+            response.sendError(
+                    HttpServletResponse.SC_NOT_FOUND,
+                    "Risorsa non trovata");
+            break;
+      }
+   }
 
-        switch (request.getPathInfo()) {
-            case "/login":
-                login(request, response);
-                break;
-            case "/registrazione":
-                registrazione(request, response);
-                break;
+   private void login(final HttpServletRequest request,
+                      final HttpServletResponse response)
+           throws IOException {
+      HttpSession session = request.getSession();
+      Utente utente = (Utente) session.getAttribute("utente");
 
-            default:
-                response.sendError(
-                        HttpServletResponse.SC_NOT_FOUND,
-                        "Risorsa non trovata");
-                break;
-        }
-    }
+      if (utente == null) {
+         utente = new Utente();
+         utente.setEmail(request.getParameter("email"));
+         utente.createPasswordHash(request.getParameter("password"));
 
-    private void login(final HttpServletRequest request,
-                       final HttpServletResponse response)
-            throws IOException {
-        HttpSession session = request.getSession();
-        Utente utente = (Utente) session.getAttribute("utente");
+         AutenticazioneService autenticazioneService =
+                 new AutenticazioneServiceImpl(request.getSession(true));
+         utente = autenticazioneService.login(utente);
+      }
 
-        if (utente == null) {
-            utente = new Utente();
-            utente.setEmail(request.getParameter("email"));
+      if (utente != null) {
+         session.setAttribute("utente", utente);
+         response.sendRedirect(
+                 getServletContext().getContextPath()
+                         + "/index.jsp");
+      } else {
+         response.sendRedirect(
+                 getServletContext().getContextPath()
+                         + "/AutenticazioneController/login");
+      }
+   }
+
+   private void registrazione(final HttpServletRequest request,
+                              final HttpServletResponse response)
+           throws IOException {
+      HttpSession session = request.getSession(true);
+
+      if (session.getAttribute("utente") == null) {
+         Utente utente = new Utente();
+
+         if (request.getParameter("password").equals(
+                 request.getParameter("confermaPassword"))
+                 && request.getParameter("email").equals(
+                 request.getParameter("confermaEmail"))) {
             utente.createPasswordHash(request.getParameter("password"));
+            utente.setEmail(request.getParameter("email"));
+            utente.setNome(request.getParameter("nome"));
+            utente.setCognome(request.getParameter("cognome"));
+            utente.setDataDiNascita(
+                    Date.valueOf(request.getParameter("dataDiNascita")));
+            utente.setTelefono(request.getParameter("telefono"));
+            utente.setStrada(request.getParameter("indirizzo"));
+            utente.setCitta(request.getParameter("citta"));
+            utente.setCap(request.getParameter("cap"));
+            utente.setCf(request.getParameter("cf"));
+            utente.setFotoProfilo(request.getParameter("fotoProfilo"));
 
             AutenticazioneService autenticazioneService =
-                    new AutenticazioneServiceImpl(request.getSession(true));
-            utente = autenticazioneService.login(utente);
-        }
+                    new AutenticazioneServiceImpl(session);
 
-        if (utente != null) {
-            session.setAttribute("utente", utente);
-            response.sendRedirect(
-                    getServletContext().getContextPath()
-                            + "/index.jsp");
-        } else {
-            response.sendRedirect(
-                    getServletContext().getContextPath()
-                            + "/AutenticazioneController/login");
-        }
-    }
-
-    private void registrazione(final HttpServletRequest request,
-                               final HttpServletResponse response)
-            throws IOException {
-        HttpSession session = request.getSession(true);
-
-        if (session.getAttribute("utente") == null) {
-            Utente utente = new Utente();
-
-            if (request.getParameter("password").equals(
-                    request.getParameter("confermaPassword"))
-                    && request.getParameter("email").equals(
-                    request.getParameter("confermaEmail"))) {
-                utente.createPasswordHash(request.getParameter("password"));
-                utente.setEmail(request.getParameter("email"));
-                utente.setNome(request.getParameter("nome"));
-                utente.setCognome(request.getParameter("cognome"));
-                utente.setDataDiNascita(
-                        Date.valueOf(request.getParameter("dataDiNascita")));
-                utente.setTelefono(request.getParameter("telefono"));
-                utente.setStrada(request.getParameter("indirizzo"));
-                utente.setCitta(request.getParameter("citta"));
-                utente.setCap(request.getParameter("cap"));
-                utente.setCf(request.getParameter("cf"));
-                utente.setFotoProfilo(request.getParameter("fotoProfilo"));
-
-                AutenticazioneService autenticazioneService =
-                        new AutenticazioneServiceImpl(session);
-
-                if (autenticazioneService.registrazione(utente)) {
-                    session.setAttribute("utente", utente);
-                }
-            } else {
-                response.sendRedirect(
-                        getServletContext().getContextPath()
-                                + "/AutenticazioneController/registrazione");
+            if (autenticazioneService.registrazione(utente)) {
+               session.setAttribute("utente", utente);
             }
-
-        } else {
+         } else {
             response.sendRedirect(
-                    getServletContext().getContextPath() + "/index.jsp");
-        }
-    }
+                    getServletContext().getContextPath()
+                            + "/AutenticazioneController/registrazione");
+         }
+
+      } else {
+         response.sendRedirect(
+                 getServletContext().getContextPath() + "/index.jsp");
+      }
+   }
 }

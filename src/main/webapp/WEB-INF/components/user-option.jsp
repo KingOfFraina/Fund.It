@@ -4,7 +4,7 @@
                          src="${pageContext.request.contextPath}/img/undraw_transfer_money_rywa.svg" alt=""></a>
     </div>
     <div class="col div-option">
-        <a href="#"><img class="profile-option" style="width: 45%;"
+        <a onclick="showCampagneTable()" href="#"><img class="profile-option" style="width: 45%;"
                          src="${pageContext.request.contextPath}/img/undraw_personalization_re_grty.svg" alt=""></a>
     </div>
 </div>

@@ -27,3 +27,11 @@ function showDonationTable() {
     let y = document.getElementById("div-donation-table");
     y.style.display = "block";
 }
+
+function showCampagneTable() {
+    let x = document.getElementById("div-select-images");
+    x.style.display = "none";
+
+    let y = document.getElementById("div-campagna-table");
+    y.style.display = "block";
+}

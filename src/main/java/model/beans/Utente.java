@@ -357,9 +357,6 @@ public final class Utente implements UtenteInterface {
               + ", cap='" + cap + '\''
               + ", cf='" + cf + '\''
               + ", dataDiNascita=" + dataDiNascita
-              + ", donazioni=" + donazioni
-              + ", segnalazioni=" + segnalazioni
-              + ", campagne=" + campagne
               + '}';
    }
 }

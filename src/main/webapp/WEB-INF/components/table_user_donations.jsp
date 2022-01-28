@@ -4,27 +4,17 @@
         <th scope="col">#ID</th>
         <th scope="col">Somma donata</th>
         <th scope="col">Data e ora</th>
-        <th scope="col">Campagna</th>
+        <th scope="col">#ID Campagna</th>
     </tr>
     </thead>
     <tbody>
-    <tr>
-        <th scope="row">1</th>
-        <td>20&euro;</td>
-        <td>01/01/2022 10:00</td>
-        <td>Campagna 1</td>
-    </tr>
-    <tr>
-        <th scope="row">2</th>
-        <td>20&euro;</td>
-        <td>01/01/2022 10:00</td>
-        <td>Campagna 2</td>
-    </tr>
-    <tr>
-        <th scope="row">3</th>
-        <td>20&euro;</td>
-        <td>01/01/2022 10:00</td>
-        <td>Campagna 3</td>
-    </tr>
+        <c:forEach items="${requestScope.utente.donazioni}" var="donazione">
+            <tr>
+                <th scope="row">${donazione.idDonazione}</th>
+                <td>${donazione.sommaDonata}&euro;</td>
+                <td>${donazione.dataOra}</td>
+                <td>${donazione.campagna.idCampagna}</td>
+            </tr>
+        </c:forEach>
     </tbody>
 </table>
