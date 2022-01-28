@@ -9,38 +9,43 @@ import model.beans.Utente;
 import model.beans.proxyInterfaces.DonazioneInterface;
 
 public final class DonazioneProxy implements DonazioneInterface {
-   /**
-    * donazione.
-    */
-   private Donazione donazione;
+    /**
+     * donazione.
+     */
+    private Donazione donazione;
 
-   /**
-    * costruttore.
-    * @param newDonazione donazione.
-    */
-   public DonazioneProxy(final Donazione newDonazione) {
-      this.donazione = newDonazione;
-   }
+    /**
+     * costruttore.
+     *
+     * @param newDonazione donazione.
+     */
+    public DonazioneProxy(final Donazione newDonazione) {
+        this.donazione = newDonazione;
+    }
 
-   @Override
-   public Campagna getCampagna() {
-      if (donazione.getCampagna().getCategoria() == null) {
-         DAO campagnaDAO = new CampagnaDAO();
-         donazione.setCampagna((Campagna)
-                 campagnaDAO.getById(donazione.getCampagna().getIdCampagna()));
-      }
+    @Override
+    public Campagna getCampagna() {
+        if (donazione.getCampagna().getCategoria() == null) {
+            DAO<Campagna> campagnaDAO = new CampagnaDAO();
+            donazione.setCampagna(
+                    campagnaDAO.getById(donazione.getCampagna().getIdCampagna()));
+        }
 
-      return donazione.getCampagna();
-   }
+        return donazione.getCampagna();
+    }
 
-   @Override
-   public Utente getUtente() {
-      if (donazione.getUtente().getCf() == null) {
-         DAO uetnteDAO = new UtenteDAO();
-         donazione.setUtente((Utente)
-                 uetnteDAO.getById(donazione.getUtente().getIdUtente()));
-      }
+    @Override
+    public Utente getUtente() {
+        if (donazione.getUtente().getCf() == null) {
+            DAO<Utente> utenteDAO = new UtenteDAO();
+            Utente u = utenteDAO.getById(donazione.getUtente().getIdUtente());
+            Utente utenteNuovo = new Utente();
+            utenteNuovo.setIdUtente(u.getIdUtente());
+            utenteNuovo.setNome(u.getNome());
+            utenteNuovo.setCognome(u.getCognome());
+            donazione.setUtente(utenteNuovo);
+        }
 
-      return donazione.getUtente();
-   }
+        return donazione.getUtente();
+    }
 }

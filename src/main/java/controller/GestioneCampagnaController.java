@@ -1,11 +1,10 @@
 package controller;
 
-import model.beans.Campagna;
-import model.beans.Categoria;
-import model.beans.StatoCampagna;
-import model.beans.Utente;
+import model.beans.*;
 import model.beans.proxies.CampagnaProxy;
+import model.beans.proxies.DonazioneProxy;
 import model.beans.proxyInterfaces.CampagnaInterface;
+import model.beans.proxyInterfaces.DonazioneInterface;
 import model.services.CampagnaService;
 import model.services.CampagnaServiceImpl;
 import model.services.CategoriaService;
@@ -20,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "GestioneCampagnaController",
         value = "/GestioneCampagnaController/*")
@@ -59,10 +60,20 @@ public final class GestioneCampagnaController extends HttpServlet {
                 Campagna c = service.trovaCampagna(Integer.parseInt(id));
                 CampagnaInterface proxy = new CampagnaProxy(c);
                 c.setUtente(proxy.getUtente());
+                List<Donazione> donazioni = proxy.getDonazioni();
+                for (Donazione d : donazioni) {
+                    DonazioneInterface proxy2 = new DonazioneProxy(d);
+                    d.setUtente(proxy2.getUtente());
+                }
+
                 c.setDonazioni(proxy.getDonazioni());
+
                 request.setAttribute("campagna", c);
                 resource = "/WEB-INF/results/campagna.jsp";
                 break;
+            case "/we":
+                String id1 = request.getParameter("value");
+                System.out.println(id1);
             default:
                 response.sendError(
                         HttpServletResponse.SC_NOT_FOUND,
