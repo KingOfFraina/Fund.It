@@ -86,7 +86,7 @@
 
                 <!--Segnalazione-->
                 <div class="container" style="margin-top: 120px">
-                    <a style="color: black; font-size: 20px" href="#"><i class="fas fa-flag"></i> Segnala la raccolta
+                    <a data-bs-toggle="modal" data-bs-target="#modalSegnalazioni" style="color: black; font-size: 20px" href="#"><i class="fas fa-flag"></i> Segnala la raccolta
                         fondi</a>
                     <hr class="solid text-black">
                 </div>
@@ -151,6 +151,7 @@
 <%@include file="../components/footer.jsp" %>
 
 <%@include file="../components/modal_donazioni.jsp" %>
+<%@include file="../components/modal_segnalazioni.jsp" %>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
