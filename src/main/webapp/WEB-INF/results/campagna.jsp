@@ -5,7 +5,7 @@
     <%@include file="../components/head.jsp" %>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/campagna.css">
 </head>
-<body onload="percentage(${campagna.sommaTarget}, ${campagna.sommaRaccolta})">
+<body>
 
 <div>
 
@@ -51,7 +51,7 @@
                 <h4>Descrizione</h4>
                 <hr class="solid text-black">
                 <p>
-                   ${campagna.descrizione}
+                    ${campagna.descrizione}
                 </p>
 
             </div>
@@ -65,7 +65,8 @@
                                                                                         style="font-size: 23px; color: #00AB98"></i>
                     ${campagna.utente.nome} ${campagna.utente.cognome}</a><br>
                 <a class="text-black" style="text-decoration: none; font-size: 19px"> Organizzatore</a><br>
-                <a class="text-black" style="text-decoration: none; font-size: 19px"> ${campagna.utente.citta}, Italia</a>
+                <a class="text-black" style="text-decoration: none; font-size: 19px"> ${campagna.utente.citta},
+                    Italia</a>
             </div>
 
             <!--Commenti-->
@@ -103,21 +104,28 @@
         </div>
 
 
-
         <div class="col-4 div-campagna-info" style="top:15px">
-            <a class="text-center goal"><fmt:formatNumber type="number" maxFractionDigits="2" value="${campagna.sommaRaccolta}"/>&euro; raccolti su <fmt:formatNumber type="number" maxFractionDigits="2" value="${campagna.sommaTarget}"/>&euro;</a>
+            <a class="text-center goal"><fmt:formatNumber type="number" maxFractionDigits="2"
+                                                          value="${campagna.sommaRaccolta}"/>&euro; raccolti su
+                <fmt:formatNumber type="number" maxFractionDigits="2" value="${campagna.sommaTarget}"/>&euro;</a>
 
             <div class="progress" style="border-color: black; border-style: solid; border-width: 1px">
-                <div id = "progressbar" class="progress-bar" role="progressbar" style=" background-color: #00AB98"
-                     aria-valuenow="67" aria-valuemin="0" aria-valuemax="100"></div>
+                <div id="progressbar" class="progress-bar" role="progressbar" style=" background-color: #00AB98"
+                     aria-valuenow="67" aria-valuemin="0" aria-valuemax="100" onload="percentage(${campagna.sommaTarget}, ${campagna.sommaRaccolta})"></div>
             </div>
 
             <div class="d-grid gap-2 my-3">
-                <button class="btn btn-primary pulsante" type="button" style=" background-color: #00AB98; border-color: #00AB98">Condividi</button>
-                <button class="btn btn-primary pulsante" type="button" style=" background-color: #00AB98; border-color: #00AB98">Fai una Donazione</button>
+                <button class="btn btn-primary pulsante" type="button"
+                        style=" background-color: #00AB98; border-color: #00AB98">Condividi
+                </button>
+                <button class="btn btn-primary pulsante" type="button"
+                        style=" background-color: #00AB98; border-color: #00AB98">Fai una Donazione
+                </button>
             </div>
 
-            <a id = "donation-count" style="font-size: 20px")><i class="fas fa-chart-line"></i> ${fn:length(campagna.donazioni)} persone hanno donato a questa campagna</a><br>
+            <a id="donation-count" style="font-size: 20px" )><i
+                    class="fas fa-chart-line"></i> ${fn:length(campagna.donazioni)} persone hanno donato a questa
+                campagna</a><br>
 
             <div class="container my-4">
                 <hr class="solid text-black">
@@ -134,8 +142,12 @@
 
             <!--Visualizza donazioni-->
             <div class="d-grid gap-2 d-md-block text-center my-5">
-                <button class="btn btn-primary pulsante" type="button" style=" background-color: #00AB98; border-color: #00AB98">Mostra tutto</button>
-                <button class="btn btn-primary pulsante" type="button" style=" background-color: #00AB98; border-color: #00AB98">Vedi le Migliori <i class="far fa-star"></i>
+                <button class="btn btn-primary pulsante" type="button"
+                        style=" background-color: #00AB98; border-color: #00AB98">Mostra tutto
+                </button>
+                <button class="btn btn-primary pulsante" type="button"
+                        style=" background-color: #00AB98; border-color: #00AB98">Vedi le Migliori <i
+                        class="far fa-star"></i>
                 </button>
             </div>
 

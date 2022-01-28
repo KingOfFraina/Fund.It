@@ -56,7 +56,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                 break;
             case "/campagna":
                 visualizzaCampagna(request, response);
-                break;
+                return;
             default:
                 response.sendError(
                         HttpServletResponse.SC_NOT_FOUND,
