@@ -61,8 +61,8 @@
             <div class="container my-4 text-center">
                 <h3>Organizzatore</h3>
                 <hr class="solid text-black">
-                <a class="text-black" style="text-decoration: none; font-size: 23px"><i class="fas fa-user-alt"
-                                                                                        style="font-size: 23px; color: #00AB98"></i>
+                <a class="text-black" style="text-decoration: none; font-size: 23px">
+                    <i class="fas fa-user-alt" style="font-size: 23px; color: #00AB98"></i>
                     ${campagna.utente.nome} ${campagna.utente.cognome}</a><br>
                 <a class="text-black" style="text-decoration: none; font-size: 19px"> Organizzatore</a><br>
                 <a class="text-black" style="text-decoration: none; font-size: 19px"> ${campagna.utente.citta},
@@ -125,10 +125,11 @@
             <!--Ultime donazioni-->
             <div class="container text-center" style="margin-top: 30px">
 
-                <c:forEach items="${campagna.donazioni}" begin = "${campagna.donazioni.size()-3}" var="don">
-                    <h6>${don.utente.nome} ha donato ${don.sommaDonata}&euro; <span class="badge bg-white" style="color: #00AB98;">Nuovo</span></h6>
-                </c:forEach>
-
+                <c:if test="${(campagna.donazioni.size()-3) >= 0}">
+                    <c:forEach items="${campagna.donazioni}" begin = "${campagna.donazioni.size()-3}" var="don">
+                        <h6>${don.utente.nome} ha donato ${don.sommaDonata}&euro; <span class="badge bg-white" style="color: #00AB98;">Nuovo</span></h6>
+                    </c:forEach>
+                </c:if>
             </div>
 
 
