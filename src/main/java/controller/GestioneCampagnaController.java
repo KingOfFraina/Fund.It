@@ -61,6 +61,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                 c.setUtente(proxy.getUtente());
                 c.setDonazioni(proxy.getDonazioni());
                 request.setAttribute("campagna", c);
+                resource = "/WEB-INF/results/campagna.jsp";
                 break;
             default:
                 response.sendError(
