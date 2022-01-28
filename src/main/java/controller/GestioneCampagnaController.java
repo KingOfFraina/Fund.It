@@ -55,8 +55,13 @@ public final class GestioneCampagnaController extends HttpServlet {
                 visualizzaModificaCampagna(request, response);
                 break;
             case "/campagna":
-                visualizzaCampagna(request, response);
-                return;
+                String id = request.getParameter("idCampagna");
+                Campagna c = service.trovaCampagna(Integer.parseInt(id));
+                CampagnaInterface proxy = new CampagnaProxy(c);
+                c.setUtente(proxy.getUtente());
+                c.setDonazioni(proxy.getDonazioni());
+                request.setAttribute("campagna", c);
+                break;
             default:
                 response.sendError(
                         HttpServletResponse.SC_NOT_FOUND,
@@ -68,21 +73,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                 request.getRequestDispatcher(resource);
         dispatcher.forward(request, response);
     }
-    private void visualizzaCampagna(final HttpServletRequest request,
-                                    final HttpServletResponse response)
-            throws ServletException, IOException {
-        CampagnaService service = new CampagnaServiceImpl();
-        String id = request.getParameter("idCampagna");
-        Campagna c = service.trovaCampagna(Integer.parseInt(id));
-        CampagnaInterface proxy = new CampagnaProxy(c);
-        c.setUtente(proxy.getUtente());
-        c.setDonazioni(proxy.getDonazioni());
-        request.setAttribute("campagna", c);
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher("/WEB-INF/results/campagna.jsp");
-        dispatcher.forward(request, response);
-        return;
-    }
+
     private void visualizzaModificaCampagna(final HttpServletRequest request,
                                             final HttpServletResponse response)
             throws ServletException, IOException {
@@ -113,6 +104,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                         "/WEB-INF/results/form_campagna.jsp");
         dispatcher.forward(request, response);
     }
+
     @Override
     protected void doPost(final HttpServletRequest request,
                           final HttpServletResponse response)
