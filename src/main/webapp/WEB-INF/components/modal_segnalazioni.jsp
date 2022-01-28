@@ -14,12 +14,16 @@
                 <h5 class="modal-title" id="exampleModalLabel">Segnala campagna</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <form action = "${pageContext.request.contextPath}/segnalazioni/segnala" method="post">
             <div class="modal-body">
+
                 <div class="form-group">
                     <label for="textAraeSegnalazioni">Spiegaci i motivi della segnalazione(max. 300 caratteri)</label>
-                    <textarea class="form-control" id="textAraeSegnalazioni" rows="5" required maxlength="300">
+                    <textarea name = "descrizione" class="form-control" id="textAraeSegnalazioni" rows="5" required maxlength="300">
 
                     </textarea>
+                    <input type="text" name = "idUtente" value="${sessionScope.utente.idUtente}" hidden>
+                    <input type="text" name = "idCampagna" value="${campagna.idCampagna}" hidden>
                 </div>
 
             </div>
@@ -28,10 +32,12 @@
                         style="background-color: #00AB98; border-color: #00AB98">Chiudi
                 </button>
 
-                <button type="button" class="btn btn-secondary pulsante"
+                <button type="submit" class="btn btn-secondary pulsante"
                         style="background-color: #00AB98; border-color: #00AB98">Invia segnalazione
                 </button>
+
             </div>
+            </form>
         </div>
     </div>
 </div>

@@ -86,7 +86,7 @@
 
                 <!--Segnalazione-->
                 <div class="container" style="margin-top: 120px">
-                    <a data-bs-toggle="modal" data-bs-target="#modalSegnalazioni" style="color: black; font-size: 20px" href="#"><i class="fas fa-flag"></i> Segnala la raccolta
+                    <a data-bs-toggle="modal" data-bs-target="#modalSegnalazioni" style="color: black; font-size: 20px"><i class="fas fa-flag"></i> Segnala la raccolta
                         fondi</a>
                     <hr class="solid text-black">
                 </div>
@@ -125,11 +125,22 @@
             <!--Ultime donazioni-->
             <div class="container text-center" style="margin-top: 30px">
 
-                <c:if test="${(campagna.donazioni.size()-3) >= 0}">
-                    <c:forEach items="${campagna.donazioni}" begin = "${campagna.donazioni.size()-3}" var="don">
-                        <h6>${don.utente.nome} ha donato ${don.sommaDonata}&euro; <span class="badge bg-white" style="color: #00AB98;">Nuovo</span></h6>
-                    </c:forEach>
-                </c:if>
+                <c:choose>
+                    <c:when test="${(campagna.donazioni.size()-3) >= 0}">
+                        <c:forEach items="${campagna.donazioni}" begin = "${campagna.donazioni.size()-3}" var="don">
+                            <h6>${don.utente.nome} ha donato ${don.sommaDonata}&euro; <span class="badge bg-white" style="color: #00AB98;">Nuovo</span></h6>
+                        </c:forEach>
+                    </c:when>
+
+                    <c:otherwise>
+                        <c:forEach items="${campagna.donazioni}" var="don">
+                            <h6>${don.utente.nome} ha donato ${don.sommaDonata}&euro; <span class="badge bg-white" style="color: #00AB98;">Nuovo</span></h6>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
+
+
+
             </div>
 
 

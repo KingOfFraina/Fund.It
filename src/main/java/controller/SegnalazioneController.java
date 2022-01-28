@@ -72,8 +72,7 @@ public final class SegnalazioneController extends HttpServlet {
         String idCampagna = request.getParameter("idCampagna");
         CampagnaService campagnaService = new CampagnaServiceImpl();
         SegnalazioniService segnalazioniService = new SegnalazioniServiceImpl();
-        int idSegnalazione =
-                Integer.parseInt(request.getParameter("idSegnalazione"));
+
         String descrizione = request.getParameter("descrizione");
         String resource = "/";
 
@@ -82,28 +81,24 @@ public final class SegnalazioneController extends HttpServlet {
                 Campagna c = campagnaService.
                         trovaCampagna(Integer.parseInt(idCampagna));
                 Utente utente = new Utente();
-                utente.setIdUtente(2);
+                System.out.println(request.getParameter("idUtente"));
+                utente.setIdUtente(Integer.parseInt(request.getParameter("idUtente")));
                 if (segnalazioniService.
                         segnalaCampagna(c, utente, descrizione)) {
                     response.sendRedirect(
                             getServletContext().getContextPath()
                                     + "/index.jsp");
                     return;
-                } else {
-                    System.out.println("segnalaCampagna returned false");
                 }
                 break;
             case "/modifica":
-                if (segnalazioniService.
+                int idSegnalazione =
+                        Integer.parseInt(request.getParameter("idSegnalazione"));
+                segnalazioniService.
                         risolviSegnalazione(idSegnalazione,
-                                StatoSegnalazione.RISOLTA)) {
-                    System.out.println("frate tutt appost");
-                } else {
-                    System.out.println("mannagg o bucchin");
-                }
+                                StatoSegnalazione.RISOLTA);
                 break;
             default:
-                System.out.println("wtf");
                 break;
         }
 
