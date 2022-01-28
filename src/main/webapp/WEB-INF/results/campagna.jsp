@@ -5,7 +5,7 @@
     <%@include file="../components/head.jsp" %>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/campagna.css">
 </head>
-<body>
+<body  onload="percentage(${campagna.sommaTarget}, ${campagna.sommaRaccolta})">
 
 <div>
 
@@ -111,7 +111,7 @@
 
             <div class="progress" style="border-color: black; border-style: solid; border-width: 1px">
                 <div id="progressbar" class="progress-bar" role="progressbar" style=" background-color: #00AB98"
-                     aria-valuenow="67" aria-valuemin="0" aria-valuemax="100" onload="percentage(${campagna.sommaTarget}, ${campagna.sommaRaccolta})"></div>
+                     aria-valuenow="67" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
 
             <div class="d-grid gap-2 my-3">
