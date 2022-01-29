@@ -2,10 +2,7 @@ package controller;
 
 import model.beans.FAQ;
 import model.beans.Utente;
-import model.services.FaqService;
 import model.services.FaqServiceImpl;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -70,14 +67,17 @@ public final class GestioneFAQController extends HttpServlet {
          case "/modificaFAQ":
             modificaFAQ(request);
             break;
-         case "/cancellaFAQ":
-            cancellaFAQ(request, response);
+         case "/eliminaFAQ":
+            cancellaFAQ(request);
             break;
          default:
             response.sendError(HttpServletResponse.SC_NOT_FOUND,
                     "Risorsa non trovata");
-            break;
+            return;
       }
+
+      response.sendRedirect(
+              getServletContext().getContextPath() + "/GestioneFAQController/visualizzaFAQ");
    }
 
    private void visualizzaFAQ(final HttpServletRequest request) {
@@ -126,34 +126,10 @@ public final class GestioneFAQController extends HttpServlet {
         new FaqServiceImpl().modificaFaq(faq);
     }
 
-    private void cancellaFAQ(final HttpServletRequest request,
-                             final HttpServletResponse response)
-            throws IOException {
-        HttpSession session = request.getSession();
+   private void cancellaFAQ(final HttpServletRequest request) {
 
-        if (session.getAttribute("utente") == null
-                || !session.getAttribute("utente").getClass().getSimpleName().
-                equals(Utente.class.getSimpleName())) {
-            response.sendRedirect(request.getServletContext().getContextPath()
-                    + "/AutenticazioneController/login");
-            return;
-        }
-        Utente utente = (Utente) session.getAttribute("utente");
-        if (!utente.isAdmin()) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                    "Non Autorizzato");
-            return;
-        }
-        if (request.getAttribute("faq") == null
-                || request.getAttribute("faq").getClass().getSimpleName().
-                equals(FAQ.class.getSimpleName())) {
-            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
-                    "Input errato");
-            return;
-        }
-        FAQ faq = (FAQ) request.getAttribute("faq");
-        FaqService fs = new FaqServiceImpl();
-        fs.cancellaFaq(faq);
-        //todo return
-    }
+      FAQ faq = new FAQ();
+      faq.setIdFaq(Integer.parseInt(request.getParameter("idFaq")));
+      new FaqServiceImpl().cancellaFaq(faq);
+   }
 }

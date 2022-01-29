@@ -17,10 +17,6 @@
                     formaction="${pageContext.request.contextPath}/GestioneFAQController/inserisciFAQ" value="Inserisci FAQ">
                 </c:otherwise>
             </c:choose>
-
-            <c:if test="${sessionScope.utente.admin}">
-                <input type="submit" formaction="${pageContext.request.contextPath}/GestioneFAQController/modificaFAQ" value="Modifica FAQ">
-            </c:if>
         </form>
     </body>
 </html>
