@@ -23,6 +23,10 @@ public final class DonazioneProxy implements DonazioneInterface {
         this.donazione = newDonazione;
     }
 
+    public DonazioneProxy() {
+        this.donazione = new Donazione();
+    }
+
     @Override
     public Campagna getCampagna() {
         if (donazione.getCampagna().getCategoria() == null) {
@@ -39,13 +43,20 @@ public final class DonazioneProxy implements DonazioneInterface {
         if (donazione.getUtente().getCf() == null) {
             DAO<Utente> utenteDAO = new UtenteDAO();
             Utente u = utenteDAO.getById(donazione.getUtente().getIdUtente());
-            Utente utenteNuovo = new Utente();
-            utenteNuovo.setIdUtente(u.getIdUtente());
+            Utente utenteNuovo = donazione.getUtente();
             utenteNuovo.setNome(u.getNome());
             utenteNuovo.setCognome(u.getCognome());
             donazione.setUtente(utenteNuovo);
         }
 
         return donazione.getUtente();
+    }
+
+    /**
+     * @param donazione istanza di Donazione
+     */
+
+    public void setDonazione(Donazione donazione) {
+        this.donazione = donazione;
     }
 }

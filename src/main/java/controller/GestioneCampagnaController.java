@@ -37,14 +37,14 @@ public final class GestioneCampagnaController extends HttpServlet {
 
         session = request.getSession();
 
-        if (session.getAttribute("utente") == null
+        /*if (session.getAttribute("utente") == null
                 || !session.getAttribute("utente").getClass().getSimpleName().
                 equals(Utente.class.getSimpleName())) {
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/AutenticazioneController/login");
             return;
-        }
+        }*/
 
         switch (request.getPathInfo()) {
             case "/creaCampagna":
@@ -60,9 +60,10 @@ public final class GestioneCampagnaController extends HttpServlet {
                 Campagna c = service.trovaCampagna(Integer.parseInt(id));
                 CampagnaInterface proxy = new CampagnaProxy(c);
                 c.setUtente(proxy.getUtente());
+                DonazioneProxy proxy2 = new DonazioneProxy();
                 List<Donazione> donazioni = proxy.getDonazioni();
                 for (Donazione d : donazioni) {
-                    DonazioneInterface proxy2 = new DonazioneProxy(d);
+                    proxy2.setDonazione(d);
                     d.setUtente(proxy2.getUtente());
                 }
 
@@ -122,10 +123,10 @@ public final class GestioneCampagnaController extends HttpServlet {
                           final HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession();
         CampagnaService service = new CampagnaServiceImpl();
 
-        if (session == null && session.getAttribute("utente") == null) {
+        if (session == null || session.getAttribute("utente") == null) {
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/AutenticazioneController/login");
