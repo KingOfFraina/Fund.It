@@ -82,7 +82,8 @@ public final class SegnalazioneController extends HttpServlet {
                         trovaCampagna(Integer.parseInt(idCampagna));
                 Utente utente = new Utente();
                 System.out.println(request.getParameter("idUtente"));
-                utente.setIdUtente(Integer.parseInt(request.getParameter("idUtente")));
+                utente.setIdUtente(
+                        Integer.parseInt(request.getParameter("idUtente")));
                 if (segnalazioniService.
                         segnalaCampagna(c, utente, descrizione)) {
                     response.sendRedirect(
@@ -93,7 +94,8 @@ public final class SegnalazioneController extends HttpServlet {
                 break;
             case "/modifica":
                 int idSegnalazione =
-                        Integer.parseInt(request.getParameter("idSegnalazione"));
+                        Integer.parseInt(
+                                request.getParameter("idSegnalazione"));
                 segnalazioniService.
                         risolviSegnalazione(idSegnalazione,
                                 StatoSegnalazione.RISOLTA);

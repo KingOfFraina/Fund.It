@@ -1,7 +1,6 @@
 package model.beans.proxyInterfaces;
 
 import model.beans.Campagna;
-import model.beans.Donazione;
 import model.beans.Utente;
 
 public interface DonazioneInterface {

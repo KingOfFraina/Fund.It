@@ -7,7 +7,11 @@ import model.beans.StatoSegnalazione;
 import model.storage.ConPool;
 
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +80,8 @@ public final class SegnalazioneDAO
 
             int index = 0;
 
-            statement.setTimestamp(++index, Timestamp.from(entity.getDataOra().toInstant()));
+            statement.setTimestamp(++index,
+                    Timestamp.from(entity.getDataOra().toInstant()));
             statement.setString(++index, entity.getDescrizione());
             statement.setInt(++index,
                     entity.getSegnalatore().getIdUtente());
