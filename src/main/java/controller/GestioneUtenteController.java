@@ -195,8 +195,6 @@ public final class GestioneUtenteController extends HttpServlet {
 
       UtenteProxy utenteProxy = new UtenteProxy(ut);
       utenteProxy.getDonazioni();
-      for (Campagna c : utenteProxy.getCampagne())
-         System.out.println(c.getCategoria());
 
       request.setAttribute("utente", ut);
 
