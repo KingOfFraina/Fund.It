@@ -10,7 +10,6 @@ import model.services.CampagnaServiceImpl;
 import model.services.SegnalazioniService;
 import model.services.SegnalazioniServiceImpl;
 
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -103,7 +102,5 @@ public final class SegnalazioneController extends HttpServlet {
             default:
                 break;
         }
-
-
     }
 }
