@@ -1,10 +1,13 @@
 package controller;
 
-import model.beans.*;
+import model.beans.Campagna;
+import model.beans.Categoria;
+import model.beans.Donazione;
+import model.beans.StatoCampagna;
+import model.beans.Utente;
 import model.beans.proxies.CampagnaProxy;
 import model.beans.proxies.DonazioneProxy;
 import model.beans.proxyInterfaces.CampagnaInterface;
-import model.beans.proxyInterfaces.DonazioneInterface;
 import model.services.CampagnaService;
 import model.services.CampagnaServiceImpl;
 import model.services.CategoriaService;

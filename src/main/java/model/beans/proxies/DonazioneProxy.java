@@ -14,6 +14,14 @@ public final class DonazioneProxy implements DonazioneInterface {
      */
     private Donazione donazione;
 
+
+    /**
+     * Costruttore.
+     */
+    public DonazioneProxy() {
+        this.donazione = new Donazione();
+    }
+
     /**
      * costruttore.
      *
@@ -23,16 +31,14 @@ public final class DonazioneProxy implements DonazioneInterface {
         this.donazione = newDonazione;
     }
 
-    public DonazioneProxy() {
-        this.donazione = new Donazione();
-    }
 
     @Override
     public Campagna getCampagna() {
         if (donazione.getCampagna().getCategoria() == null) {
             DAO<Campagna> campagnaDAO = new CampagnaDAO();
             donazione.setCampagna(
-                    campagnaDAO.getById(donazione.getCampagna().getIdCampagna()));
+                    campagnaDAO.getById(
+                            donazione.getCampagna().getIdCampagna()));
         }
 
         return donazione.getCampagna();
@@ -53,10 +59,9 @@ public final class DonazioneProxy implements DonazioneInterface {
     }
 
     /**
-     * @param donazione istanza di Donazione
+     * @param nuovaDonazione istanza di Donazione
      */
-
-    public void setDonazione(Donazione donazione) {
-        this.donazione = donazione;
+    public void setDonazione(final Donazione nuovaDonazione) {
+        this.donazione = nuovaDonazione;
     }
 }
