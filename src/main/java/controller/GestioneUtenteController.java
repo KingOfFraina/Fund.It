@@ -2,10 +2,7 @@ package controller;
 
 import model.DAO.DAO;
 import model.DAO.UtenteDAO;
-import model.beans.Campagna;
-import model.beans.Donazione;
 import model.beans.Utente;
-import model.beans.proxies.DonazioneProxy;
 import model.beans.proxies.UtenteProxy;
 import model.services.UtenteService;
 import model.services.UtenteServiceImpl;

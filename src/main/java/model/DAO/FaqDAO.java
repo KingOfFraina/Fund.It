@@ -48,7 +48,7 @@ public final class FaqDAO implements DAO<FAQ> {
             List<FAQ> retrieved = new ArrayList<>();
 
             while (rs.next()) {
-                  retrieved.add(extract(rs, ""));
+               retrieved.add(extract(rs, ""));
             }
 
             return retrieved;
@@ -98,7 +98,8 @@ public final class FaqDAO implements DAO<FAQ> {
 
                   preparedStatement.setString(index++, entity.getDomanda());
                   preparedStatement.setString(index++, entity.getRisposta());
-                  preparedStatement.setInt(index++, entity.getUtenteCreatore().getIdUtente());
+                  preparedStatement.setInt(index++,
+                          entity.getUtenteCreatore().getIdUtente());
                   preparedStatement.setInt(index, entity.getIdFaq());
 
                   return preparedStatement.executeUpdate() > 0;
