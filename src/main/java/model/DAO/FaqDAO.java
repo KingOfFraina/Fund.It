@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class FaqDAO implements DAO<FAQ> {
@@ -18,7 +19,7 @@ public final class FaqDAO implements DAO<FAQ> {
       try (Connection con = ConPool.getInstance().getConnection()) {
          try (PreparedStatement ps = con.prepareStatement("SELECT * "
                  + "FROM faq WHERE idFaq = ?")) {
-            ps.setInt(0, id);
+            ps.setInt(1, id);
 
             ResultSet rs = ps.executeQuery();
 
@@ -44,7 +45,7 @@ public final class FaqDAO implements DAO<FAQ> {
                       con.prepareStatement("SELECT * FROM faq")) {
             ResultSet rs = ps.executeQuery();
 
-            List<FAQ> retrieved = null;
+            List<FAQ> retrieved = new ArrayList<>();
 
             while (rs.next()) {
                   retrieved.add(extract(rs, ""));
@@ -87,7 +88,7 @@ public final class FaqDAO implements DAO<FAQ> {
                       ConPool.getInstance().getConnection()) {
             if (connection != null) {
                String query =
-                       "UPDATE faq SET domanda = ?, risposta = ?, idUtente = ?"
+                       "UPDATE faq SET domanda = ?, risposta = ?, idUtente = ? "
                                + "WHERE idFaq = ?";
 
                try (PreparedStatement preparedStatement =
@@ -97,6 +98,7 @@ public final class FaqDAO implements DAO<FAQ> {
 
                   preparedStatement.setString(index++, entity.getDomanda());
                   preparedStatement.setString(index++, entity.getRisposta());
+                  preparedStatement.setInt(index++, entity.getUtenteCreatore().getIdUtente());
                   preparedStatement.setInt(index, entity.getIdFaq());
 
                   return preparedStatement.executeUpdate() > 0;

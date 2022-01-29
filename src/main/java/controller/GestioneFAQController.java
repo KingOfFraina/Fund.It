@@ -22,59 +22,110 @@ public final class GestioneFAQController extends HttpServlet {
     protected void doGet(final HttpServletRequest request,
                          final HttpServletResponse response)
             throws ServletException, IOException {
+
         String path = request.getPathInfo();
-        String resource = "/";
+        String resource = "/WEB-INF/results/visualizzaFAQ.jsp";
 
-        switch (path) {
-            case "/inserisciFAQ":
-                resource = "/WEB-INF/results/"; //todo path
-                break;
-            case "/modificaFAQ":
-                resource = "/WEB-INF/results/"; //todo path
-                break;
-            case "/visualizzaFAQ":
-                visualizzaFAQ(request, response);
-                resource = "/WEB-INF/results/"; //todo path
-                break;
-            default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                        "Risorsa non trovata");
+        if (!path.equals("/visualizzaFAQ")) {
+            HttpSession session = request.getSession(false);
+
+            if (session != null && session.getAttribute("utente") != null) {
+                Utente utente = (Utente) session.getAttribute("utente");
+
+                if(!utente.isAdmin()) {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                            "Non Autorizzato");
+                    return;
+                }
+
+                if(path.equals("/modificaFAQ")) {
+                    request.setAttribute("faq", new FaqServiceImpl().visualizzaFaq(Integer.parseInt(request.getParameter("idFaq"))));
+                }
+
+                resource = "/WEB-INF/results/formFAQ.jsp";
+            }
+            else {
+                response.sendRedirect(
+                        getServletContext().getContextPath() + "/AutenticazioneController/login");
                 return;
+            }
         }
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher(resource);
-        dispatcher.forward(request, response);
-        return;
+        else {
+            visualizzaFAQ(request);
+        }
+
+        request.getRequestDispatcher(resource).forward(request, response);
     }
 
-    @Override
-    protected void doPost(final HttpServletRequest request,
-                          final HttpServletResponse response)
-            throws IOException, ServletException {
-        String path = request.getPathInfo();
+   @Override
+   protected void doPost(final HttpServletRequest request,
+                         final HttpServletResponse response)
+           throws IOException {
+      String path = request.getPathInfo();
 
-        switch (path) {
-            case "/inserisciFAQ":
-                inserisciFAQ(request, response);
-                break;
-            case "/modificaFAQ":
-                modificaFAQ(request, response);
-                break;
-            case "/cancellaFAQ":
-                cancellaFAQ(request, response);
-                break;
-            default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                        "Risorsa non trovata");
-                return;
+      switch (path) {
+         case "/inserisciFAQ":
+            inserisciFAQ(request);
+            break;
+         case "/modificaFAQ":
+            modificaFAQ(request);
+            break;
+         case "/cancellaFAQ":
+            cancellaFAQ(request, response);
+            break;
+         default:
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,
+                    "Risorsa non trovata");
+            break;
+      }
+   }
+
+   private void visualizzaFAQ(final HttpServletRequest request) {
+      request.setAttribute("faqList", new FaqServiceImpl().visualizzaFaq());
+   }
+
+   private void inserisciFAQ(final HttpServletRequest request) {
+      Utente utente = (Utente) request.getSession(false).getAttribute("utente");
+
+      String domanda = request.getParameter("domanda");
+      String risposta = request.getParameter("risposta");
+
+      if (domanda == null || domanda.isBlank()
+              || risposta == null || domanda.isBlank()) {
+
+         new IllegalArgumentException("Input errati");
+      }
+
+      FAQ faq = new FAQ();
+      faq.setDomanda(domanda);
+      faq.setRisposta(risposta);
+      faq.setUtenteCreatore(utente);
+
+      new FaqServiceImpl().inserisciFaq(faq);
+   }
+
+    private void modificaFAQ(final HttpServletRequest request) {
+        Utente utente = (Utente) request.getSession(false).getAttribute("utente");
+
+        String domanda = request.getParameter("domanda");
+        String risposta = request.getParameter("risposta");
+        int idFAQ = Integer.parseInt(request.getParameter("idFaq"));
+
+        if (domanda == null || domanda.isBlank()
+                || risposta == null || domanda.isBlank()) {
+
+            new IllegalArgumentException("Input errati");
         }
-        return;
+
+        FAQ faq = new FAQ();
+        faq.setIdFaq(idFAQ);
+        faq.setDomanda(domanda);
+        faq.setRisposta(risposta);
+        faq.setUtenteCreatore(utente);
+
+        new FaqServiceImpl().modificaFaq(faq);
     }
-    private void visualizzaFAQ(final HttpServletRequest request,
-                               final HttpServletResponse response) {
-        FaqService fs = new FaqServiceImpl();
-        request.setAttribute("faqList", fs.visualizzaFaq());
-    }
+
     private void cancellaFAQ(final HttpServletRequest request,
                              final HttpServletResponse response)
             throws IOException {
@@ -105,71 +156,4 @@ public final class GestioneFAQController extends HttpServlet {
         fs.cancellaFaq(faq);
         //todo return
     }
-    private void modificaFAQ(final HttpServletRequest request,
-                             final HttpServletResponse response)
-            throws IOException {
-        HttpSession session = request.getSession();
-
-        if (session.getAttribute("utente") == null
-                || !session.getAttribute("utente").getClass().getSimpleName().
-                equals(Utente.class.getSimpleName())) {
-            response.sendRedirect(request.getServletContext().getContextPath()
-                    + "/AutenticazioneController/login");
-            return;
-        }
-        Utente utente = (Utente) session.getAttribute("utente");
-        if (!utente.isAdmin()) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                    "Non Autorizzato");
-            return;
-        }
-
-        if (request.getAttribute("faq") == null
-                || request.getAttribute("faq").getClass().getSimpleName().
-                equals(FAQ.class.getSimpleName())) {
-            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
-                    "Input errato");
-            return;
-        }
-        FAQ faq = (FAQ) request.getAttribute("faq");
-        FaqService fs = new FaqServiceImpl();
-        fs.modificaFaq(faq);
-        //todo return
-    }
-    private void inserisciFAQ(final HttpServletRequest request,
-                              final HttpServletResponse response)
-            throws IOException {
-        HttpSession session = request.getSession();
-
-        if (session.getAttribute("utente") == null
-                || !session.getAttribute("utente").getClass().getSimpleName().
-                equals(Utente.class.getSimpleName())) {
-            response.sendRedirect(request.getServletContext().getContextPath()
-                    + "/AutenticazioneController/login");
-            return;
-        }
-        Utente utente = (Utente) session.getAttribute("utente");
-        if (!utente.isAdmin()) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                    "Non Autorizzato");
-            return;
-        }
-        String domanda = request.getParameter("domanda");
-        String risposta = request.getParameter("risposta");
-        if (domanda == null || domanda.isBlank()
-                || risposta == null || domanda.isBlank()) {
-            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
-                    "Input errato");
-            return;
-        }
-
-        FAQ faq = new FAQ();
-        faq.setDomanda(domanda);
-        faq.setRisposta(risposta);
-        faq.setUtenteCreatore(utente);
-        FaqService fs = new FaqServiceImpl();
-        fs.inserisciFaq(faq);
-        //todo return
-    }
-
 }

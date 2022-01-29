@@ -30,7 +30,7 @@ public final class ConPool {
    /***
     * Timeout connessione.
     */
-   private static final int TIMEOUT = 60;
+   private static final int TIMEOUT = 15;
 
    private ConPool() {
    }

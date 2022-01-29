@@ -37,7 +37,7 @@
                     <a class="nav-link active text-black navbar-text" href="#">In Evidenza</a>
                 </li>
                 <li class="nav-item mx-4">
-                    <a class="nav-link active text-black navbar-text" href="#">Contatti</a>
+                    <a class="nav-link active text-black navbar-text" href="${pageContext.request.contextPath}/GestioneFAQController/visualizzaFAQ">FAQ</a>
                 </li>
             </ul>
 
