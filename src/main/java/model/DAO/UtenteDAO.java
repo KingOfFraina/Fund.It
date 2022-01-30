@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,9 +98,11 @@ public final class UtenteDAO implements DAO<Utente> {
                          ConPool.getInstance().getConnection()) {
                 if (connection != null) {
                     String query =
-                            "UPDATE utente SET dataBan = ?,admin = ?,fotoProfilo = ?"
-                                    + ", passwordhash = ?, telefono = ?, nome = ?, "
-                                    + "cognome = ?, email = ?, strada = ?, città = ?"
+                            "UPDATE utente SET dataBan = ?, admin = ?,"
+                                    + "fotoProfilo = ?, passwordhash = ?,"
+                                    + " telefono = ?, nome = ?, "
+                                    + "cognome = ?, email = ?,"
+                                    + " strada = ?, città = ?"
                                     + ", cap = ?, cf = ?, dataDiNascita = ?"
                                     + "WHERE idUtente = ?";
 
@@ -130,7 +131,8 @@ public final class UtenteDAO implements DAO<Utente> {
                 if (connection != null) {
                     String query =
                             "INSERT INTO utente (dataBan, admin, fotoProfilo, "
-                                    + "passwordhash, telefono, nome, cognome, email,"
+                                    + "passwordhash, telefono, nome,"
+                                    + " cognome, email,"
                                     + " strada, città, cap, cf, dataDiNascita) "
                                     + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
@@ -192,15 +194,19 @@ public final class UtenteDAO implements DAO<Utente> {
             utente.setCf(resultSet.getString(tableAlias + "cf"));
             utente.setCitta(resultSet.getString(tableAlias + "città"));
             utente.setCognome(resultSet.getString(tableAlias + "cognome"));
-            utente.setDataBan(LocalDateTime.from(resultSet.getDate(tableAlias + "dataBan").toLocalDate()));
+            utente.setDataBan(LocalDateTime
+                    .from(resultSet.getDate(tableAlias + "dataBan")
+                            .toLocalDate()));
             utente.setDataDiNascita(resultSet.getDate(tableAlias
                     + "dataDiNascita").toLocalDate());
             utente.setEmail(resultSet.getString(tableAlias
                     + "email"));
-            utente.setFotoProfilo(resultSet.getString(tableAlias + "fotoProfilo"));
+            utente.setFotoProfilo(
+                    resultSet.getString(tableAlias + "fotoProfilo"));
             utente.setIdUtente(resultSet.getInt(tableAlias + "idUtente"));
             utente.setNome(resultSet.getString(tableAlias + "nome"));
-            utente.setPassword(resultSet.getString(tableAlias + "passwordhash"));
+            utente.setPassword(
+                    resultSet.getString(tableAlias + "passwordhash"));
             utente.setStrada(resultSet.getString(tableAlias + "strada"));
             utente.setTelefono(resultSet.getString(tableAlias + "telefono"));
             utente.setCampagne(null);

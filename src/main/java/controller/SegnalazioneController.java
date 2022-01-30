@@ -100,12 +100,17 @@ public final class SegnalazioneController extends HttpServlet {
                         Integer.parseInt(
                                 request.getParameter("idSegnalazione"));
 
-                if(scelta.equals("Risolta")) {
-                    segnalazioniService.risolviSegnalazione(idSegnalazione, StatoSegnalazione.RISOLTA);
-                    CampagnaService campagnaService1 = new CampagnaServiceImpl();
+                if (scelta.equals("Risolta")) {
+                    segnalazioniService
+                            .risolviSegnalazione(idSegnalazione,
+                                    StatoSegnalazione.RISOLTA);
+                    CampagnaService campagnaService1 =
+                            new CampagnaServiceImpl();
                     UtenteService utenteService = new UtenteServiceImpl();
                     Campagna c2 = campagnaService1.trovaCampagna(id);
-                    Utente utenteSegnalato = utenteService.visualizzaDashboardUtente(c2.getUtente().getIdUtente());
+                    Utente utenteSegnalato =
+                            utenteService.visualizzaDashboardUtente(
+                                    c2.getUtente().getIdUtente());
 
                     campagnaService1.cancellaCampagna(c2);
 
