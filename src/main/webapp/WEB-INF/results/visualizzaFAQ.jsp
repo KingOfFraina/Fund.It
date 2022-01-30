@@ -12,15 +12,15 @@
             <c:if test="${sessionScope.utente.admin}">
                 <form>
                     <input type="hidden" name="idFaq" value="${faq.idFaq}">
-                    <input type="submit" formmethod="get" formaction="${pageContext.request.contextPath}/GestioneFAQController/modificaFAQ" value="Modifica FAQ">
-                    <input type="submit" formmethod="post" formaction="${pageContext.request.contextPath}/GestioneFAQController/eliminaFAQ" value="Elimina FAQ">
+                    <input type="submit" formmethod="get" formaction="${pageContext.request.contextPath}/faq/modificaFAQ" value="Modifica FAQ">
+                    <input type="submit" formmethod="post" formaction="${pageContext.request.contextPath}/faq/eliminaFAQ" value="Elimina FAQ">
                 </form>
             </c:if>
         </c:forEach>
 
         <c:if test="${sessionScope.utente.admin}">
             <form>
-                <input type="submit" formmethod="get" formaction="${pageContext.request.contextPath}/GestioneFAQController/inserisciFAQ" value="Inserisci FAQ">
+                <input type="submit" formmethod="get" formaction="${pageContext.request.contextPath}/faq/inserisciFAQ" value="Inserisci FAQ">
             </form>
         </c:if>
 
