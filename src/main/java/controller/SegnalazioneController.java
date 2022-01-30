@@ -9,6 +9,8 @@ import model.services.CampagnaService;
 import model.services.CampagnaServiceImpl;
 import model.services.SegnalazioniService;
 import model.services.SegnalazioniServiceImpl;
+import model.services.UtenteService;
+import model.services.UtenteServiceImpl;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -91,13 +93,26 @@ public final class SegnalazioneController extends HttpServlet {
                     return;
                 }
                 break;
-            case "/modifica":
+            case "/risolvi":
+                String scelta = "rger";
+                int id = Integer.parseInt(request.getParameter("idCampagna"));
                 int idSegnalazione =
                         Integer.parseInt(
                                 request.getParameter("idSegnalazione"));
-                segnalazioniService.
-                        risolviSegnalazione(idSegnalazione,
-                                StatoSegnalazione.RISOLTA);
+
+                if(scelta.equals("Risolta")) {
+                    segnalazioniService.risolviSegnalazione(idSegnalazione, StatoSegnalazione.RISOLTA);
+                    CampagnaService campagnaService1 = new CampagnaServiceImpl();
+                    UtenteService utenteService = new UtenteServiceImpl();
+                    Campagna c2 = campagnaService1.trovaCampagna(id);
+                    Utente utenteSegnalato = utenteService.visualizzaDashboardUtente(c2.getUtente().getIdUtente());
+
+                    campagnaService1.cancellaCampagna(c2);
+
+                    utenteService.sospensioneUtente(utenteSegnalato);
+
+                }
+
                 break;
             default:
                 break;

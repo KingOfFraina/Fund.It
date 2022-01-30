@@ -6,7 +6,8 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public final class Utente implements UtenteInterface {
@@ -17,7 +18,7 @@ public final class Utente implements UtenteInterface {
    /**
     * Data del ban dell'utente.
     */
-   private Date dataBan;
+   private LocalDateTime dataBan;
    /**
     * Booleano che identifica se l'utente è admin oppure no.
     */
@@ -65,7 +66,7 @@ public final class Utente implements UtenteInterface {
    /**
     * Data di nascita dell'utente.
     */
-   private Date dataDiNascita;
+   private LocalDate dataDiNascita;
    /**
     * Lista delle donazioni effettuate dall'utente.
     */
@@ -97,14 +98,14 @@ public final class Utente implements UtenteInterface {
    /**
     * @return dataBan.
     */
-   public Date getDataBan() {
+   public LocalDateTime getDataBan() {
       return dataBan;
    }
 
    /**
     * @param data Data del ban.
     */
-   public void setDataBan(final Date data) {
+   public void setDataBan(final LocalDateTime data) {
       this.dataBan = data;
    }
 
@@ -265,14 +266,14 @@ public final class Utente implements UtenteInterface {
    /**
     * @return Data Di Nascita dell'utente.
     */
-   public Date getDataDiNascita() {
+   public LocalDate getDataDiNascita() {
       return dataDiNascita;
    }
 
    /**
     * @param ddn Data Di Nascita dell'utente.
     */
-   public void setDataDiNascita(final Date ddn) {
+   public void setDataDiNascita(final LocalDate ddn) {
       this.dataDiNascita = ddn;
    }
 

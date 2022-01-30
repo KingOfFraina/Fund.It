@@ -1,7 +1,6 @@
 package controller;
 
 import model.beans.Categoria;
-import model.beans.Utente;
 import model.services.CategoriaService;
 import model.services.CategoriaServiceImpl;
 
@@ -13,9 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 @WebServlet(name = "GestioneCategorieController",
-        value = "/GestioneCategorieController/*", loadOnStartup = 0)
+        value = "/categorie/*", loadOnStartup = 0)
 public final class GestioneCategorieController extends HttpServlet {
 
     @Override
@@ -24,7 +25,6 @@ public final class GestioneCategorieController extends HttpServlet {
 
         this.getServletContext().setAttribute("categorieList",
                 cs.visualizzaCategorie());
-
     }
 
     @Override
@@ -88,7 +88,7 @@ public final class GestioneCategorieController extends HttpServlet {
                                    final HttpSession session)
             throws IOException {
 
-        Utente utente = (Utente) session.getAttribute("utente");
+        /*Utente utente = (Utente) session.getAttribute("utente");
 
         if (utente == null) {
             response.sendRedirect(request.getServletContext().getContextPath()
@@ -100,7 +100,7 @@ public final class GestioneCategorieController extends HttpServlet {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                     "Non Autorizzato");
             return;
-        }
+        }*/
 
         int idCategoria = Integer.parseInt(request.getParameter("idCategoria"));
         String nomeCategoria = request.getParameter("nomeCategoria");
@@ -112,9 +112,24 @@ public final class GestioneCategorieController extends HttpServlet {
         c.setNome(nomeCategoria);
         if (service.modificaCategoria(c)) {
             System.out.println("ok");
+            List<Categoria> categorie =
+                    (List<Categoria>)
+                            getServletContext().getAttribute("categorieList");
+
+            Optional<Categoria> optional = categorie.stream()
+                    .filter(c1 -> c1.getIdCategoria() == idCategoria)
+                    .findFirst();
+            if (optional.isPresent()) {
+                Categoria categoria = optional.get();
+                categoria.setNome(nomeCategoria);
+
+            } else {
+                System.out.println("not found");
+            }
         } else {
             System.out.println("errore");
         }
+
     }
 
     private void inserisciCategoria(final HttpServletRequest request,
@@ -122,9 +137,11 @@ public final class GestioneCategorieController extends HttpServlet {
                                     final HttpSession session)
             throws IOException {
 
-        Utente utente = (Utente) session.getAttribute("utente");
 
-        if (session.getAttribute("utente") == null) {
+
+       /* Utente utente = (Utente) session.getAttribute("utente");
+
+        if (utente == null) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/AutenticazioneController/login");
             return;
@@ -134,11 +151,11 @@ public final class GestioneCategorieController extends HttpServlet {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                     "Non Autorizzato");
             return;
-        }
+        }*/
 
         String nomeCategoria = request.getParameter("nomeCategoria");
 
-        if (nomeCategoria == null || nomeCategoria.isBlank()) {
+        if (nomeCategoria.isBlank()) {
             response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
                     "Input errato");
             return;
@@ -149,6 +166,10 @@ public final class GestioneCategorieController extends HttpServlet {
         CategoriaService cs = new CategoriaServiceImpl();
         if (cs.inserisciCategoria(c)) {
             System.out.println("ok");
+            List<Categoria> categorie =
+                    (List<Categoria>) getServletContext()
+                            .getAttribute("categorieList");
+            categorie.add(c);
         } else {
             System.out.println("errore");
         }

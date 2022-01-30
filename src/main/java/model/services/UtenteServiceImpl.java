@@ -1,8 +1,12 @@
 package model.services;
 
+import model.DAO.DAO;
 import model.DAO.UtenteDAO;
 import model.beans.Utente;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -22,8 +26,7 @@ public class UtenteServiceImpl implements UtenteService {
      */
     @Override
     public boolean modificaProfilo(final Utente utente) {
-        UtenteDAO utenteDAO = new UtenteDAO();
-        return utenteDAO.update(utente);
+        return new UtenteDAO().update(utente);
     }
 
     /**
@@ -32,14 +35,11 @@ public class UtenteServiceImpl implements UtenteService {
      */
     @Override
     public List<Utente> visualizzaUtenti(final Utente richiedente) {
-        if (richiedente.getIdUtente() < 0 || !richiedente.isAdmin()) {
+        if (!richiedente.isAdmin()) {
             return null;
         }
 
-        UtenteDAO dao = new UtenteDAO();
-        List<Utente> list = dao.getAll();
-
-        return list;
+        return new UtenteDAO().getAll();
     }
 
     /**
@@ -53,7 +53,7 @@ public class UtenteServiceImpl implements UtenteService {
         if (richiedente.getIdUtente() < 0) {
             return false;
         }
-        UtenteDAO dao = new UtenteDAO();
+        DAO<Utente> dao = new UtenteDAO();
         if (!richiedente.isAdmin()) {
             return false;
         }
@@ -69,8 +69,10 @@ public class UtenteServiceImpl implements UtenteService {
      */
     @Override
     public boolean sospensioneUtente(final Utente cattivone) {
-        UtenteDAO utenteDAO = new UtenteDAO();
-        cattivone.setDataBan(new Date());
+        DAO<Utente> utenteDAO = new UtenteDAO();
+        LocalDateTime now = LocalDateTime.now();
+        now = LocalDateTime.parse(now.toString()).plusDays(5);
+        cattivone.setDataBan(now);
         return utenteDAO.update(cattivone);
     }
 }
