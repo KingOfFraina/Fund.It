@@ -11,10 +11,10 @@
             <input type="submit"
             <c:choose>
                 <c:when test="${requestScope.faq != null}">
-                   formaction="${pageContext.request.contextPath}/GestioneFAQController/modificaFAQ" value="Salva modifiche">
+                   formaction="${pageContext.request.contextPath}/faq/modificaFAQ" value="Salva modifiche">
                 </c:when>
                 <c:otherwise>
-                    formaction="${pageContext.request.contextPath}/GestioneFAQController/inserisciFAQ" value="Inserisci FAQ">
+                    formaction="${pageContext.request.contextPath}/faq/inserisciFAQ" value="Inserisci FAQ">
                 </c:otherwise>
             </c:choose>
         </form>
