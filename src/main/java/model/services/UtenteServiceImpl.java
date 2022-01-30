@@ -3,11 +3,7 @@ package model.services;
 import model.DAO.DAO;
 import model.DAO.UtenteDAO;
 import model.beans.Utente;
-
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 public class UtenteServiceImpl implements UtenteService {
@@ -71,7 +67,8 @@ public class UtenteServiceImpl implements UtenteService {
     public boolean sospensioneUtente(final Utente cattivone) {
         DAO<Utente> utenteDAO = new UtenteDAO();
         LocalDateTime now = LocalDateTime.now();
-        now = LocalDateTime.parse(now.toString()).plusDays(5);
+        final int dayBan = 5;
+        now = LocalDateTime.parse(now.toString()).plusDays(dayBan);
         cattivone.setDataBan(now);
         return utenteDAO.update(cattivone);
     }
