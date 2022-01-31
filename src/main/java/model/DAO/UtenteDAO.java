@@ -3,11 +3,7 @@ package model.DAO;
 import model.beans.Utente;
 import model.storage.ConPool;
 
-import java.sql.Date;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -194,9 +190,9 @@ public final class UtenteDAO implements DAO<Utente> {
             utente.setCf(resultSet.getString(tableAlias + "cf"));
             utente.setCitta(resultSet.getString(tableAlias + "città"));
             utente.setCognome(resultSet.getString(tableAlias + "cognome"));
-            Date dataBan = resultSet.getDate(tableAlias + "dataBan");
+            Timestamp dataBan = resultSet.getTimestamp(tableAlias + "dataBan");
             if (dataBan != null) {
-                utente.setDataBan(LocalDateTime.from(dataBan.toLocalDate()));
+                utente.setDataBan(dataBan.toLocalDateTime());
             }
             utente.setDataDiNascita(resultSet.getDate(tableAlias
                     + "dataDiNascita").toLocalDate());

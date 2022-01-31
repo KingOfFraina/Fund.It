@@ -2,17 +2,12 @@ package controller;
 
 
 import model.DAO.CampagnaDAO;
+import model.DAO.DAO;
+import model.DAO.DonazioneDAO;
 import model.beans.*;
 import model.beans.proxies.CampagnaProxy;
-import model.beans.proxies.DonazioneProxy;
 import model.beans.proxyInterfaces.CampagnaInterface;
-import model.beans.proxyInterfaces.DonazioneInterface;
-import model.services.CampagnaService;
-import model.services.CampagnaServiceImpl;
-import model.services.SegnalazioniService;
-import model.services.SegnalazioniServiceImpl;
-import model.services.UtenteService;
-import model.services.UtenteServiceImpl;
+import model.services.*;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -24,7 +19,7 @@ import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @WebServlet(name = "SegnalazioneController",
         value = "/segnalazioni/*")
@@ -121,6 +116,10 @@ public final class SegnalazioneController extends HttpServlet {
                     CampagnaInterface campagnaProxy = new CampagnaProxy(c2);
                     List<Donazione> donazioni = campagnaProxy.getDonazioni();
                     donazioni.forEach(d -> d.setSommaDonata(-d.getSommaDonata()));
+                    DAO<Donazione> dao = new DonazioneDAO();
+                    for (Donazione d : donazioni) {
+                        dao.update(d);
+                    }
                 }
 
                 break;
