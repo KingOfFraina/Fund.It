@@ -194,9 +194,10 @@ public final class UtenteDAO implements DAO<Utente> {
             utente.setCf(resultSet.getString(tableAlias + "cf"));
             utente.setCitta(resultSet.getString(tableAlias + "città"));
             utente.setCognome(resultSet.getString(tableAlias + "cognome"));
-            utente.setDataBan(LocalDateTime
-                    .from(resultSet.getDate(tableAlias + "dataBan")
-                            .toLocalDate()));
+            Date dataBan = resultSet.getDate(tableAlias + "dataBan");
+            if (dataBan != null) {
+                utente.setDataBan(LocalDateTime.from(dataBan.toLocalDate()));
+            }
             utente.setDataDiNascita(resultSet.getDate(tableAlias
                     + "dataDiNascita").toLocalDate());
             utente.setEmail(resultSet.getString(tableAlias
