@@ -2,7 +2,7 @@ package model.beans;
 
 import model.beans.proxyInterfaces.DonazioneInterface;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public final class Donazione implements DonazioneInterface {
    /**
@@ -38,7 +38,7 @@ public final class Donazione implements DonazioneInterface {
    /**
     * rappresenta la data e l'ora in cui viene effettuata la donazione.
     */
-   private Date dataOra;
+   private LocalDateTime dataOra;
 
    /**
     * @return l'identificativo della donazione
@@ -143,7 +143,7 @@ public final class Donazione implements DonazioneInterface {
    /**
     * @return la data e l'ora in cui è stata effettuata la donazione
     */
-   public Date getDataOra() {
+   public LocalDateTime getDataOra() {
       return dataOra;
    }
 
@@ -151,7 +151,7 @@ public final class Donazione implements DonazioneInterface {
     * @param newDataOra prende la data e l'ora in cui è stato
     * effettuata la donazione
     */
-   public void setDataOra(final Date newDataOra) {
+   public void setDataOra(final LocalDateTime newDataOra) {
       this.dataOra = newDataOra;
    }
 

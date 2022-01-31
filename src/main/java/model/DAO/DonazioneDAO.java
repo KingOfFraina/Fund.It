@@ -5,11 +5,11 @@ import model.beans.Donazione;
 import model.beans.Utente;
 import model.storage.ConPool;
 
-import java.sql.Date;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,8 +80,8 @@ public final class DonazioneDAO implements DAO<Donazione> {
 
                   int index = 1;
 
-                  preparedStatement.setDate(index++,
-                          (Date) entity.getDataOra());
+                  preparedStatement.setTimestamp(index++,
+                          Timestamp.valueOf(entity.getDataOra()));
                   preparedStatement.setString(index++,
                           entity.getRicevuta());
                   preparedStatement.setDouble(index++,
@@ -178,7 +178,7 @@ public final class DonazioneDAO implements DAO<Donazione> {
          donazione.setIdDonazione(resultSet.getInt(tableAlias
                  + "idDonazione"));
          donazione.setDataOra(resultSet.getTimestamp(tableAlias
-                 + "DataOra"));
+                 + "DataOra").toLocalDateTime());
          donazione.setRicevuta(resultSet.getString(tableAlias + "ricevuta"));
          donazione.setSommaDonata(resultSet.getDouble(tableAlias
                  + "sommaDonata"));
