@@ -1,7 +1,10 @@
 package controller;
 
+import model.DAO.CampagnaDAO;
+import model.beans.Campagna;
 import model.beans.Donazione;
 import model.beans.Utente;
+import model.services.CampagnaServiceImpl;
 import model.services.DonazioniServiceImpl;
 
 import javax.servlet.ServletException;
@@ -11,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @WebServlet(name = "GestioneDonazioneController",
         value = "/donazione/*")
@@ -27,12 +31,6 @@ public final class GestioneDonazioneController extends HttpServlet {
       if (session != null && session.getAttribute("utente") != null) {
 
          switch (request.getPathInfo()) {
-
-            case "/effettuaDonazione":
-               request.getRequestDispatcher(
-                               "/WEB-INF/results/PaymentProcessorMock.jsp")
-                       .forward(request, response);
-               return;
 
             case "/scriviCommento":
 
@@ -62,11 +60,34 @@ public final class GestioneDonazioneController extends HttpServlet {
    @Override
    protected void doPost(final HttpServletRequest request,
                          final HttpServletResponse response)
-           throws IOException {
+           throws IOException, ServletException {
 
       switch (request.getPathInfo()) {
          case "/registraDonazione":
-            //TODO DAL PAYMENT
+
+            Campagna campagna = new CampagnaServiceImpl(new CampagnaDAO())
+                    .trovaCampagna(Integer.parseInt(
+                            request.getParameter("idCampagna")));
+            HttpSession session = request.getSession(false);
+            if (session != null && session.getAttribute("utente") != null) {
+               Donazione donazione = new Donazione();
+
+               donazione.setCampagna(campagna);
+               donazione.setUtente((Utente) session.getAttribute("utente"));
+               donazione.setSommaDonata(Double.parseDouble(
+                       request.getParameter("sommaDonata")));
+               donazione.setAnonimo(false);
+               donazione.setCommento("");
+               donazione.setRicevuta(request.getParameter("ricevuta"));
+               donazione.setDataOra(LocalDateTime.now());
+
+               session.setAttribute("donazione", donazione);
+
+               request.getRequestDispatcher(
+                               "/WEB-INF/results/commentoDonazione.jsp")
+                       .forward(request, response);
+               return;
+            }
             break;
 
          case "/scriviCommento":
@@ -76,7 +97,12 @@ public final class GestioneDonazioneController extends HttpServlet {
 
                if (donazione != null) {
                   donazione.setCommento(request.getParameter("commento"));
-                  new DonazioniServiceImpl().commenta(donazione);
+                  if (request.getParameter("anonimo") != null) {
+                     donazione.setAnonimo(true);
+                  }
+
+
+                  new DonazioniServiceImpl().effettuaDonazione(donazione);
                }
             }
             break;

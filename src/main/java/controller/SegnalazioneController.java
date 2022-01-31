@@ -27,101 +27,102 @@ import java.util.List;
 @WebServlet(name = "SegnalazioneController",
         value = "/segnalazioni/*")
 public final class SegnalazioneController extends HttpServlet {
-    @Override
-    protected void doGet(final HttpServletRequest request,
+   @Override
+   protected void doGet(final HttpServletRequest request,
+                        final HttpServletResponse response)
+           throws ServletException, IOException {
+
+
+      String path = request.getPathInfo();
+
+      HttpSession session = request.getSession();
+      String idSegnalazione = request.getParameter("idSegnalazione");
+      int id = 0;
+      try {
+         id = Integer.parseInt(idSegnalazione);
+      } catch (NumberFormatException e) {
+         e.printStackTrace();
+      }
+      SegnalazioniService service = new SegnalazioniServiceImpl();
+
+
+      switch (path) {
+         case "/get":
+            Segnalazione s = service.trovaSegnalazione(id);
+            request.setAttribute("obj", s);
+            break;
+         case "/getAll":
+            List<Segnalazione> segnalazioni = service.trovaSegnalazioni();
+            request.setAttribute("segnalazioni", segnalazioni);
+            break;
+         default:
+            break;
+      }
+
+      RequestDispatcher dispatcher = request.getRequestDispatcher("");
+      dispatcher.forward(request, response);
+
+   }
+
+   @Override
+   protected void doPost(final HttpServletRequest request,
                          final HttpServletResponse response)
-            throws ServletException, IOException {
+           throws IOException {
 
+      String path = request.getPathInfo();
+      HttpSession session = request.getSession();
+      String idCampagna = request.getParameter("idCampagna");
+      CampagnaService campagnaService =
+              new CampagnaServiceImpl(new CampagnaDAO());
+      SegnalazioniService segnalazioniService = new SegnalazioniServiceImpl();
 
-        String path = request.getPathInfo();
+      String descrizione = request.getParameter("descrizione");
+      String resource = "/";
 
-        HttpSession session = request.getSession();
-        String idSegnalazione = request.getParameter("idSegnalazione");
-        int id = 0;
-        try {
-            id = Integer.parseInt(idSegnalazione);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-        SegnalazioniService service = new SegnalazioniServiceImpl();
+      switch (path) {
+         case "/segnala":
+            Campagna c = campagnaService.
+                    trovaCampagna(Integer.parseInt(idCampagna));
+            Utente utente = new Utente();
+            System.out.println(request.getParameter("idUtente"));
+            utente.setIdUtente(
+                    Integer.parseInt(request.getParameter("idUtente")));
+            if (segnalazioniService.
+                    segnalaCampagna(c, utente, descrizione)) {
+               response.sendRedirect(
+                       getServletContext().getContextPath()
+                               + "/index.jsp");
+               return;
+            }
+            break;
+         case "/risolvi":
+            String scelta = "rger";
+            int id = Integer.parseInt(request.getParameter("idCampagna"));
+            int idSegnalazione =
+                    Integer.parseInt(
+                            request.getParameter("idSegnalazione"));
 
+            if (scelta.equals("Risolta")) {
+               segnalazioniService
+                       .risolviSegnalazione(idSegnalazione,
+                               StatoSegnalazione.RISOLTA);
+               CampagnaService campagnaService1 =
+                       new CampagnaServiceImpl(new CampagnaDAO());
+               UtenteService utenteService = new UtenteServiceImpl();
+               Campagna c2 = campagnaService1.trovaCampagna(id);
+               Utente utenteSegnalato =
+                       utenteService.visualizzaDashboardUtente(
+                               c2.getUtente().getIdUtente());
 
-        switch (path) {
-            case "/get":
-                Segnalazione s = service.trovaSegnalazione(id);
-                request.setAttribute("obj", s);
-                break;
-            case "/getAll":
-                List<Segnalazione> segnalazioni = service.trovaSegnalazioni();
-                request.setAttribute("segnalazioni", segnalazioni);
-                break;
-            default:
-                break;
-        }
+               campagnaService1.cancellaCampagna(c2);
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("");
-        dispatcher.forward(request, response);
+               utenteService.sospensioneUtente(utenteSegnalato);
 
-    }
+            }
 
-    @Override
-    protected void doPost(final HttpServletRequest request,
-                          final HttpServletResponse response)
-            throws IOException {
-
-        String path = request.getPathInfo();
-        HttpSession session = request.getSession();
-        String idCampagna = request.getParameter("idCampagna");
-        CampagnaService campagnaService = new CampagnaServiceImpl(new CampagnaDAO());
-        SegnalazioniService segnalazioniService = new SegnalazioniServiceImpl();
-
-        String descrizione = request.getParameter("descrizione");
-        String resource = "/";
-
-        switch (path) {
-            case "/segnala":
-                Campagna c = campagnaService.
-                        trovaCampagna(Integer.parseInt(idCampagna));
-                Utente utente = new Utente();
-                System.out.println(request.getParameter("idUtente"));
-                utente.setIdUtente(
-                        Integer.parseInt(request.getParameter("idUtente")));
-                if (segnalazioniService.
-                        segnalaCampagna(c, utente, descrizione)) {
-                    response.sendRedirect(
-                            getServletContext().getContextPath()
-                                    + "/index.jsp");
-                    return;
-                }
-                break;
-            case "/risolvi":
-                String scelta = "rger";
-                int id = Integer.parseInt(request.getParameter("idCampagna"));
-                int idSegnalazione =
-                        Integer.parseInt(
-                                request.getParameter("idSegnalazione"));
-
-                if (scelta.equals("Risolta")) {
-                    segnalazioniService
-                            .risolviSegnalazione(idSegnalazione,
-                                    StatoSegnalazione.RISOLTA);
-                    CampagnaService campagnaService1 =
-                            new CampagnaServiceImpl(new CampagnaDAO());
-                    UtenteService utenteService = new UtenteServiceImpl();
-                    Campagna c2 = campagnaService1.trovaCampagna(id);
-                    Utente utenteSegnalato =
-                            utenteService.visualizzaDashboardUtente(
-                                    c2.getUtente().getIdUtente());
-
-                    campagnaService1.cancellaCampagna(c2);
-
-                    utenteService.sospensioneUtente(utenteSegnalato);
-
-                }
-
-                break;
-            default:
-                break;
-        }
-    }
+            break;
+         default:
+            break;
+      }
+   }
 }
