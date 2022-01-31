@@ -38,9 +38,7 @@ public final class SegnalazioneController extends HttpServlet {
                          final HttpServletResponse response)
             throws ServletException, IOException {
 
-
         String path = request.getPathInfo();
-
         HttpSession session = request.getSession();
         String idSegnalazione = request.getParameter("idSegnalazione");
         int id = 0;
@@ -55,7 +53,7 @@ public final class SegnalazioneController extends HttpServlet {
         switch (path) {
             case "/get":
                 Segnalazione s = service.trovaSegnalazione(id);
-                request.setAttribute("obj", s);
+                request.setAttribute("segnalazione", s);
                 break;
             case "/getAll":
                 List<Segnalazione> segnalazioni = service.trovaSegnalazioni();
@@ -77,6 +75,13 @@ public final class SegnalazioneController extends HttpServlet {
 
         String path = request.getPathInfo();
         HttpSession session = request.getSession();
+        Utente userSession = (Utente) session.getAttribute("utente");
+        if (userSession == null) {
+            response.sendRedirect(
+                    getServletContext().getContextPath() + "/index.jsp");
+            return;
+        }
+
         String idCampagna = request.getParameter("idCampagna");
         CampagnaService campagnaService =
                 new CampagnaServiceImpl(new CampagnaDAO());
@@ -103,37 +108,43 @@ public final class SegnalazioneController extends HttpServlet {
                 }
                 break;
             case "/risolvi":
+                if (!userSession.isAdmin()) {
+                    response.sendError(
+                            HttpServletResponse.SC_UNAUTHORIZED,
+                            "Non autorizzato");
+                    return;
+                }
                 String scelta = request.getParameter("sceltaSegnalazione");
                 int id = Integer.parseInt(request.getParameter("idCampagna"));
                 int idSegnalazione =
                         Integer.parseInt(
                                 request.getParameter("idSegnalazione"));
 
-                if (scelta.equals("Risolta")) {
+                UtenteService utenteService = new UtenteServiceImpl();
+                Campagna campagna = campagnaService.trovaCampagna(id);
+                if (scelta.equals("Risolvi")) {
                     segnalazioniService
                             .risolviSegnalazione(idSegnalazione,
                                     StatoSegnalazione.RISOLTA);
-                    CampagnaService campagnaService1 =
-                            new CampagnaServiceImpl(new CampagnaDAO());
-                    UtenteService utenteService = new UtenteServiceImpl();
-                    Campagna c2 = campagnaService1.trovaCampagna(id);
                     Utente utenteSegnalato =
                             utenteService.visualizzaDashboardUtente(
-                                    c2.getUtente().getIdUtente());
-
-                    campagnaService1.cancellaCampagna(c2);
-
+                                    campagna.getUtente().getIdUtente());
+                    campagnaService.cancellaCampagna(campagna);
                     utenteService.sospensioneUtente(utenteSegnalato);
-                    CampagnaInterface campagnaProxy = new CampagnaProxy(c2);
-                    List<Donazione> donazioni = campagnaProxy.getDonazioni();
-                    donazioni.forEach(d ->
-                            d.setSommaDonata(-d.getSommaDonata()));
+                    CampagnaInterface campagnaProxy =
+                            new CampagnaProxy(campagna);
+                    List<Donazione> donazioni =
+                            campagnaProxy.getDonazioni();
                     DAO<Donazione> dao = new DonazioneDAO();
-                    for (Donazione d : donazioni) {
+                    donazioni.forEach(d -> {
+                        d.setSommaDonata(-d.getSommaDonata());
                         dao.update(d);
-                    }
+                    });
+                } else {
+                    segnalazioniService
+                            .risolviSegnalazione(idSegnalazione,
+                                    StatoSegnalazione.ARCHIVIATA);
                 }
-
                 break;
             default:
                 break;

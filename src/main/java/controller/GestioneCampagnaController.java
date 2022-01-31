@@ -30,17 +30,17 @@ import java.util.List;
         value = "/GestioneCampagnaController/*")
 public final class GestioneCampagnaController extends HttpServlet {
 
-   @Override
-   protected void doGet(final HttpServletRequest request,
-                        final HttpServletResponse response)
-           throws ServletException, IOException {
-      String resource = "/";
-      HttpSession session;
-      CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
-      CategoriaService categoriaService =
-              new CategoriaServiceImpl(new CategoriaDAO());
+    @Override
+    protected void doGet(final HttpServletRequest request,
+                         final HttpServletResponse response)
+            throws ServletException, IOException {
+        String resource = "/";
+        HttpSession session;
+        CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
+        CategoriaService categoriaService =
+                new CategoriaServiceImpl(new CategoriaDAO());
 
-      session = request.getSession();
+        session = request.getSession();
 
         /*if (session.getAttribute("utente") == null
                 || !session.getAttribute("utente").getClass().getSimpleName().
@@ -51,178 +51,178 @@ public final class GestioneCampagnaController extends HttpServlet {
             return;
         }*/
 
-      switch (request.getPathInfo()) {
-         case "/creaCampagna":
-            request.setAttribute("categorie",
-                    categoriaService.visualizzaCategorie());
-            resource = "/WEB-INF/results/form_campagna.jsp";
-            break;
-         case "/modificaCampagna":
-            visualizzaModificaCampagna(request, response);
-            break;
-         case "/campagna":
-            String id = request.getParameter("idCampagna");
-            Campagna c = service.trovaCampagna(Integer.parseInt(id));
-            CampagnaInterface proxy = new CampagnaProxy(c);
-            c.setUtente(proxy.getUtente());
-            DonazioneProxy proxy2 = new DonazioneProxy();
-            List<Donazione> donazioni = proxy.getDonazioni();
-            for (Donazione d : donazioni) {
-               proxy2.setDonazione(d);
-               d.setUtente(proxy2.getUtente());
-            }
+        switch (request.getPathInfo()) {
+            case "/creaCampagna":
+                request.setAttribute("categorie",
+                        categoriaService.visualizzaCategorie());
+                resource = "/WEB-INF/results/form_campagna.jsp";
+                break;
+            case "/modificaCampagna":
+                visualizzaModificaCampagna(request, response);
+                break;
+            case "/campagna":
+                String id = request.getParameter("idCampagna");
+                Campagna c = service.trovaCampagna(Integer.parseInt(id));
+                CampagnaInterface proxy = new CampagnaProxy(c);
+                c.setUtente(proxy.getUtente());
+                DonazioneProxy proxy2 = new DonazioneProxy();
+                List<Donazione> donazioni = proxy.getDonazioni();
+                donazioni.forEach(d -> {
+                    proxy2.setDonazione(d);
+                    d.setUtente(proxy2.getUtente());
+                });
 
-            c.setDonazioni(proxy.getDonazioni());
+                c.setDonazioni(proxy.getDonazioni());
 
-            request.setAttribute("campagna", c);
-            resource = "/WEB-INF/results/campagna.jsp";
-            break;
-         case "/we":
-            String id1 = request.getParameter("value");
-            System.out.println(id1);
-         default:
-            response.sendError(
-                    HttpServletResponse.SC_NOT_FOUND,
-                    "Risorsa non trovata");
+                request.setAttribute("campagna", c);
+                resource = "/WEB-INF/results/campagna.jsp";
+                break;
+            case "/we":
+                String id1 = request.getParameter("value");
+                System.out.println(id1);
+            default:
+                response.sendError(
+                        HttpServletResponse.SC_NOT_FOUND,
+                        "Risorsa non trovata");
+                return;
+        }
+
+        RequestDispatcher dispatcher =
+                request.getRequestDispatcher(resource);
+        dispatcher.forward(request, response);
+    }
+
+    private void visualizzaModificaCampagna(final HttpServletRequest request,
+                                            final HttpServletResponse response)
+            throws ServletException, IOException {
+        CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
+        CategoriaService categoriaService =
+                new CategoriaServiceImpl(new CategoriaDAO());
+        Utente ut = (Utente) request.getSession().getAttribute("utente");
+        String idCampagna = request.getParameter("idCampagna");
+        int id;
+        try {
+            id = Integer.parseInt(idCampagna);
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
+                    "Input errato");
+            e.printStackTrace();
             return;
-      }
+        }
+        Campagna c = service.trovaCampagna(id);
+        if (c.getUtente().getIdUtente() != id) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                    "Non Autorizzato");
+            return;
+        }
+        request.setAttribute("campagna", c);
+        request.setAttribute("categorie",
+                categoriaService.visualizzaCategorie());
+        RequestDispatcher dispatcher =
+                request.getRequestDispatcher(
+                        "/WEB-INF/results/form_campagna.jsp");
+        dispatcher.forward(request, response);
+    }
 
-      RequestDispatcher dispatcher =
-              request.getRequestDispatcher(resource);
-      dispatcher.forward(request, response);
-   }
+    @Override
+    protected void doPost(final HttpServletRequest request,
+                          final HttpServletResponse response)
+            throws ServletException, IOException {
 
-   private void visualizzaModificaCampagna(final HttpServletRequest request,
-                                           final HttpServletResponse response)
-           throws ServletException, IOException {
-      CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
-      CategoriaService categoriaService =
-              new CategoriaServiceImpl(new CategoriaDAO());
-      Utente ut = (Utente) request.getSession().getAttribute("utente");
-      String idCampagna = request.getParameter("idCampagna");
-      int id = 0;
-      try {
-         id = Integer.parseInt(idCampagna);
-      } catch (NumberFormatException e) {
-         response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
-                 "Input errato");
-         e.printStackTrace();
-         return;
-      }
-      Campagna c = service.trovaCampagna(id);
-      if (c.getUtente().getIdUtente() != id) {
-         response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                 "Non Autorizzato");
-         return;
-      }
-      request.setAttribute("campagna", c);
-      request.setAttribute("categorie",
-              categoriaService.visualizzaCategorie());
-      RequestDispatcher dispatcher =
-              request.getRequestDispatcher(
-                      "/WEB-INF/results/form_campagna.jsp");
-      dispatcher.forward(request, response);
-   }
+        HttpSession session = request.getSession();
+        CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
 
-   @Override
-   protected void doPost(final HttpServletRequest request,
-                         final HttpServletResponse response)
-           throws ServletException, IOException {
+        if (session == null || session.getAttribute("utente") == null) {
+            response.sendRedirect(
+                    getServletContext().getContextPath()
+                            + "/AutenticazioneController/login");
 
-      HttpSession session = request.getSession();
-      CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
+            return;
+        }
 
-      if (session == null || session.getAttribute("utente") == null) {
-         response.sendRedirect(
-                 getServletContext().getContextPath()
-                         + "/AutenticazioneController/login");
+        switch (request.getPathInfo()) {
+            case "/creaCampagna":
+                creaCampagna(request, response);
+                break;
 
-         return;
-      }
+            case "/modificaCampagna":
+                String idCampagna = request.getParameter("idCampagna");
 
-      switch (request.getPathInfo()) {
-         case "/creaCampagna":
-            creaCampagna(request, response);
-            break;
+                if (idCampagna != null) {
+                    modificaCampagna(request, response, service
+                            .trovaCampagna(Integer.parseInt(idCampagna)));
+                }
 
-         case "/modificaCampagna":
-            String idCampagna = request.getParameter("idCampagna");
+                break;
+            default:
+                response.sendError(
+                        HttpServletResponse.SC_NOT_FOUND,
+                        "Risorsa non trovata");
+                break;
+        }
+    }
 
-            if (idCampagna != null) {
-               modificaCampagna(request, response, service
-                       .trovaCampagna(Integer.parseInt(idCampagna)));
-            }
+    @Override
+    public void destroy() {
+        ConPool.getInstance().closeDataSource();
+        super.destroy();
+    }
 
-            break;
-         default:
-            response.sendError(
-                    HttpServletResponse.SC_NOT_FOUND,
-                    "Risorsa non trovata");
-            break;
-      }
-   }
+    private void creaCampagna(final HttpServletRequest req,
+                              final HttpServletResponse res)
+            throws IOException {
 
-   @Override
-   public void destroy() {
-      ConPool.getInstance().closeDataSource();
-      super.destroy();
-   }
+        Campagna c = extractCampagna(req);
+        c.setSommaRaccolta(0d);
 
-   private void creaCampagna(final HttpServletRequest req,
-                             final HttpServletResponse res)
-           throws IOException {
+        if (new CampagnaServiceImpl(new CampagnaDAO()).creazioneCampagna(c)) {
+            res.sendRedirect(
+                    getServletContext().getContextPath() + "/index.jsp");
+        } else {
+            res.sendRedirect(
+                    getServletContext().getContextPath()
+                            + "/GestioneCampagnaController/creaCampagna");
+        }
+    }
 
-      Campagna c = extractCampagna(req);
-      c.setSommaRaccolta(0d);
+    private Campagna extractCampagna(final HttpServletRequest request) {
+        Campagna c = new Campagna();
 
-      if (new CampagnaServiceImpl(new CampagnaDAO()).creazioneCampagna(c)) {
-         res.sendRedirect(
-                 getServletContext().getContextPath() + "/index.jsp");
-      } else {
-         res.sendRedirect(
-                 getServletContext().getContextPath()
-                         + "/GestioneCampagnaController/creaCampagna");
-      }
-   }
+        c.setStato(StatoCampagna.ATTIVA);
+        c.setTitolo(request.getParameter("titolo"));
+        c.setDescrizione(request.getParameter("descrizione"));
 
-   private Campagna extractCampagna(final HttpServletRequest request) {
-      Campagna c = new Campagna();
+        c.setSommaTarget(
+                Double.parseDouble(request.getParameter("sommaTarget")));
+        c.setUtente((Utente) request.getSession(false).getAttribute("utente"));
 
-      c.setStato(StatoCampagna.ATTIVA);
-      c.setTitolo(request.getParameter("titolo"));
-      c.setDescrizione(request.getParameter("descrizione"));
+        Categoria categoria = new Categoria();
+        categoria.setIdCategoria(Integer.parseInt(
+                request.getParameter("idCategoria")));
 
-      c.setSommaTarget(
-              Double.parseDouble(request.getParameter("sommaTarget")));
-      c.setUtente((Utente) request.getSession(false).getAttribute("utente"));
+        c.setCategoria(
+                new CategoriaServiceImpl(new CategoriaDAO())
+                        .visualizzaCategoria(categoria));
 
-      Categoria categoria = new Categoria();
-      categoria.setIdCategoria(Integer.parseInt(
-              request.getParameter("idCategoria")));
+        return c;
+    }
 
-      c.setCategoria(
-              new CategoriaServiceImpl(new CategoriaDAO())
-                      .visualizzaCategoria(categoria));
+    private void modificaCampagna(final HttpServletRequest request,
+                                  final HttpServletResponse response,
+                                  final Campagna campagna)
+            throws IOException, ServletException {
 
-      return c;
-   }
+        Campagna c = extractCampagna(request);
 
-   private void modificaCampagna(final HttpServletRequest request,
-                                 final HttpServletResponse response,
-                                 final Campagna campagna)
-           throws IOException, ServletException {
+        c.setIdCampagna(campagna.getIdCampagna());
+        c.setSommaRaccolta(campagna.getSommaRaccolta());
 
-      Campagna c = extractCampagna(request);
-
-      c.setIdCampagna(campagna.getIdCampagna());
-      c.setSommaRaccolta(campagna.getSommaRaccolta());
-
-      if (new CampagnaServiceImpl(new CampagnaDAO()).modificaCampagna(c)) {
-         response.sendRedirect(
-                 getServletContext().getContextPath() + "/index.jsp");
-      } else {
-         request.getRequestDispatcher("/GestioneCampagnaController"
-                 + "/modificaCampagna").forward(request, response);
-      }
-   }
+        if (new CampagnaServiceImpl(new CampagnaDAO()).modificaCampagna(c)) {
+            response.sendRedirect(
+                    getServletContext().getContextPath() + "/index.jsp");
+        } else {
+            request.getRequestDispatcher("/GestioneCampagnaController"
+                    + "/modificaCampagna").forward(request, response);
+        }
+    }
 }

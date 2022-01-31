@@ -1,6 +1,7 @@
 package controller;
 
 import model.DAO.CampagnaDAO;
+import model.DAO.DonazioneDAO;
 import model.beans.Campagna;
 import model.beans.Donazione;
 import model.beans.Utente;
@@ -42,7 +43,8 @@ public final class GestioneDonazioneController extends HttpServlet {
                }
 
             default:
-               request.setAttribute("donazioniList", new DonazioniServiceImpl()
+               request.setAttribute("donazioniList",
+                       new DonazioniServiceImpl(new DonazioneDAO())
                        .visualizzaDonazioni(
                                (Utente) session.getAttribute("utente")));
          }
@@ -102,7 +104,8 @@ public final class GestioneDonazioneController extends HttpServlet {
                   }
 
 
-                  new DonazioniServiceImpl().effettuaDonazione(donazione);
+                  new DonazioniServiceImpl(new DonazioneDAO())
+                          .effettuaDonazione(donazione);
                }
             }
             break;

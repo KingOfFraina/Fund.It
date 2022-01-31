@@ -20,10 +20,12 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
 
     /**
      * @param session Sessione attuale dell'utente
+     * @param utenteDAO istanza di UtenteDAO
      */
-    public AutenticazioneServiceImpl(final HttpSession session) {
+    public AutenticazioneServiceImpl(final HttpSession session,
+                                     final DAO<Utente> utenteDAO) {
         this.sessionWrapper = session;
-        this.dao = new UtenteDAO();
+        this.dao = utenteDAO;
     }
 
     /**

@@ -1,5 +1,6 @@
 package controller;
 
+import model.DAO.UtenteDAO;
 import model.beans.Utente;
 
 import model.services.AutenticazioneService;
@@ -46,7 +47,7 @@ public final class AutenticazioneController extends HttpServlet {
                 break;
             case "/logout":
                 AutenticazioneService service =
-                        new AutenticazioneServiceImpl(session);
+                        new AutenticazioneServiceImpl(session, new UtenteDAO());
                 service.logout(userSession);
                 response.sendRedirect(getServletContext().getContextPath()
                         + "/index.jsp");
@@ -97,7 +98,8 @@ public final class AutenticazioneController extends HttpServlet {
             utente.createPasswordHash(request.getParameter("password"));
 
             AutenticazioneService autenticazioneService =
-                    new AutenticazioneServiceImpl(request.getSession(true));
+                    new AutenticazioneServiceImpl(
+                            request.getSession(true), new UtenteDAO());
             utente = autenticazioneService.login(utente);
         }
 
@@ -139,7 +141,7 @@ public final class AutenticazioneController extends HttpServlet {
                 utente.setFotoProfilo(request.getParameter("fotoProfilo"));
 
                 AutenticazioneService autenticazioneService =
-                        new AutenticazioneServiceImpl(session);
+                        new AutenticazioneServiceImpl(session, new UtenteDAO());
 
                 if (autenticazioneService.registrazione(utente)) {
                     session.setAttribute("utente", utente);

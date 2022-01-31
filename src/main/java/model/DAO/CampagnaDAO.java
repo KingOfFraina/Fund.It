@@ -221,7 +221,7 @@ public final class CampagnaDAO
                              + "?) LIKE UPPER(CONCAT(c.idCampagna, "
                              + "c.titolo, c.descrizione))"
              )) {
-
+            campagnaList = new ArrayList<>();
             statement.setString(1, "%" + text + "%");
 
             ResultSet set = statement.executeQuery();

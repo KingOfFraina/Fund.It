@@ -1,5 +1,6 @@
 package model.services;
 
+import model.DAO.DAO;
 import model.DAO.DonazioneDAO;
 import model.beans.Donazione;
 import model.beans.Utente;
@@ -7,23 +8,35 @@ import model.beans.Utente;
 import java.util.List;
 
 public final class DonazioniServiceImpl implements DonazioniService {
+    /**
+     * Wrapper di DonazioneDAO.
+     */
+    private final DAO<Donazione> dao;
 
-   @Override
-   public boolean effettuaDonazione(final Donazione d) {
-      return new DonazioneDAO().save(d);
-   }
+    /**
+     * @param donazioneDAO istanza di DonazioneDAO
+     */
+    public DonazioniServiceImpl(final DAO<Donazione> donazioneDAO) {
+        this.dao = donazioneDAO;
+    }
 
-   @Override
-   public List<Donazione> visualizzaDonazioni(final Utente u) {
-      if (!u.isAdmin()) {
-         return new DonazioneDAO().getAllByUtente(u.getIdUtente());
-      }
+    @Override
+    public boolean effettuaDonazione(final Donazione d) {
+        return dao.save(d);
+    }
 
-      return new DonazioneDAO().getAll();
-   }
+    @Override
+    public List<Donazione> visualizzaDonazioni(final Utente u) {
+        if (!u.isAdmin()) {
+            DonazioneDAO donazioneDAO = (DonazioneDAO) dao;
+            return donazioneDAO.getAllByUtente(u.getIdUtente());
+        }
 
-   @Override
-   public boolean commenta(final Donazione d) {
-      return new DonazioneDAO().update(d);
-   }
+        return new DonazioneDAO().getAll();
+    }
+
+    @Override
+    public boolean commenta(final Donazione d) {
+        return dao.update(d);
+    }
 }
