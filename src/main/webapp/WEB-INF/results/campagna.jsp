@@ -109,11 +109,18 @@
                 <button class="btn btn-primary pulsante" type="button"
                         style=" background-color: #00AB98; border-color: #00AB98">Condividi
                 </button>
-                <c:if test="${sessionScope.utente != null}">
-                    <a class="btn btn-primary pulsante" type="button" href="http://localhost:8080/FundPay-1.0-SNAPSHOT/fundPay/paga?idCampagna=${campagna.idCampagna}&idCliente=${sessionScope.utente.idUtente}"
-                       style=" background-color: #00AB98; border-color: #00AB98" >Fai una Donazione
-                    </a>
-                </c:if>
+                <c:choose>
+                    <c:when test="${sessionScope.utente != null}">
+                        <a class="btn btn-primary pulsante" type="button" href="http://localhost:8080/FundPay-1.0-SNAPSHOT/fundPay/paga?idCampagna=${campagna.idCampagna}&idCliente=${sessionScope.utente.idUtente}"
+                           style=" background-color: #00AB98; border-color: #00AB98" >Fai una Donazione
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <button class="btn btn-primary pulsante" type="button" onclick="alert('Effettua prima il login!')"
+                                style=" background-color: #00AB98; border-color: #00AB98" >Fai una Donazione
+                        </button>
+                    </c:otherwise>
+                </c:choose>
             </div>
 
             <a id="donation-count" style="font-size: 20px" )><i
