@@ -62,7 +62,8 @@ public final class CategoriaDAO implements DAO<Categoria> {
                 if (con != null) {
                     try (PreparedStatement stmt =
                                  con.prepareStatement("INSERT INTO "
-                                         + "categoria (nomeCategoria) VALUES (?)")) {
+                                         + "categoria (nomeCategoria)"
+                                         + " VALUES (?)")) {
 
                         stmt.setString(1, entity.getNome());
 

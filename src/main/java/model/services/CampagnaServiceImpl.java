@@ -8,9 +8,15 @@ import model.beans.StatoCampagna;
 import java.util.List;
 
 public final class CampagnaServiceImpl implements CampagnaService {
-
+    /**
+     * Wrapper di campagna DAO.
+     */
     private final DAO<Campagna> dao;
 
+    /**
+     *
+     * @param campagnaDAO Istanza di campagna DAO
+     */
     public CampagnaServiceImpl(final DAO<Campagna> campagnaDAO) {
         this.dao = campagnaDAO;
     }

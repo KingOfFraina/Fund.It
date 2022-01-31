@@ -6,9 +6,14 @@ import model.beans.Categoria;
 import java.util.List;
 
 public final class CategoriaServiceImpl implements CategoriaService {
-
+    /**
+     * Wrapper di CategoriaDAO.
+     */
     private final DAO<Categoria> dao;
 
+    /**
+     * @param categoriaDAO istanza di CategoriaDAO
+     */
     public CategoriaServiceImpl(final DAO<Categoria> categoriaDAO) {
         this.dao = categoriaDAO;
     }

@@ -4,10 +4,19 @@ package controller;
 import model.DAO.CampagnaDAO;
 import model.DAO.DAO;
 import model.DAO.DonazioneDAO;
-import model.beans.*;
+import model.beans.Campagna;
+import model.beans.Donazione;
+import model.beans.Segnalazione;
+import model.beans.StatoSegnalazione;
+import model.beans.Utente;
 import model.beans.proxies.CampagnaProxy;
 import model.beans.proxyInterfaces.CampagnaInterface;
-import model.services.*;
+import model.services.CampagnaService;
+import model.services.CampagnaServiceImpl;
+import model.services.SegnalazioniService;
+import model.services.SegnalazioniServiceImpl;
+import model.services.UtenteService;
+import model.services.UtenteServiceImpl;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -69,8 +78,10 @@ public final class SegnalazioneController extends HttpServlet {
         String path = request.getPathInfo();
         HttpSession session = request.getSession();
         String idCampagna = request.getParameter("idCampagna");
-        CampagnaService campagnaService = new CampagnaServiceImpl(new CampagnaDAO());
-        SegnalazioniService segnalazioniService = new SegnalazioniServiceImpl();
+        CampagnaService campagnaService =
+                new CampagnaServiceImpl(new CampagnaDAO());
+        SegnalazioniService segnalazioniService =
+                new SegnalazioniServiceImpl();
 
         String descrizione = request.getParameter("descrizione");
         String resource = "/";
@@ -115,7 +126,8 @@ public final class SegnalazioneController extends HttpServlet {
                     utenteService.sospensioneUtente(utenteSegnalato);
                     CampagnaInterface campagnaProxy = new CampagnaProxy(c2);
                     List<Donazione> donazioni = campagnaProxy.getDonazioni();
-                    donazioni.forEach(d -> d.setSommaDonata(-d.getSommaDonata()));
+                    donazioni.forEach(d ->
+                            d.setSommaDonata(-d.getSommaDonata()));
                     DAO<Donazione> dao = new DonazioneDAO();
                     for (Donazione d : donazioni) {
                         dao.update(d);
