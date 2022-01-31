@@ -2,10 +2,11 @@ package controller;
 
 
 import model.DAO.CampagnaDAO;
-import model.beans.Campagna;
-import model.beans.Segnalazione;
-import model.beans.StatoSegnalazione;
-import model.beans.Utente;
+import model.beans.*;
+import model.beans.proxies.CampagnaProxy;
+import model.beans.proxies.DonazioneProxy;
+import model.beans.proxyInterfaces.CampagnaInterface;
+import model.beans.proxyInterfaces.DonazioneInterface;
 import model.services.CampagnaService;
 import model.services.CampagnaServiceImpl;
 import model.services.SegnalazioniService;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "SegnalazioneController",
         value = "/segnalazioni/*")
@@ -95,7 +97,7 @@ public final class SegnalazioneController extends HttpServlet {
                 }
                 break;
             case "/risolvi":
-                String scelta = "rger";
+                String scelta = request.getParameter("sceltaSegnalazione");
                 int id = Integer.parseInt(request.getParameter("idCampagna"));
                 int idSegnalazione =
                         Integer.parseInt(
@@ -116,7 +118,9 @@ public final class SegnalazioneController extends HttpServlet {
                     campagnaService1.cancellaCampagna(c2);
 
                     utenteService.sospensioneUtente(utenteSegnalato);
-
+                    CampagnaInterface campagnaProxy = new CampagnaProxy(c2);
+                    List<Donazione> donazioni = campagnaProxy.getDonazioni();
+                    donazioni.forEach(d -> d.setSommaDonata(-d.getSommaDonata()));
                 }
 
                 break;

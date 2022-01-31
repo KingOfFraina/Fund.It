@@ -60,16 +60,16 @@ public class UtenteServiceImpl implements UtenteService {
     }
 
     /**
-     * @param cattivone da bannare.
-     * @return esito operazione.
+     * @param utente istanza di Utente da sospendere
+     * @return true se l'utente è stato sospeso, false altrimenti
      */
     @Override
-    public boolean sospensioneUtente(final Utente cattivone) {
+    public boolean sospensioneUtente(final Utente utente) {
         DAO<Utente> utenteDAO = new UtenteDAO();
         LocalDateTime now = LocalDateTime.now();
-        final int dayBan = 5;
+        final long dayBan = 5L;
         now = LocalDateTime.parse(now.toString()).plusDays(dayBan);
-        cattivone.setDataBan(now);
-        return utenteDAO.update(cattivone);
+        utente.setDataBan(now);
+        return utenteDAO.update(utente);
     }
 }
