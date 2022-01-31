@@ -1,5 +1,7 @@
 package controller;
 
+import model.DAO.CampagnaDAO;
+import model.DAO.CategoriaDAO;
 import model.beans.Campagna;
 import model.beans.Categoria;
 import model.beans.Donazione;
@@ -34,8 +36,8 @@ public final class GestioneCampagnaController extends HttpServlet {
             throws ServletException, IOException {
         String resource = "/";
         HttpSession session;
-        CampagnaService service = new CampagnaServiceImpl();
-        CategoriaService categoriaService = new CategoriaServiceImpl();
+        CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
+        CategoriaService categoriaService = new CategoriaServiceImpl(new CategoriaDAO());
 
         session = request.getSession();
 
@@ -92,8 +94,8 @@ public final class GestioneCampagnaController extends HttpServlet {
     private void visualizzaModificaCampagna(final HttpServletRequest request,
                                             final HttpServletResponse response)
             throws ServletException, IOException {
-        CampagnaService service = new CampagnaServiceImpl();
-        CategoriaService categoriaService = new CategoriaServiceImpl();
+        CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
+        CategoriaService categoriaService = new CategoriaServiceImpl(new CategoriaDAO());
         Utente ut = (Utente) request.getSession().getAttribute("utente");
         String idCampagna = request.getParameter("idCampagna");
         int id = 0;
@@ -126,7 +128,7 @@ public final class GestioneCampagnaController extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        CampagnaService service = new CampagnaServiceImpl();
+        CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
 
         if (session == null || session.getAttribute("utente") == null) {
             response.sendRedirect(
@@ -171,7 +173,7 @@ public final class GestioneCampagnaController extends HttpServlet {
         Campagna c = extractCampagna(req);
         c.setSommaRaccolta(0d);
 
-        if (new CampagnaServiceImpl().creazioneCampagna(c)) {
+        if (new CampagnaServiceImpl(new CampagnaDAO()).creazioneCampagna(c)) {
             res.sendRedirect(
                     getServletContext().getContextPath() + "/index.jsp");
         } else {
@@ -197,7 +199,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                 request.getParameter("idCategoria")));
 
         c.setCategoria(
-                new CategoriaServiceImpl().visualizzaCategoria(categoria));
+                new CategoriaServiceImpl(new CategoriaDAO()).visualizzaCategoria(categoria));
 
         return c;
     }
@@ -212,7 +214,7 @@ public final class GestioneCampagnaController extends HttpServlet {
         c.setIdCampagna(campagna.getIdCampagna());
         c.setSommaRaccolta(campagna.getSommaRaccolta());
 
-        if (new CampagnaServiceImpl().modificaCampagna(c)) {
+        if (new CampagnaServiceImpl(new CampagnaDAO()).modificaCampagna(c)) {
             response.sendRedirect(
                     getServletContext().getContextPath() + "/index.jsp");
         } else {

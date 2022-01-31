@@ -1,5 +1,6 @@
 package controller;
 
+import model.DAO.CategoriaDAO;
 import model.beans.Categoria;
 import model.services.CategoriaService;
 import model.services.CategoriaServiceImpl;
@@ -21,7 +22,7 @@ public final class GestioneCategorieController extends HttpServlet {
 
     @Override
     public void init() {
-        CategoriaService cs = new CategoriaServiceImpl();
+        CategoriaService cs = new CategoriaServiceImpl(new CategoriaDAO());
 
         this.getServletContext().setAttribute("categorieList",
                 cs.visualizzaCategorie());
@@ -78,7 +79,7 @@ public final class GestioneCategorieController extends HttpServlet {
     }
 
     private void visualizzaCategorie(final HttpServletRequest request) {
-        CategoriaService cs = new CategoriaServiceImpl();
+        CategoriaService cs = new CategoriaServiceImpl(new CategoriaDAO());
 
         request.setAttribute("categorieList", cs.visualizzaCategorie());
     }
@@ -104,7 +105,7 @@ public final class GestioneCategorieController extends HttpServlet {
 
         int idCategoria = Integer.parseInt(request.getParameter("idCategoria"));
         String nomeCategoria = request.getParameter("nomeCategoria");
-        CategoriaService service = new CategoriaServiceImpl();
+        CategoriaService service = new CategoriaServiceImpl(new CategoriaDAO());
         Categoria c = new Categoria();
         c.setIdCategoria(idCategoria);
         c = service.visualizzaCategoria(c);
@@ -163,7 +164,7 @@ public final class GestioneCategorieController extends HttpServlet {
 
         Categoria c = new Categoria();
         c.setNome(nomeCategoria);
-        CategoriaService cs = new CategoriaServiceImpl();
+        CategoriaService cs = new CategoriaServiceImpl(new CategoriaDAO());
         if (cs.inserisciCategoria(c)) {
             System.out.println("ok");
             List<Categoria> categorie =

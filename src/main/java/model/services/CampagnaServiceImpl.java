@@ -3,58 +3,72 @@ package model.services;
 import model.DAO.CampagnaDAO;
 import model.DAO.DAO;
 import model.beans.Campagna;
+import model.beans.Categoria;
+import model.beans.StatoCampagna;
 
 import java.util.List;
 
 public final class CampagnaServiceImpl implements CampagnaService {
-   @Override
-   public boolean creazioneCampagna(final Campagna campagna) {
-      return new CampagnaDAO().save(campagna);
-   }
 
-   @Override
-   public boolean modificaCampagna(final Campagna campagna) {
-      return new CampagnaDAO().update(campagna);
-   }
+    private final DAO<Campagna> dao;
 
-   @Override
-   public String condividiCampagna(final int idCampagna) {
-      Campagna campagna = new CampagnaDAO().getById(idCampagna);
+    public CampagnaServiceImpl(final DAO<Campagna> campagnaDAO) {
+        this.dao = campagnaDAO;
+    }
 
-      if (campagna != null) {
-         return campagna.getTitolo();
-      }
+    @Override
+    public boolean creazioneCampagna(final Campagna campagna) {
+        return dao.save(campagna);
+    }
 
-      return null;
-   }
+    @Override
+    public boolean modificaCampagna(final Campagna campagna) {
+        return dao.update(campagna);
+    }
 
-   @Override
-   public List<Campagna> ricercaCampagna(final String text) {
-      return new CampagnaDAO().getByKeyword(text);
-   }
+    @Override
+    public String condividiCampagna(final int idCampagna) {
+        Campagna campagna = dao.getById(idCampagna);
 
-   @Override
-   public List<Campagna> visualizzaCampagne(final int size, final int offset) {
-      return new CampagnaDAO().getBySizeOffset(size, offset);
-   }
+        if (campagna != null) {
+            return campagna.getTitolo();
+        }
 
-   /**
-    * @param idCampagna id della campagna da cercare
-    * @return istanza di Campagna avente come id idCampagna, null altrimenti
-    */
-   @Override
-   public Campagna trovaCampagna(final int idCampagna) {
-      DAO<Campagna> dao = new CampagnaDAO();
-      return dao.getById(idCampagna);
-   }
+        return null;
+    }
 
-   @Override
-   public boolean chiudiCampagna(final Campagna campagna) {
-      return modificaCampagna(campagna);
-   }
+    @Override
+    public List<Campagna> ricercaCampagna(final String text) {
+        CampagnaDAO campagnaDAO = (CampagnaDAO) dao;
+        return campagnaDAO.getByKeyword(text);
+    }
 
-   @Override
-   public boolean cancellaCampagna(final Campagna campagna) {
-      return modificaCampagna(campagna);
-   }
+    @Override
+    public List<Campagna> visualizzaCampagne(final int size, final int offset) {
+        CampagnaDAO campagnaDAO = (CampagnaDAO) dao;
+        return campagnaDAO.getBySizeOffset(size, offset);
+    }
+
+    /**
+     * @param idCampagna id della campagna da cercare
+     * @return istanza di Campagna avente come id idCampagna, null altrimenti
+     */
+    @Override
+    public Campagna trovaCampagna(final int idCampagna) {
+        return dao.getById(idCampagna);
+    }
+
+    @Override
+    public boolean chiudiCampagna(final Campagna campagna) {
+        if (!campagna.getStato().equals(StatoCampagna.CHIUSA))
+            throw new IllegalArgumentException();
+        return modificaCampagna(campagna);
+    }
+
+    @Override
+    public boolean cancellaCampagna(final Campagna campagna) {
+        if (!campagna.getStato().equals(StatoCampagna.CANCELLATA))
+            throw new IllegalArgumentException();
+        return modificaCampagna(campagna);
+    }
 }

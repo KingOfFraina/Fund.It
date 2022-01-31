@@ -1,6 +1,7 @@
 package controller;
 
 
+import model.DAO.CampagnaDAO;
 import model.beans.Campagna;
 import model.beans.Segnalazione;
 import model.beans.StatoSegnalazione;
@@ -71,7 +72,7 @@ public final class SegnalazioneController extends HttpServlet {
         String path = request.getPathInfo();
         HttpSession session = request.getSession();
         String idCampagna = request.getParameter("idCampagna");
-        CampagnaService campagnaService = new CampagnaServiceImpl();
+        CampagnaService campagnaService = new CampagnaServiceImpl(new CampagnaDAO());
         SegnalazioniService segnalazioniService = new SegnalazioniServiceImpl();
 
         String descrizione = request.getParameter("descrizione");
@@ -105,7 +106,7 @@ public final class SegnalazioneController extends HttpServlet {
                             .risolviSegnalazione(idSegnalazione,
                                     StatoSegnalazione.RISOLTA);
                     CampagnaService campagnaService1 =
-                            new CampagnaServiceImpl();
+                            new CampagnaServiceImpl(new CampagnaDAO());
                     UtenteService utenteService = new UtenteServiceImpl();
                     Campagna c2 = campagnaService1.trovaCampagna(id);
                     Utente utenteSegnalato =
