@@ -63,6 +63,11 @@ public final class GestioneCampagnaController extends HttpServlet {
             case "/campagna":
                 String id = request.getParameter("idCampagna");
                 Campagna c = service.trovaCampagna(Integer.parseInt(id));
+                if (c == null) {
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                            "Campagna non trovata");
+                    return;
+                }
                 CampagnaInterface proxy = new CampagnaProxy(c);
                 c.setUtente(proxy.getUtente());
                 DonazioneProxy proxy2 = new DonazioneProxy();
