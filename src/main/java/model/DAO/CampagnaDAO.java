@@ -44,7 +44,7 @@ public final class CampagnaDAO
 
     /**
      * @param idUtente id dell'utente della quale si vogliono
-     *                trovare le campagne
+     *                 trovare le campagne
      * @return lista di campagne create dall'utente
      */
     public List<Campagna> getByIdUtente(final int idUtente) {
@@ -217,9 +217,10 @@ public final class CampagnaDAO
 
         try (Connection connection = ConPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                     "SELECT * FROM campagna c where UPPER("
-                             + "?) LIKE UPPER(CONCAT(c.idCampagna, "
-                             + "c.titolo, c.descrizione))"
+                     "SELECT * FROM campagna c"
+                             + " where UPPER(CONCAT"
+                             + "(c.idCampagna, c.titolo, c.descrizione)) "
+                             + "LIKE UPPER(?)"
              )) {
             campagnaList = new ArrayList<>();
             statement.setString(1, "%" + text + "%");
@@ -237,7 +238,8 @@ public final class CampagnaDAO
 
     /**
      * Permette la ricerca di una porzione precisa delle campagne presenti.
-     * @param size il numero di campagne da recuperare
+     *
+     * @param size   il numero di campagne da recuperare
      * @param offset il punto da cui iniziare il recupero
      * @return la lista delle campagne che soddisfano i parametri passati
      */
