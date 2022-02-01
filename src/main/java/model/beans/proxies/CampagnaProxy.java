@@ -20,7 +20,7 @@ public final class CampagnaProxy implements CampagnaInterface {
     /**
      * riferimento alla campagna.
      */
-    private Campagna campagna;
+    private final Campagna campagna;
 
     /**
      * costruttore.
@@ -77,7 +77,7 @@ public final class CampagnaProxy implements CampagnaInterface {
             campagna.setUtente(u);
         }
         return campagna.getUtente();
-}
+    }
 
     @Override
     public List<Segnalazione> getSegnalazioni() {
