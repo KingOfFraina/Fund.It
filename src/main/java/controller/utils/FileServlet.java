@@ -495,12 +495,13 @@ public class FileServlet extends HttpServlet {
          if (p.getSubmittedFileName() != null
                  && !p.getSubmittedFileName().isEmpty()) {
             try (InputStream is = p.getInputStream()) {
-               String path = FileServlet.basePath + File.separator
-                       + LocalDateTime.now() + p.getSubmittedFileName();
-               File file = new File(path);
+               String path = FileServlet.basePath + File.separator;
+               String nameFile = LocalDateTime.now().toString()
+                       .replace(":", "-") + p.getSubmittedFileName();
+               File file = new File(path + nameFile);
                Files.copy(is, file.toPath(),
                        StandardCopyOption.REPLACE_EXISTING);
-               fileNameList.add(LocalDateTime.now() + p.getSubmittedFileName());
+               fileNameList.add(nameFile);
             }
          }
       }
