@@ -133,6 +133,7 @@ public final class GestioneCampagnaController extends HttpServlet {
         CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
         Utente userSession = (Utente) session.getAttribute("utente");
         String idCampagna = request.getParameter("idCampagna");
+        int id = 0;
 
         /*if (userSession == null) {
             response.sendRedirect(
@@ -146,7 +147,6 @@ public final class GestioneCampagnaController extends HttpServlet {
             case "/creaCampagna":
                 creaCampagna(request, response);
                 break;
-
             case "/modificaCampagna":
                 if (idCampagna != null) {
                     modificaCampagna(request, response, service
@@ -161,7 +161,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                     return;
                 }*/
 
-                int id = Integer.parseInt(idCampagna);
+                id = Integer.parseInt(idCampagna);
                 Campagna campagna = service.trovaCampagna(id);
                 if (service.cancellaCampagna(campagna)) {
                     if (service.rimborsaDonazioni(campagna, new CampagnaProxy(campagna))) {
@@ -175,6 +175,13 @@ public final class GestioneCampagnaController extends HttpServlet {
                 }
                 break;
             case "/chiudiCampagna":
+                id = Integer.parseInt(idCampagna);
+                Campagna campagna1 = service.trovaCampagna(id);
+                if (service.chiudiCampagna(campagna1)) {
+                    System.out.println("chiusura campagna ok");
+                } else {
+                    System.out.println("chiusura campagna errore");
+                }
                 break;
             default:
                 response.sendError(
