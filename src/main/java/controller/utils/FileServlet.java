@@ -8,7 +8,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.io.OutputStream;
+import java.io.Closeable;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -21,17 +26,10 @@ import java.util.zip.GZIPOutputStream;
 @WebServlet(name = "FileServlet", urlPatterns = "/file/*", loadOnStartup = 0)
 @MultipartConfig
 public class FileServlet extends HttpServlet {
-   // Constants ----------------------------------------------------------------------------------
-
    private static final int DEFAULT_BUFFER_SIZE = 10240; // ..bytes = 10KB.
    private static final long DEFAULT_EXPIRE_TIME = 604800000L; // ..ms = 1 week.
    private static final String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
-
-   // Properties ---------------------------------------------------------------------------------
-
-   protected static String basePath;
-
-   // Actions ------------------------------------------------------------------------------------
+   private static String basePath;
 
    /**
     * Initialize the servlet.
@@ -41,35 +39,42 @@ public class FileServlet extends HttpServlet {
    @Override
    public void init() throws ServletException {
 
-      this.basePath = System.getenv("CATALINA_HOME") + File.separator + "webapps" + File.separator + "uploads";
+      this.basePath = System.getenv("CATALINA_HOME") + File.separator
+              + "webapps" + File.separator + "uploads";
       System.out.println(basePath);
 
       // Validate base path.
       if (this.basePath == null) {
-         throw new ServletException("FileServlet init param 'basePath' is required.");
+         throw new ServletException("FileServlet init param "
+                 + "'basePath' is required.");
       } else {
          File path = new File(this.basePath);
          if (!path.exists()) {
-            throw new ServletException("FileServlet init param 'basePath' value '"
-                    + this.basePath + "' does actually not exist in file system.");
+            throw new ServletException("FileServlet init param 'basePath' "
+                    + "value '" + this.basePath
+                    + "' does actually not exist in file system.");
          } else if (!path.isDirectory()) {
-            throw new ServletException("FileServlet init param 'basePath' value '"
-                    + this.basePath + "' is actually not a directory in file system.");
+            throw new ServletException("FileServlet init param 'basePath' "
+                    + "value '" + this.basePath
+                    + "' is actually not a directory in file system.");
          } else if (!path.canRead()) {
-            throw new ServletException("FileServlet init param 'basePath' value '"
-                    + this.basePath + "' is actually not readable in file system.");
+            throw new ServletException("FileServlet init param 'basePath' "
+                    + "value '" + this.basePath
+                    + "' is actually not readable in file system.");
          }
       }
    }
 
    /**
-    * Process HEAD request. This returns the same headers as GET request, but without content.
+    * Process HEAD request. This returns the same headers as GET request,
+    * but without content.
     *
     * @see HttpServlet#doHead(HttpServletRequest, HttpServletResponse).
     */
    @Override
-   protected void doHead(HttpServletRequest request, HttpServletResponse response)
-           throws ServletException, IOException {
+   protected void doHead(final HttpServletRequest request,
+                         final HttpServletResponse response)
+           throws IOException {
       // Process request without content.
       processRequest(request, response, false);
    }
@@ -80,8 +85,9 @@ public class FileServlet extends HttpServlet {
     * @see HttpServlet#doGet(HttpServletRequest, HttpServletResponse).
     */
    @Override
-   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-           throws ServletException, IOException {
+   protected void doGet(final HttpServletRequest request,
+                        final HttpServletResponse response)
+           throws IOException {
       // Process request with content.
       processRequest(request, response, true);
    }
@@ -91,11 +97,13 @@ public class FileServlet extends HttpServlet {
     *
     * @param request  The request to be processed.
     * @param response The response to be created.
-    * @param content  Whether the request body should be written (GET) or not (HEAD).
+    * @param content  Whether the request body should
+    *                 be written (GET) or not (HEAD).
     * @throws IOException If something fails at I/O level.
     */
-   private void processRequest
-   (HttpServletRequest request, HttpServletResponse response, boolean content)
+   private void processRequest(final HttpServletRequest request,
+                               final HttpServletResponse response,
+                               final boolean content)
            throws IOException {
       // Validate the requested file ------------------------------------------------------------
 
@@ -143,7 +151,8 @@ public class FileServlet extends HttpServlet {
       // If-Modified-Since header should be greater than LastModified. If so, then return 304.
       // This header is ignored if any If-None-Match header is specified.
       long ifModifiedSince = request.getDateHeader("If-Modified-Since");
-      if (ifNoneMatch == null && ifModifiedSince != -1 && ifModifiedSince + 1000 > lastModified) {
+      final int size = 1000;
+      if (ifNoneMatch == null && ifModifiedSince != -1 && ifModifiedSince + size > lastModified) {
          response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
          response.setHeader("ETag", eTag); // Required in 304.
          response.setDateHeader("Expires", expires); // Postpone cache with 1 week.
@@ -162,7 +171,7 @@ public class FileServlet extends HttpServlet {
 
       // If-Unmodified-Since header should be greater than LastModified. If not, then return 412.
       long ifUnmodifiedSince = request.getDateHeader("If-Unmodified-Since");
-      if (ifUnmodifiedSince != -1 && ifUnmodifiedSince + 1000 <= lastModified) {
+      if (ifUnmodifiedSince != -1 && ifUnmodifiedSince + size <= lastModified) {
          response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
          return;
       }
@@ -191,7 +200,7 @@ public class FileServlet extends HttpServlet {
          if (ifRange != null && !ifRange.equals(eTag)) {
             try {
                long ifRangeTime = request.getDateHeader("If-Range"); // Throws IAE if invalid.
-               if (ifRangeTime != -1 && ifRangeTime + 1000 < lastModified) {
+               if (ifRangeTime != -1 && ifRangeTime + size < lastModified) {
                   ranges.add(full);
                }
             } catch (IllegalArgumentException ignore) {
@@ -201,7 +210,8 @@ public class FileServlet extends HttpServlet {
 
          // If any valid If-Range header, then process each part of byte range.
          if (ranges.isEmpty()) {
-            for (String part : range.substring(6).split(",")) {
+            final int len = 6;
+            for (String part : range.substring(len).split(",")) {
                // Assuming a file with length of 100, the following examples returns bytes at:
                // 50-80 (50 to 80), 40- (40 to length=100), -20 (length-20=80 to length=100).
                long start = sublong(part, 0, part.indexOf("-"));
@@ -248,11 +258,7 @@ public class FileServlet extends HttpServlet {
          String acceptEncoding = request.getHeader("Accept-Encoding");
          acceptsGzip = acceptEncoding != null && accepts(acceptEncoding, "gzip");
          contentType += ";charset=UTF-8";
-      }
-
-      // Else, expect for images, determine content disposition. If content type is supported by
-      // the browser, then set to inline, else attachment which will pop a 'save as' dialogue.
-      else if (!contentType.startsWith("image")) {
+      } else if (!contentType.startsWith("image")) {
          String accept = request.getHeader("Accept");
          disposition = accept != null && accepts(accept, contentType) ? "inline" : "attachment";
       }
@@ -356,7 +362,8 @@ public class FileServlet extends HttpServlet {
     * @param toAccept     The value to be accepted.
     * @return True if the given accept header accepts the given value.
     */
-   private static boolean accepts(String acceptHeader, String toAccept) {
+   private static boolean accepts(final String acceptHeader,
+                                  final String toAccept) {
       String[] acceptValues = acceptHeader.split("\\s*(,|;)\\s*");
       Arrays.sort(acceptValues);
       return Arrays.binarySearch(acceptValues, toAccept) > -1
@@ -371,7 +378,8 @@ public class FileServlet extends HttpServlet {
     * @param toMatch     The value to be matched.
     * @return True if the given match header matches the given value.
     */
-   private static boolean matches(String matchHeader, String toMatch) {
+   private static boolean matches(final String matchHeader,
+                                  final String toMatch) {
       String[] matchValues = matchHeader.split("\\s*,\\s*");
       Arrays.sort(matchValues);
       return Arrays.binarySearch(matchValues, toMatch) > -1
@@ -387,7 +395,9 @@ public class FileServlet extends HttpServlet {
     * @param endIndex   The end index of the substring to be returned as long.
     * @return A substring of the given string value as long or -1 if substring is empty.
     */
-   private static long sublong(String value, int beginIndex, int endIndex) {
+   private static long sublong(final String value,
+                               final int beginIndex,
+                               final int endIndex) {
       String substring = value.substring(beginIndex, endIndex);
       return (substring.length() > 0) ? Long.parseLong(substring) : -1;
    }
@@ -401,7 +411,10 @@ public class FileServlet extends HttpServlet {
     * @param length Length of the byte range.
     * @throws IOException If something fails at I/O level.
     */
-   private static void copy(RandomAccessFile input, OutputStream output, long start, long length)
+   private static void copy(final RandomAccessFile input,
+                            final OutputStream output,
+                            final long start,
+                            final long length)
            throws IOException {
       byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
       int read;
@@ -417,7 +430,8 @@ public class FileServlet extends HttpServlet {
          long toRead = length;
 
          while ((read = input.read(buffer)) > 0) {
-            if ((toRead -= read) > 0) {
+            toRead -= read;
+            if (toRead > 0) {
                output.write(buffer, 0, read);
             } else {
                output.write(buffer, 0, (int) toRead + read);
@@ -432,7 +446,7 @@ public class FileServlet extends HttpServlet {
     *
     * @param resource The resource to be closed.
     */
-   private static void close(Closeable resource) {
+   private static void close(final Closeable resource) {
       if (resource != null) {
          try {
             resource.close();
@@ -449,36 +463,42 @@ public class FileServlet extends HttpServlet {
     * This class represents a byte range.
     */
    protected class Range {
-      long start;
-      long end;
-      long length;
-      long total;
+      private long start;
+      private long end;
+      private long length;
+      private long total;
 
       /**
        * Construct a byte range.
        *
-       * @param start Start of the byte range.
-       * @param end   End of the byte range.
-       * @param total Total length of the byte source.
+       * @param st  Start of the byte range.
+       * @param en  End of the byte range.
+       * @param tot Total length of the byte source.
        */
-      public Range(long start, long end, long total) {
-         this.start = start;
-         this.end = end;
-         this.length = end - start + 1;
-         this.total = total;
+      public Range(final long st,
+                   final long en,
+                   final long tot) {
+         this.start = st;
+         this.end = en;
+         this.length = en - st + 1;
+         this.total = tot;
       }
 
    }
 
-   public static List<String> uploadFoto(HttpServletRequest request) throws ServletException, IOException {
+   public static List<String> uploadFoto(final HttpServletRequest request)
+           throws ServletException, IOException {
       List<String> fileNameList = new ArrayList<>();
 
       for (Part p : request.getParts()) {
-         if (p.getSubmittedFileName() != null && !p.getSubmittedFileName().isEmpty()) {
+         if (p.getSubmittedFileName() != null
+                 && !p.getSubmittedFileName().isEmpty()) {
             try (InputStream is = p.getInputStream()) {
-               String path = FileServlet.basePath + File.separator + p.getSubmittedFileName();
+               String path = FileServlet.basePath + File.separator
+                       + p.getSubmittedFileName();
                File file = new File(path);
-               Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+               Files.copy(is, file.toPath(),
+                       StandardCopyOption.REPLACE_EXISTING);
                fileNameList.add(p.getSubmittedFileName());
             }
          }
