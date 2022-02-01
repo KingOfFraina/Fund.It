@@ -292,23 +292,21 @@ public final class Validator {
 
    /**
     * Check per tutti i parametri di utente.
-    *
-    * @param req che arriva dal client.
     * @return true se rispetta le regexp, altrimenti false.
     */
-   public boolean assertUtente(final HttpServletRequest req) {
-      if (assertNameSurname(req.getParameter("nome"), "Errore Input Nome")
-              && assertNameSurname(req.getParameter("cognome"),
+   public boolean assertUtente() {
+      if (assertNameSurname("nome", "Errore Input Nome")
+              && assertNameSurname("cognome",
               "Errore Input Cognome")
-              && assertEmail(req.getParameter("email"), "Errore Input Email")
-              && assertCF(req.getParameter("cf"), "Errore Input CF")
-              && assertPassword(req.getParameter("password"),
+              && assertEmail("email", "Errore Input Email")
+              && assertCF("cf", "Errore Input CF")
+              && assertPassword("password",
               "Errore Input Password")
-              && assertCAP(req.getParameter("cap"), "Errore Input CAP")
-              && assertIndirizzo(req.getParameter("indirizzo"),
+              && assertCAP("cap", "Errore Input CAP")
+              && assertIndirizzo("indirizzo",
               "Errore Input Indirizzo")
-              && assertCity(req.getParameter("citta"), "Errore Input City")
-              && assertPhone(req.getParameter("telefono"),
+              && assertCity("citta", "Errore Input City")
+              && assertPhone("telefono",
               "Errore Input Trap Phone")) {
          return true;
       }

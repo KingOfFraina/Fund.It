@@ -102,7 +102,7 @@ public final class GestioneUtenteController extends HttpServlet {
                 request.getParameter("confermaPassword"))
                 && request.getParameter("email").equals(
                 request.getParameter("confermaEmail"))) {
-            if (val.assertUtente(request)) {
+            if (val.assertUtente()) {
                 utente.setIdUtente(((Utente) session.getAttribute("utente"))
                         .getIdUtente());
                 utente.createPasswordHash(request.getParameter("password"));

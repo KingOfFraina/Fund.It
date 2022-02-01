@@ -39,11 +39,11 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
         }
         UtenteDAO userDao = (UtenteDAO) dao;
         Utente ut = userDao.doLogin(utente);
-        if(ut == null){
-            return ut;
-        }
-        if (ut.getDataBan() != null){
+        if (ut == null) {
             return null;
+        }
+        if (ut.getDataBan() != null) {
+            ut.setIdUtente(-1);
         }
         return ut;
     }

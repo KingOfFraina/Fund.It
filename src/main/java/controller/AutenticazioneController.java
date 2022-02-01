@@ -105,11 +105,15 @@ public final class AutenticazioneController extends HttpServlet {
          utente = autenticazioneService.login(utente);
       }
 
-      if (utente != null) {
+      if (utente != null && utente.getIdUtente() != -1) {
          session.setAttribute("utente", utente);
          response.sendRedirect(
                  getServletContext().getContextPath()
                          + "/index.jsp");
+      } else if(utente.getIdUtente() == -1){
+         response.sendRedirect(
+                 getServletContext().getContextPath()
+                         + "/AutenticazioneController/login"); //todo reinderizzamento a messaggio di errore/BAN
       } else {
          response.sendRedirect(
                  getServletContext().getContextPath()
