@@ -194,7 +194,6 @@ public final class GestioneUtenteController extends HttpServlet {
         ut.setDonazioni(utenteProxy.getDonazioni());
         ut.setCampagne(utenteProxy.getCampagne());
 
-
         request.setAttribute("utente", ut);
 
         request.getRequestDispatcher("/WEB-INF/results/profilo_utente.jsp")
