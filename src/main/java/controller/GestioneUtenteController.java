@@ -191,13 +191,14 @@ public final class GestioneUtenteController extends HttpServlet {
                 ((Utente) session.getAttribute("utente")).getIdUtente());
 
         UtenteProxy utenteProxy = new UtenteProxy(ut);
-        utenteProxy.getDonazioni();
+        ut.setDonazioni(utenteProxy.getDonazioni());
+        ut.setCampagne(utenteProxy.getCampagne());
+
 
         request.setAttribute("utente", ut);
 
         request.getRequestDispatcher("/WEB-INF/results/profilo_utente.jsp")
                 .forward(request, response);
-        return;
     }
 
     private void visualizzaUtenti(final HttpServletRequest request,
