@@ -22,6 +22,9 @@ public final class DonazioniServiceImpl implements DonazioniService {
 
     @Override
     public boolean effettuaDonazione(final Donazione d) {
+        if (d == null) {
+            throw new IllegalArgumentException("Argument invalid");
+        }
         return dao.save(d);
     }
 
