@@ -12,6 +12,7 @@ import model.storage.ConPool;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 @WebServlet(name = "GestioneCampagnaController",
         value = "/GestioneCampagnaController/*")
+@MultipartConfig
 public final class GestioneCampagnaController extends HttpServlet {
 
    @Override
