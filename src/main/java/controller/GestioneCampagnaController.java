@@ -1,6 +1,7 @@
 package controller;
 
 import controller.utils.FileServlet;
+import controller.utils.Validator;
 import model.DAO.CampagnaDAO;
 import model.DAO.CategoriaDAO;
 import model.beans.*;
@@ -27,18 +28,18 @@ import java.util.Map;
 @MultipartConfig
 public final class GestioneCampagnaController extends HttpServlet {
 
-   @Override
-   protected void doGet(final HttpServletRequest request,
-                        final HttpServletResponse response)
-           throws ServletException, IOException {
-      String resource = "/";
-      HttpSession session;
-      CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
-      CategoriaService categoriaService =
-              new CategoriaServiceImpl(new CategoriaDAO());
+    @Override
+    protected void doGet(final HttpServletRequest request,
+                         final HttpServletResponse response)
+            throws ServletException, IOException {
+        String resource = "/";
+        HttpSession session;
+        CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
+        CategoriaService categoriaService =
+                new CategoriaServiceImpl(new CategoriaDAO());
 
-      session = request.getSession();
-
+        session = request.getSession();
+        Validator val = new Validator(request);
         /*if (session.getAttribute("utente") == null
                 || !session.getAttribute("utente").getClass().getSimpleName().
                 equals(Utente.class.getSimpleName())) {
@@ -50,6 +51,12 @@ public final class GestioneCampagnaController extends HttpServlet {
 
         switch (request.getPathInfo()) {
             case "/creaCampagna":
+                if (!val.assertUtente()) {
+                    response.sendRedirect(
+                            getServletContext().getContextPath()
+                                    + "/AutenticazioneController/login");
+                    return;
+                }
                 request.setAttribute("categorie",
                         categoriaService.visualizzaCategorie());
                 resource = "/WEB-INF/results/form_campagna.jsp";
@@ -75,45 +82,46 @@ public final class GestioneCampagnaController extends HttpServlet {
                     d.setUtente(proxy2.getUtente());
                 });
 
-            c.setDonazioni(proxy.getDonazioni());
+                c.setDonazioni(proxy.getDonazioni());
 
-            request.setAttribute("campagna", c);
-            resource = "/WEB-INF/results/campagna.jsp";
-            break;
-         case "/condividiCampagna":
-            String idCampagna = request.getParameter("idCampagna");
-            if (idCampagna != null) {
-               Map list = new CampagnaServiceImpl(new CampagnaDAO())
-                       .condividiCampagna(Integer.parseInt(idCampagna),
-                               request);
+                request.setAttribute("campagna", c);
+                resource = "/WEB-INF/results/campagna.jsp";
+                break;
+            case "/condividiCampagna":
+                String idCampagna = request.getParameter("idCampagna");
+                if (idCampagna != null) {
+                    Map list = new CampagnaServiceImpl(new CampagnaDAO())
+                            .condividiCampagna(Integer.parseInt(idCampagna),
+                                    request);
 
-               if (list != null) {
-                  request.setAttribute("linkList", list);
+                    if (list != null) {
+                        request.setAttribute("linkList", list);
 
-                  resource = "/WEB-INF/results/condividiCampagnaBeta.jsp";
-               } else {
-                  response.sendRedirect(getServletContext().getContextPath()
-                          + "/index.jsp");
-                  return;
-               }
-            } else {
-               response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                       "Bad Request");
-               return;
-            }
+                        resource = "/WEB-INF/results/condividiCampagnaBeta.jsp";
+                    } else {
+                        response.sendRedirect(
+                                getServletContext().getContextPath()
+                                + "/index.jsp");
+                        return;
+                    }
+                } else {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                            "Bad Request");
+                    return;
+                }
 
-            break;
-         default:
-            response.sendError(
-                    HttpServletResponse.SC_NOT_FOUND,
-                    "Risorsa non trovata");
-            return;
-      }
+                break;
+            default:
+                response.sendError(
+                        HttpServletResponse.SC_NOT_FOUND,
+                        "Risorsa non trovata");
+                return;
+        }
 
-      RequestDispatcher dispatcher =
-              request.getRequestDispatcher(resource);
-      dispatcher.forward(request, response);
-   }
+        RequestDispatcher dispatcher =
+                request.getRequestDispatcher(resource);
+        dispatcher.forward(request, response);
+    }
 
     private void visualizzaModificaCampagna(final HttpServletRequest request,
                                             final HttpServletResponse response)
@@ -122,18 +130,18 @@ public final class GestioneCampagnaController extends HttpServlet {
         CategoriaService categoriaService =
                 new CategoriaServiceImpl(new CategoriaDAO());
         String idCampagna = request.getParameter("idCampagna");
-      int id;
-      try {
-         id = Integer.parseInt(idCampagna);
-      } catch (NumberFormatException e) {
-         response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
-                 "Input errato");
-         e.printStackTrace();
-         return;
-      }
-      Campagna c = service.trovaCampagna(id);
-       Utente ut = (Utente) request.getSession().getAttribute("utente");
-      if (c.getUtente().getIdUtente() != ut.getIdUtente()) {
+        int id;
+        try {
+            id = Integer.parseInt(idCampagna);
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
+                    "Input errato");
+            e.printStackTrace();
+            return;
+        }
+        Campagna c = service.trovaCampagna(id);
+        Utente ut = (Utente) request.getSession().getAttribute("utente");
+        if (c.getUtente().getIdUtente() != ut.getIdUtente()) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                     "Non Autorizzato");
             return;
@@ -147,24 +155,23 @@ public final class GestioneCampagnaController extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
-   @Override
-   protected void doPost(final HttpServletRequest request,
-                         final HttpServletResponse response)
-           throws ServletException, IOException {
+    @Override
+    protected void doPost(final HttpServletRequest request,
+                          final HttpServletResponse response)
+            throws ServletException, IOException {
 
-      HttpSession session = request.getSession();
-      CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
-      Utente userSession = (Utente) session.getAttribute("utente");
-      String idCampagna = request.getParameter("idCampagna");
-      int id = 0;
-
-        /*if (userSession == null) {
+        HttpSession session = request.getSession();
+        CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
+        Validator val = new Validator(request);
+        if (!val.assertUtente()) {
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/AutenticazioneController/login");
-
             return;
-        }*/
+        }
+        Utente userSession = (Utente) session.getAttribute("utente");
+        String idCampagna = request.getParameter("idCampagna");
+        int id = 0;
 
         switch (request.getPathInfo()) {
             case "/creaCampagna":
@@ -175,125 +182,127 @@ public final class GestioneCampagnaController extends HttpServlet {
                     Campagna campagna = service
                             .trovaCampagna(Integer.parseInt(idCampagna));
 
-               if(campagna != null) {
-                  modificaCampagna(request, response, campagna);
-               }
-            }
+                    if (campagna != null) {
+                        modificaCampagna(request, response, campagna);
+                    }
+                }
 
-            break;
-         case "/cancellaCampagna":
+                break;
+            case "/cancellaCampagna":
                 /*if (!userSession.isAdmin()) {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                             "Non autorizzato");
                     return;
                 }*/
 
-            id = Integer.parseInt(idCampagna);
-            Campagna campagna = service.trovaCampagna(id);
-            if (service.cancellaCampagna(campagna)) {
-               if (service.rimborsaDonazioni(campagna,
-                       new CampagnaProxy(campagna))) {
-                  System.out.println("rimborso ok");
-               } else {
-                  System.out.println("rimborso errore");
-               }
-               System.out.println("cancellazione Ok");
-            } else {
-               System.out.println("cancellazione errore");
-            }
-            break;
-         case "/chiudiCampagna":
-            id = Integer.parseInt(idCampagna);
-            Campagna campagna1 = service.trovaCampagna(id);
-            if (service.chiudiCampagna(campagna1)) {
-               System.out.println("chiusura campagna ok");
-            } else {
-               System.out.println("chiusura campagna errore");
-            }
-            break;
-         default:
-            response.sendError(
-                    HttpServletResponse.SC_NOT_FOUND,
-                    "Risorsa non trovata");
-            break;
-      }
-   }
+                id = Integer.parseInt(idCampagna);
+                Campagna campagna = service.trovaCampagna(id);
+                if (service.cancellaCampagna(campagna)) {
+                    if (service.rimborsaDonazioni(campagna,
+                            new CampagnaProxy(campagna))) {
+                        System.out.println("rimborso ok");
+                    } else {
+                        System.out.println("rimborso errore");
+                    }
+                    System.out.println("cancellazione Ok");
+                } else {
+                    System.out.println("cancellazione errore");
+                }
+                break;
+            case "/chiudiCampagna":
+                id = Integer.parseInt(idCampagna);
+                Campagna campagna1 = service.trovaCampagna(id);
+                if (service.chiudiCampagna(campagna1)) {
+                    System.out.println("chiusura campagna ok");
+                } else {
+                    System.out.println("chiusura campagna errore");
+                }
+                break;
+            default:
+                response.sendError(
+                        HttpServletResponse.SC_NOT_FOUND,
+                        "Risorsa non trovata");
+                break;
+        }
+    }
 
-   @Override
-   public void destroy() {
-      ConPool.getInstance().closeDataSource();
-      super.destroy();
-   }
+    @Override
+    public void destroy() {
+        ConPool.getInstance().closeDataSource();
+        super.destroy();
+    }
 
     private void creaCampagna(final HttpServletRequest req,
                               final HttpServletResponse res)
             throws IOException, ServletException {
 
-      Campagna c = extractCampagna(req);
-      c.setSommaRaccolta(0d);
+        Campagna c = extractCampagna(req);
+        c.setSommaRaccolta(0d);
 
         if (new CampagnaServiceImpl(new CampagnaDAO()).creazioneCampagna(c)) {
             uploadFoto(req, c);
-         res.sendRedirect(
-                 getServletContext().getContextPath() + "/index.jsp");
-      } else {
-         res.sendRedirect(
-                 getServletContext().getContextPath()
-                         + "/GestioneCampagnaController/creaCampagna");
-      }
-   }
+            res.sendRedirect(
+                    getServletContext().getContextPath() + "/index.jsp");
+        } else {
+            res.sendRedirect(
+                    getServletContext().getContextPath()
+                            + "/GestioneCampagnaController/creaCampagna");
+        }
+    }
 
-    private void uploadFoto(HttpServletRequest request, Campagna campagna) throws ServletException, IOException {
-      List<String> fotoList = FileServlet.uploadFoto(request);
-      ImmagineService immagineService = new ImmagineServiceImpl();
-      Immagine immagine = new Immagine();
-      immagine.setCampagna(campagna);
+    private void uploadFoto(final HttpServletRequest request,
+                            final Campagna campagna)
+            throws ServletException, IOException {
+        List<String> fotoList = FileServlet.uploadFoto(request);
+        ImmagineService immagineService = new ImmagineServiceImpl();
+        Immagine immagine = new Immagine();
+        immagine.setCampagna(campagna);
 
-      for(String fotoPath : fotoList) {
-         immagine.setPath(fotoPath);
-         immagineService.salvaImmagine(immagine);
-      }
-   }
+        for (String fotoPath : fotoList) {
+            immagine.setPath(fotoPath);
+            immagineService.salvaImmagine(immagine);
+        }
+    }
 
-   private Campagna extractCampagna(final HttpServletRequest request) {
-      Campagna c = new Campagna();
+    private Campagna extractCampagna(final HttpServletRequest request) {
+        Campagna c = new Campagna();
 
-      c.setStato(StatoCampagna.ATTIVA);
-      c.setTitolo(request.getParameter("titolo"));
-      c.setDescrizione(request.getParameter("descrizione"));
+        c.setStato(StatoCampagna.ATTIVA);
+        c.setTitolo(request.getParameter("titolo"));
+        c.setDescrizione(request.getParameter("descrizione"));
 
-      c.setSommaTarget(
-              Double.parseDouble(request.getParameter("sommaTarget")));
-      c.setUtente((Utente) request.getSession(false).getAttribute("utente"));
+        c.setSommaTarget(
+                Double.parseDouble(request.getParameter("sommaTarget")));
+        c.setUtente((Utente) request.getSession(false).getAttribute("utente"));
 
-      Categoria categoria = new Categoria();
-      categoria.setIdCategoria(Integer.parseInt(
-              request.getParameter("idCategoria")));
+        Categoria categoria = new Categoria();
+        categoria.setIdCategoria(Integer.parseInt(
+                request.getParameter("idCategoria")));
 
-      c.setCategoria(
-              new CategoriaServiceImpl(new CategoriaDAO())
-                      .visualizzaCategoria(categoria));
+        c.setCategoria(
+                new CategoriaServiceImpl(new CategoriaDAO())
+                        .visualizzaCategoria(categoria));
 
-      return c;
-   }
+        return c;
+    }
 
-   private void modificaCampagna(final HttpServletRequest request,
-                                 final HttpServletResponse response,
-                                 final Campagna campagna)
-           throws IOException, ServletException {
+    private void modificaCampagna(final HttpServletRequest request,
+                                  final HttpServletResponse response,
+                                  final Campagna campagna)
+            throws IOException, ServletException {
 
-      Campagna c = extractCampagna(request);
+        Campagna c = extractCampagna(request);
 
-      c.setIdCampagna(campagna.getIdCampagna());
-      c.setSommaRaccolta(campagna.getSommaRaccolta());
+        c.setIdCampagna(campagna.getIdCampagna());
+        c.setSommaRaccolta(campagna.getSommaRaccolta());
 
         if (new CampagnaServiceImpl(new CampagnaDAO()).modificaCampagna(c)) {
             uploadFoto(request, c);
-         response.sendRedirect(
-                 getServletContext().getContextPath() + "/index.jsp");
-      } else {
-         request.getRequestDispatcher("/GestioneCampagnaController"
-                 + "/modificaCampagna").forward(request, response);
-      }
-   }
+            response.sendRedirect(
+                    getServletContext().getContextPath() + "/index.jsp");
+        } else {
+            request.getRequestDispatcher("/GestioneCampagnaController"
+                    + "/modificaCampagna").forward(request, response);
+        }
+    }
 }
