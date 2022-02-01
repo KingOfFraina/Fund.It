@@ -92,7 +92,7 @@ public final class GestioneUtenteController extends HttpServlet {
             throws IOException, ServletException {
         HttpSession session = request.getSession();
         Validator val = new Validator(null);
-        if (val.isValidBean(new Utente(), session.getAttribute("utente"))) {
+        if (!val.isValidBean(new Utente(), session.getAttribute("utente"))) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/AutenticazioneController/login");
             return;
@@ -145,7 +145,7 @@ public final class GestioneUtenteController extends HttpServlet {
         HttpSession session = request.getSession();
 
         Validator val = new Validator(null);
-        if (val.isValidBean(new Utente(), session.getAttribute("utente"))) {
+        if (!val.isValidBean(new Utente(), session.getAttribute("utente"))) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/AutenticazioneController/login");
             return;
@@ -180,8 +180,7 @@ public final class GestioneUtenteController extends HttpServlet {
         HttpSession session = request.getSession();
 
         Validator val = new Validator(null);
-        if (val.isValidBean(new Utente(), session.getAttribute("utente"))) {
-            System.out.println(session.getAttribute("utente").toString());
+        if (!val.isValidBean(new Utente(), session.getAttribute("utente"))) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/AutenticazioneController/login");
             return;
@@ -207,7 +206,7 @@ public final class GestioneUtenteController extends HttpServlet {
         HttpSession session = request.getSession();
 
         Validator val = new Validator(null);
-        if (val.isValidBean(new Utente(), session.getAttribute("utente"))) {
+        if (!val.isValidBean(new Utente(), session.getAttribute("utente"))) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/AutenticazioneController/login");
             return;
@@ -232,7 +231,7 @@ public final class GestioneUtenteController extends HttpServlet {
         HttpSession session = request.getSession();
 
         Validator val = new Validator(null);
-        if (val.isValidBean(new Utente(), session.getAttribute("utente"))) {
+        if (!val.isValidBean(new Utente(), session.getAttribute("utente"))) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/AutenticazioneController/login");
             return;
