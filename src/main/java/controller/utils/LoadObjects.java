@@ -1,4 +1,4 @@
-package controller;
+package controller.utils;
 
 import model.DAO.CampagnaDAO;
 import model.DAO.DAO;

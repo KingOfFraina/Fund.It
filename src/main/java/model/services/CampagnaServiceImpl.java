@@ -8,95 +8,113 @@ import model.beans.Donazione;
 import model.beans.StatoCampagna;
 import model.beans.proxyInterfaces.CampagnaInterface;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class CampagnaServiceImpl implements CampagnaService {
-    /**
-     * Wrapper di campagna DAO.
-     */
-    private final DAO<Campagna> dao;
+   /**
+    * Wrapper di campagna DAO.
+    */
+   private final DAO<Campagna> dao;
 
-    /**
-     * @param campagnaDAO Istanza di campagna DAO
-     */
-    public CampagnaServiceImpl(final DAO<Campagna> campagnaDAO) {
-        this.dao = campagnaDAO;
-    }
+   /**
+    * @param campagnaDAO Istanza di campagna DAO
+    */
+   public CampagnaServiceImpl(final DAO<Campagna> campagnaDAO) {
+      this.dao = campagnaDAO;
+   }
 
-    @Override
-    public boolean creazioneCampagna(final Campagna campagna) {
-        return dao.save(campagna);
-    }
+   @Override
+   public boolean creazioneCampagna(final Campagna campagna) {
+      return dao.save(campagna);
+   }
 
-    @Override
-    public boolean modificaCampagna(final Campagna campagna) {
-        return dao.update(campagna);
-    }
+   @Override
+   public boolean modificaCampagna(final Campagna campagna) {
+      return dao.update(campagna);
+   }
 
-    @Override
-    public String condividiCampagna(final int idCampagna) {
-        Campagna campagna = dao.getById(idCampagna);
+   @Override
+   public Map<String, String> condividiCampagna(final int idCampagna, final HttpServletRequest request) {
+      Campagna campagna = dao.getById(idCampagna);
 
-        if (campagna != null) {
-            return campagna.getTitolo();
-        }
+      if (campagna != null) {
+         HashMap<String, String> link = new HashMap<>();
+         String path = "http://" + request.getServerName() + ":"
+                 + request.getServerPort() + request.getContextPath()
+                 + "/GestioneCampagnaController/campagna?idCampagna="
+                 + campagna.getIdCampagna();
+         String subject = "Dona a questa campagna presente su Fund.It ";
 
-        return null;
-    }
+         link.put("mail", "mailto:?body=" + path + "&amp;subject= Titolo: " + subject
+                 + campagna.getTitolo());
+         link.put("whatapp", "https://wa.me/?text=" + subject + path);
+         link.put("facebook", "https://www.facebook.com/sharer/sharer.php?u=" + path);
+         link.put("twitter", "https://twitter.com/share?text=" + subject
+                 + "&amp;url=" + path + "/&amp;via=Fund.It");
+         link.put("link", path);
 
-    @Override
-    public List<Campagna> ricercaCampagna(final String text) {
-        CampagnaDAO campagnaDAO = (CampagnaDAO) dao;
-        return campagnaDAO.getByKeyword(text);
-    }
+         return link;
+      }
 
-    @Override
-    public List<Campagna> visualizzaCampagne(final int size, final int offset) {
-        CampagnaDAO campagnaDAO = (CampagnaDAO) dao;
-        return campagnaDAO.getBySizeOffset(size, offset);
-    }
+      return null;
+   }
 
-    /**
-     * @param idCampagna id della campagna da cercare
-     * @return istanza di Campagna avente come id idCampagna, null altrimenti
-     */
-    @Override
-    public Campagna trovaCampagna(final int idCampagna) {
-        return dao.getById(idCampagna);
-    }
+   @Override
+   public List<Campagna> ricercaCampagna(final String text) {
+      CampagnaDAO campagnaDAO = (CampagnaDAO) dao;
+      return campagnaDAO.getByKeyword(text);
+   }
 
-    @Override
-    public boolean chiudiCampagna(final Campagna campagna) {
-        campagna.setStato(StatoCampagna.CHIUSA);
-        return modificaCampagna(campagna);
-    }
+   @Override
+   public List<Campagna> visualizzaCampagne(final int size, final int offset) {
+      CampagnaDAO campagnaDAO = (CampagnaDAO) dao;
+      return campagnaDAO.getBySizeOffset(size, offset);
+   }
 
-    @Override
-    public boolean cancellaCampagna(final Campagna campagna) {
-        campagna.setStato(StatoCampagna.CANCELLATA);
-        return modificaCampagna(campagna);
-    }
+   /**
+    * @param idCampagna id della campagna da cercare
+    * @return istanza di Campagna avente come id idCampagna, null altrimenti
+    */
+   @Override
+   public Campagna trovaCampagna(final int idCampagna) {
+      return dao.getById(idCampagna);
+   }
 
-    /**
-     * Esegue i rimborsi delle eventuali donazioni
-     * effettuate sulla campagna.
-     *
-     * @param campagna istanza di Campagna
-     * @param proxy    proxy di Campagna per trovare le donazioni della campagna
-     * @return true se l'operazione è andata a buon fine, false altrimenti
-     */
-    @Override
-    public boolean rimborsaDonazioni(final Campagna campagna,
-                                     final CampagnaInterface proxy) {
-        if (campagna == null || proxy == null) {
-            throw new IllegalArgumentException("Invalid argument");
-        }
-        List<Donazione> donazioni = proxy.getDonazioni();
-        DAO<Donazione> daoDonazione = new DonazioneDAO();
-        donazioni.forEach(d -> d.setSommaDonata(-d.getSommaDonata()));
-        boolean flag = donazioni.stream().allMatch(daoDonazione::update);
+   @Override
+   public boolean chiudiCampagna(final Campagna campagna) {
+      campagna.setStato(StatoCampagna.CHIUSA);
+      return modificaCampagna(campagna);
+   }
 
-        campagna.setDonazioni(donazioni);
-        return flag;
-    }
+   @Override
+   public boolean cancellaCampagna(final Campagna campagna) {
+      campagna.setStato(StatoCampagna.CANCELLATA);
+      return modificaCampagna(campagna);
+   }
+
+   /**
+    * Esegue i rimborsi delle eventuali donazioni
+    * effettuate sulla campagna.
+    *
+    * @param campagna istanza di Campagna
+    * @param proxy    proxy di Campagna per trovare le donazioni della campagna
+    * @return true se l'operazione è andata a buon fine, false altrimenti
+    */
+   @Override
+   public boolean rimborsaDonazioni(final Campagna campagna,
+                                    final CampagnaInterface proxy) {
+      if (campagna == null || proxy == null) {
+         throw new IllegalArgumentException("Invalid argument");
+      }
+      List<Donazione> donazioni = proxy.getDonazioni();
+      DAO<Donazione> daoDonazione = new DonazioneDAO();
+      donazioni.forEach(d -> d.setSommaDonata(-d.getSommaDonata()));
+      boolean flag = donazioni.stream().allMatch(daoDonazione::update);
+
+      campagna.setDonazioni(donazioni);
+      return flag;
+   }
 }
