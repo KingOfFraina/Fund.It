@@ -37,21 +37,23 @@ public final class CampagnaServiceImpl implements CampagnaService {
    }
 
    @Override
-   public Map<String, String> condividiCampagna(final int idCampagna, final HttpServletRequest request) {
+   public Map<String, String> condividiCampagna(final int idCampagna,
+                                                final HttpServletRequest req) {
       Campagna campagna = dao.getById(idCampagna);
 
       if (campagna != null) {
          HashMap<String, String> link = new HashMap<>();
-         String path = "http://" + request.getServerName() + ":"
-                 + request.getServerPort() + request.getContextPath()
+         String path = "http://" + req.getServerName() + ":"
+                 + req.getServerPort() + req.getContextPath()
                  + "/GestioneCampagnaController/campagna?idCampagna="
                  + campagna.getIdCampagna();
          String subject = "Dona a questa campagna presente su Fund.It ";
 
-         link.put("mail", "mailto:?body=" + path + "&amp;subject= Titolo: " + subject
-                 + campagna.getTitolo());
+         link.put("mail", "mailto:?body=" + path + "&amp;subject= Titolo: "
+                 + subject + campagna.getTitolo());
          link.put("whatapp", "https://wa.me/?text=" + subject + path);
-         link.put("facebook", "https://www.facebook.com/sharer/sharer.php?u=" + path);
+         link.put("facebook", "https://www.facebook.com/sharer/sharer.php?u="
+                 + path);
          link.put("twitter", "https://twitter.com/share?text=" + subject
                  + "&amp;url=" + path + "/&amp;via=Fund.It");
          link.put("link", path);

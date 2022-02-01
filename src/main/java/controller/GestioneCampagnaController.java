@@ -88,8 +88,8 @@ public final class GestioneCampagnaController extends HttpServlet {
             String idCampagna = request.getParameter("idCampagna");
             if (idCampagna != null) {
                Map list = new CampagnaServiceImpl(new CampagnaDAO())
-                       .condividiCampagna(Integer.parseInt(idCampagna)
-                               , request);
+                       .condividiCampagna(Integer.parseInt(idCampagna),
+                               request);
 
                if (list != null) {
                   request.setAttribute("linkList", list);
