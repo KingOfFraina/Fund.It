@@ -10,4 +10,11 @@ public interface ImmagineService {
     * @return l'esito con cui si è conclusa l'operazione
     */
    boolean salvaImmagine(Immagine immagine);
+
+   /**
+    * Permette la cancellazione di tutte le foto collegate di una campagna.
+    * @param idCampagna l'idCampagna della campagna
+    * @return l'esito con cui si è conclusa l'operazione
+    */
+   boolean eliminaImmagini(int idCampagna);
 }

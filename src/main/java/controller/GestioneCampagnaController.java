@@ -249,6 +249,10 @@ public final class GestioneCampagnaController extends HttpServlet {
       Immagine immagine = new Immagine();
       immagine.setCampagna(campagna);
 
+      if(!fotoList.isEmpty()) {
+         immagineService.eliminaImmagini(campagna.getIdCampagna());
+      }
+
       for(String fotoPath : fotoList) {
          immagine.setPath(fotoPath);
          immagineService.salvaImmagine(immagine);
