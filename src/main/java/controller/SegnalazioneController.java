@@ -2,10 +2,7 @@ package controller;
 
 
 import model.DAO.CampagnaDAO;
-import model.DAO.DAO;
-import model.DAO.DonazioneDAO;
 import model.beans.Campagna;
-import model.beans.Donazione;
 import model.beans.Segnalazione;
 import model.beans.StatoSegnalazione;
 import model.beans.Utente;
@@ -133,7 +130,8 @@ public final class SegnalazioneController extends HttpServlet {
                     utenteService.sospensioneUtente(utenteSegnalato);
                     CampagnaInterface campagnaProxy =
                             new CampagnaProxy(campagna);
-                    if (campagnaService.rimborsaDonazioni(campagna, campagnaProxy)) {
+                    if (campagnaService
+                            .rimborsaDonazioni(campagna, campagnaProxy)) {
                         System.out.println("tutto bene");
                     } else {
                         System.out.println("errore");
