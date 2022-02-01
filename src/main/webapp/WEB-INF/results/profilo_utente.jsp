@@ -12,7 +12,7 @@
 <div id="div-info" class="container text-center my-5">
     <div id="informazioni">
         <h2>Bentornato ${utente.nome}!</h2>
-        <img class="propic" src="${pageContext.request.contextPath}/img/undraw_profile_pic_ic-5-t.svg" alt=""><br>
+        <img class="propic" src="${pageContext.request.contextPath}/file/${sessionScope.utente.fotoProfilo}" alt=""><br>
         <button id="visualizza" type="submit" class="btn btn-primary pulsante mt-4 mb-3" onclick="showModifica()">
             Visualizza informazioni profilo
         </button>

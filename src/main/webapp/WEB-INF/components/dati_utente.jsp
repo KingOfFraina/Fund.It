@@ -145,7 +145,7 @@
     <div class="row mt-4">
         <div class="col">
             <label for="formFile" class="form-label">Immagine del profilo</label>
-            <input name="fotoProfilo" class="form-control" type="file" id="formFile" oninput="">
+            <input name="fotoProfilo" class="form-control" type="file" id="formFile" oninput="" accept="image/*,.jpg">
         </div>
     </div>
 

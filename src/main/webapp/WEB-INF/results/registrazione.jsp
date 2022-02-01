@@ -21,7 +21,7 @@
                         <i class="fas fa-arrow-left"></i></button>
                 </div>
 
-                <form id="form" class="needs-validation" novalidate method="post"
+                <form id="form" class="needs-validation" method="post" enctype="multipart/form-data"
                       action="${pageContext.request.contextPath}/AutenticazioneController/registrazione">
                     <!--Form dati utente-->
                     <%@include file="../components/dati_utente.jsp" %>
