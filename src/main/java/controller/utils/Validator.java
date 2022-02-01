@@ -260,6 +260,9 @@ public final class Validator {
      * @return true se attr corrisponde, false altrimenti.
      */
     public boolean isValidBean(final Object type, final Object attr) {
+        System.out.println(attr.toString());
+        System.out.println("inside"+attr.getClass().getSimpleName().
+                equals(type.getClass().getSimpleName()));
         if (attr == null
                 || !attr.getClass().getSimpleName().
                 equals(type.getClass().getSimpleName())) {
