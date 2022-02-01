@@ -131,14 +131,16 @@ public final class GestioneCampagnaController extends HttpServlet {
 
         HttpSession session = request.getSession();
         CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
+        Utente userSession = (Utente) session.getAttribute("utente");
+        String idCampagna = request.getParameter("idCampagna");
 
-        if (session == null || session.getAttribute("utente") == null) {
+        /*if (userSession == null) {
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/AutenticazioneController/login");
 
             return;
-        }
+        }*/
 
         switch (request.getPathInfo()) {
             case "/creaCampagna":
@@ -146,13 +148,33 @@ public final class GestioneCampagnaController extends HttpServlet {
                 break;
 
             case "/modificaCampagna":
-                String idCampagna = request.getParameter("idCampagna");
-
                 if (idCampagna != null) {
                     modificaCampagna(request, response, service
                             .trovaCampagna(Integer.parseInt(idCampagna)));
                 }
 
+                break;
+            case "/cancellaCampagna":
+                /*if (!userSession.isAdmin()) {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                            "Non autorizzato");
+                    return;
+                }*/
+
+                int id = Integer.parseInt(idCampagna);
+                Campagna campagna = service.trovaCampagna(id);
+                if (service.cancellaCampagna(campagna)) {
+                    if (service.rimborsaDonazioni(campagna, new CampagnaProxy(campagna))) {
+                        System.out.println("rimborso ok");
+                    } else {
+                        System.out.println("rimborso errore");
+                    }
+                    System.out.println("cancellazione Ok");
+                } else {
+                    System.out.println("cancellazione errore");
+                }
+                break;
+            case "/chiudiCampagna":
                 break;
             default:
                 response.sendError(

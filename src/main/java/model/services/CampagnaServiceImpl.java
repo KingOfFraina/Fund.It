@@ -2,8 +2,12 @@ package model.services;
 
 import model.DAO.CampagnaDAO;
 import model.DAO.DAO;
+import model.DAO.DonazioneDAO;
 import model.beans.Campagna;
+import model.beans.Donazione;
 import model.beans.StatoCampagna;
+import model.beans.proxies.CampagnaProxy;
+import model.beans.proxyInterfaces.CampagnaInterface;
 
 import java.util.List;
 
@@ -14,7 +18,6 @@ public final class CampagnaServiceImpl implements CampagnaService {
     private final DAO<Campagna> dao;
 
     /**
-     *
      * @param campagnaDAO Istanza di campagna DAO
      */
     public CampagnaServiceImpl(final DAO<Campagna> campagnaDAO) {
@@ -73,5 +76,27 @@ public final class CampagnaServiceImpl implements CampagnaService {
     public boolean cancellaCampagna(final Campagna campagna) {
         campagna.setStato(StatoCampagna.CANCELLATA);
         return modificaCampagna(campagna);
+    }
+
+    /**
+     * Esegue i rimborsi delle eventuali donazioni
+     * effettuate sulla campagna.
+     *
+     * @param campagna istanza di Campagna
+     * @param proxy    proxy di Campagna per trovare le donazioni della campagna
+     * @return true se l'operazione è andata a buon fine, false altrimenti
+     */
+    @Override
+    public boolean rimborsaDonazioni(Campagna campagna, CampagnaInterface proxy) {
+        if (campagna == null || proxy == null) {
+            throw new IllegalArgumentException("Invalid argument");
+        }
+        List<Donazione> donazioni = proxy.getDonazioni();
+        DAO<Donazione> dao = new DonazioneDAO();
+        donazioni.forEach(d -> d.setSommaDonata(-d.getSommaDonata()));
+        boolean flag = donazioni.stream().allMatch(dao::update);
+
+        campagna.setDonazioni(donazioni);
+        return flag;
     }
 }

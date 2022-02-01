@@ -7,6 +7,11 @@ import java.util.List;
 
 public final class CategoriaServiceImpl implements CategoriaService {
     /**
+     * Vincolo sulla lunghezza del campo nomeCategoria
+     * della tabella categoria.
+     */
+    private static final int MAX_NAME_LEN = 100;
+    /**
      * Wrapper di CategoriaDAO.
      */
     private final DAO<Categoria> dao;
@@ -20,8 +25,9 @@ public final class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     public boolean inserisciCategoria(final Categoria categoria) {
-        if (categoria == null || categoria.getNome() == null) {
-            throw new IllegalArgumentException("Categoria null");
+        if (categoria == null || categoria.getNome() == null
+                || categoria.getNome().length() >= MAX_NAME_LEN) {
+            throw new IllegalArgumentException("Invalid argument");
         }
 
         return dao.save(categoria);
@@ -29,6 +35,9 @@ public final class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     public boolean modificaCategoria(final Categoria categoria) {
+        if (categoria == null || categoria.getNome().length() >= MAX_NAME_LEN) {
+            throw new IllegalArgumentException("Invalid argument");
+        }
         return dao.update(categoria);
     }
 
@@ -39,6 +48,10 @@ public final class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     public Categoria visualizzaCategoria(final Categoria categoria) {
+        if (categoria == null || categoria.getIdCategoria() <= 0) {
+            throw new IllegalArgumentException(
+                    "Argomento invalido: " + categoria);
+        }
         return dao.getById(categoria.getIdCategoria());
     }
 
