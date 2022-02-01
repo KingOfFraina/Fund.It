@@ -139,7 +139,7 @@ public final class GestioneCampagnaController extends HttpServlet {
             return;
         }
         Campagna c = service.trovaCampagna(id);
-        if (c.getUtente().getIdUtente() != id) {
+        if (c.getUtente().getIdUtente() != ut.getIdUtente()) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                     "Non Autorizzato");
             return;
