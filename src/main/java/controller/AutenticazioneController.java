@@ -145,8 +145,7 @@ public final class AutenticazioneController extends HttpServlet {
 
             if (fileNames.size() > 0) {
                utente.setFotoProfilo(fileNames.get(0));
-            }
-            else {
+            } else {
                utente.setFotoProfilo("");
             }
 
