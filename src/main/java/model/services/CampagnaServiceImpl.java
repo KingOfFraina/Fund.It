@@ -6,7 +6,6 @@ import model.DAO.DonazioneDAO;
 import model.beans.Campagna;
 import model.beans.Donazione;
 import model.beans.StatoCampagna;
-import model.beans.proxies.CampagnaProxy;
 import model.beans.proxyInterfaces.CampagnaInterface;
 
 import java.util.List;
@@ -87,14 +86,15 @@ public final class CampagnaServiceImpl implements CampagnaService {
      * @return true se l'operazione è andata a buon fine, false altrimenti
      */
     @Override
-    public boolean rimborsaDonazioni(Campagna campagna, CampagnaInterface proxy) {
+    public boolean rimborsaDonazioni(final Campagna campagna,
+                                     final CampagnaInterface proxy) {
         if (campagna == null || proxy == null) {
             throw new IllegalArgumentException("Invalid argument");
         }
         List<Donazione> donazioni = proxy.getDonazioni();
-        DAO<Donazione> dao = new DonazioneDAO();
+        DAO<Donazione> daoDonazione = new DonazioneDAO();
         donazioni.forEach(d -> d.setSommaDonata(-d.getSommaDonata()));
-        boolean flag = donazioni.stream().allMatch(dao::update);
+        boolean flag = donazioni.stream().allMatch(daoDonazione::update);
 
         campagna.setDonazioni(donazioni);
         return flag;

@@ -39,7 +39,8 @@ public final class GestioneDonazioneController extends HttpServlet {
 
                     if (session.getAttribute("donazione") != null) {
                         request.getRequestDispatcher(
-                                        "/WEB-INF/results/commentoDonazione.jsp")
+                                        "/WEB-INF/results/"
+                                                + "commentoDonazione.jsp")
                                 .forward(request, response);
                         return;
                     }
@@ -48,7 +49,8 @@ public final class GestioneDonazioneController extends HttpServlet {
                     request.setAttribute("donazioniList",
                             new DonazioniServiceImpl(new DonazioneDAO())
                                     .visualizzaDonazioni(
-                                            (Utente) session.getAttribute("utente")));
+                                            (Utente) session
+                                                    .getAttribute("utente")));
             }
 
         } else {
@@ -65,7 +67,8 @@ public final class GestioneDonazioneController extends HttpServlet {
     protected void doPost(final HttpServletRequest request,
                           final HttpServletResponse response)
             throws IOException, ServletException {
-        CampagnaService campagnaService = new CampagnaServiceImpl(new CampagnaDAO());
+        CampagnaService campagnaService =
+                new CampagnaServiceImpl(new CampagnaDAO());
         Campagna campagna = campagnaService
                 .trovaCampagna(Integer.parseInt(
                         request.getParameter("idCampagna")));
@@ -76,7 +79,8 @@ public final class GestioneDonazioneController extends HttpServlet {
                     Donazione donazione = new Donazione();
 
                     donazione.setCampagna(campagna);
-                    donazione.setUtente((Utente) session.getAttribute("utente"));
+                    donazione.setUtente((Utente)
+                            session.getAttribute("utente"));
                     donazione.setSommaDonata(Double.parseDouble(
                             request.getParameter("sommaDonata")));
                     donazione.setAnonimo(false);
@@ -104,9 +108,11 @@ public final class GestioneDonazioneController extends HttpServlet {
                             donazione.setAnonimo(true);
                         }
 
-                        DonazioniService donazioniService = new DonazioniServiceImpl(new DonazioneDAO());
+                        DonazioniService donazioniService =
+                                new DonazioniServiceImpl(new DonazioneDAO());
                         if (donazioniService.effettuaDonazione(donazione)) {
-                            campagna.setSommaRaccolta(campagna.getSommaRaccolta()
+                            campagna.setSommaRaccolta(
+                                    campagna.getSommaRaccolta()
                                     + donazione.getSommaDonata());
                             campagnaService.modificaCampagna(campagna);
                         } else {

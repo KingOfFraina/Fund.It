@@ -164,7 +164,8 @@ public final class GestioneCampagnaController extends HttpServlet {
                 id = Integer.parseInt(idCampagna);
                 Campagna campagna = service.trovaCampagna(id);
                 if (service.cancellaCampagna(campagna)) {
-                    if (service.rimborsaDonazioni(campagna, new CampagnaProxy(campagna))) {
+                    if (service.rimborsaDonazioni(campagna,
+                            new CampagnaProxy(campagna))) {
                         System.out.println("rimborso ok");
                     } else {
                         System.out.println("rimborso errore");
