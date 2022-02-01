@@ -22,7 +22,7 @@
                         <i class="fas fa-arrow-left"></i></button>
                 </div>
 
-                <form id="form" class="needs-validation" novalidate method="post">
+                <form id="form" class="needs-validation" novalidate method="post" enctype="multipart/form-data">
 
                     <input type="hidden" value="${requestScope.campagna.idCampagna}" name="idCampagna">
 
@@ -80,7 +80,7 @@
                     <!--File-->
                     <div class="mt-4 mb-3">
                         <label for="formFileMultiple" class="form-label">Allega immagini per la tua campagna</label>
-                        <input class="form-control" type="file" id="formFileMultiple" multiple>
+                        <input class="form-control" name="file" type="file" id="formFileMultiple" multiple accept="image/*,.jpg">
                     </div>
                     <c:choose>
                         <c:when test="${requestScope.campagna != null}">
