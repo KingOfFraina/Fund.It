@@ -76,11 +76,11 @@ public final class SegnalazioneController extends HttpServlet {
         String path = request.getPathInfo();
         HttpSession session = request.getSession();
         Utente userSession = (Utente) session.getAttribute("utente");
-        if (userSession == null) {
+        /*if (userSession == null) {
             response.sendRedirect(
                     getServletContext().getContextPath() + "/index.jsp");
             return;
-        }
+        }*/
 
         String idCampagna = request.getParameter("idCampagna");
         CampagnaService campagnaService =
@@ -108,12 +108,12 @@ public final class SegnalazioneController extends HttpServlet {
                 }
                 break;
             case "/risolvi":
-                if (!userSession.isAdmin()) {
+                /*if (!userSession.isAdmin()) {
                     response.sendError(
                             HttpServletResponse.SC_UNAUTHORIZED,
                             "Non autorizzato");
                     return;
-                }
+                }*/
                 String scelta = request.getParameter("sceltaSegnalazione");
                 int id = Integer.parseInt(request.getParameter("idCampagna"));
                 int idSegnalazione =
@@ -133,13 +133,18 @@ public final class SegnalazioneController extends HttpServlet {
                     utenteService.sospensioneUtente(utenteSegnalato);
                     CampagnaInterface campagnaProxy =
                             new CampagnaProxy(campagna);
-                    List<Donazione> donazioni =
+                    if (campagnaService.rimborsaDonazioni(campagna, campagnaProxy)) {
+                        System.out.println("tutto bene");
+                    } else {
+                        System.out.println("errore");
+                    }
+                    /*List<Donazione> donazioni =
                             campagnaProxy.getDonazioni();
                     DAO<Donazione> dao = new DonazioneDAO();
                     donazioni.forEach(d -> {
                         d.setSommaDonata(-d.getSommaDonata());
                         dao.update(d);
-                    });
+                    });*/
                 } else {
                     segnalazioniService
                             .risolviSegnalazione(idSegnalazione,

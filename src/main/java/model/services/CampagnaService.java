@@ -1,6 +1,7 @@
 package model.services;
 
 import model.beans.Campagna;
+import model.beans.proxyInterfaces.CampagnaInterface;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public interface CampagnaService {
 
     /**
      * Permette la modifica della campagna esistente.
+     *
      * @param campagna il bean che contiene informazioni sulla campagna
      * @return l'esito con cui si è conclusa l'operazione
      */
@@ -55,7 +57,6 @@ public interface CampagnaService {
     List<Campagna> visualizzaCampagne(int size, int offset);
 
     /**
-     *
      * @param idCampagna id della campagna da cercare
      * @return istanza di Campagna avente come id idCampagna, null altrimenti
      */
@@ -68,4 +69,14 @@ public interface CampagnaService {
      * @return l'esito con cui si è conclusa l'operazione
      */
     boolean cancellaCampagna(Campagna campagna);
+
+    /**
+     * Esegue i rimborsi delle eventuali donazioni
+     * effettuate sulla campagna.
+     *
+     * @param campagna istanza di Campagna
+     * @param proxy    proxy di Campagna per trovare le donazioni della campagna
+     * @return true se l'operazione è andata a buon fine, false altrimenti
+     */
+    boolean rimborsaDonazioni(Campagna campagna, CampagnaInterface proxy);
 }
