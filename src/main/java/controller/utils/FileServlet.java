@@ -474,13 +474,14 @@ public class FileServlet extends HttpServlet {
       List<String> fileNameList = new ArrayList<>();
 
       for (Part p : request.getParts()) {
-         if(p.getSubmittedFileName() != null) {
-         try (InputStream is = p.getInputStream()) {
-            String path = FileServlet.basePath + File.separator + p.getSubmittedFileName();
-            File file = new File(path);
-            Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            fileNameList.add(p.getSubmittedFileName());
-         }}
+         if (p.getSubmittedFileName() != null && !p.getSubmittedFileName().isEmpty()) {
+            try (InputStream is = p.getInputStream()) {
+               String path = FileServlet.basePath + File.separator + p.getSubmittedFileName();
+               File file = new File(path);
+               Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+               fileNameList.add(p.getSubmittedFileName());
+            }
+         }
       }
 
       return fileNameList;

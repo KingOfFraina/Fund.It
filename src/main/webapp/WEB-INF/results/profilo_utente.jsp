@@ -12,7 +12,16 @@
 <div id="div-info" class="container text-center my-5">
     <div id="informazioni">
         <h2>Bentornato ${utente.nome}!</h2>
-        <img class="propic" src="${pageContext.request.contextPath}/file/${sessionScope.utente.fotoProfilo}" alt=""><br>
+        <c:choose>
+            <c:when test="${sessionScope.utente.fotoProfilo.blank}">
+                <img class="propic" src="${pageContext.request.contextPath}/img/undraw_profile_pic_ic-5-t.svg" alt="">
+            </c:when>
+            <c:otherwise>
+                <img class="propic" src="${pageContext.request.contextPath}/file/${sessionScope.utente.fotoProfilo}" alt="">
+            </c:otherwise>
+        </c:choose>
+
+        <br>
         <button id="visualizza" type="submit" class="btn btn-primary pulsante mt-4 mb-3" onclick="showModifica()">
             Visualizza informazioni profilo
         </button>
@@ -24,7 +33,7 @@
             <i class="fas fa-arrow-left"></i></button>
     </div>
 
-    <form id="form" class="needs-validation" novalidate method="post"
+    <form id="form" class="needs-validation" novalidate method="post" enctype="multipart/form-data"
           action="${pageContext.request.contextPath}/GestioneUtenteController/modificaProfilo">
 
         <div id="informazioni-modifica" style="display: none">

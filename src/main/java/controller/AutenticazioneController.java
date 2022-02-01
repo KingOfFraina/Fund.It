@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @WebServlet(name = "AutenticazioneController",
@@ -139,7 +140,15 @@ public final class AutenticazioneController extends HttpServlet {
             utente.setCitta(request.getParameter("citta"));
             utente.setCap(request.getParameter("cap"));
             utente.setCf(request.getParameter("cf"));
-            utente.setFotoProfilo(FileServlet.uploadFoto(request).get(0));
+
+            List<String> fileNames = FileServlet.uploadFoto(request);
+
+            if (fileNames.size() > 0) {
+               utente.setFotoProfilo(fileNames.get(0));
+            }
+            else {
+               utente.setFotoProfilo("");
+            }
 
             AutenticazioneService autenticazioneService =
                     new AutenticazioneServiceImpl(session, new UtenteDAO());
@@ -154,7 +163,7 @@ public final class AutenticazioneController extends HttpServlet {
          }
 
       }
-         response.sendRedirect(
-                 getServletContext().getContextPath() + "/index.jsp");
+      response.sendRedirect(
+              getServletContext().getContextPath() + "/index.jsp");
    }
 }

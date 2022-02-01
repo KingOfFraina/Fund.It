@@ -1,5 +1,6 @@
 package controller;
 
+import controller.utils.FileServlet;
 import model.DAO.DAO;
 import model.DAO.UtenteDAO;
 import model.beans.Utente;
@@ -10,6 +11,7 @@ import model.storage.ConPool;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,10 +19,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @WebServlet(name = "GestioneUtenteController",
         value = "/GestioneUtenteController/*")
+@MultipartConfig
 public final class GestioneUtenteController extends HttpServlet {
 
     @Override
@@ -113,11 +117,9 @@ public final class GestioneUtenteController extends HttpServlet {
             utente.setCitta(request.getParameter("citta"));
             utente.setCap(request.getParameter("cap"));
             utente.setCf(request.getParameter("cf"));
-            String photo = request.getParameter("fotoProfilo");
-
-            if (photo != null
-                    && !photo.isBlank()) {
-                utente.setFotoProfilo(photo);
+            List<String> listFoto = FileServlet.uploadFoto(request);
+            if (!listFoto.isEmpty()) {
+                utente.setFotoProfilo(listFoto.get(0));
             } else {
                 Utente inSessione = (Utente) session.getAttribute("utente");
                 utente.setFotoProfilo(inSessione.getFotoProfilo());
