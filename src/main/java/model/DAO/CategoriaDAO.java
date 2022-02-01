@@ -57,17 +57,26 @@ public final class CategoriaDAO implements DAO<Categoria> {
 
     @Override
     public boolean save(final Categoria entity) {
+        boolean flag;
         if (entity != null) {
             try (Connection con = ConPool.getInstance().getConnection()) {
                 if (con != null) {
                     try (PreparedStatement stmt =
                                  con.prepareStatement("INSERT INTO "
-                                         + "categoria (nomeCategoria)"
-                                         + " VALUES (?)")) {
+                                                 + "categoria (nomeCategoria)"
+                                                 + " VALUES (?)",
+                                         PreparedStatement
+                                                 .RETURN_GENERATED_KEYS)) {
 
                         stmt.setString(1, entity.getNome());
-
-                        return stmt.executeUpdate() > 0;
+                        flag = stmt.executeUpdate() > 0;
+                        if (flag) {
+                            ResultSet set = stmt.getGeneratedKeys();
+                            if (set.next()) {
+                                entity.setIdCategoria(set.getInt(1));
+                            }
+                        }
+                        return flag;
                     }
                 }
             } catch (SQLException e) {

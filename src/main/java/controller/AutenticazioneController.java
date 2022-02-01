@@ -110,7 +110,7 @@ public final class AutenticazioneController extends HttpServlet {
          response.sendRedirect(
                  getServletContext().getContextPath()
                          + "/index.jsp");
-      } else if(utente.getIdUtente() == -1){
+      } else if (utente.getIdUtente() == -1) {
          response.sendRedirect(
                  getServletContext().getContextPath()
                          + "/AutenticazioneController/login"); //todo reinderizzamento a messaggio di errore/BAN

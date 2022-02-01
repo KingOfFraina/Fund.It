@@ -65,11 +65,12 @@ public class UtenteServiceImpl implements UtenteService {
      */
     @Override
     public boolean sospensioneUtente(final Utente utente) {
+        if (utente.getDataBan() != null) {
+            utente.setDataBan(null);
+        } else {
+            utente.setDataBan(LocalDateTime.now());
+        }
         DAO<Utente> utenteDAO = new UtenteDAO();
-        LocalDateTime now = LocalDateTime.now();
-        final long dayBan = 5L;
-        now = LocalDateTime.parse(now.toString()).plusDays(dayBan);
-        utente.setDataBan(now);
         return utenteDAO.update(utente);
     }
 }
