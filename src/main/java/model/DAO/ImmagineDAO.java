@@ -144,6 +144,11 @@ public final class ImmagineDAO implements DAO<Immagine> {
       return false;
    }
 
+   /**
+    * Permette la cancellazione di tutte le foto collegate di una campagna.
+    * @param idCampagna l'idCampagna della campagna
+    * @return l'esito con cui si è conclusa l'operazione
+    */
    public boolean deleteByIdCampagna(final int idCampagna) {
       try (Connection connection =
                    ConPool.getInstance().getConnection()) {
