@@ -38,7 +38,14 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
             throw new RuntimeException("Utente null");
         }
         UtenteDAO userDao = (UtenteDAO) dao;
-        return userDao.doLogin(utente);
+        Utente ut = userDao.doLogin(utente);
+        if(ut == null){
+            return ut;
+        }
+        if (ut.getDataBan() != null){
+            return null;
+        }
+        return ut;
     }
 
     /**
