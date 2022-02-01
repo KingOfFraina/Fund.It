@@ -1,6 +1,5 @@
 package controller.utils;
 
-import model.beans.Utente;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -270,15 +269,27 @@ public final class Validator {
     }
 
     /**
-     * Check se un Utente è admin.
-     * @param ut utente
-     * @return true se admin, false altrimenti.
+     * Check per tutti i parametri di utente.
+     * @param req che arriva dal client.
+     * @return true se rispetta le regexp, altrimenti false.
      */
-    public boolean isUtenteAdmin(final Utente ut) {
-        if (!ut.isAdmin()) {
-            return false;
+    public boolean assertUtente(final HttpServletRequest req) {
+        if (assertNameSurname(req.getParameter("nome"), "Errore Input Nome")
+                && assertNameSurname(req.getParameter("cognome"),
+                "Errore Input Cognome")
+                && assertEmail(req.getParameter("email"), "Errore Input Email")
+                && assertCF(req.getParameter("cf"), "Errore Input CF")
+                && assertPassword(req.getParameter("password"),
+                "Errore Input Password")
+                && assertCAP(req.getParameter("cap"), "Errore Input CAP")
+                && assertIndirizzo(req.getParameter("indirizzo"),
+                "Errore Input Indirizzo")
+                && assertCity(req.getParameter("citta"), "Errore Input City")
+                && assertPhone(req.getParameter("telefono"),
+                "Errore Input Trap Phone")) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**

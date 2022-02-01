@@ -1,6 +1,7 @@
 package controller;
 
 import controller.utils.FileServlet;
+import controller.utils.Validator;
 import model.DAO.DAO;
 import model.DAO.UtenteDAO;
 import model.beans.Utente;
@@ -90,39 +91,38 @@ public final class GestioneUtenteController extends HttpServlet {
                                  final HttpServletResponse response)
             throws IOException, ServletException {
         HttpSession session = request.getSession();
-
-        if (session.getAttribute("utente") == null
-                || !session.getAttribute("utente").getClass().getSimpleName().
-                equals(Utente.class.getSimpleName())) {
+        Validator val = new Validator(null);
+        if (val.isValidBean(new Utente(), session.getAttribute("utente"))) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/AutenticazioneController/login");
             return;
         }
         Utente utente = new Utente();
-
         if (request.getParameter("password").equals(
                 request.getParameter("confermaPassword"))
                 && request.getParameter("email").equals(
                 request.getParameter("confermaEmail"))) {
-            utente.setIdUtente(((Utente) session.getAttribute("utente"))
-                    .getIdUtente());
-            utente.createPasswordHash(request.getParameter("password"));
-            utente.setEmail(request.getParameter("email"));
-            utente.setNome(request.getParameter("nome"));
-            utente.setCognome(request.getParameter("cognome"));
-            utente.setDataDiNascita(
-                    LocalDate.parse(request.getParameter("dataDiNascita")));
-            utente.setTelefono(request.getParameter("telefono"));
-            utente.setStrada(request.getParameter("indirizzo"));
-            utente.setCitta(request.getParameter("citta"));
-            utente.setCap(request.getParameter("cap"));
-            utente.setCf(request.getParameter("cf"));
-            List<String> listFoto = FileServlet.uploadFoto(request);
-            if (!listFoto.isEmpty()) {
-                utente.setFotoProfilo(listFoto.get(0));
-            } else {
-                Utente inSessione = (Utente) session.getAttribute("utente");
-                utente.setFotoProfilo(inSessione.getFotoProfilo());
+            if (val.assertUtente(request)) {
+                utente.setIdUtente(((Utente) session.getAttribute("utente"))
+                        .getIdUtente());
+                utente.createPasswordHash(request.getParameter("password"));
+                utente.setEmail(request.getParameter("email"));
+                utente.setNome(request.getParameter("nome"));
+                utente.setCognome(request.getParameter("cognome"));
+                utente.setDataDiNascita(
+                        LocalDate.parse(request.getParameter("dataDiNascita")));
+                utente.setTelefono(request.getParameter("telefono"));
+                utente.setStrada(request.getParameter("indirizzo"));
+                utente.setCitta(request.getParameter("citta"));
+                utente.setCap(request.getParameter("cap"));
+                utente.setCf(request.getParameter("cf"));
+                List<String> listFoto = FileServlet.uploadFoto(request);
+                if (!listFoto.isEmpty()) {
+                    utente.setFotoProfilo(listFoto.get(0));
+                } else {
+                    Utente inSessione = (Utente) session.getAttribute("utente");
+                    utente.setFotoProfilo(inSessione.getFotoProfilo());
+                }
             }
         } else {
             response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
@@ -144,9 +144,8 @@ public final class GestioneUtenteController extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
 
-        if (session.getAttribute("utente") == null
-                || !session.getAttribute("utente").getClass().getSimpleName().
-                equals(Utente.class.getSimpleName())) {
+        Validator val = new Validator(null);
+        if (val.isValidBean(new Utente(), session.getAttribute("utente"))) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/AutenticazioneController/login");
             return;
@@ -180,9 +179,8 @@ public final class GestioneUtenteController extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
 
-        if (session.getAttribute("utente") == null
-                || !session.getAttribute("utente").getClass().getSimpleName().
-                equals(Utente.class.getSimpleName())) {
+        Validator val = new Validator(null);
+        if (val.isValidBean(new Utente(), session.getAttribute("utente"))) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/AutenticazioneController/login");
             return;
@@ -207,9 +205,8 @@ public final class GestioneUtenteController extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
 
-        if (session.getAttribute("utente") == null
-                || !session.getAttribute("utente").getClass().getSimpleName().
-                equals(Utente.class.getSimpleName())) {
+        Validator val = new Validator(null);
+        if (val.isValidBean(new Utente(), session.getAttribute("utente"))) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/AutenticazioneController/login");
             return;
@@ -233,9 +230,8 @@ public final class GestioneUtenteController extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
 
-        if (session.getAttribute("utente") == null
-                || !session.getAttribute("utente").getClass().getSimpleName().
-                equals(Utente.class.getSimpleName())) {
+        Validator val = new Validator(null);
+        if (val.isValidBean(new Utente(), session.getAttribute("utente"))) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/AutenticazioneController/login");
             return;
