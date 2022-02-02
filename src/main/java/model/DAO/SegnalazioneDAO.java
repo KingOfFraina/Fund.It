@@ -34,7 +34,7 @@ public final class SegnalazioneDAO
             ResultSet set = statement.executeQuery();
 
             if (set.next()) {
-                return extract(set, "s");
+                return extract(set);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -54,7 +54,7 @@ public final class SegnalazioneDAO
             list = new ArrayList<>();
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                list.add(extract(set, "s"));
+                list.add(extract(set));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -150,29 +150,28 @@ public final class SegnalazioneDAO
 
     /**
      * @param resultSet resultSet della query eseguita
-     * @param alias     eventuale alias del field
      * @return l'istanza della della classe T popolata con le informazioni
      * presenti nel resultSet
      * @throws SQLException eccezione lanciata in caso di problemi
      */
     @Override
-    public Segnalazione extract(final ResultSet resultSet, final String alias)
+    public Segnalazione extract(final ResultSet resultSet)
             throws SQLException {
         Segnalazione s = new Segnalazione();
-        s.setIdSegnalazione(resultSet.getInt(alias + ".idSegnalazione"));
-        s.setDataOra(resultSet.getDate(alias + ".DataOra"));
+        s.setIdSegnalazione(resultSet.getInt("idSegnalazione"));
+        s.setDataOra(resultSet.getDate("DataOra"));
         s.setStatoSegnalazione(StatoSegnalazione.valueOf(
-                resultSet.getString(alias + ".Stato").toUpperCase()));
+                resultSet.getString("Stato").toUpperCase()));
         Utente segnalato = new Utente();
-        segnalato.setIdUtente(resultSet.getInt(alias + ".idUtenteSegnalato"));
+        segnalato.setIdUtente(resultSet.getInt("idUtenteSegnalato"));
         s.setSegnalato(segnalato);
         Utente segnalatore = new Utente();
         segnalatore.setIdUtente(
-                resultSet.getInt(alias + ".idUtenteSegnalatore"));
+                resultSet.getInt("idUtenteSegnalatore"));
         s.setSegnalatore(segnalatore);
-        s.setDescrizione(resultSet.getString(alias + ".descrizione"));
+        s.setDescrizione(resultSet.getString("descrizione"));
         Campagna c = new Campagna();
-        c.setIdCampagna(resultSet.getInt(alias + ".idCampagna"));
+        c.setIdCampagna(resultSet.getInt("idCampagna"));
         s.setCampagnaSegnalata(c);
         return s;
     }
@@ -194,7 +193,7 @@ public final class SegnalazioneDAO
 
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                list.add(extract(set, "s"));
+                list.add(extract(set));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -223,7 +222,7 @@ public final class SegnalazioneDAO
                     ResultSet resultSet = preparedStatement.executeQuery();
 
                     while (resultSet.next()) {
-                        segnalazioneList.add(extract(resultSet, null));
+                        segnalazioneList.add(extract(resultSet));
                     }
                 }
             }

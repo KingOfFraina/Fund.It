@@ -40,10 +40,9 @@ public interface DAO<T> {
 
     /**
      * @param resultSet resultSet della query eseguita
-     * @param alias     eventuale alias del field
      * @return l'istanza della della classe T popolata con le informazioni
      * presenti nel resultSet
      * @throws SQLException eccezione lanciata in caso di problemi
      */
-    T extract(ResultSet resultSet, String alias) throws SQLException;
+    T extract(ResultSet resultSet) throws SQLException;
 }

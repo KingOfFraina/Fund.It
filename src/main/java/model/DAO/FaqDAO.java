@@ -25,39 +25,37 @@ public final class FaqDAO implements DAO<FAQ> {
 
                FAQ retrieved = null;
 
-               while (rs.next()) {
-                  retrieved = extract(rs, "");
+               if (rs.next()) {
+                  retrieved = extract(rs);
                }
 
                return retrieved;
             }
-         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
+      } else {
+         throw new IllegalArgumentException("Null object");
       }
-      return null;
    }
 
    @Override
    public List<FAQ> getAll() {
-
       try (Connection con = ConPool.getInstance().getConnection()) {
          try (PreparedStatement ps =
                       con.prepareStatement("SELECT * FROM faq")) {
             ResultSet rs = ps.executeQuery();
-
             List<FAQ> retrieved = new ArrayList<>();
 
             while (rs.next()) {
-               retrieved.add(extract(rs, ""));
+               retrieved.add(extract(rs));
             }
 
             return retrieved;
          }
-      } catch (SQLException throwables) {
-         throwables.printStackTrace();
+      } catch (SQLException e) {
+         throw new RuntimeException("SQL error: " + e.getMessage());
       }
-      return null;
    }
 
    @Override
@@ -96,30 +94,29 @@ public final class FaqDAO implements DAO<FAQ> {
       if (entity != null) {
          try (Connection connection =
                       ConPool.getInstance().getConnection()) {
-            if (connection != null) {
-               String query =
-                       "UPDATE faq SET domanda = ?, risposta = ?, idUtente = ? "
-                               + "WHERE idFaq = ?";
+            String query =
+                    "UPDATE faq SET domanda = ?, risposta = ?, idUtente = ? "
+                            + "WHERE idFaq = ?";
 
-               try (PreparedStatement preparedStatement =
-                            connection.prepareStatement(query)) {
+            try (PreparedStatement preparedStatement =
+                         connection.prepareStatement(query)) {
 
-                  int index = 1;
+               int index = 1;
 
-                  preparedStatement.setString(index++, entity.getDomanda());
-                  preparedStatement.setString(index++, entity.getRisposta());
-                  preparedStatement.setInt(index++,
-                          entity.getUtenteCreatore().getIdUtente());
-                  preparedStatement.setInt(index, entity.getIdFaq());
+               preparedStatement.setString(index++, entity.getDomanda());
+               preparedStatement.setString(index++, entity.getRisposta());
+               preparedStatement.setInt(index++,
+                       entity.getUtenteCreatore().getIdUtente());
+               preparedStatement.setInt(index, entity.getIdFaq());
 
-                  return preparedStatement.executeUpdate() > 0;
-               }
+               return preparedStatement.executeUpdate() > 0;
             }
          } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
+      } else {
+         throw new IllegalArgumentException("Null object");
       }
-      return false;
    }
 
    @Override
@@ -127,47 +124,41 @@ public final class FaqDAO implements DAO<FAQ> {
       if (entity != null) {
          try (Connection connection =
                       ConPool.getInstance().getConnection()) {
-            if (connection != null) {
-               String query =
-                       "DELETE FROM faq WHERE idFaq = ?";
+            String query =
+                    "DELETE FROM faq WHERE idFaq = ?";
 
-               try (PreparedStatement preparedStatement =
-                            connection.prepareStatement(query)) {
+            try (PreparedStatement preparedStatement =
+                         connection.prepareStatement(query)) {
 
-                  preparedStatement.setInt(1, entity.getIdFaq());
+               preparedStatement.setInt(1, entity.getIdFaq());
 
-                  return preparedStatement.executeUpdate() > 0;
-               }
+               return preparedStatement.executeUpdate() > 0;
             }
          } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
+      } else {
+         throw new IllegalArgumentException("Null object");
       }
-      return false;
    }
 
    @Override
-   public FAQ extract(final ResultSet resultSet, final String alias)
+   public FAQ extract(final ResultSet resultSet)
            throws SQLException {
       if (resultSet != null) {
-         String tableAlias = "";
          FAQ fq = new FAQ();
 
-         if (alias != null) {
-            tableAlias = alias + ".";
-         }
-
-         fq.setIdFaq(resultSet.getInt(alias + "idFaq"));
-         fq.setDomanda(resultSet.getString(alias + "domanda"));
-         fq.setRisposta(resultSet.getString(alias + "risposta"));
+         fq.setIdFaq(resultSet.getInt("idFaq"));
+         fq.setDomanda(resultSet.getString("domanda"));
+         fq.setRisposta(resultSet.getString("risposta"));
 
          Utente ut = new Utente();
-         ut.setIdUtente(resultSet.getInt(alias + "idUtente"));
+         ut.setIdUtente(resultSet.getInt("idUtente"));
 
          fq.setUtenteCreatore(ut);
          return fq;
+      } else {
+         throw new IllegalArgumentException("Null object");
       }
-
-      return null;
    }
 }
