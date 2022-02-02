@@ -211,7 +211,7 @@ public final class GestioneUtenteController extends HttpServlet {
 
     private void promuoviDeclassaUtente(final HttpServletRequest request,
                                         final HttpServletResponse response)
-            throws IOException {
+            throws IOException, ServletException {
         HttpSession session = request.getSession(false);
 
         if (!new Validator(request).isValidBean(new Utente(), session.getAttribute("utente"))) {
@@ -241,10 +241,13 @@ public final class GestioneUtenteController extends HttpServlet {
             }
 
             new UtenteServiceImpl().promuoviDeclassaUtente(utente, ut);
+            visualizzaDashboardAdmin(request, response);
         }
         else {
-
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "Errore input");
         }
+        return;
     }
 
     @Override
