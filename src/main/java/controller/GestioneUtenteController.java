@@ -229,6 +229,7 @@ public final class GestioneUtenteController extends HttpServlet {
                     + "/AutenticazioneController/login");
             return;
         }
+
         Utente utente = (Utente) session.getAttribute("utente");
         if (!utente.isAdmin()) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
@@ -244,14 +245,16 @@ public final class GestioneUtenteController extends HttpServlet {
             try {
                 ut = (Utente) dao.getById(Integer.parseInt(parameter));
             } catch (NumberFormatException e) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                        "Non Autorizzato");
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                        "Errore conversione");
                 return;
             }
-        }
 
-        new UtenteServiceImpl().promuoviDeclassaUtente(utente, ut);
-        System.out.println("ciao");
+            new UtenteServiceImpl().promuoviDeclassaUtente(utente, ut);
+        }
+        else {
+
+        }
     }
 
     @Override
