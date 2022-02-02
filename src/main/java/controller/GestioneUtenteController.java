@@ -35,11 +35,13 @@ public final class GestioneUtenteController extends HttpServlet {
         String path = request.getPathInfo();
         HttpSession session = request.getSession();
         String resource = "/";
-
         switch (path) {
             case "/visualizzaDashboard":
                 visualizzaDashboard(request, response);
                 return;
+            case "/visualizzaDashboardAdmin":
+                visualizzaDashboardAdmin(request, response);
+                break;
             case "/visualizzaUtenti":
                 resource = "/WEB-INF/results/"; //todo path
                 break;
@@ -79,6 +81,25 @@ public final class GestioneUtenteController extends HttpServlet {
                 return;
         }
         return;
+    }
+
+    private void visualizzaDashboardAdmin(final HttpServletRequest request,
+                                          final HttpServletResponse response)
+            throws IOException, ServletException {
+        Validator val = new Validator(request);
+        if (!val.isValidBean(new Utente(), request.getSession().getAttribute("utente"))) {
+            response.sendRedirect(request.getServletContext().getContextPath()
+                    + "/AutenticazioneController/login");
+            return;
+        }
+        Utente ut = (Utente) request.getSession().getAttribute("utente");
+        if (!ut.isAdmin()) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                    "Non autorizzato.");
+        }
+        RequestDispatcher dispatcher =
+                request.getRequestDispatcher("/WEB-INF/results/admin.jsp");
+        dispatcher.forward(request, response);
     }
 
     private void modificaProfilo(final HttpServletRequest request,

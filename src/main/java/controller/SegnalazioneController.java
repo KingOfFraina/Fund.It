@@ -1,6 +1,7 @@
 package controller;
 
 
+import controller.utils.Validator;
 import model.DAO.CampagnaDAO;
 import model.beans.Campagna;
 import model.beans.Segnalazione;
@@ -72,13 +73,14 @@ public final class SegnalazioneController extends HttpServlet {
 
         String path = request.getPathInfo();
         HttpSession session = request.getSession();
-        Utente userSession = (Utente) session.getAttribute("utente");
-        /*if (userSession == null) {
+
+        Validator val = new Validator(request);
+        if (val.isValidBean(new Utente(), session.getAttribute("utente"))) {
             response.sendRedirect(
                     getServletContext().getContextPath() + "/index.jsp");
             return;
-        }*/
-
+        }
+        Utente userSession = (Utente) session.getAttribute("utente");
         String idCampagna = request.getParameter("idCampagna");
         CampagnaService campagnaService =
                 new CampagnaServiceImpl(new CampagnaDAO());
@@ -93,8 +95,7 @@ public final class SegnalazioneController extends HttpServlet {
                 Campagna c = campagnaService.
                         trovaCampagna(Integer.parseInt(idCampagna));
                 Utente utente = new Utente();
-                System.out.println(request.getParameter("idUtente"));
-                utente.setIdUtente(
+                utente.setIdUtente( //todo attenzione al campo; la jsp manda solo idutente
                         Integer.parseInt(request.getParameter("idUtente")));
                 if (segnalazioniService.
                         segnalaCampagna(c, utente, descrizione)) {
@@ -105,12 +106,12 @@ public final class SegnalazioneController extends HttpServlet {
                 }
                 break;
             case "/risolvi":
-                /*if (!userSession.isAdmin()) {
+                if (!userSession.isAdmin()) {
                     response.sendError(
                             HttpServletResponse.SC_UNAUTHORIZED,
                             "Non autorizzato");
                     return;
-                }*/
+                }
                 String scelta = request.getParameter("sceltaSegnalazione");
                 int id = Integer.parseInt(request.getParameter("idCampagna"));
                 int idSegnalazione =

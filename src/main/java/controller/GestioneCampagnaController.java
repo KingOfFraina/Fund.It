@@ -214,7 +214,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                             "Non autorizzato");
                     return;
                 }*/
-
+                //todo
                 id = Integer.parseInt(idCampagna);
                 Campagna campagna = service.trovaCampagna(id);
                 if (service.cancellaCampagna(campagna)) {
