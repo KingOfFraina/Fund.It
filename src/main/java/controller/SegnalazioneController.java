@@ -95,7 +95,7 @@ public final class SegnalazioneController extends HttpServlet {
                 Campagna c = campagnaService.
                         trovaCampagna(Integer.parseInt(idCampagna));
                 Utente utente = new Utente();
-                utente.setIdUtente( //todo attenzione al campo; la jsp manda solo idutente
+                utente.setIdUtente(//todo attenzione al campo; la jsp manda solo idutente
                         Integer.parseInt(request.getParameter("idUtente")));
                 if (segnalazioniService.
                         segnalaCampagna(c, utente, descrizione)) {

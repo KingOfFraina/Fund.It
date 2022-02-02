@@ -40,7 +40,7 @@ public final class GestioneCampagnaController extends HttpServlet {
         DAO<Campagna> campagnaDAO = new CampagnaDAO();
         campagne = campagnaDAO.getAll();
 
-        if(campagne != null) {
+        if (campagne != null) {
             campagne.forEach(c -> new CampagnaProxy(c).getUtente());
         }
         getServletContext().setAttribute("campagneList", campagne);
@@ -160,7 +160,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                 new CategoriaServiceImpl(new CategoriaDAO());
         HttpSession session = request.getSession();
 
-        if(session == null || session.getAttribute("utente") == null) {
+        if (session == null || session.getAttribute("utente") == null) {
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/AutenticazioneController/login");

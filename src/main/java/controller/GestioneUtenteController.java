@@ -78,7 +78,8 @@ public final class GestioneUtenteController extends HttpServlet {
                                           final HttpServletResponse response)
             throws IOException, ServletException {
         Validator val = new Validator(request);
-        if (!val.isValidBean(new Utente(), request.getSession().getAttribute("utente"))) {
+        if (!val.isValidBean(new Utente(),
+                request.getSession().getAttribute("utente"))) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/AutenticazioneController/login");
             return;
@@ -214,7 +215,8 @@ public final class GestioneUtenteController extends HttpServlet {
             throws IOException, ServletException {
         HttpSession session = request.getSession(false);
 
-        if (!new Validator(request).isValidBean(new Utente(), session.getAttribute("utente"))) {
+        if (!new Validator(request).isValidBean(new Utente(),
+                session.getAttribute("utente"))) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/AutenticazioneController/login");
             return;
@@ -242,8 +244,7 @@ public final class GestioneUtenteController extends HttpServlet {
 
             new UtenteServiceImpl().promuoviDeclassaUtente(utente, ut);
             visualizzaDashboardAdmin(request, response);
-        }
-        else {
+        } else {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Errore input");
         }

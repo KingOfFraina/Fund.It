@@ -75,31 +75,32 @@ public final class DonazioneDAO implements DAO<Donazione> {
                                     + " idUtente, idCampagna) "
                                     + "VALUES (?,?,?,?,?,?,?)";
 
-                    try (PreparedStatement preparedStatement =
+                    try (PreparedStatement ps =
                                  connection.prepareStatement(query,
-                                         PreparedStatement.RETURN_GENERATED_KEYS)) {
+                                         PreparedStatement
+                                                 .RETURN_GENERATED_KEYS)) {
 
                         int index = 1;
 
 
-                        preparedStatement.setTimestamp(index++,
+                        ps.setTimestamp(index++,
                                 Timestamp.valueOf(entity.getDataOra()));
-                        preparedStatement.setString(index++,
+                        ps.setString(index++,
                                 entity.getRicevuta());
-                        preparedStatement.setDouble(index++,
+                        ps.setDouble(index++,
                                 entity.getSommaDonata());
-                        preparedStatement.setString(index++,
+                        ps.setString(index++,
                                 entity.getCommento());
-                        preparedStatement.setBoolean(index++,
+                        ps.setBoolean(index++,
                                 entity.isAnonimo());
-                        preparedStatement.setInt(index++,
+                        ps.setInt(index++,
                                 entity.getUtente().getIdUtente());
-                        preparedStatement.setInt(index,
+                        ps.setInt(index,
                                 entity.getCampagna().getIdCampagna());
 
-                        flag = preparedStatement.executeUpdate() > 0;
+                        flag = ps.executeUpdate() > 0;
                         if (flag) {
-                            ResultSet set = preparedStatement.getGeneratedKeys();
+                            ResultSet set = ps.getGeneratedKeys();
                             if (set.next()) {
                                 entity.setIdDonazione(set.getInt(1));
                             }

@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FAQ_DAO_Test {
 
-   DAO faqDAO;
+   DAO<FAQ> faqDAO;
    Utente utente;
 
    @Before
@@ -33,6 +33,18 @@ public class FAQ_DAO_Test {
    public void saveEmptyObject() {
       assertThrows(RuntimeException.class, () -> {
          faqDAO.save(new FAQ());
+      });
+   }
+
+   @Test
+   public void savePartialObject() {
+      FAQ faq = new FAQ();
+      faq.setDomanda("");
+      faq.setRisposta(null);
+      faq.setUtenteCreatore(utente);
+
+      assertThrows(RuntimeException.class, () -> {
+         faqDAO.save(faq);
       });
    }
 
@@ -112,6 +124,22 @@ public class FAQ_DAO_Test {
          );
 
          faqDAO.delete(faqDB);
+      }
+   }
+
+   @Test
+   public void updatePartialObject() {
+      FAQ faq = new FAQ();
+      faq.setDomanda("Domanda");
+      faq.setRisposta("Risposta");
+      faq.setUtenteCreatore(utente);
+      if (faqDAO.save(faq)) {
+         faq.setDomanda("DomandaCambiata");
+         faq.setRisposta(null);
+
+         assertThrows(RuntimeException.class, () -> {
+            faqDAO.update(faq);
+         });
       }
    }
 
