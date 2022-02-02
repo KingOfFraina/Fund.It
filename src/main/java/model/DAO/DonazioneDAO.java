@@ -221,7 +221,7 @@ public final class DonazioneDAO implements DAO<Donazione> {
                     ResultSet resultSet = preparedStatement.executeQuery();
 
                     while (resultSet.next()) {
-                        donazioneList.add(extract(resultSet, null));
+                        donazioneList.add(extract(resultSet));
                     }
                 }
             }
@@ -250,7 +250,7 @@ public final class DonazioneDAO implements DAO<Donazione> {
                     ResultSet resultSet = preparedStatement.executeQuery();
 
                     while (resultSet.next()) {
-                        donazioneList.add(extract(resultSet, null));
+                        donazioneList.add(extract(resultSet));
                     }
                 }
             }

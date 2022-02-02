@@ -22,7 +22,7 @@ public final class CategoriaDAO implements DAO<Categoria> {
                     stmt.setInt(1, id);
                     ResultSet resultSet = stmt.executeQuery();
                     if (resultSet.next()) {
-                        c = extract(resultSet, null);
+                        c = extract(resultSet);
 
                     }
                 }
@@ -45,7 +45,7 @@ public final class CategoriaDAO implements DAO<Categoria> {
                              con.prepareStatement("SELECT * FROM categoria")) {
                     ResultSet resultSet = stmt.executeQuery();
                     while (resultSet.next()) {
-                        cList.add(extract(resultSet, null));
+                        cList.add(extract(resultSet));
                     }
                 }
             }
