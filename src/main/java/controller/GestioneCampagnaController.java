@@ -70,7 +70,7 @@ public final class GestioneCampagnaController extends HttpServlet {
         switch (request.getPathInfo()) {
             case "/test":
                 resource = "/WEB-INF/results/main_page.jsp";
-                break;
+                break; //todo che roba è?
             case "/creaCampagna":
                 request.setAttribute("categorie",
                         categoriaService.visualizzaCategorie());
