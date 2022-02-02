@@ -57,90 +57,84 @@ public final class CategoriaDAO implements DAO<Categoria> {
 
     @Override
     public boolean save(final Categoria entity) {
-        boolean flag;
-        if (entity != null) {
-            try (Connection con = ConPool.getInstance().getConnection()) {
-                if (con != null) {
-                    try (PreparedStatement stmt =
-                                 con.prepareStatement("INSERT INTO "
-                                                 + "categoria (nomeCategoria)"
-                                                 + " VALUES (?)",
-                                         PreparedStatement
-                                                 .RETURN_GENERATED_KEYS)) {
+        if (entity == null)
+            throw new IllegalArgumentException("Entity must be not null");
 
-                        stmt.setString(1, entity.getNome());
-                        flag = stmt.executeUpdate() > 0;
-                        if (flag) {
-                            ResultSet set = stmt.getGeneratedKeys();
-                            if (set.next()) {
-                                entity.setIdCategoria(set.getInt(1));
-                            }
+        boolean flag = false;
+        try (Connection con = ConPool.getInstance().getConnection()) {
+            if (con != null) {
+                try (PreparedStatement stmt =
+                             con.prepareStatement("INSERT INTO "
+                                             + "categoria (nomeCategoria)"
+                                             + " VALUES (?)",
+                                     PreparedStatement
+                                             .RETURN_GENERATED_KEYS)) {
+
+                    stmt.setString(1, entity.getNome());
+                    flag = stmt.executeUpdate() > 0;
+                    if (flag) {
+                        ResultSet set = stmt.getGeneratedKeys();
+                        if (set.next()) {
+                            entity.setIdCategoria(set.getInt(1));
                         }
-                        return flag;
                     }
                 }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return false;
+        return flag;
     }
 
     @Override
     public boolean update(final Categoria entity) {
-        if (entity != null) {
-            try (Connection con = ConPool.getInstance().getConnection()) {
-                if (con != null) {
-                    try (PreparedStatement stmt =
-                                 con.prepareStatement("UPDATE categoria "
-                                         + "SET nomeCategoria = ? "
-                                         + "WHERE idCategoria = ?")) {
+        if (entity == null)
+            throw new IllegalArgumentException("Entity must be not null");
 
-                        int index = 1;
-
-                        stmt.setString(index++, entity.getNome());
-                        stmt.setInt(index, entity.getIdCategoria());
-
-                        return stmt.executeUpdate() > 0;
-                    }
+        boolean flag = false;
+        try (Connection con = ConPool.getInstance().getConnection()) {
+            if (con != null) {
+                try (PreparedStatement stmt =
+                             con.prepareStatement("UPDATE categoria "
+                                     + "SET nomeCategoria = ? "
+                                     + "WHERE idCategoria = ?")) {
+                    int index = 1;
+                    stmt.setString(index++, entity.getNome());
+                    stmt.setInt(index, entity.getIdCategoria());
+                    flag = stmt.executeUpdate() > 0;
                 }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return false;
+        return flag;
     }
 
     @Override
     public boolean delete(final Categoria entity) {
-        if (entity != null) {
-            try (Connection con = ConPool.getInstance().getConnection()) {
-                if (con != null) {
-                    try (PreparedStatement stmt =
-                                 con.prepareStatement("DELETE FROM categoria "
-                                         + "WHERE idCategoria = ?")) {
-                        stmt.setInt(1, entity.getIdCategoria());
-                        return stmt.executeUpdate() > 0;
-                    }
+        if (entity == null)
+            throw new IllegalArgumentException("Entity must be not null");
+        boolean flag = false;
+        try (Connection con = ConPool.getInstance().getConnection()) {
+            if (con != null) {
+                try (PreparedStatement stmt =
+                             con.prepareStatement("DELETE FROM categoria "
+                                     + "WHERE idCategoria = ?")) {
+                    stmt.setInt(1, entity.getIdCategoria());
+                    flag = stmt.executeUpdate() > 0;
                 }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return false;
+        return flag;
     }
 
     @Override
-    public Categoria extract(final ResultSet resultSet,
-                             final String alias) throws SQLException {
+    public Categoria extract(final ResultSet resultSet) throws SQLException {
         if (resultSet != null) {
             Categoria c = new Categoria();
             String alias2 = "";
-
-            if (alias != null && !alias.isEmpty()) {
-                alias2 = alias + ".";
-            }
-
             c.setNome(resultSet.getString(alias2 + "nomeCategoria"));
             c.setIdCategoria(resultSet.getInt(alias2 + "idCategoria"));
             return c;
