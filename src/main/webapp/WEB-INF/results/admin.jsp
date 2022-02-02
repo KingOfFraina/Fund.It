@@ -18,10 +18,6 @@
     <%@include file="../components/admin/user_table.jsp" %>
 </div>
 
-
-
-
-
 </div>
 
 
