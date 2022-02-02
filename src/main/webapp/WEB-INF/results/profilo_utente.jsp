@@ -65,7 +65,7 @@
 
 <div class = "row text-center mt-4">
     <c:if test="${sessionScope.utente.admin}">
-        <a href = "#" class = "admin-panel-icon"><i class="fas fa-users-cog"></i></a>
+        <a style="text-decoration: none; color: black" href = "${pageContext.request.contextPath}/GestioneUtenteController/visualizzaDashboardAdmin" class = "admin-panel-icon"><i class="fas fa-users-cog"></i></a>
     </c:if>
 </div>
 

@@ -35,22 +35,18 @@ public final class GestioneUtenteController extends HttpServlet {
         String path = request.getPathInfo();
         HttpSession session = request.getSession();
         String resource = "/";
-
         switch (path) {
             case "/visualizzaDashboard":
                 visualizzaDashboard(request, response);
                 return;
-            case "/visualizzaUtenti":
-                resource = "/WEB-INF/results/"; //todo path
+            case "/visualizzaDashboardAdmin":
+                visualizzaDashboardAdmin(request, response);
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND,
                         "Risorsa non trovata");
                 return;
         }
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher(resource);
-        dispatcher.forward(request, response);
         return;
     }
 
@@ -64,9 +60,6 @@ public final class GestioneUtenteController extends HttpServlet {
             case "/modificaProfilo":
                 modificaProfilo(request, response);
                 break;
-            case "/visualizzaUtenti":
-                visualizzaUtenti(request, response);
-                break;
             case "/promuoviDeclassaUtente":
                 promuoviDeclassaUtente(request, response);
                 break;
@@ -79,6 +72,27 @@ public final class GestioneUtenteController extends HttpServlet {
                 return;
         }
         return;
+    }
+
+    private void visualizzaDashboardAdmin(final HttpServletRequest request,
+                                          final HttpServletResponse response)
+            throws IOException, ServletException {
+        Validator val = new Validator(request);
+        if (!val.isValidBean(new Utente(), request.getSession().getAttribute("utente"))) {
+            response.sendRedirect(request.getServletContext().getContextPath()
+                    + "/AutenticazioneController/login");
+            return;
+        }
+        Utente ut = (Utente) request.getSession().getAttribute("utente");
+        if (!ut.isAdmin()) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                    "Non autorizzato.");
+        }
+        UtenteService us = new UtenteServiceImpl();
+        request.setAttribute("utentiList", us.visualizzaUtenti(ut));
+        RequestDispatcher dispatcher =
+                request.getRequestDispatcher("/WEB-INF/results/admin.jsp");
+        dispatcher.forward(request, response);
     }
 
     private void modificaProfilo(final HttpServletRequest request,
@@ -192,31 +206,6 @@ public final class GestioneUtenteController extends HttpServlet {
 
         request.getRequestDispatcher("/WEB-INF/results/profilo_utente.jsp")
                 .forward(request, response);
-    }
-
-    private void visualizzaUtenti(final HttpServletRequest request,
-                                  final HttpServletResponse response)
-            throws ServletException, IOException {
-        HttpSession session = request.getSession();
-
-        Validator val = new Validator(request);
-        if (!val.isValidBean(new Utente(), session.getAttribute("utente"))) {
-            response.sendRedirect(request.getServletContext().getContextPath()
-                    + "/AutenticazioneController/login");
-            return;
-        }
-        Utente utente = (Utente) session.getAttribute("utente");
-        if (!utente.isAdmin()) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                    "Non Autorizzato");
-            return;
-        }
-        UtenteService us = new UtenteServiceImpl();
-        request.setAttribute("utentiList", us.visualizzaUtenti(utente));
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher(
-                        "/WEB-INF/results/dati_utente.jsp"); //todo path
-        dispatcher.forward(request, response);
     }
 
     private void promuoviDeclassaUtente(final HttpServletRequest request,
