@@ -11,59 +11,15 @@
     </tr>
     </thead>
     <tbody>
+    <c:forEach items="${utentiList}" var = "utente">
         <tr>
-            <th scope="row">1</th>
-            <td>Francesco</td>
-            <td>Esposito</td>
-            <td>francesco.expo@gmail.com</td>
-            <td>SPSFNC00H04I483V</td>
+            <th scope="row">${utente.id}</th>
+            <td>${utente.nome}</td>
+            <td>${utente.cognome}</td>
+            <td>${utente.email}</td>
+            <td>${utente.cf}</td>
             <td><i class="fas fa-arrow-up"></i> / <i class="fas fa-arrow-down"></i></td>
         </tr>
-
-        <tr>
-            <th scope="row">1</th>
-            <td>Francesco</td>
-            <td>Esposito</td>
-            <td>francesco.expo@gmail.com</td>
-            <td>SPSFNC00H04I483V</td>
-            <td><i class="fas fa-arrow-up"></i> / <i class="fas fa-arrow-down"></i></td>
-        </tr>
-
-        <tr>
-            <th scope="row">1</th>
-            <td>Francesco</td>
-            <td>Esposito</td>
-            <td>francesco.expo@gmail.com</td>
-            <td>SPSFNC00H04I483V</td>
-            <td><i class="fas fa-arrow-up"></i> / <i class="fas fa-arrow-down"></i></td>
-        </tr>
-
-        <tr>
-            <th scope="row">1</th>
-            <td>Francesco</td>
-            <td>Esposito</td>
-            <td>francesco.expo@gmail.com</td>
-            <td>SPSFNC00H04I483V</td>
-            <td><i class="fas fa-arrow-up"></i> / <i class="fas fa-arrow-down"></i></td>
-        </tr>
-
-        <tr>
-            <th scope="row">1</th>
-            <td>Francesco</td>
-            <td>Esposito</td>
-            <td>francesco.expo@gmail.com</td>
-            <td>SPSFNC00H04I483V</td>
-            <td><i class="fas fa-arrow-up"></i> / <i class="fas fa-arrow-down"></i></td>
-        </tr>
-
-        <tr>
-            <th scope="row">1</th>
-            <td>Francesco</td>
-            <td>Esposito</td>
-            <td>francesco.expo@gmail.com</td>
-            <td>SPSFNC00H04I483V</td>
-            <td><i class="fas fa-arrow-up"></i> / <i class="fas fa-arrow-down"></i></td>
-        </tr>
-
+    </c:forEach>
     </tbody>
 </table>
