@@ -50,9 +50,6 @@ public final class GestioneUtenteController extends HttpServlet {
                         "Risorsa non trovata");
                 return;
         }
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher(resource);
-        dispatcher.forward(request, response);
         return;
     }
 
