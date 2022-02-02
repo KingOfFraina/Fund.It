@@ -30,7 +30,6 @@ public class DonazioneDAOTest {
     @Test
     public void testGetByIdLessEqualThanZero() {
         int id = -1;
-
         assertThrows(IllegalArgumentException.class,
                 () -> dao.getById(id));
     }
@@ -74,6 +73,36 @@ public class DonazioneDAOTest {
         DonazioneDAO donazioneDAO = (DonazioneDAO) dao;
 
         assertNotNull(donazioneDAO.getAllByUtente(1));
+    }
+
+    @Test
+    public void testThrowsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> dao.delete(null));
+        assertThrows(IllegalArgumentException.class,
+                () -> dao.update(null));
+        assertThrows(IllegalArgumentException.class,
+                () -> dao.save(null));
+    }
+
+    @Test
+    public void testFalseUpdate() {
+        d1.setUtente(null);
+        d1.setCommento(null);
+        assertFalse(dao.update(d1));
+    }
+
+    @Test
+    public void testTrueUpdate() {
+        d3.setIdDonazione(20);
+        d3.setCommento("sesso");
+        assertTrue(dao.update(d3));
+    }
+
+    @Test
+    public void testGetByIdCampagna() {
+        DonazioneDAO donazioneDAO = (DonazioneDAO) dao;
+        assertNotNull(donazioneDAO.getByIdCampagna(1));
     }
 
     @Test
