@@ -49,14 +49,13 @@ public class UtenteServiceImpl implements UtenteService {
         if (richiedente.getIdUtente() < 0) {
             return false;
         }
-        DAO<Utente> dao = new UtenteDAO();
+
         if (!richiedente.isAdmin()) {
             return false;
         }
 
         soggetto.setAdmin(!soggetto.isAdmin());
-        dao.update(soggetto);
-        return false;
+        return new UtenteDAO().update(soggetto);
     }
 
     /**
