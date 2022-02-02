@@ -15,24 +15,25 @@ public final class FaqDAO implements DAO<FAQ> {
 
    @Override
    public FAQ getById(final int id) {
+      if (id > 0) {
+         try (Connection con = ConPool.getInstance().getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT * "
+                    + "FROM faq WHERE idFaq = ?")) {
+               ps.setInt(1, id);
 
-      try (Connection con = ConPool.getInstance().getConnection()) {
-         try (PreparedStatement ps = con.prepareStatement("SELECT * "
-                 + "FROM faq WHERE idFaq = ?")) {
-            ps.setInt(1, id);
+               ResultSet rs = ps.executeQuery();
 
-            ResultSet rs = ps.executeQuery();
+               FAQ retrieved = null;
 
-            FAQ retrieved = null;
+               while (rs.next()) {
+                  retrieved = extract(rs, "");
+               }
 
-            while (rs.next()) {
-               retrieved = extract(rs, "");
+               return retrieved;
             }
-
-            return retrieved;
+         } catch (SQLException throwables) {
+            throwables.printStackTrace();
          }
-      } catch (SQLException throwables) {
-         throwables.printStackTrace();
       }
       return null;
    }
@@ -64,7 +65,9 @@ public final class FaqDAO implements DAO<FAQ> {
       if (entity != null) {
          try (Connection con = ConPool.getInstance().getConnection()) {
             try (PreparedStatement ps = con.prepareStatement("INSERT INTO "
-                    + "faq (domanda, risposta, idUtente) VALUES (?,?,?)")) {
+                            + "faq (domanda, risposta, idUtente) "
+                            + "VALUES (?,?,?)",
+                    PreparedStatement.RETURN_GENERATED_KEYS)) {
 
                int index = 1;
 
@@ -72,13 +75,20 @@ public final class FaqDAO implements DAO<FAQ> {
                ps.setString(index++, entity.getRisposta());
                ps.setInt(index, entity.getUtenteCreatore().getIdUtente());
 
-               return ps.executeUpdate() > 0;
+               boolean esito = ps.executeUpdate() > 0;
+               ResultSet resultSet = ps.getGeneratedKeys();
+               if (resultSet.next()) {
+                  entity.setIdFaq(resultSet.getInt(1));
+               }
+
+               return esito;
             }
-         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
+      } else {
+         throw new IllegalArgumentException("Null object");
       }
-      return false;
    }
 
    @Override

@@ -2,12 +2,9 @@ package controller;
 
 import controller.utils.FileServlet;
 import controller.utils.Validator;
-import model.DAO.CampagnaDAO;
 import model.DAO.DAO;
 import model.DAO.UtenteDAO;
-import model.beans.Campagna;
 import model.beans.Utente;
-import model.beans.proxies.CampagnaProxy;
 import model.beans.proxies.UtenteProxy;
 import model.services.UtenteService;
 import model.services.UtenteServiceImpl;
