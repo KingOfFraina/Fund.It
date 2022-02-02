@@ -39,6 +39,10 @@ public final class GestioneCampagnaController extends HttpServlet {
         List<Campagna> campagne;
         DAO<Campagna> campagnaDAO = new CampagnaDAO();
         campagne = campagnaDAO.getAll();
+
+        if(campagne != null) {
+            campagne.forEach(c -> new CampagnaProxy(c).getUtente());
+        }
         getServletContext().setAttribute("campagneList", campagne);
     }
 
