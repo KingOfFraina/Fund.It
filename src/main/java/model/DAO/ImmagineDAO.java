@@ -26,7 +26,7 @@ public final class ImmagineDAO implements DAO<Immagine> {
                ResultSet resultSet = preparedStatement.executeQuery();
 
                if (resultSet.next()) {
-                  immagine = extract(resultSet, null);
+                  immagine = extract(resultSet);
                }
             }
          }
@@ -51,7 +51,7 @@ public final class ImmagineDAO implements DAO<Immagine> {
                ResultSet resultSet = preparedStatement.executeQuery();
 
                while (resultSet.next()) {
-                  immagineList.add(extract(resultSet, null));
+                  immagineList.add(extract(resultSet));
                }
 
             }
@@ -171,23 +171,18 @@ public final class ImmagineDAO implements DAO<Immagine> {
    }
 
    @Override
-   public Immagine extract(final ResultSet resultSet, final String alias)
+   public Immagine extract(final ResultSet resultSet)
            throws SQLException {
       Immagine immagine = null;
-      String tableAlias = "";
 
       if (resultSet != null) {
          immagine = new Immagine();
 
-         if (alias != null) {
-            tableAlias = alias + ".";
-         }
-
-         immagine.setId(resultSet.getInt(tableAlias + "idImmagine"));
-         immagine.setPath(resultSet.getString(tableAlias + "path"));
+         immagine.setId(resultSet.getInt("idImmagine"));
+         immagine.setPath(resultSet.getString("path"));
 
          Campagna campagna = new Campagna();
-         campagna.setIdCampagna(resultSet.getInt(tableAlias + "idCampagna"));
+         campagna.setIdCampagna(resultSet.getInt("idCampagna"));
          immagine.setCampagna(campagna);
       }
 
@@ -213,7 +208,7 @@ public final class ImmagineDAO implements DAO<Immagine> {
                ResultSet resultSet = preparedStatement.executeQuery();
 
                while (resultSet.next()) {
-                  immagineList.add(extract(resultSet, null));
+                  immagineList.add(extract(resultSet));
                }
             }
          }

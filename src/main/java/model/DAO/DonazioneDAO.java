@@ -17,8 +17,9 @@ public final class DonazioneDAO implements DAO<Donazione> {
 
     @Override
     public Donazione getById(final int id) {
-        if (id <= 0)
+        if (id <= 0) {
             throw new IllegalArgumentException("Id must be > 0");
+        }
         Donazione retrieved = null;
         try (Connection con = ConPool.getInstance().getConnection()) {
             try (PreparedStatement ps = con.prepareStatement("SELECT * "

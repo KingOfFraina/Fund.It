@@ -33,7 +33,7 @@ public final class CampagnaDAO
 
             ResultSet set = statement.executeQuery();
             if (set.next()) {
-                return extract(set, "c");
+                return extract(set);
             }
 
         } catch (SQLException e) {
@@ -60,7 +60,7 @@ public final class CampagnaDAO
 
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                list.add(extract(set, "c"));
+                list.add(extract(set));
             }
 
         } catch (SQLException e) {
@@ -81,7 +81,7 @@ public final class CampagnaDAO
                              + "FROM campagna AS c ")) {
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                list.add(extract(set, "c"));
+                list.add(extract(set));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -181,27 +181,26 @@ public final class CampagnaDAO
 
     /**
      * @param resultSet resultSet della query eseguita
-     * @param alias     eventuale alias del field
      * @return l'istanza della della classe T popolata con le informazioni
      * presenti nel resultSet
      * @throws SQLException eccezione lanciata in caso di problemi
      */
     @Override
-    public Campagna extract(final ResultSet resultSet, final String alias)
+    public Campagna extract(final ResultSet resultSet)
             throws SQLException {
         Campagna c = new Campagna();
-        c.setIdCampagna(resultSet.getInt(alias + ".idCampagna"));
+        c.setIdCampagna(resultSet.getInt("idCampagna"));
         c.setStato(StatoCampagna.valueOf(
-                resultSet.getString(alias + ".Stato").toUpperCase()));
-        c.setTitolo(resultSet.getString(alias + ".titolo"));
-        c.setDescrizione(resultSet.getString(alias + ".descrizione"));
-        c.setSommaRaccolta(resultSet.getDouble(alias + ".sommaRaccolta"));
-        c.setSommaTarget(resultSet.getDouble(alias + ".sommaTarget"));
+                resultSet.getString("Stato").toUpperCase()));
+        c.setTitolo(resultSet.getString("titolo"));
+        c.setDescrizione(resultSet.getString("descrizione"));
+        c.setSommaRaccolta(resultSet.getDouble("sommaRaccolta"));
+        c.setSommaTarget(resultSet.getDouble("sommaTarget"));
         Categoria c1 = new Categoria();
-        c1.setIdCategoria(resultSet.getInt(alias + ".idCategoria"));
+        c1.setIdCategoria(resultSet.getInt("idCategoria"));
         c.setCategoria(c1);
         Utente utente = new Utente();
-        utente.setIdUtente(resultSet.getInt(alias + ".idUtente"));
+        utente.setIdUtente(resultSet.getInt("idUtente"));
         c.setUtente(utente);
         return c;
     }
@@ -227,7 +226,7 @@ public final class CampagnaDAO
 
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                campagnaList.add(extract(set, "c"));
+                campagnaList.add(extract(set));
             }
 
         } catch (SQLException e) {
@@ -258,7 +257,7 @@ public final class CampagnaDAO
 
             ResultSet set = statement.executeQuery();
             while (set.next()) {
-                campagnaList.add(extract(set, "c"));
+                campagnaList.add(extract(set));
             }
 
         } catch (SQLException e) {
