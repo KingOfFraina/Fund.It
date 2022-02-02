@@ -43,12 +43,6 @@ public final class GestioneUtenteController extends HttpServlet {
             case "/visualizzaUtenti":
                 resource = "/WEB-INF/results/"; //todo path
                 break;
-            case "/promuoviDeclassaUtente":
-                resource = "/WEB-INF/results/"; //todo path
-                break;
-            case "/sospensioneUtente":
-                resource = "/WEB-INF/results/"; //todo path
-                break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND,
                         "Risorsa non trovata");
@@ -141,7 +135,7 @@ public final class GestioneUtenteController extends HttpServlet {
 
     private void sospensioneUtente(final HttpServletRequest request,
                                    final HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         HttpSession session = request.getSession();
 
         Validator val = new Validator(request);
@@ -227,11 +221,10 @@ public final class GestioneUtenteController extends HttpServlet {
 
     private void promuoviDeclassaUtente(final HttpServletRequest request,
                                         final HttpServletResponse response)
-            throws ServletException, IOException {
-        HttpSession session = request.getSession();
+            throws IOException {
+        HttpSession session = request.getSession(false);
 
-        Validator val = new Validator(request);
-        if (!val.isValidBean(new Utente(), session.getAttribute("utente"))) {
+        if (!new Validator(request).isValidBean(new Utente(), session.getAttribute("utente"))) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/AutenticazioneController/login");
             return;
@@ -242,22 +235,23 @@ public final class GestioneUtenteController extends HttpServlet {
                     "Non Autorizzato");
             return;
         }
+
         String parameter = request.getParameter("utentemod");
-        int idUtenteSwitched = -1;
+        DAO dao = new UtenteDAO();
+        Utente ut = null;
+
         if (parameter != null) {
             try {
-                idUtenteSwitched = Integer.parseInt(parameter);
+                ut = (Utente) dao.getById(Integer.parseInt(parameter));
             } catch (NumberFormatException e) {
-                e.printStackTrace(); //todo
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                        "Non Autorizzato");
                 return;
             }
         }
 
-        DAO dao = new UtenteDAO();
-        Utente switched = (Utente) dao.getById(idUtenteSwitched);
-        UtenteService us = new UtenteServiceImpl();
-        us.promuoviDeclassaUtente(utente, switched);
-        //todo return con ajax!!
+        new UtenteServiceImpl().promuoviDeclassaUtente(utente, ut);
+        System.out.println("ciao");
     }
 
     @Override

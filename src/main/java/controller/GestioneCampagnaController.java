@@ -143,6 +143,15 @@ public final class GestioneCampagnaController extends HttpServlet {
         CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
         CategoriaService categoriaService =
                 new CategoriaServiceImpl(new CategoriaDAO());
+        HttpSession session = request.getSession();
+
+        if(session == null || session.getAttribute("utente") == null) {
+            response.sendRedirect(
+                    getServletContext().getContextPath()
+                            + "/AutenticazioneController/login");
+            return;
+        }
+
         Utente ut = (Utente) request.getSession().getAttribute("utente");
         String idCampagna = request.getParameter("idCampagna");
         int id;
