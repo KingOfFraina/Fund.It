@@ -8,20 +8,20 @@
 <body>
 
 <%@include file="../components/navbar.jsp" %>
-<button type="button" id="sidebarCollapse" class="btn btn-info" onclick="showCategories()" style="margin-top: 10px; margin-left: 10px">
+<button type="button" id="sidebarCollapse" class="btn btn-info" onclick="showCategories()"
+        style="margin-top: 10px; margin-left: 10px">
     <i class="fas fa-align-left"></i>
     <span>Mostra Categorie</span>
 </button>
 
 <div class="wrapper">
     <!-- Sidebar -->
-    <%@include file="../components/main_page/sidebar.jsp" %>
+    <%@include file="../components/main_page/sidebar_categorie.jsp" %>
 
     <!-- Page Content -->
 
 
     <div class=" container text-center mt-5">
-
 
 
         <h1>Trova una campagna da finanziare o creane una!</h1>
@@ -30,7 +30,8 @@
             <!--Searchbar-->
             <div class="navbar-text center mt-4">
                 <form class="form-inline mx-2 my-2" action="##">
-                    <input class="form-control mr-sm-2 mx-3" id = "searchbar" type="search" placeholder="Cerca in Fund.it">
+                    <input class="form-control mr-sm-2 mx-3" id="searchbar" type="search"
+                           placeholder="Cerca in Fund.it">
                 </form>
             </div>
         </div>
@@ -50,54 +51,29 @@
                 </h2>
             </div>
 
-            <!--TODO: rendere dinamico-->
 
             <div class="container my-2"
                  style="background-image: url(./img/undraw_before_dawn_re_hp4m.svg); padding-bottom: 355px; background-repeat: no-repeat;">
-                <div class="row text-center">
-                    <div class="col-sm">
-                        <div class="card" style="width: 18rem;">
-                            <img class="card-img-top"
-                                 src="./img/thumb2-santa-chiara-4k-church-archeological-museum-naples.jpg"
-                                 alt="Card image cap">
-                            <div class="card-body">
-                                <h5 class="card-title">Contribuisci alla ristrutturazione del nostro museo!</h5>
-                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                    eiusmod
-                                    tempor incididunt ut labore et dolore magna aliqua.</p>
-                                <a href="#" class="btn btn-primary"
-                                   style="background-color: #00AB98; border-color: #00AB98;">Vai alla campagna</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card" style="width: 18rem;">
-                            <img class="card-img-top" src="./img/team.jpg" alt="Card image cap">
-                            <div class="card-body">
-                                <h5 class="card-title">Finanzia un nuovo progetto Open-Source</h5>
-                                <p class="card-text"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                    eiusmod
-                                    tempor incididunt ut labore et dolore magna aliqua.</p>
-                                <a href="#" class="btn btn-primary"
-                                   style="background-color: #00AB98; border-color: #00AB98;">Vai alla Campagna</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card" style="width: 18rem;">
-                            <img class="card-img-top"
-                                 src="./img/2560x1600_ash-black-cat-kitten-with-stare-look-4k-cat.jpg"
-                                 alt="Card image cap">
-                            <div class="card-body">
-                                <h5 class="card-title">Aiuta Felix a cercare i fondi per un nuovo intervento</h5>
-                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                    eiusmod
-                                    tempor incididunt ut labore et dolore magna aliqua.</p>
-                                <a href="#" class="btn btn-primary"
-                                   style="background-color: #00AB98; border-color: #00AB98;">Vai alla campagna</a>
-                            </div>
-                        </div>
-                    </div>
+                <div class="row text-center my-4">
+
+
+                            <c:forEach items="${applicationScope.campagneList}" var = "campagna" begin="0" end="7">
+                                <div class="col-sm my-4">
+                                    <div class="card" style="width: 18rem;">
+                                        <img class="card-img-top"
+                                             src="${pageContext.request.contextPath}/file/${campagna.immagini[0]}"
+                                             alt="Card image cap">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${campagna.titolo}</h5>
+                                            <a href="#" class="btn btn-primary mt-3"
+                                               style="background-color: #00AB98; border-color: #00AB98;">Vai alla campagna</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+
+
+
 
                 </div>
             </div>
@@ -107,7 +83,6 @@
 
 
 </div>
-
 
 
 <%@include file="../components/footer.jsp" %>

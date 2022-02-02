@@ -1,7 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
     <head>
-        <title>Form per nuova FAQ</title>
+        <%@include file="../components/head.jsp" %>
+        <title>Fund.it</title>
+        <link rel="stylesheet" type="text/css" href=${pageContext.request.contextPath}/css/faq.css>
     </head>
     <body>
         <form method="post">

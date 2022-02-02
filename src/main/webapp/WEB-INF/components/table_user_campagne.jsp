@@ -1,5 +1,6 @@
 <table class="table table-striped table-bordered table-hover">
     <thead>
+    <h5>${utente.campagne}</h5>
     <tr>
         <th scope="col">#ID</th>
         <th scope="col">Titolo</th>
@@ -10,7 +11,7 @@
     </tr>
     </thead>
     <tbody>
-        <c:forEach items="${requestScope.utente.campagne}" var="campagna">
+        <c:forEach items="${utente.campagne}" var="campagna">
             <tr>
                 <th scope="row">${campagna.idCampagna}</th>
                 <td>${campagna.titolo}</td>

@@ -41,6 +41,7 @@
                 </li>
             </ul>
 
+
             <c:choose>
                 <c:when test="${sessionScope.utente != null}">
                     <a class="login-logout-font"

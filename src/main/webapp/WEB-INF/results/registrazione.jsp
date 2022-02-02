@@ -32,8 +32,6 @@
                     </button>
 
                 </form>
-
-
             </div>
         </div>
         <div class="col-6 mt-5">

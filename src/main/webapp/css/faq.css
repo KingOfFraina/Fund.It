@@ -1,0 +1,20 @@
+.container-faq{
+    background-color: #f5ede8;
+    margin-left: 50px;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+    border-radius: 2%;
+    position: sticky;
+    top:15px;
+    height: fit-content;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#pulsante{
+    background-color: #00AB98;
+    border-color: #00AB98;
+}
+
+.pulsante:hover{
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+}

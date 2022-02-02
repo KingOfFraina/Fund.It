@@ -61,7 +61,12 @@
     <div id="div-campagna-table" style="display: none">
         <%@include file="../components/table_user_campagne.jsp" %>
     </div>
+</div>
 
+<div class = "row text-center mt-4">
+    <c:if test="${sessionScope.utente.admin}">
+        <a href = "#" class = "admin-panel-icon"><i class="fas fa-users-cog"></i></a>
+    </c:if>
 </div>
 
 <%@include file="../components/footer.jsp" %>

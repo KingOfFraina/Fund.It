@@ -69,7 +69,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                 Campagna c = service.trovaCampagna(Integer.parseInt(id));
                 if (c == null) {
                     response.sendError(
-                            HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                            HttpServletResponse.SC_NOT_FOUND,
                             "Campagna non trovata");
                     return;
                 }

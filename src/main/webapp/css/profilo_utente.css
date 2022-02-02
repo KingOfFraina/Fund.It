@@ -40,3 +40,12 @@
     background-color: #00AB98;
     border-color: #00AB98;
 }
+
+.admin-panel-icon{
+    color: black;
+    font-size: 45px
+}
+
+.admin-panel-icon:hover{
+    font-size: 47px
+}
