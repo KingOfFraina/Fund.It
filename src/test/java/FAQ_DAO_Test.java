@@ -128,13 +128,6 @@ public class FAQ_DAO_Test {
    }
 
    @Test
-   public void deleteEntityEmpty() {
-      assertThrows(RuntimeException.class, () -> {
-         faqDAO.delete(new FAQ());
-      });
-   }
-
-   @Test
    public void delete() {
       FAQ faq = new FAQ();
       faq.setDomanda("Domanda");

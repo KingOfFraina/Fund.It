@@ -100,8 +100,9 @@ public final class DonazioneDAO implements DAO<Donazione> {
                         flag = preparedStatement.executeUpdate() > 0;
                         if (flag) {
                             ResultSet set = preparedStatement.getGeneratedKeys();
-                            if (set.next())
+                            if (set.next()) {
                                 entity.setIdDonazione(set.getInt(1));
+                            }
                         }
                     }
                 }
