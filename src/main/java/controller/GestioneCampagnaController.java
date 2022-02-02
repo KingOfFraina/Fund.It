@@ -2,6 +2,7 @@ package controller;
 
 import model.DAO.CampagnaDAO;
 import model.DAO.CategoriaDAO;
+import model.DAO.DAO;
 import model.beans.Campagna;
 import model.beans.Categoria;
 import model.beans.Donazione;
@@ -28,8 +29,18 @@ import java.util.List;
 import java.util.Map;
 
 @WebServlet(name = "GestioneCampagnaController",
-        value = "/GestioneCampagnaController/*")
+        value = "/GestioneCampagnaController/*",
+        loadOnStartup = 0)
 public final class GestioneCampagnaController extends HttpServlet {
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        List<Campagna> campagne;
+        DAO<Campagna> campagnaDAO = new CampagnaDAO();
+        campagne = campagnaDAO.getAll();
+        getServletContext().setAttribute("campagneList", campagne);
+    }
 
     @Override
     protected void doGet(final HttpServletRequest request,
