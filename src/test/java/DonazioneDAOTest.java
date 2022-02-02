@@ -69,6 +69,24 @@ public class DonazioneDAOTest {
         assertNotNull(dao.getAll());
     }
 
+    @Test
+    public void testGetByUtente() {
+        DonazioneDAO donazioneDAO = (DonazioneDAO) dao;
+
+        assertNotNull(donazioneDAO.getAllByUtente(1));
+    }
+
+    @Test
+    public void testThrowsRuntimeException() {
+        d1 = new Donazione();
+        Utente utente = new Utente();
+        utente.setIdUtente(999999);
+        d1.setIdDonazione(9999999);
+        d1.setUtente(utente);
+        assertThrows(RuntimeException.class,
+                () -> dao.save(d1));
+    }
+
     @After
     public void clearAll() {
         dao.delete(d1);

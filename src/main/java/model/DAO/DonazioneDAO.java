@@ -116,6 +116,9 @@ public final class DonazioneDAO implements DAO<Donazione> {
 
     @Override
     public boolean update(final Donazione entity) {
+        if(entity == null) {
+            throw new IllegalArgumentException("Entity must be not null");
+        }
         boolean flag = false;
         if (entity != null) {
             try (Connection connection =

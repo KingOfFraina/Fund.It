@@ -9,7 +9,7 @@ import org.junit.Test;
 import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FAQ_DAO_Test {
+public class FaqDAOTest {
 
    DAO<FAQ> faqDAO;
    Utente utente;
