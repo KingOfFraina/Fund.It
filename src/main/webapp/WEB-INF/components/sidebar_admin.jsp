@@ -7,7 +7,7 @@
     <ul class="list-unstyled components">
 
         <li>
-            <a onclick="showTable('user_table')"
+            <a onclick="showUserTable()"
                style="font-family: Comfortaa, cursive; font-size: 20px; text-decoration: none; color: black; margin-bottom: 20px;">Gestione utenti
               </a>
         </li>
@@ -19,7 +19,7 @@
         </li>
 
         <li>
-            <a href="#"
+            <a onclick="showCampaignTable()"
                style="font-family: Comfortaa, cursive; font-size: 20px; text-decoration: none; color: black; margin-bottom: 20px;">Visualizza campagne
                 </a>
         </li>
