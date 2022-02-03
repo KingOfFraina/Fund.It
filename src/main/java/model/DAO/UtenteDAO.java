@@ -227,8 +227,16 @@ public final class UtenteDAO implements DAO<Utente> {
       return utente;
    }
 
-   private int fillPreparedStatement(final PreparedStatement preparedStatement,
-                                     final Utente entity) throws SQLException {
+   /**
+    * Riempe il preparedStatement.
+    *
+    * @param preparedStatement il preparedStatement da riempire
+    * @param entity l'entità da dove prelevare le informazioni
+    * @return l'indice del prossimo campo da riempire
+    * @throws SQLException l'eccezione
+    */
+   public int fillPreparedStatement(final PreparedStatement preparedStatement,
+                                    final Utente entity) throws SQLException {
 
       if (entity != null && preparedStatement != null) {
          int index = 1;

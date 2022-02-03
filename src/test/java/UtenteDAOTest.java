@@ -182,6 +182,13 @@ public class UtenteDAOTest {
       utenteDAO.delete(utente);
    }
 
+   @Test
+   public void fillPreparedStatementEmptyObject() {
+      assertThrows(IllegalArgumentException.class, () -> {
+         ((UtenteDAO)utenteDAO).fillPreparedStatement(null, null);
+      });
+   }
+
    @After
    public void clean() {
       ConPool.getInstance().closeDataSource();
