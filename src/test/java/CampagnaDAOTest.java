@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 
 public class CampagnaDAOTest {
    DAO<Utente> utenteDAO;
-   DAO<Campagna> campagnaDAO;
    Utente utente;
 
    @BeforeClass public static void openConnection() throws SQLException {
