@@ -57,11 +57,13 @@
                 <div class="row text-center my-4">
 
 
+
                             <c:forEach items="${applicationScope.campagneList}" var = "campagna" begin="0" end="7">
                                 <div class="col-sm my-4">
                                     <div class="card" style="width: 18rem;">
+
                                         <img class="card-img-top"
-                                             src="${pageContext.request.contextPath}/file/${campagna.immagini[0]}"
+                                             src="${pageContext.request.contextPath}/file/${campagna.immagini.get(0).path}"
                                              alt="Card image cap">
                                         <div class="card-body">
                                             <h5 class="card-title">${campagna.titolo}</h5>

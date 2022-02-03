@@ -41,8 +41,11 @@ public final class GestioneCampagnaController extends HttpServlet {
                 CampagnaInterface proxy = new CampagnaProxy(c);
                 proxy.getUtente();
                 proxy.getImmagini();
+                System.out.println(proxy.getImmagini());
             });
         }
+
+
         getServletContext().setAttribute("campagneList", campagne);
     }
 

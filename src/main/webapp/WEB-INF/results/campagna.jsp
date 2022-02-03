@@ -27,13 +27,19 @@
             <!--Carosello-->
             <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
+
                     <div class="carousel-item active">
-                        <img src="${pageContext.request.contextPath}/img/41341476-teamwork-team-together-collaboration-meeting-brainstorming-ideas-concept.jpg"
+                        <img src="${pageContext.request.contextPath}/file/${campagna.immagini.get(0).path}"
                              class="d-block w-100" alt="...">
                     </div>
-                    <div class="carousel-item">
-                        <img src="${pageContext.request.contextPath}/img/team.jpg" class="d-block w-100" alt="...">
-                    </div>
+
+                    <c:forEach items="${requestScope.campagna.immagini}" var="immagine" begin = "1">
+                        <div class="carousel-item">
+                            <img src="${pageContext.request.contextPath}/file/${immagine.path}"
+                                 class="d-block w-100" alt="...">
+                        </div>
+                    </c:forEach>
+
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
                         data-bs-slide="prev">

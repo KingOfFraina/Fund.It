@@ -27,8 +27,8 @@
                             <td>
                                 <form action = ${pageContext.request.contextPath}/GestioneUtenteController/promuoviDeclassaUtente method="post">
                                     <input id = "inputhidden" type="text" value = "${utente.idUtente}" name = "utentemod" hidden>
-                                    <button  type = "submit" class = "btn btn-primary btnUtente" style="">
-                                        <i class="fas fa-arrow-down"></i>
+                                    <button  type = "submit" class = "btn btn-primary pulsante" style="background-color: #00AB98; border-color: #00AB98">
+                                        <i class="far fa-thumbs-down"></i>
                                     </button>
                                 </form>
 
@@ -41,15 +41,14 @@
                             <td>
                                 <form action = ${pageContext.request.contextPath}/GestioneUtenteController/promuoviDeclassaUtente method="post">
                                     <input type="text" value = "${utente.idUtente}" name = "utentemod" hidden>
-                                    <button type="submit" class = "btn btn-primary" style="">
-                                        <i class="fas fa-arrow-up"></i>
+                                    <button type="submit" class = "btn btn-primary pulsante" style="background-color: #00AB98; border-color: #00AB98">
+                                        <i class="far fa-thumbs-up"></i>
                                     </button>
                                 </form>
 
                             </td>
                         </c:otherwise>
                     </c:choose>
-
             </tr>
         </c:if>
     </c:forEach>
