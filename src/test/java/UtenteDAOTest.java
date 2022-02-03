@@ -89,7 +89,6 @@ public class UtenteDAOTest {
       assertThrows(RuntimeException.class, () -> {
          utenteDAO.save(utente);
       });
-      utenteDAO.delete(utente);
    }
 
    @Test

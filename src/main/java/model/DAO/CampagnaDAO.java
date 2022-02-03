@@ -29,7 +29,7 @@ public final class CampagnaDAO
 
       try (Connection connection = ConPool.getInstance().getConnection();
            PreparedStatement statement = connection.prepareStatement("SELECT"
-                   + " * FROM campagna AS c"
+                   + " * FROM campagna "
                    + " WHERE idCampagna = ?")) {
          int index = 1;
 
@@ -52,25 +52,30 @@ public final class CampagnaDAO
     * @return lista di campagne create dall'utente
     */
    public List<Campagna> getByIdUtente(final int idUtente) {
-      List<Campagna> list;
+
+      if (idUtente <= 0) {
+         throw new IllegalArgumentException("Id <= 0");
+      }
+
       try (Connection connection = ConPool.getInstance().getConnection();
            PreparedStatement statement =
                    connection.prepareStatement("SELECT *"
-                           + " FROM campagna AS c"
-                           + " WHERE c.idUtente = ?")) {
+                           + " FROM campagna"
+                           + " WHERE idUtente = ?")) {
 
          statement.setInt(1, idUtente);
-         list = new ArrayList<>();
+         List<Campagna> list = new ArrayList<>();
 
          ResultSet set = statement.executeQuery();
          while (set.next()) {
             list.add(extract(set));
          }
 
+         return list;
+
       } catch (SQLException e) {
-         throw new RuntimeException(e);
+         throw new RuntimeException("SQL error: " + e.getMessage());
       }
-      return list;
    }
 
    /**
@@ -78,19 +83,20 @@ public final class CampagnaDAO
     */
    @Override
    public List<Campagna> getAll() {
-      List<Campagna> list = new ArrayList<>();
       try (Connection connection = ConPool.getInstance().getConnection();
            PreparedStatement statement =
                    connection.prepareStatement("SELECT * "
-                           + "FROM campagna AS c ")) {
+                           + "FROM campagna ")) {
+         List<Campagna> list = new ArrayList<>();
          ResultSet set = statement.executeQuery();
+
          while (set.next()) {
             list.add(extract(set));
          }
+         return list;
       } catch (SQLException e) {
-         throw new RuntimeException(e);
+         throw new RuntimeException("SQL error: " + e.getMessage());
       }
-      return list;
    }
 
    /**
@@ -100,7 +106,10 @@ public final class CampagnaDAO
     */
    @Override
    public boolean save(final Campagna entity) {
-      int ret;
+      if (entity == null) {
+         throw new IllegalArgumentException("Null object");
+      }
+
       try (Connection connection = ConPool.getInstance().getConnection();
            PreparedStatement statement =
                    connection.prepareStatement("INSERT INTO campagna "
@@ -120,15 +129,16 @@ public final class CampagnaDAO
                  entity.getCategoria().getIdCategoria());
          statement.setInt(index, entity.getUtente().getIdUtente());
 
-         ret = statement.executeUpdate();
+         int ret = statement.executeUpdate();
          ResultSet set = statement.getGeneratedKeys();
          if (set.next()) {
             entity.setIdCampagna(set.getInt(1));
          }
+
+         return ret > 0;
       } catch (SQLException e) {
-         throw new RuntimeException(e);
+         throw new RuntimeException("SQL error: " + e.getMessage());
       }
-      return ret > 0;
    }
 
    /**
@@ -138,7 +148,10 @@ public final class CampagnaDAO
     */
    @Override
    public boolean update(final Campagna entity) {
-      int ret;
+      if (entity == null) {
+         throw new IllegalArgumentException("Null object");
+      }
+
       try (Connection connection = ConPool.getInstance().getConnection();
            PreparedStatement statement =
                    connection.prepareStatement("UPDATE campagna SET"
@@ -155,11 +168,10 @@ public final class CampagnaDAO
          statement.setInt(++index, entity.getCategoria().getIdCategoria());
          statement.setInt(++index, entity.getIdCampagna());
 
-         ret = statement.executeUpdate();
+         return statement.executeUpdate() > 0;
       } catch (SQLException e) {
-         throw new RuntimeException(e);
+         throw new RuntimeException("SQL error: " + e.getMessage());
       }
-      return ret > 0;
    }
 
    /**
@@ -169,18 +181,20 @@ public final class CampagnaDAO
     */
    @Override
    public boolean delete(final Campagna entity) {
-      int ret = 0;
+      if (entity == null) {
+         throw new IllegalArgumentException("Null object");
+      }
+
       try (Connection connection = ConPool.getInstance().getConnection();
            PreparedStatement statement =
                    connection.prepareStatement("DELETE FROM campagna"
                            + " WHERE idCampagna = ?")) {
          statement.setInt(1, entity.getIdCampagna());
-         ret = statement.executeUpdate();
 
+         return statement.executeUpdate() > 0;
       } catch (SQLException e) {
-         throw new RuntimeException(e);
+         throw new RuntimeException("SQL error: " + e.getMessage());
       }
-      return ret > 0;
    }
 
    /**
@@ -192,6 +206,11 @@ public final class CampagnaDAO
    @Override
    public Campagna extract(final ResultSet resultSet)
            throws SQLException {
+
+      if (resultSet == null) {
+         throw new IllegalArgumentException("Null object");
+      }
+
       Campagna c = new Campagna();
       c.setIdCampagna(resultSet.getInt("idCampagna"));
       c.setStato(StatoCampagna.valueOf(
@@ -216,16 +235,18 @@ public final class CampagnaDAO
     * @return la lista di campagne che soddisfano il parametro passato
     */
    public List<Campagna> getByKeyword(final String text) {
-      List<Campagna> campagnaList = null;
+      if (text == null) {
+         throw new IllegalArgumentException("Null object");
+      }
 
       try (Connection connection = ConPool.getInstance().getConnection();
            PreparedStatement statement = connection.prepareStatement(
-                   "SELECT * FROM campagna c"
+                   "SELECT * FROM campagna "
                            + " where UPPER(CONCAT"
-                           + "(c.idCampagna, c.titolo, c.descrizione)) "
+                           + "(idCampagna, titolo, descrizione)) "
                            + "LIKE UPPER(?)"
            )) {
-         campagnaList = new ArrayList<>();
+         List<Campagna> campagnaList = new ArrayList<>();
          statement.setString(1, "%" + text + "%");
 
          ResultSet set = statement.executeQuery();
@@ -233,10 +254,11 @@ public final class CampagnaDAO
             campagnaList.add(extract(set));
          }
 
+         return campagnaList;
+
       } catch (SQLException e) {
-         throw new RuntimeException(e);
+         throw new RuntimeException("SQL error: " + e.getMessage());
       }
-      return campagnaList;
    }
 
    /**
@@ -247,26 +269,27 @@ public final class CampagnaDAO
     * @return la lista delle campagne che soddisfano i parametri passati
     */
    public List<Campagna> getBySizeOffset(final int size, final int offset) {
-      List<Campagna> campagnaList = null;
+      if (size <= 0 || offset < 0) {
+         throw new IllegalArgumentException("Null object");
+      }
 
       try (Connection connection = ConPool.getInstance().getConnection();
            PreparedStatement statement = connection.prepareStatement(
-                   "SELECT * FROM campagna c LIMIT ?, ?"
+                   "SELECT * FROM campagna LIMIT ?, ?"
            )) {
 
          int index = 1;
-
-         statement.setInt(index++, size);
-         statement.setInt(index, offset);
+         List<Campagna> campagnaList = new ArrayList<>();
+         statement.setInt(index++, offset);
+         statement.setInt(index, size);
 
          ResultSet set = statement.executeQuery();
          while (set.next()) {
             campagnaList.add(extract(set));
          }
-
+         return campagnaList;
       } catch (SQLException e) {
-         throw new RuntimeException(e);
+         throw new RuntimeException("SQL error: " + e.getMessage());
       }
-      return campagnaList;
    }
 }
