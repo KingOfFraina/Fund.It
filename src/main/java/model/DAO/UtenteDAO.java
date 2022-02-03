@@ -15,27 +15,29 @@ import java.util.List;
 public final class UtenteDAO implements DAO<Utente> {
    @Override
    public Utente getById(final int id) {
-      Utente utente = null;
-
-      try (Connection connection = ConPool.getInstance().getConnection()) {
-         if (connection != null) {
-            String query = "SELECT * FROM utente WHERE idUtente = ?";
-
-            try (PreparedStatement preparedStatement =
-                         connection.prepareStatement(query)) {
-               preparedStatement.setInt(1, id);
-               ResultSet resultSet = preparedStatement.executeQuery();
-
-               if (resultSet.next()) {
-                  utente = extract(resultSet);
-               }
-            }
-         }
-      } catch (SQLException e) {
-         e.printStackTrace();
+      if (id <= 0) {
+         throw new IllegalArgumentException("Id <= 0");
       }
 
-      return utente;
+      try (Connection connection = ConPool.getInstance().getConnection()) {
+         String query = "SELECT * FROM utente WHERE idUtente = ?";
+
+         try (PreparedStatement preparedStatement =
+                      connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            Utente utente = null;
+
+            if (resultSet.next()) {
+               utente = extract(resultSet);
+            }
+
+            return utente;
+         }
+      } catch (SQLException e) {
+         throw new RuntimeException("SQL error: " + e.getMessage());
+      }
    }
 
    /**
@@ -67,97 +69,92 @@ public final class UtenteDAO implements DAO<Utente> {
 
    @Override
    public List<Utente> getAll() {
-      List<Utente> utenteList = null;
-
       try (Connection connection = ConPool.getInstance().getConnection()) {
-         if (connection != null) {
-            String query = "SELECT * FROM utente";
-            utenteList = new ArrayList<>();
+         String query = "SELECT * FROM utente";
+         List<Utente> utenteList = new ArrayList<>();
 
-            try (PreparedStatement preparedStatement =
-                         connection.prepareStatement(query)) {
-               ResultSet resultSet = preparedStatement.executeQuery();
+         try (PreparedStatement preparedStatement =
+                      connection.prepareStatement(query)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-               while (resultSet.next()) {
-                  utenteList.add(extract(resultSet));
-               }
-
+            while (resultSet.next()) {
+               utenteList.add(extract(resultSet));
             }
+
+            return utenteList;
          }
       } catch (SQLException e) {
-         e.printStackTrace();
+         throw new RuntimeException("SQL error: " + e.getMessage());
       }
-
-      return utenteList;
    }
 
    @Override
    public boolean update(final Utente entity) {
-      if (entity != null) {
-         try (Connection connection =
-                      ConPool.getInstance().getConnection()) {
-            if (connection != null) {
-               String query =
-                       "UPDATE utente SET dataBan = ?, admin = ?,"
-                               + "fotoProfilo = ?, passwordhash = ?,"
-                               + " telefono = ?, nome = ?, "
-                               + "cognome = ?, email = ?,"
-                               + " strada = ?, città = ?"
-                               + ", cap = ?, cf = ?, dataDiNascita = ?"
-                               + "WHERE idUtente = ?";
-
-               try (PreparedStatement preparedStatement =
-                            connection.prepareStatement(query)) {
-
-                  int index = fillPreparedStatement(preparedStatement,
-                          entity);
-                  preparedStatement.setInt(index, entity.getIdUtente());
-
-                  return preparedStatement.executeUpdate() > 0;
-               }
-            }
-         } catch (SQLException e) {
-            e.printStackTrace();
-         }
+      if (entity == null) {
+         throw new IllegalArgumentException("Null Object");
       }
-      return false;
+
+      try (Connection connection =
+                   ConPool.getInstance().getConnection()) {
+         String query =
+                 "UPDATE utente SET dataBan = ?, admin = ?,"
+                         + "fotoProfilo = ?, passwordhash = ?,"
+                         + " telefono = ?, nome = ?, "
+                         + "cognome = ?, email = ?,"
+                         + " strada = ?, città = ?"
+                         + ", cap = ?, cf = ?, dataDiNascita = ?"
+                         + "WHERE idUtente = ?";
+
+         try (PreparedStatement preparedStatement =
+                      connection.prepareStatement(query)) {
+
+            int index = fillPreparedStatement(preparedStatement,
+                    entity);
+            preparedStatement.setInt(index, entity.getIdUtente());
+
+            return preparedStatement.executeUpdate() > 0;
+         }
+
+      } catch (SQLException e) {
+         throw new RuntimeException("SQL error: " + e.getMessage());
+      }
    }
 
    @Override
    public boolean save(final Utente entity) {
-      if (entity != null) {
-         try (Connection connection =
-                      ConPool.getInstance().getConnection()) {
-            if (connection != null) {
-               String query =
-                       "INSERT INTO utente (dataBan, admin, fotoProfilo, "
-                               + "passwordhash, telefono, nome,"
-                               + " cognome, email,"
-                               + " strada, città, cap, cf, dataDiNascita) "
-                               + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
-               try (PreparedStatement preparedStatement =
-                            connection.prepareStatement(query,
-                                    PreparedStatement
-                                            .RETURN_GENERATED_KEYS)) {
-
-                  fillPreparedStatement(preparedStatement, entity);
-
-                  boolean esito = preparedStatement.executeUpdate() > 0;
-
-                  ResultSet set = preparedStatement.getGeneratedKeys();
-
-                  if (set.next()) {
-                     entity.setIdUtente(set.getInt(1));
-                  }
-                  return esito;
-               }
-            }
-         } catch (SQLException e) {
-            e.printStackTrace();
-         }
+      if (entity == null) {
+         throw new IllegalArgumentException("Null Object");
       }
-      return false;
+
+      try (Connection connection =
+                   ConPool.getInstance().getConnection()) {
+         String query =
+                 "INSERT INTO utente (dataBan, admin, fotoProfilo, "
+                         + "passwordhash, telefono, nome,"
+                         + " cognome, email,"
+                         + " strada, città, cap, cf, dataDiNascita) "
+                         + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+         try (PreparedStatement preparedStatement =
+                      connection.prepareStatement(query,
+                              PreparedStatement
+                                      .RETURN_GENERATED_KEYS)) {
+
+            fillPreparedStatement(preparedStatement, entity);
+
+            boolean esito = preparedStatement.executeUpdate() > 0;
+
+            ResultSet set = preparedStatement.getGeneratedKeys();
+
+            if (set.next()) {
+               entity.setIdUtente(set.getInt(1));
+            }
+            return esito;
+         }
+
+      } catch (SQLException e) {
+         throw new RuntimeException("SQL error: " + e.getMessage());
+      }
    }
 
    @Override
@@ -165,25 +162,23 @@ public final class UtenteDAO implements DAO<Utente> {
       if (entity != null) {
          try (Connection connection =
                       ConPool.getInstance().getConnection()) {
-            if (connection != null) {
-               String query =
-                       "DELETE FROM utente WHERE idUtente = ?";
+            String query =
+                    "DELETE FROM utente WHERE idUtente = ?";
 
-               try (PreparedStatement preparedStatement =
-                            connection.prepareStatement(query)) {
+            try (PreparedStatement preparedStatement =
+                         connection.prepareStatement(query)) {
 
-                  preparedStatement.setInt(1, entity.getIdUtente());
+               preparedStatement.setInt(1, entity.getIdUtente());
 
-                  return preparedStatement.executeUpdate() > 0;
-               }
+               return preparedStatement.executeUpdate() > 0;
             }
          } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
+      } else {
+         throw new IllegalArgumentException("Id <= 0");
       }
-      return false;
    }
-
 
    @Override
    public Utente extract(final ResultSet resultSet)
