@@ -4,10 +4,8 @@ import model.beans.Campagna;
 import model.beans.Donazione;
 import model.beans.Utente;
 import model.storage.ConPool;
-import net.bytebuddy.pool.TypePool;
-import net.sf.saxon.expr.parser.Loc;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -18,11 +16,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DonazioneDAOTest {
 
-    DAO<Donazione> dao;
-    Donazione d1, d2, d3;
+    static DAO<Donazione> dao;
+    static Donazione d1;
+    static Donazione d2;
+    static Donazione d3;
 
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUp() {
         dao = new DonazioneDAO();
         d1 = new Donazione();
         d2 = new Donazione();
@@ -145,8 +145,8 @@ public class DonazioneDAOTest {
         }
     }
 
-    @After
-    public void clearAll() {
+    @AfterClass
+    public static void clearAll() {
         dao.delete(d1);
         ConPool.getInstance().closeDataSource();
     }
