@@ -172,7 +172,7 @@ public final class SegnalazioneDAO
             throws SQLException {
         Segnalazione s = new Segnalazione();
         s.setIdSegnalazione(resultSet.getInt("idSegnalazione"));
-        s.setDataOra(resultSet.getTimestamp("DatOra").toLocalDateTime());
+        s.setDataOra(resultSet.getTimestamp("DataOra").toLocalDateTime());
         s.setStatoSegnalazione(StatoSegnalazione.valueOf(
                 resultSet.getString("Stato").toUpperCase()));
         Utente segnalato = new Utente();
