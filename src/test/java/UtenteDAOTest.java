@@ -12,16 +12,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UtenteDAOTest {
-   DAO<Utente> utenteDAO;
-   Utente utente;
+   static DAO<Utente> utenteDAO;
+   static Utente utente;
 
    @BeforeClass
    public static void openConnection() throws SQLException {
       ConPool.getInstance().getConnection();
-   }
 
-   @Before
-   public void setup() {
       utenteDAO = new UtenteDAO();
       utente = new Utente();
 
