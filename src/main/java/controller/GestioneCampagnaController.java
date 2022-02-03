@@ -91,14 +91,13 @@ public final class GestioneCampagnaController extends HttpServlet {
                 CampagnaInterface proxy = new CampagnaProxy(c);
                 c.setUtente(proxy.getUtente());
                 DonazioneProxy proxy2 = new DonazioneProxy();
+                c.setImmagini(proxy.getImmagini());
                 List<Donazione> donazioni = proxy.getDonazioni();
                 donazioni.forEach(d -> {
                     proxy2.setDonazione(d);
                     d.setUtente(proxy2.getUtente());
                 });
-
                 c.setDonazioni(proxy.getDonazioni());
-
                 request.setAttribute("campagna", c);
                 resource = "/WEB-INF/results/campagna.jsp";
                 break;
