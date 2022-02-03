@@ -177,7 +177,7 @@ public class ImmagineDAOTest {
    public void deleteByIdCampagna() {
       immagineDAO.save(immagine);
 
-      assertTrue(immagineDAO.deleteByIdCampagna(immagine.getId()));
+      assertTrue(immagineDAO.deleteByIdCampagna(immagine.getCampagna().getIdCampagna()));
    }
 
    @Test
@@ -191,7 +191,7 @@ public class ImmagineDAOTest {
    public void getByIdCampagna() {
       immagineDAO.save(immagine);
 
-      List<Immagine> immagineList = immagineDAO.getByIdCampagna(immagine.getId());
+      List<Immagine> immagineList = immagineDAO.getByIdCampagna(immagine.getCampagna().getIdCampagna());
 
       assertAll(
               () -> assertNotNull(immagineList),

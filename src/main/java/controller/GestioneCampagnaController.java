@@ -19,6 +19,7 @@ import model.storage.ConPool;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ import java.util.Map;
 @WebServlet(name = "GestioneCampagnaController",
         value = "/GestioneCampagnaController/*",
         loadOnStartup = 0)
+@MultipartConfig
 public final class GestioneCampagnaController extends HttpServlet {
 
     @Override
@@ -273,6 +275,7 @@ public final class GestioneCampagnaController extends HttpServlet {
 
         Campagna c = extractCampagna(req);
         c.setSommaRaccolta(0d);
+        c.setUtente((Utente) req.getSession().getAttribute("utente"));
 
         if (new CampagnaServiceImpl(new CampagnaDAO()).creazioneCampagna(c)) {
             res.sendRedirect(
