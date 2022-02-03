@@ -188,6 +188,10 @@ public final class UtenteDAO implements DAO<Utente> {
    @Override
    public Utente extract(final ResultSet resultSet)
            throws SQLException {
+      if (resultSet == null) {
+         throw new IllegalArgumentException("Null ResultSet");
+      }
+
       Utente utente = null;
 
       if (resultSet != null) {
@@ -223,29 +227,35 @@ public final class UtenteDAO implements DAO<Utente> {
 
    private int fillPreparedStatement(final PreparedStatement preparedStatement,
                                      final Utente entity) throws SQLException {
-      int index = 1;
 
-      if (entity.getDataBan() != null) {
-         preparedStatement.setTimestamp(index++,
-                 Timestamp.valueOf(entity.getDataBan()));
+      if (entity != null && preparedStatement != null) {
+         int index = 1;
+
+         if (entity.getDataBan() != null) {
+            preparedStatement.setTimestamp(index++,
+                    Timestamp.valueOf(entity.getDataBan()));
+         } else {
+            preparedStatement.setTimestamp(index++, null);
+         }
+
+         preparedStatement.setBoolean(index++, entity.isAdmin());
+         preparedStatement.setString(index++, entity.getFotoProfilo());
+         preparedStatement.setString(index++, entity.getPassword());
+         preparedStatement.setString(index++, entity.getTelefono());
+         preparedStatement.setString(index++, entity.getNome());
+         preparedStatement.setString(index++, entity.getCognome());
+         preparedStatement.setString(index++, entity.getEmail());
+         preparedStatement.setString(index++, entity.getStrada());
+         preparedStatement.setString(index++, entity.getCitta());
+         preparedStatement.setString(index++, entity.getCap());
+         preparedStatement.setString(index++, entity.getCf());
+         preparedStatement.setDate(index++,
+                 Date.valueOf(entity.getDataDiNascita()));
+
+         return index;
       } else {
-         preparedStatement.setTimestamp(index++, null);
+         throw new IllegalArgumentException("Null PreparedStatement "
+                 + "and/or Entity");
       }
-
-      preparedStatement.setBoolean(index++, entity.isAdmin());
-      preparedStatement.setString(index++, entity.getFotoProfilo());
-      preparedStatement.setString(index++, entity.getPassword());
-      preparedStatement.setString(index++, entity.getTelefono());
-      preparedStatement.setString(index++, entity.getNome());
-      preparedStatement.setString(index++, entity.getCognome());
-      preparedStatement.setString(index++, entity.getEmail());
-      preparedStatement.setString(index++, entity.getStrada());
-      preparedStatement.setString(index++, entity.getCitta());
-      preparedStatement.setString(index++, entity.getCap());
-      preparedStatement.setString(index++, entity.getCf());
-      preparedStatement.setDate(index++,
-              Date.valueOf(entity.getDataDiNascita()));
-
-      return index;
    }
 }

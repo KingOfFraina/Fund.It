@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ImmagineDAOTest {
-   ImmagineDAO immagineDAO;
+   DAO<Immagine> immagineDAO;
    DAO<Campagna> campagnaDAO;
    DAO<Categoria> categoriaDAO;
    DAO<Utente> utenteDAO;
@@ -169,7 +169,7 @@ public class ImmagineDAOTest {
    @Test
    public void deleteByIdCampagnaInvalidId() {
       assertThrows(IllegalArgumentException.class, () -> {
-         immagineDAO.deleteByIdCampagna(-1);
+         ((ImmagineDAO)immagineDAO).deleteByIdCampagna(-1);
       });
    }
 
@@ -177,13 +177,13 @@ public class ImmagineDAOTest {
    public void deleteByIdCampagna() {
       immagineDAO.save(immagine);
 
-      assertTrue(immagineDAO.deleteByIdCampagna(immagine.getCampagna().getIdCampagna()));
+      assertTrue(((ImmagineDAO)immagineDAO).deleteByIdCampagna(immagine.getCampagna().getIdCampagna()));
    }
 
    @Test
    public void getByIdCampagnaInvalidId() {
       assertThrows(IllegalArgumentException.class, () -> {
-         immagineDAO.getByIdCampagna(-1);
+         ((ImmagineDAO)immagineDAO).getByIdCampagna(-1);
       });
    }
 
@@ -191,7 +191,7 @@ public class ImmagineDAOTest {
    public void getByIdCampagna() {
       immagineDAO.save(immagine);
 
-      List<Immagine> immagineList = immagineDAO.getByIdCampagna(immagine.getCampagna().getIdCampagna());
+      List<Immagine> immagineList = ((ImmagineDAO)immagineDAO).getByIdCampagna(immagine.getCampagna().getIdCampagna());
 
       assertAll(
               () -> assertNotNull(immagineList),
