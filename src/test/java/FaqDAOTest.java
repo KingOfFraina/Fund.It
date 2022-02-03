@@ -6,7 +6,9 @@ import model.storage.ConPool;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import java.sql.SQLException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FaqDAOTest {
@@ -56,6 +58,8 @@ public class FaqDAOTest {
       faq.setUtenteCreatore(utente);
 
       assertTrue(faqDAO.save(faq));
+
+      faqDAO.delete(faq);
    }
 
    @Test
@@ -71,20 +75,20 @@ public class FaqDAOTest {
       faq.setDomanda("Domanda");
       faq.setRisposta("Risposta");
       faq.setUtenteCreatore(utente);
-      if (faqDAO.save(faq)) {
-         FAQ faqDB = (FAQ) faqDAO.getById(faq.getIdFaq());
 
-         assertAll(
-                 () -> assertNotNull(faqDB),
-                 () -> assertEquals(faq.getIdFaq(), faqDB.getIdFaq()),
-                 () -> assertEquals(faq.getDomanda(), faqDB.getDomanda()),
-                 () -> assertEquals(faq.getRisposta(), faqDB.getRisposta()),
-                 () -> assertEquals(faq.getUtenteCreatore().getIdUtente(),
-                         faqDB.getUtenteCreatore().getIdUtente())
-         );
+      faqDAO.save(faq);
+      FAQ faqDB = (FAQ) faqDAO.getById(faq.getIdFaq());
 
-         faqDAO.delete(faqDB);
-      }
+      assertAll(
+              () -> assertNotNull(faqDB),
+              () -> assertEquals(faq.getIdFaq(), faqDB.getIdFaq()),
+              () -> assertEquals(faq.getDomanda(), faqDB.getDomanda()),
+              () -> assertEquals(faq.getRisposta(), faqDB.getRisposta()),
+              () -> assertEquals(faq.getUtenteCreatore().getIdUtente(),
+                      faqDB.getUtenteCreatore().getIdUtente())
+      );
+
+      faqDAO.delete(faqDB);
    }
 
    @Test
@@ -107,25 +111,17 @@ public class FaqDAOTest {
       faq.setDomanda("Domanda");
       faq.setRisposta("Risposta");
       faq.setUtenteCreatore(utente);
-      if (faqDAO.save(faq)) {
-         faq.setDomanda("DomandaCambiata");
-         faq.setRisposta("RispostaCambiata");
 
-         assertTrue(faqDAO.update(faq));
-         FAQ faqDB = (FAQ) faqDAO.getById(faq.getIdFaq());
+      faqDAO.save(faq);
 
-         assertAll(
-                 () -> assertNotNull(faqDB),
-                 () -> assertEquals(faq.getIdFaq(), faqDB.getIdFaq()),
-                 () -> assertEquals("DomandaCambiata", faq.getDomanda()),
-                 () -> assertEquals("RispostaCambiata", faq.getRisposta()),
-                 () -> assertEquals(faq.getUtenteCreatore().getIdUtente(),
-                         faqDB.getUtenteCreatore().getIdUtente())
-         );
+      faq.setDomanda("DomandaCambiata");
+      faq.setRisposta("RispostaCambiata");
 
-         faqDAO.delete(faqDB);
-      }
+      assertTrue(faqDAO.update(faq));
+
+      faqDAO.delete(faq);
    }
+
 
    @Test
    public void updatePartialObject() {
@@ -133,14 +129,18 @@ public class FaqDAOTest {
       faq.setDomanda("Domanda");
       faq.setRisposta("Risposta");
       faq.setUtenteCreatore(utente);
-      if (faqDAO.save(faq)) {
-         faq.setDomanda("DomandaCambiata");
-         faq.setRisposta(null);
 
-         assertThrows(RuntimeException.class, () -> {
-            faqDAO.update(faq);
-         });
-      }
+      faqDAO.save(faq);
+
+      assertAll(
+              () -> assertThrows(RuntimeException.class, () -> {
+                 faq.setDomanda("DomandaCambiata");
+                 faq.setRisposta(null);
+                 faqDAO.update(faq);
+              })
+      );
+
+      faqDAO.delete(faq);
    }
 
    @Test
@@ -162,12 +162,9 @@ public class FaqDAOTest {
       faq.setRisposta("Risposta");
       faq.setUtenteCreatore(utente);
 
-      assertAll(
-              () -> assertTrue(faqDAO.save(faq)),
-              () -> assertNotNull(faqDAO.getById(faq.getIdFaq())),
-              () -> assertTrue(faqDAO.delete(faq)),
-              () -> assertNull(faqDAO.getById(faq.getIdFaq()))
-      );
+      faqDAO.save(faq);
+
+      assertTrue(faqDAO.delete(faq));
    }
 
    @Test

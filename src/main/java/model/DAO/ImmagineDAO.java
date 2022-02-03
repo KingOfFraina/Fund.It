@@ -14,10 +14,9 @@ import java.util.List;
 public final class ImmagineDAO implements DAO<Immagine> {
    @Override
    public Immagine getById(final int id) {
-      Immagine immagine = null;
 
-      try (Connection connection = ConPool.getInstance().getConnection()) {
-         if (connection != null) {
+      if (id > 0) {
+         try (Connection connection = ConPool.getInstance().getConnection()) {
             String query = "SELECT * FROM immagine WHERE idImmagine = ?";
 
             try (PreparedStatement preparedStatement =
@@ -25,16 +24,19 @@ public final class ImmagineDAO implements DAO<Immagine> {
                preparedStatement.setInt(1, id);
                ResultSet resultSet = preparedStatement.executeQuery();
 
+               Immagine immagine = null;
+
                if (resultSet.next()) {
                   immagine = extract(resultSet);
                }
+               return immagine;
             }
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
-      } catch (SQLException e) {
-         e.printStackTrace();
+      } else {
+         throw new IllegalArgumentException("Null object");
       }
-
-      return immagine;
    }
 
    @Override
@@ -146,6 +148,7 @@ public final class ImmagineDAO implements DAO<Immagine> {
 
    /**
     * Permette la cancellazione di tutte le foto collegate di una campagna.
+    *
     * @param idCampagna l'idCampagna della campagna
     * @return l'esito con cui si è conclusa l'operazione
     */
