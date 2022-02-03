@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,10 @@ public final class SegnalazioneDAO
      */
     @Override
     public Segnalazione getById(final int id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("Id must be >= 0");
+        }
+        Segnalazione segnalazione = null;
         try (Connection connection = ConPool.getInstance().getConnection();
              PreparedStatement statement =
                      connection.prepareStatement(
@@ -34,12 +39,12 @@ public final class SegnalazioneDAO
             ResultSet set = statement.executeQuery();
 
             if (set.next()) {
-                return extract(set);
+                segnalazione = extract(set);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null;
+        return segnalazione;
     }
 
     /**
@@ -69,6 +74,10 @@ public final class SegnalazioneDAO
      */
     @Override
     public boolean save(final Segnalazione entity) {
+        if (entity == null) {
+            throw new IllegalArgumentException("Entity must be not null");
+        }
+        int ret = 0;
         try (Connection connection = ConPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(
                      "INSERT INTO segnalazione "
@@ -80,8 +89,7 @@ public final class SegnalazioneDAO
 
             int index = 0;
 
-            statement.setTimestamp(++index,
-                    Timestamp.from(entity.getDataOra().toInstant()));
+            statement.setTimestamp(++index, Timestamp.valueOf(entity.getDataOra()));
             statement.setString(++index, entity.getDescrizione());
             statement.setInt(++index,
                     entity.getSegnalatore().getIdUtente());
@@ -91,15 +99,15 @@ public final class SegnalazioneDAO
             statement.setInt(++index,
                     entity.getCampagnaSegnalata().getIdCampagna());
 
-            int ret = statement.executeUpdate();
+            ret = statement.executeUpdate();
             ResultSet set = statement.getGeneratedKeys();
             if (set.next()) {
                 entity.setIdSegnalazione(set.getInt(1));
             }
-            return (ret > 0);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return (ret > 0);
     }
 
     /**
@@ -109,6 +117,9 @@ public final class SegnalazioneDAO
      */
     @Override
     public boolean update(final Segnalazione entity) {
+        if (entity == null) {
+            throw new IllegalArgumentException("Entity must be not null");
+        }
         int ret;
         try (Connection connection = ConPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(
@@ -119,7 +130,6 @@ public final class SegnalazioneDAO
             statement.setInt(2, entity.getIdSegnalazione());
 
             ret = statement.executeUpdate();
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -133,6 +143,9 @@ public final class SegnalazioneDAO
      */
     @Override
     public boolean delete(final Segnalazione entity) {
+        if (entity == null) {
+            throw new IllegalArgumentException("Entity must be not null");
+        }
         int ret;
         try (Connection connection = ConPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(
@@ -159,7 +172,7 @@ public final class SegnalazioneDAO
             throws SQLException {
         Segnalazione s = new Segnalazione();
         s.setIdSegnalazione(resultSet.getInt("idSegnalazione"));
-        s.setDataOra(resultSet.getDate("DataOra"));
+        s.setDataOra(resultSet.getTimestamp("DatOra").toLocalDateTime());
         s.setStatoSegnalazione(StatoSegnalazione.valueOf(
                 resultSet.getString("Stato").toUpperCase()));
         Utente segnalato = new Utente();
@@ -181,6 +194,9 @@ public final class SegnalazioneDAO
      * @return lista di segnalazioni effettuate dall'utente
      */
     public List<Segnalazione> getByIdUtente(final int idUtente) {
+        if (idUtente <= 0) {
+            throw new IllegalArgumentException("Id must be >= 0");
+        }
         List<Segnalazione> list;
         try (Connection connection = ConPool.getInstance().getConnection();
              PreparedStatement statement =
@@ -206,8 +222,10 @@ public final class SegnalazioneDAO
      * @return lista delle segnalazioni effettuate sulla campagna
      */
     public List<Segnalazione> getByIdCampagna(final int idCampagna) {
+        if (idCampagna <= 0) {
+            throw new IllegalArgumentException("Id must be >= 0");
+        }
         List<Segnalazione> segnalazioneList = null;
-
         try (Connection connection = ConPool.getInstance().getConnection()) {
             if (connection != null) {
                 segnalazioneList = new ArrayList<>();
@@ -227,9 +245,8 @@ public final class SegnalazioneDAO
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
         return segnalazioneList;
     }
 }

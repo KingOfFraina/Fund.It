@@ -7,6 +7,8 @@ import model.beans.Segnalazione;
 import model.beans.StatoSegnalazione;
 import model.beans.Utente;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
@@ -79,7 +81,7 @@ public class SegnalazioniServiceImpl implements SegnalazioniService {
         s.setSegnalato(campagna.getUtente());
         s.setSegnalatore(segnalatore);
         s.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
-        s.setDataOra(new Date());
+        s.setDataOra(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES));
         s.setDescrizione(descrizione);
         return dao.save(s);
     }
