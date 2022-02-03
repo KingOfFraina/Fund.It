@@ -11,18 +11,22 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ImmagineDAOTest {
-   static DAO<Immagine> immagineDAO;
-   static DAO<Campagna> campagnaDAO;
-   static DAO<Categoria> categoriaDAO;
-   static DAO<Utente> utenteDAO;
-   static Immagine immagine;
-   static Campagna campagna;
-   static Categoria categoria;
-   static Utente utente;
+   DAO<Immagine> immagineDAO;
+   DAO<Campagna> campagnaDAO;
+   DAO<Categoria> categoriaDAO;
+   DAO<Utente> utenteDAO;
+   Immagine immagine;
+   Campagna campagna;
+   Categoria categoria;
+   Utente utente;
 
    @BeforeClass
    public static void openConnection() throws SQLException {
       ConPool.getInstance().getConnection();
+   }
+
+   @Before
+   public void setup() {
       immagineDAO = new ImmagineDAO();
       campagnaDAO = new CampagnaDAO();
       categoriaDAO = new CategoriaDAO();
@@ -207,11 +211,15 @@ public class ImmagineDAOTest {
       });
    }
 
-   @AfterClass
-   public static void closeConnection() {
+   @After
+   public void clean() {
       categoriaDAO.delete(categoria);
       campagnaDAO.delete(campagna);
       utenteDAO.delete(utente);
+   }
+
+   @AfterClass
+   public static void closeConnection() {
       ConPool.getInstance().closeDataSource();
    }
 }
