@@ -41,28 +41,24 @@ public final class ImmagineDAO implements DAO<Immagine> {
 
    @Override
    public List<Immagine> getAll() {
-      List<Immagine> immagineList = null;
-
       try (Connection connection = ConPool.getInstance().getConnection()) {
-         if (connection != null) {
-            String query = "SELECT * FROM immagine";
-            immagineList = new ArrayList<>();
+         String query = "SELECT * FROM immagine";
 
-            try (PreparedStatement preparedStatement =
-                         connection.prepareStatement(query)) {
-               ResultSet resultSet = preparedStatement.executeQuery();
+         try (PreparedStatement preparedStatement =
+                      connection.prepareStatement(query)) {
 
-               while (resultSet.next()) {
-                  immagineList.add(extract(resultSet));
-               }
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Immagine> immagineList = new ArrayList<>();
 
+            while (resultSet.next()) {
+               immagineList.add(extract(resultSet));
             }
+
+            return immagineList;
          }
       } catch (SQLException e) {
-         e.printStackTrace();
+         throw new RuntimeException("SQL error: " + e.getMessage());
       }
-
-      return immagineList;
    }
 
    @Override
@@ -70,28 +66,36 @@ public final class ImmagineDAO implements DAO<Immagine> {
       if (entity != null) {
          try (Connection connection =
                       ConPool.getInstance().getConnection()) {
-            if (connection != null) {
-               String query =
-                       "INSERT INTO immagine (idCampagna, path) "
-                               + "VALUES (?,?)";
+            String query =
+                    "INSERT INTO immagine (idCampagna, path) "
+                            + "VALUES (?,?)";
 
-               try (PreparedStatement preparedStatement =
-                            connection.prepareStatement(query)) {
+            try (PreparedStatement preparedStatement =
+                         connection.prepareStatement(query,
+                                 PreparedStatement
+                                         .RETURN_GENERATED_KEYS)) {
 
-                  int index = 1;
+               int index = 1;
 
-                  preparedStatement.setInt(index++,
-                          entity.getCampagna().getIdCampagna());
-                  preparedStatement.setString(index++, entity.getPath());
+               preparedStatement.setInt(index++,
+                       entity.getCampagna().getIdCampagna());
+               preparedStatement.setString(index++, entity.getPath());
 
-                  return preparedStatement.executeUpdate() > 0;
+               boolean esito = preparedStatement.executeUpdate() > 0;
+
+               ResultSet resultSet = preparedStatement.getGeneratedKeys();
+               if (resultSet.next()) {
+                  entity.setId(resultSet.getInt(1));
                }
+
+               return esito;
             }
          } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
+      } else {
+         throw new IllegalArgumentException("Null object");
       }
-      return false;
    }
 
    @Override
@@ -99,27 +103,25 @@ public final class ImmagineDAO implements DAO<Immagine> {
       if (entity != null) {
          try (Connection connection =
                       ConPool.getInstance().getConnection()) {
-            if (connection != null) {
-               String query = "UPDATE immagine "
-                       + "SET path = ? WHERE idImmagine = ?";
+            String query = "UPDATE immagine "
+                    + "SET path = ? WHERE idImmagine = ?";
 
-               try (PreparedStatement preparedStatement =
-                            connection.prepareStatement(query)) {
+            try (PreparedStatement preparedStatement =
+                         connection.prepareStatement(query)) {
 
-                  int index = 1;
+               int index = 1;
 
-                  preparedStatement.setString(index++, entity.getPath());
+               preparedStatement.setString(index++, entity.getPath());
+               preparedStatement.setInt(index, entity.getId());
 
-                  preparedStatement.setInt(index, entity.getId());
-
-                  return preparedStatement.executeUpdate() > 0;
-               }
+               return preparedStatement.executeUpdate() > 0;
             }
          } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
+      } else {
+         throw new IllegalArgumentException("Null object");
       }
-      return false;
    }
 
    @Override
@@ -127,23 +129,43 @@ public final class ImmagineDAO implements DAO<Immagine> {
       if (entity != null) {
          try (Connection connection =
                       ConPool.getInstance().getConnection()) {
-            if (connection != null) {
-               String query =
-                       "DELETE FROM immagine WHERE idImmagine = ?";
+            String query =
+                    "DELETE FROM immagine WHERE idImmagine = ?";
 
-               try (PreparedStatement preparedStatement =
-                            connection.prepareStatement(query)) {
+            try (PreparedStatement preparedStatement =
+                         connection.prepareStatement(query)) {
 
-                  preparedStatement.setInt(1, entity.getId());
+               preparedStatement.setInt(1, entity.getId());
 
-                  return preparedStatement.executeUpdate() > 0;
-               }
+               return preparedStatement.executeUpdate() > 0;
             }
          } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
+      } else {
+         throw new IllegalArgumentException("Null object");
       }
-      return false;
+   }
+
+   @Override
+   public Immagine extract(final ResultSet resultSet)
+           throws SQLException {
+
+
+      if (resultSet != null) {
+         Immagine immagine = new Immagine();
+
+         immagine.setId(resultSet.getInt("idImmagine"));
+         immagine.setPath(resultSet.getString("path"));
+
+         Campagna campagna = new Campagna();
+         campagna.setIdCampagna(resultSet.getInt("idCampagna"));
+         immagine.setCampagna(campagna);
+
+         return immagine;
+      } else {
+         throw new IllegalArgumentException("Null object");
+      }
    }
 
    /**
@@ -153,9 +175,9 @@ public final class ImmagineDAO implements DAO<Immagine> {
     * @return l'esito con cui si è conclusa l'operazione
     */
    public boolean deleteByIdCampagna(final int idCampagna) {
-      try (Connection connection =
-                   ConPool.getInstance().getConnection()) {
-         if (connection != null) {
+      if (idCampagna > 0) {
+         try (Connection connection =
+                      ConPool.getInstance().getConnection()) {
             String query =
                     "DELETE FROM immagine WHERE idCampagna = ?";
 
@@ -166,30 +188,13 @@ public final class ImmagineDAO implements DAO<Immagine> {
 
                return preparedStatement.executeUpdate() > 0;
             }
+
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
-      } catch (SQLException e) {
-         e.printStackTrace();
+      } else {
+         throw new IllegalArgumentException("Id <= 0");
       }
-      return false;
-   }
-
-   @Override
-   public Immagine extract(final ResultSet resultSet)
-           throws SQLException {
-      Immagine immagine = null;
-
-      if (resultSet != null) {
-         immagine = new Immagine();
-
-         immagine.setId(resultSet.getInt("idImmagine"));
-         immagine.setPath(resultSet.getString("path"));
-
-         Campagna campagna = new Campagna();
-         campagna.setIdCampagna(resultSet.getInt("idCampagna"));
-         immagine.setCampagna(campagna);
-      }
-
-      return immagine;
    }
 
    /**
@@ -197,11 +202,9 @@ public final class ImmagineDAO implements DAO<Immagine> {
     * @return tutte le immagini della campagna
     */
    public List<Immagine> getByIdCampagna(final int idCampagna) {
-      List<Immagine> immagineList = null;
-
-      try (Connection connection = ConPool.getInstance().getConnection()) {
-         if (connection != null) {
-            immagineList = new ArrayList<>();
+      if (idCampagna > 0) {
+         try (Connection connection = ConPool.getInstance().getConnection()) {
+            List<Immagine> immagineList = new ArrayList<>();
 
             String query = "SELECT * FROM immagine WHERE idCampagna = ?";
 
@@ -213,12 +216,14 @@ public final class ImmagineDAO implements DAO<Immagine> {
                while (resultSet.next()) {
                   immagineList.add(extract(resultSet));
                }
-            }
-         }
-      } catch (SQLException e) {
-         e.printStackTrace();
-      }
 
-      return immagineList;
+               return immagineList;
+            }
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
+         }
+      } else {
+         throw new IllegalArgumentException("Id <= 0");
+      }
    }
 }

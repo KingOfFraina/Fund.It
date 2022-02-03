@@ -1,6 +1,7 @@
 import model.DAO.DAO;
 import model.DAO.FaqDAO;
 import model.beans.FAQ;
+import model.beans.Immagine;
 import model.beans.Utente;
 import model.storage.ConPool;
 import org.junit.After;
@@ -8,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -145,7 +147,21 @@ public class FaqDAOTest {
 
    @Test
    public void getAll() {
-      assertNotNull(faqDAO.getAll());
+      FAQ faq = new FAQ();
+      faq.setDomanda("Domanda");
+      faq.setRisposta("Risposta");
+      faq.setUtenteCreatore(utente);
+
+      faqDAO.save(faq);
+
+      List<FAQ> faqList = faqDAO.getAll();
+
+      assertAll(
+              () -> assertNotNull(faqList),
+              () -> assertTrue(faqList.size() > 0)
+      );
+
+      faqDAO.delete(faq);
    }
 
    @Test

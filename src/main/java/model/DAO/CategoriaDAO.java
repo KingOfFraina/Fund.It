@@ -15,7 +15,7 @@ public final class CategoriaDAO implements DAO<Categoria> {
    public Categoria getById(final int id) {
       Categoria c = null;
       if (id <= 0) {
-         throw new IllegalArgumentException("Null object");
+         throw new IllegalArgumentException("Id <= 0");
       }
 
       try (Connection con = ConPool.getInstance().getConnection()) {
@@ -130,7 +130,8 @@ public final class CategoriaDAO implements DAO<Categoria> {
          c.setNome(resultSet.getString("nomeCategoria"));
          c.setIdCategoria(resultSet.getInt("idCategoria"));
          return c;
+      } else {
+         throw new IllegalArgumentException("Null object");
       }
-      return null;
    }
 }

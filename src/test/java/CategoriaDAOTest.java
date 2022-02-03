@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,12 +47,26 @@ public class CategoriaDAOTest {
 
    @Test
    public void getAll() {
-      assertNotNull(categoriaDAO.getAll());
+      Categoria categoria = new Categoria();
+      categoria.setNome("nomeCategoria");
+
+      categoriaDAO.save(categoria);
+
+      List<Categoria> categoriaList = categoriaDAO.getAll();
+
+      assertAll(
+              () -> assertNotNull(categoriaList),
+              () -> assertTrue(categoriaList.size() > 0)
+      );
+
+      categoriaDAO.delete(categoria);
    }
 
    @Test
-   public void extractNullResultSet() throws SQLException {
-      assertNull(categoriaDAO.extract(null));
+   public void extractNullResultSet() {
+      assertThrows(IllegalArgumentException.class, () -> {
+         categoriaDAO.extract(null);
+      });
    }
 
    @Test

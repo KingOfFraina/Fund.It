@@ -35,7 +35,7 @@ public final class FaqDAO implements DAO<FAQ> {
             throw new RuntimeException("SQL error: " + e.getMessage());
          }
       } else {
-         throw new IllegalArgumentException("Null object");
+         throw new IllegalArgumentException("Id <= 0");
       }
    }
 
