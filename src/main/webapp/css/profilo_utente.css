@@ -3,6 +3,12 @@
     margin-top: 50px;
 }
 
+.propic-personal{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
 #visualizza{
     background-color: #00AB98;
     border-color: #00AB98;

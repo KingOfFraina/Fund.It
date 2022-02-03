@@ -17,7 +17,11 @@
                 <img class="propic" src="${pageContext.request.contextPath}/img/undraw_profile_pic_ic-5-t.svg" alt="">
             </c:when>
             <c:otherwise>
-                <img class="propic" src="${pageContext.request.contextPath}/file/${sessionScope.utente.fotoProfilo}" alt="">
+                <img class="propic" src="${pageContext.request.contextPath}/file/${sessionScope.utente.fotoProfilo}"
+                     alt="" style=" width:130px;
+  height:130px;
+  object-fit:cover;
+  border-radius:50%;">
             </c:otherwise>
         </c:choose>
 
@@ -44,7 +48,6 @@
         </div>
 
 
-
     </form>
 
 </div>
@@ -63,9 +66,11 @@
     </div>
 </div>
 
-<div class = "row text-center mt-4">
+<div class="row text-center mt-4">
     <c:if test="${sessionScope.utente.admin}">
-        <a style="text-decoration: none; color: black" href = "${pageContext.request.contextPath}/GestioneUtenteController/visualizzaDashboardAdmin" class = "admin-panel-icon"><i class="fas fa-users-cog"></i></a>
+        <a style="text-decoration: none; color: black"
+           href="${pageContext.request.contextPath}/GestioneUtenteController/visualizzaDashboardAdmin"
+           class="admin-panel-icon"><i class="fas fa-users-cog"></i></a>
     </c:if>
 </div>
 

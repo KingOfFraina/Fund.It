@@ -22,7 +22,7 @@
                 </div>
 
                 <form id="form" class="needs-validation" method="post" enctype="multipart/form-data"
-                      action="${pageContext.request.contextPath}/AutenticazioneController/registrazione">
+                      action="${pageContext.request.contextPath}/AutenticazioneController/registrazione" novalidate>
                     <!--Form dati utente-->
                     <%@include file="../components/dati_utente.jsp" %>
 
