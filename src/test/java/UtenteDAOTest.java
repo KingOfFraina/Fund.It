@@ -157,6 +157,31 @@ public class UtenteDAOTest {
       utenteDAO.delete(utente);
    }
 
+   @Test
+   public void doLoginNullObject() {
+      assertThrows(IllegalArgumentException.class, () -> {
+         ((UtenteDAO)utenteDAO).doLogin(null);
+      });
+   }
+
+   @Test
+   public void doLoginNotExistUser() {
+      Utente utente = new Utente();
+      utente.setEmail("");
+      utente.setPassword("");
+
+      assertNull(((UtenteDAO)utenteDAO).doLogin(utente));
+   }
+
+   @Test
+   public void doLoginExistUser() {
+      utenteDAO.save(utente);
+
+      assertNotNull(((UtenteDAO)utenteDAO).doLogin(utente));
+
+      utenteDAO.delete(utente);
+   }
+
    @After
    public void clean() {
       ConPool.getInstance().closeDataSource();
