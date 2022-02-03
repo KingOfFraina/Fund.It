@@ -32,14 +32,16 @@ public class CategoriaDAOTest {
       Categoria categoria = new Categoria();
       categoria.setNome("nomeCategoria");
 
-      if (categoriaDAO.save(categoria)) {
-         Categoria categoriaDB = categoriaDAO.getById(categoria.getIdCategoria());
-         assertAll(
-                 () -> assertNotNull(categoria),
-                 () -> assertEquals(categoria.getNome(), categoriaDB.getNome()),
-                 () -> assertEquals(categoria.getIdCategoria(), categoriaDB.getIdCategoria())
-         );
-      }
+      categoriaDAO.save(categoria);
+      Categoria categoriaDB = categoriaDAO.getById(categoria.getIdCategoria());
+
+      assertAll(
+              () -> assertNotNull(categoriaDB),
+              () -> assertEquals(categoria.getNome(), categoriaDB.getNome()),
+              () -> assertEquals(categoria.getIdCategoria(), categoriaDB.getIdCategoria())
+      );
+
+      categoriaDAO.delete(categoria);
    }
 
    @Test
@@ -73,10 +75,9 @@ public class CategoriaDAOTest {
       Categoria categoria = new Categoria();
       categoria.setNome("");
 
-      assertAll(
-              () -> assertTrue(categoriaDAO.save(categoria)),
-              () -> assertTrue(categoriaDAO.delete(categoria))
-      );
+      assertTrue(categoriaDAO.save(categoria));
+
+      categoriaDAO.delete(categoria);
    }
 
    @Test
@@ -91,8 +92,9 @@ public class CategoriaDAOTest {
       Categoria categoria = new Categoria();
       categoria.setNome("");
 
+      categoriaDAO.save(categoria);
+
       assertAll(
-              () -> assertTrue(categoriaDAO.save(categoria)),
               () -> assertTrue(categoriaDAO.delete(categoria)),
               () -> assertNull(categoriaDAO.getById(categoria.getIdCategoria()))
       );
@@ -110,16 +112,14 @@ public class CategoriaDAOTest {
       Categoria categoria = new Categoria();
       categoria.setNome("");
 
-      assertAll(
-              () -> assertTrue(categoriaDAO.save(categoria)),
+      categoriaDAO.save(categoria);
 
-              () -> assertThrows(RuntimeException.class, () -> {
-                 categoria.setNome(null);
-                 categoriaDAO.update(categoria);
-              }),
+      assertThrows(RuntimeException.class, () -> {
+         categoria.setNome(null);
+         categoriaDAO.update(categoria);
+      });
 
-              () -> assertTrue(categoriaDAO.delete(categoria))
-      );
+      categoriaDAO.delete(categoria);
    }
 
    @Test
@@ -127,19 +127,12 @@ public class CategoriaDAOTest {
       Categoria categoria = new Categoria();
       categoria.setNome("");
 
-      if (categoriaDAO.save(categoria)) {
-         categoria.setNome("---");
+      categoriaDAO.save(categoria);
+      categoria.setNome("---");
 
-         assertTrue(categoriaDAO.update(categoria));
-         Categoria categoriaDB = (Categoria) categoriaDAO.getById(categoria.getIdCategoria());
+      assertTrue(categoriaDAO.update(categoria));
 
-         assertAll(
-                 () -> assertNotNull(categoriaDB),
-                 () -> assertEquals(categoria.getIdCategoria(), categoria.getIdCategoria()),
-                 () -> assertEquals("---", categoriaDB.getNome()),
-                 () -> assertTrue(categoriaDAO.delete(categoria))
-         );
-      }
+      categoriaDAO.delete(categoria);
    }
 
    @Test
@@ -147,14 +140,14 @@ public class CategoriaDAOTest {
       Categoria categoria = new Categoria();
       categoria.setNome("");
 
-      assertAll(
-              () -> assertTrue(categoriaDAO.save(categoria)),
-              () -> assertThrows(RuntimeException.class, () -> {
-                 categoria.setNome(null);
-                 categoriaDAO.update(categoria);
-              }),
-              () -> assertTrue(categoriaDAO.delete(categoria))
-      );
+      categoriaDAO.save(categoria);
+
+      assertThrows(RuntimeException.class, () -> {
+         categoria.setNome(null);
+         categoriaDAO.update(categoria);
+      });
+
+      categoriaDAO.delete(categoria);
    }
 
    @After

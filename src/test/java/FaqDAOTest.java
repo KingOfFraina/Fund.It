@@ -57,10 +57,9 @@ public class FaqDAOTest {
       faq.setRisposta("");
       faq.setUtenteCreatore(utente);
 
-      assertAll(
-              () -> assertTrue(faqDAO.save(faq)),
-              () -> assertTrue(faqDAO.delete(faq))
-      );
+      assertTrue(faqDAO.save(faq));
+
+      faqDAO.delete(faq);
    }
 
    @Test
@@ -76,20 +75,20 @@ public class FaqDAOTest {
       faq.setDomanda("Domanda");
       faq.setRisposta("Risposta");
       faq.setUtenteCreatore(utente);
-      if (faqDAO.save(faq)) {
-         FAQ faqDB = (FAQ) faqDAO.getById(faq.getIdFaq());
 
-         assertAll(
-                 () -> assertNotNull(faqDB),
-                 () -> assertEquals(faq.getIdFaq(), faqDB.getIdFaq()),
-                 () -> assertEquals(faq.getDomanda(), faqDB.getDomanda()),
-                 () -> assertEquals(faq.getRisposta(), faqDB.getRisposta()),
-                 () -> assertEquals(faq.getUtenteCreatore().getIdUtente(),
-                         faqDB.getUtenteCreatore().getIdUtente())
-         );
+      faqDAO.save(faq);
+      FAQ faqDB = (FAQ) faqDAO.getById(faq.getIdFaq());
 
-         faqDAO.delete(faqDB);
-      }
+      assertAll(
+              () -> assertNotNull(faqDB),
+              () -> assertEquals(faq.getIdFaq(), faqDB.getIdFaq()),
+              () -> assertEquals(faq.getDomanda(), faqDB.getDomanda()),
+              () -> assertEquals(faq.getRisposta(), faqDB.getRisposta()),
+              () -> assertEquals(faq.getUtenteCreatore().getIdUtente(),
+                      faqDB.getUtenteCreatore().getIdUtente())
+      );
+
+      faqDAO.delete(faqDB);
    }
 
    @Test
@@ -113,24 +112,14 @@ public class FaqDAOTest {
       faq.setRisposta("Risposta");
       faq.setUtenteCreatore(utente);
 
-      assertTrue(faqDAO.save(faq));
+      faqDAO.save(faq);
 
       faq.setDomanda("DomandaCambiata");
       faq.setRisposta("RispostaCambiata");
 
       assertTrue(faqDAO.update(faq));
-      FAQ faqDB = (FAQ) faqDAO.getById(faq.getIdFaq());
 
-      assertAll(
-              () -> assertNotNull(faqDB),
-              () -> assertEquals(faq.getIdFaq(), faqDB.getIdFaq()),
-              () -> assertEquals("DomandaCambiata", faq.getDomanda()),
-              () -> assertEquals("RispostaCambiata", faq.getRisposta()),
-              () -> assertEquals(faq.getUtenteCreatore().getIdUtente(),
-                      faqDB.getUtenteCreatore().getIdUtente())
-      );
-
-      faqDAO.delete(faqDB);
+      faqDAO.delete(faq);
    }
 
 
@@ -141,15 +130,17 @@ public class FaqDAOTest {
       faq.setRisposta("Risposta");
       faq.setUtenteCreatore(utente);
 
+      faqDAO.save(faq);
+
       assertAll(
-              () -> assertTrue(faqDAO.save(faq)),
               () -> assertThrows(RuntimeException.class, () -> {
                  faq.setDomanda("DomandaCambiata");
                  faq.setRisposta(null);
                  faqDAO.update(faq);
-              }),
-              () -> assertTrue(faqDAO.delete(faq))
+              })
       );
+
+      faqDAO.delete(faq);
    }
 
    @Test
@@ -171,12 +162,9 @@ public class FaqDAOTest {
       faq.setRisposta("Risposta");
       faq.setUtenteCreatore(utente);
 
-      assertAll(
-              () -> assertTrue(faqDAO.save(faq)),
-              () -> assertNotNull(faqDAO.getById(faq.getIdFaq())),
-              () -> assertTrue(faqDAO.delete(faq)),
-              () -> assertNull(faqDAO.getById(faq.getIdFaq()))
-      );
+      faqDAO.save(faq);
+
+      assertTrue(faqDAO.delete(faq));
    }
 
    @Test
