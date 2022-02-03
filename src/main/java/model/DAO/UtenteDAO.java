@@ -48,6 +48,10 @@ public final class UtenteDAO implements DAO<Utente> {
     * @return Il bean dell'utente presente nel database
     */
    public Utente doLogin(final Utente utente) {
+      if (utente == null) {
+         throw new IllegalArgumentException("Null Object");
+      }
+
       try (Connection connection = ConPool.getInstance().getConnection();
            PreparedStatement statement =
                    connection.prepareStatement("SELECT *"
@@ -58,13 +62,16 @@ public final class UtenteDAO implements DAO<Utente> {
          statement.setString(2, utente.getPassword());
 
          ResultSet set = statement.executeQuery();
+         Utente utenteDB = null;
+
          if (set.next()) {
-            return extract(set);
+            utenteDB = extract(set);
          }
+
+         return utenteDB;
       } catch (SQLException e) {
-         throw new RuntimeException(e);
+         throw new RuntimeException("SQL error: " + e.getMessage());
       }
-      return null;
    }
 
    @Override
