@@ -1,3 +1,5 @@
+package DAO;
+
 import model.DAO.DAO;
 import model.DAO.DonazioneDAO;
 import model.beans.Campagna;

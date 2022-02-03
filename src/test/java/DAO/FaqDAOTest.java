@@ -1,3 +1,5 @@
+package DAO;
+
 import model.DAO.DAO;
 import model.DAO.FaqDAO;
 import model.beans.FAQ;

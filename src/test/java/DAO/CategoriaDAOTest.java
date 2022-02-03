@@ -1,3 +1,5 @@
+package DAO;
+
 import model.DAO.CategoriaDAO;
 import model.DAO.DAO;
 import model.beans.Categoria;

@@ -1,3 +1,5 @@
+package DAO;
+
 import model.DAO.CampagnaDAO;
 import model.DAO.CategoriaDAO;
 import model.DAO.DAO;
