@@ -4,11 +4,13 @@ import model.beans.Campagna;
 import model.beans.Donazione;
 import model.beans.Utente;
 import model.storage.ConPool;
+import net.bytebuddy.pool.TypePool;
 import net.sf.saxon.expr.parser.Loc;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -132,6 +134,15 @@ public class DonazioneDAOTest {
         d1.setUtente(utente);
         assertThrows(RuntimeException.class,
                 () -> dao.save(d1));
+    }
+
+    @Test
+    public void testExtractDonazione() {
+        try {
+            assertNull(dao.extract(null));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @After
