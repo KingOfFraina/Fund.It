@@ -2,9 +2,7 @@ import model.DAO.CategoriaDAO;
 import model.DAO.DAO;
 import model.beans.Categoria;
 import model.storage.ConPool;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -14,10 +12,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CategoriaDAOTest {
    DAO<Categoria> categoriaDAO;
 
-   @Before
-   public void setup() throws SQLException {
+   @BeforeClass
+   public static void openConnection() throws SQLException {
       ConPool.getInstance().getConnection();
+   }
 
+   @Before
+   public void setup() {
       categoriaDAO = new CategoriaDAO();
    }
 
@@ -165,8 +166,8 @@ public class CategoriaDAOTest {
       categoriaDAO.delete(categoria);
    }
 
-   @After
-   public void clean() {
+   @AfterClass
+   public static void closeConnection() {
       ConPool.getInstance().closeDataSource();
    }
 }

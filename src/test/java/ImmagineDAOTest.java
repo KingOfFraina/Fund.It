@@ -1,9 +1,8 @@
 import model.DAO.*;
 import model.beans.*;
 import model.storage.ConPool;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,9 +20,13 @@ public class ImmagineDAOTest {
    Categoria categoria;
    Utente utente;
 
-   @Before
-   public void setup() throws SQLException {
+   @BeforeClass
+   public static void openConnection() throws SQLException {
       ConPool.getInstance().getConnection();
+   }
+
+   @Before
+   public void setup() {
       immagineDAO = new ImmagineDAO();
       campagnaDAO = new CampagnaDAO();
       categoriaDAO = new CategoriaDAO();
@@ -213,6 +216,10 @@ public class ImmagineDAOTest {
       categoriaDAO.delete(categoria);
       campagnaDAO.delete(campagna);
       utenteDAO.delete(utente);
+   }
+
+   @AfterClass
+   public static void closeConnection() {
       ConPool.getInstance().closeDataSource();
    }
 }

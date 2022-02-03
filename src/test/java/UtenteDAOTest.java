@@ -2,9 +2,8 @@ import model.DAO.DAO;
 import model.DAO.UtenteDAO;
 import model.beans.Utente;
 import model.storage.ConPool;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,9 +15,13 @@ public class UtenteDAOTest {
    DAO<Utente> utenteDAO;
    Utente utente;
 
-   @Before
-   public void setup() throws SQLException {
+   @BeforeClass
+   public static void openConnection() throws SQLException {
       ConPool.getInstance().getConnection();
+   }
+
+   @Before
+   public void setup() {
       utenteDAO = new UtenteDAO();
       utente = new Utente();
 
@@ -189,8 +192,8 @@ public class UtenteDAOTest {
       });
    }
 
-   @After
-   public void clean() {
+   @AfterClass
+   public static void closeConnection() {
       ConPool.getInstance().closeDataSource();
    }
 }

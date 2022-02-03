@@ -1,12 +1,9 @@
 import model.DAO.DAO;
 import model.DAO.FaqDAO;
 import model.beans.FAQ;
-import model.beans.Immagine;
 import model.beans.Utente;
 import model.storage.ConPool;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -18,9 +15,13 @@ public class FaqDAOTest {
    DAO<FAQ> faqDAO;
    Utente utente;
 
-   @Before
-   public void setup() throws SQLException {
+   @BeforeClass
+   public static void openConnection() throws SQLException {
       ConPool.getInstance().getConnection();
+   }
+
+   @Before
+   public void setup() {
       faqDAO = new FaqDAO();
       utente = new Utente();
       utente.setIdUtente(1);
@@ -190,8 +191,8 @@ public class FaqDAOTest {
       });
    }
 
-   @After
-   public void clean() {
+   @AfterClass
+   public static void closeConnection() {
       ConPool.getInstance().closeDataSource();
    }
 }
