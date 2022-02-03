@@ -41,17 +41,16 @@ public final class DonazioneDAO implements DAO<Donazione> {
     public List<Donazione> getAll() {
         List<Donazione> donazioneList = null;
         try (Connection connection = ConPool.getInstance().getConnection()) {
-            if (connection != null) {
-                String query = "SELECT * FROM donazione";
-                donazioneList = new ArrayList<>();
-                try (PreparedStatement preparedStatement =
-                             connection.prepareStatement(query)) {
-                    ResultSet resultSet = preparedStatement.executeQuery();
-                    while (resultSet.next()) {
-                        donazioneList.add(extract(resultSet));
-                    }
+            String query = "SELECT * FROM donazione";
+            donazioneList = new ArrayList<>();
+            try (PreparedStatement preparedStatement =
+                         connection.prepareStatement(query)) {
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    donazioneList.add(extract(resultSet));
                 }
             }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

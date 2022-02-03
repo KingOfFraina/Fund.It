@@ -76,6 +76,24 @@ public class DonazioneDAOTest {
     }
 
     @Test
+    public void testGetByIdCampagnaLessThanZero() {
+        int idCampagna = -1;
+        DonazioneDAO donazioneDAO = (DonazioneDAO) dao;
+
+        assertThrows(IllegalArgumentException.class,
+                () -> donazioneDAO.getByIdCampagna(idCampagna));
+    }
+
+    @Test
+    public void testGetByIdUtenteLessThanZero() {
+        int idUtente = -1;
+
+        DonazioneDAO donazioneDAO = (DonazioneDAO) dao;
+        assertThrows(IllegalArgumentException.class,
+                () -> donazioneDAO.getAllByUtente(idUtente));
+    }
+
+    @Test
     public void testThrowsIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class,
                 () -> dao.delete(null));
