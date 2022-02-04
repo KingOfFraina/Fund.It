@@ -33,10 +33,9 @@
 
     <img src="./img/group_selfie.svg" alt="">
     <button id="scopri" type="submit" class="btn btn-primary btn-lg mx-5 my-5"
-            onclick="location.href = '${pageContext.request.contextPath}/Servlet'">
+            onclick="location.href = '${pageContext.request.contextPath}/GestioneCampagnaController/main'">
         Scopri di pi&ugrave
     </button>
-</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"

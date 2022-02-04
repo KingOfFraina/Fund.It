@@ -12,7 +12,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +88,8 @@ public final class SegnalazioneDAO
 
             int index = 0;
 
-            statement.setTimestamp(++index, Timestamp.valueOf(entity.getDataOra()));
+            statement.setTimestamp(++index,
+                    Timestamp.valueOf(entity.getDataOra()));
             statement.setString(++index, entity.getDescrizione());
             statement.setInt(++index,
                     entity.getSegnalatore().getIdUtente());
