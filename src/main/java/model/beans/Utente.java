@@ -8,6 +8,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public final class Utente implements UtenteInterface {
@@ -99,7 +100,7 @@ public final class Utente implements UtenteInterface {
     * @return dataBan.
     */
    public LocalDateTime getDataBan() {
-      return dataBan;
+      return dataBan.truncatedTo(ChronoUnit.MINUTES);
    }
 
    /**
