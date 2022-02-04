@@ -2,6 +2,7 @@ package model.beans.proxies;
 
 import model.DAO.CampagnaDAO;
 import model.DAO.DAO;
+import model.DAO.DonazioneDAO;
 import model.DAO.UtenteDAO;
 import model.beans.Campagna;
 import model.beans.Donazione;
@@ -33,6 +34,9 @@ public final class DonazioneProxy implements DonazioneInterface {
         this.donazione = newDonazione;
     }
 
+    public List<Donazione> getAll() {
+        return new DonazioneDAO().getAll();
+    }
 
     @Override
     public Campagna getCampagna() {
