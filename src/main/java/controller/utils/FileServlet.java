@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -273,8 +274,8 @@ public class FileServlet extends HttpServlet {
     *
     * @param request  The request to be processed.
     * @param response The response to be created.
-    * @throws IOException If something fails at I/O level.
     * @return file
+    * @throws IOException If something fails at I/O level.
     */
    private File helper(final HttpServletRequest request,
                        final HttpServletResponse response) throws IOException {
@@ -455,7 +456,8 @@ public class FileServlet extends HttpServlet {
                  && !p.getSubmittedFileName().isEmpty()) {
             try (InputStream is = p.getInputStream()) {
                String path = FileServlet.basePath + File.separator;
-               String nameFile = LocalDateTime.now().toString()
+               String nameFile = LocalDateTime.now()
+                       .truncatedTo(ChronoUnit.MINUTES).toString()
                        .replace(":", "-") + p.getSubmittedFileName();
                File file = new File(path + nameFile);
                Files.copy(is, file.toPath(),
