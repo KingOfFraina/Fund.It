@@ -111,8 +111,8 @@
         </div>
 
         <div class="col">
-            <label for="inputCittà" class="form-label">Citt&agrave</label>
-            <input name="citta" type="text" class="form-control" id="inputCittà" placeholder="Roma"
+            <label for="inputCitta" class="form-label">Citt&agrave</label>
+            <input name="citta" type="text" class="form-control" id="inputCitta" placeholder="Roma"
                    pattern="^[A-Za-zà-ź \s]{2,50}$" value="${utente.citta}" required>
             <div class=invalid-feedback>
                 Formato Città non corretto

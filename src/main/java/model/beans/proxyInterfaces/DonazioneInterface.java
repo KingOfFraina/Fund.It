@@ -13,4 +13,5 @@ public interface DonazioneInterface {
      * @return utente donatore.
      */
     Utente getUtente();
+
 }
