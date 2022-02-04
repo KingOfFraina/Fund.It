@@ -26,6 +26,7 @@ public class DonazioneDAOTest {
     public static void setUp() {
         dao = new DonazioneDAO();
         d1 = new Donazione();
+        d3 = new Donazione();
     }
 
     @Test
