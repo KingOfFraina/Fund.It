@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class utenteProxyTest {
+public class UtenteProxyTest {
    static DAO<Utente> utenteDAO;
    static DAO<Campagna> campagnaDAO;
    static DAO<Categoria> categoriaDAO;

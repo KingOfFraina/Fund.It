@@ -20,15 +20,12 @@ public class DonazioneDAOTest {
 
     static DAO<Donazione> dao;
     static Donazione d1;
-    static Donazione d2;
     static Donazione d3;
 
     @BeforeClass
     public static void setUp() {
         dao = new DonazioneDAO();
         d1 = new Donazione();
-        d2 = new Donazione();
-        d3 = new Donazione();
     }
 
     @Test
@@ -65,6 +62,7 @@ public class DonazioneDAOTest {
                 () -> assertEquals(d1.getDataOra(), d4.getDataOra()),
                 () -> assertEquals(d1.getRicevuta(), d4.getRicevuta()),
                 () -> assertEquals(d1.isAnonimo(), d4.isAnonimo()));
+        assertTrue(dao.delete(d1));
     }
 
     @Test
