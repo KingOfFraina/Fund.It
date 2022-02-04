@@ -112,12 +112,12 @@ public class SegnalazioneDAOTest {
         s2.setStatoSegnalazione(StatoSegnalazione.ARCHIVIATA);
         Utente utente = new Utente();
         utente.setIdUtente(1);
-        s2.setSegnalato(utente);
-        s2.setSegnalatore(utente);
+        s2.setSegnalato(segnalatore);
+        s2.setSegnalatore(segnalatore);
         s2.setDescrizione("descrizione");
         Campagna c1 = new Campagna();
         c1.setIdCampagna(1);
-        s2.setCampagnaSegnalata(c1);
+        s2.setCampagnaSegnalata(campagna);
         s2.setDataOra(LocalDateTime.now());
         assertTrue(dao.save(s2));
         assertTrue(dao.delete(s2));
