@@ -147,45 +147,27 @@ public class SegnalazioneProxyTest {
    @Test
    public void getCampagnaLazy() {
       segnalazione.getCampagnaSegnalata().setTitolo(null);
-      Campagna campagna = segnalazioneProxy.getCampagna();
-
+      Campagna campagna1 = segnalazioneProxy.getCampagna();
+      campagna.setTitolo("titolo");
       assertAll(
               () -> assertNotNull(campagna),
-              () -> assertEquals(campagna.getStato(), campagnaList.get(0).getStato()),
-              () -> assertEquals(campagna.getTitolo(), campagnaList.get(0).getTitolo()),
-              () -> assertEquals(campagna.getDescrizione(), campagnaList.get(0).getDescrizione()),
-              () -> assertEquals(campagna.getSommaRaccolta(), campagnaList.get(0).getSommaRaccolta()),
-              () -> assertEquals(campagna.getSommaTarget(), campagnaList.get(0).getSommaTarget()),
-              () -> assertEquals(campagna.getCategoria().getIdCategoria(), campagnaList.get(0).getCategoria().getIdCategoria()),
-              () -> assertEquals(campagna.getUtente().getIdUtente(), campagnaList.get(0).getUtente().getIdUtente())
+              () -> assertEquals(campagna.getStato(), campagna1.getStato()),
+              () -> assertEquals(campagna.getTitolo(), campagna1.getTitolo()),
+              () -> assertEquals(campagna.getDescrizione(), campagna1.getDescrizione()),
+              () -> assertEquals(campagna.getSommaRaccolta(), campagna1.getSommaRaccolta()),
+              () -> assertEquals(campagna.getSommaTarget(), campagna1.getSommaTarget()),
+              () -> assertEquals(campagna.getCategoria().getIdCategoria(), campagna1.getCategoria().getIdCategoria()),
+              () -> assertEquals(campagna.getUtente().getIdUtente(), campagna1.getUtente().getIdUtente())
 
-      );
-
-      campagnaDAO.delete(campagna);
-   }
-/*
-   @Test
-   public void getCampagneEmptySet() {
-      utente.setCampagne(null);
-      List<Campagna> campagnaList = utenteProxy.getCampagne();
-
-      assertAll(
-              () -> assertNotNull(campagnaList),
-              () -> assertEquals(0, campagnaList.size())
       );
    }
 
    @Test
    public void getCampagne() {
-      utente.setCampagne(new ArrayList<>());
-      List<Campagna> campagnaList = utenteProxy.getCampagne();
-
-      assertAll(
-              () -> assertNotNull(campagnaList),
-              () -> assertEquals(0, campagnaList.size())
-      );
+      segnalazione.setCampagnaSegnalata(new Campagna());
+      assertThrows(IllegalArgumentException.class,
+              () -> segnalazioneProxy.getCampagna());
    }
-    */
 
    @AfterClass
    public static void clear() {
