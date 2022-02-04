@@ -3,11 +3,12 @@ package controller;
 import controller.utils.FileServlet;
 import controller.utils.Validator;
 import model.DAO.DAO;
+import model.DAO.DonazioneDAO;
 import model.DAO.UtenteDAO;
+import model.beans.Segnalazione;
 import model.beans.Utente;
 import model.beans.proxies.UtenteProxy;
-import model.services.UtenteService;
-import model.services.UtenteServiceImpl;
+import model.services.*;
 import model.storage.ConPool;
 
 import javax.servlet.RequestDispatcher;
@@ -90,7 +91,13 @@ public final class GestioneUtenteController extends HttpServlet {
                     "Non autorizzato.");
         }
         UtenteService us = new UtenteServiceImpl();
+        SegnalazioniService segnalazioniService = new SegnalazioniServiceImpl();
+        DonazioniService donazioniService = new DonazioniServiceImpl(new DonazioneDAO());
+
+
         request.setAttribute("utentiList", us.visualizzaUtenti(ut));
+        request.setAttribute("segnalazioniList", segnalazioniService.trovaSegnalazioni());
+        request.setAttribute("donazioniList", null);
 
         RequestDispatcher dispatcher =
                 request.getRequestDispatcher("/WEB-INF/results/admin.jsp");
