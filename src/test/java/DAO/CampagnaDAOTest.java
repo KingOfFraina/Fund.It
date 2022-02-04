@@ -29,7 +29,7 @@ public class CampagnaDAOTest {
    static Categoria categoria;
 
    @BeforeClass
-   public static void setConnection() throws SQLException {
+   public static void setup() throws SQLException {
       ConPool.getInstance().getConnection();
 
       utenteDAO = new UtenteDAO();
@@ -228,7 +228,7 @@ public class CampagnaDAOTest {
    }
 
    @AfterClass
-   public static void closeConnection() {
+   public static void clear() {
       campagnaDAO.delete(campagna);
       utenteDAO.delete(utente);
       categoriaDAO.delete(categoria);

@@ -200,7 +200,7 @@ public class ImmagineDAOTest {
    }
 
    @AfterClass
-   public static void closeConnection() {
+   public static void clear() {
       campagnaDAO.delete(campagna);
       immagineDAO.delete(immagine);
       categoriaDAO.delete(categoria);

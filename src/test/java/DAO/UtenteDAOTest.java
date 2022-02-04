@@ -182,7 +182,7 @@ public class UtenteDAOTest {
    }
 
    @AfterClass
-   public static void closeConnection() {
+   public static void clear() {
       utenteDAO.delete(utente);
       ConPool.getInstance().closeDataSource();
    }
