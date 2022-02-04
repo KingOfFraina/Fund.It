@@ -164,9 +164,10 @@ public class SegnalazioneProxyTest {
 
    @Test
    public void getCampagne() {
-      segnalazione.setCampagnaSegnalata(new Campagna());
-      assertThrows(IllegalArgumentException.class,
-              () -> segnalazioneProxy.getCampagna());
+      Campagna c = new Campagna();
+      c.setTitolo("");
+      segnalazione.setCampagnaSegnalata(c);
+      assertNotNull(segnalazioneProxy.getCampagna());
    }
 
    @AfterClass
