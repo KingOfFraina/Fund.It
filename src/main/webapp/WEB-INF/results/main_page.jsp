@@ -39,7 +39,7 @@
 
         <!--Bottone-->
         <div class="text-center" style="margin-top: 70px; margin-bottom: 150px;">
-            <button id="crea" type="button" class="">Crea una campagna</button>
+            <button id="crea" type="button" class="" onclick="location.href = '${pageContext.request.contextPath}/GestioneCampagnaController/creaCampagna'">Crea una campagna</button>
         </div>
 
 
@@ -53,7 +53,7 @@
 
 
             <div class="container my-2"
-                 style="background-image: url(./img/undraw_before_dawn_re_hp4m.svg); padding-bottom: 355px; background-repeat: no-repeat;">
+                 style="background-image: url(${pageContext.request.contextPath}/img/undraw_before_dawn_re_hp4m.svg); padding-bottom: 355px; background-repeat: no-repeat;">
                 <div class="row text-center my-4">
 
 
@@ -67,7 +67,7 @@
                                              alt="Card image cap">
                                         <div class="card-body">
                                             <h5 class="card-title">${campagna.titolo}</h5>
-                                            <a href="#" class="btn btn-primary mt-3"
+                                            <a href="${pageContext.request.contextPath}/GestioneCampagnaController/campagna?idCampagna=${campagna.idCampagna}" class="btn btn-primary mt-3"
                                                style="background-color: #00AB98; border-color: #00AB98;">Vai alla campagna</a>
                                         </div>
                                     </div>

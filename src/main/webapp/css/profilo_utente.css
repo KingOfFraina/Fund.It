@@ -55,3 +55,7 @@
 .admin-panel-icon:hover{
     font-size: 47px
 }
+
+.clickable-row:hover{
+    cursor: pointer;
+}
