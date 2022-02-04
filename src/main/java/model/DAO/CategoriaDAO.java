@@ -16,22 +16,22 @@ public final class CategoriaDAO implements DAO<Categoria> {
       Categoria c = null;
       if (id <= 0) {
          throw new IllegalArgumentException("Id <= 0");
-      }
-
-      try (Connection con = ConPool.getInstance().getConnection()) {
-         try (PreparedStatement stmt =
-                      con.prepareStatement("SELECT * FROM categoria "
-                              + "WHERE idCategoria = ?")) {
-            stmt.setInt(1, id);
-            ResultSet resultSet = stmt.executeQuery();
-            if (resultSet.next()) {
-               c = extract(resultSet);
+      } else {
+         try (Connection con = ConPool.getInstance().getConnection()) {
+            try (PreparedStatement stmt =
+                         con.prepareStatement("SELECT * FROM categoria "
+                                 + "WHERE idCategoria = ?")) {
+               stmt.setInt(1, id);
+               ResultSet resultSet = stmt.executeQuery();
+               if (resultSet.next()) {
+                  c = extract(resultSet);
+               }
             }
-         }
 
-         return c;
-      } catch (SQLException e) {
-         throw new RuntimeException("SQL error: " + e.getMessage());
+            return c;
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
+         }
       }
    }
 
@@ -59,27 +59,27 @@ public final class CategoriaDAO implements DAO<Categoria> {
    public boolean save(final Categoria entity) {
       if (entity == null) {
          throw new IllegalArgumentException("Null object");
-      }
+      } else {
+         try (Connection con = ConPool.getInstance().getConnection()) {
+            try (PreparedStatement stmt =
+                         con.prepareStatement("INSERT INTO "
+                                         + "categoria (nomeCategoria)"
+                                         + " VALUES (?)",
+                                 PreparedStatement
+                                         .RETURN_GENERATED_KEYS)) {
 
-      try (Connection con = ConPool.getInstance().getConnection()) {
-         try (PreparedStatement stmt =
-                      con.prepareStatement("INSERT INTO "
-                                      + "categoria (nomeCategoria)"
-                                      + " VALUES (?)",
-                              PreparedStatement
-                                      .RETURN_GENERATED_KEYS)) {
+               stmt.setString(1, entity.getNome());
+               boolean flag = stmt.executeUpdate() > 0;
 
-            stmt.setString(1, entity.getNome());
-            boolean flag = stmt.executeUpdate() > 0;
-
-            ResultSet set = stmt.getGeneratedKeys();
-            if (set.next()) {
-               entity.setIdCategoria(set.getInt(1));
+               ResultSet set = stmt.getGeneratedKeys();
+               if (set.next()) {
+                  entity.setIdCategoria(set.getInt(1));
+               }
+               return flag;
             }
-            return flag;
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
-      } catch (SQLException e) {
-         throw new RuntimeException("SQL error: " + e.getMessage());
       }
    }
 
@@ -87,20 +87,20 @@ public final class CategoriaDAO implements DAO<Categoria> {
    public boolean update(final Categoria entity) {
       if (entity == null) {
          throw new IllegalArgumentException("Null object");
-      }
-
-      try (Connection con = ConPool.getInstance().getConnection()) {
-         try (PreparedStatement stmt =
-                      con.prepareStatement("UPDATE categoria "
-                              + "SET nomeCategoria = ? "
-                              + "WHERE idCategoria = ?")) {
-            int index = 1;
-            stmt.setString(index++, entity.getNome());
-            stmt.setInt(index, entity.getIdCategoria());
-            return stmt.executeUpdate() > 0;
+      } else {
+         try (Connection con = ConPool.getInstance().getConnection()) {
+            try (PreparedStatement stmt =
+                         con.prepareStatement("UPDATE categoria "
+                                 + "SET nomeCategoria = ? "
+                                 + "WHERE idCategoria = ?")) {
+               int index = 1;
+               stmt.setString(index++, entity.getNome());
+               stmt.setInt(index, entity.getIdCategoria());
+               return stmt.executeUpdate() > 0;
+            }
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
-      } catch (SQLException e) {
-         throw new RuntimeException("SQL error: " + e.getMessage());
       }
    }
 
@@ -108,17 +108,17 @@ public final class CategoriaDAO implements DAO<Categoria> {
    public boolean delete(final Categoria entity) {
       if (entity == null) {
          throw new IllegalArgumentException("Null object");
-      }
-
-      try (Connection con = ConPool.getInstance().getConnection()) {
-         try (PreparedStatement stmt =
-                      con.prepareStatement("DELETE FROM categoria "
-                              + "WHERE idCategoria = ?")) {
-            stmt.setInt(1, entity.getIdCategoria());
-            return stmt.executeUpdate() > 0;
+      } else {
+         try (Connection con = ConPool.getInstance().getConnection()) {
+            try (PreparedStatement stmt =
+                         con.prepareStatement("DELETE FROM categoria "
+                                 + "WHERE idCategoria = ?")) {
+               stmt.setInt(1, entity.getIdCategoria());
+               return stmt.executeUpdate() > 0;
+            }
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
-      } catch (SQLException e) {
-         throw new RuntimeException("SQL error: " + e.getMessage());
       }
    }
 

@@ -17,26 +17,26 @@ public final class UtenteDAO implements DAO<Utente> {
    public Utente getById(final int id) {
       if (id <= 0) {
          throw new IllegalArgumentException("Id <= 0");
-      }
+      } else {
+         try (Connection connection = ConPool.getInstance().getConnection()) {
+            String query = "SELECT * FROM utente WHERE idUtente = ?";
 
-      try (Connection connection = ConPool.getInstance().getConnection()) {
-         String query = "SELECT * FROM utente WHERE idUtente = ?";
+            try (PreparedStatement preparedStatement =
+                         connection.prepareStatement(query)) {
+               preparedStatement.setInt(1, id);
+               ResultSet resultSet = preparedStatement.executeQuery();
 
-         try (PreparedStatement preparedStatement =
-                      connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
+               Utente utente = null;
 
-            Utente utente = null;
+               if (resultSet.next()) {
+                  utente = extract(resultSet);
+               }
 
-            if (resultSet.next()) {
-               utente = extract(resultSet);
+               return utente;
             }
-
-            return utente;
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
-      } catch (SQLException e) {
-         throw new RuntimeException("SQL error: " + e.getMessage());
       }
    }
 
@@ -50,27 +50,27 @@ public final class UtenteDAO implements DAO<Utente> {
    public Utente doLogin(final Utente utente) {
       if (utente == null) {
          throw new IllegalArgumentException("Null Object");
-      }
+      } else {
+         try (Connection connection = ConPool.getInstance().getConnection();
+              PreparedStatement statement =
+                      connection.prepareStatement("SELECT *"
+                              + "FROM utente WHERE email = ? "
+                              + "AND passwordhash = ?")) {
 
-      try (Connection connection = ConPool.getInstance().getConnection();
-           PreparedStatement statement =
-                   connection.prepareStatement("SELECT *"
-                           + "FROM utente WHERE email = ? "
-                           + "AND passwordhash = ?")) {
+            statement.setString(1, utente.getEmail());
+            statement.setString(2, utente.getPassword());
 
-         statement.setString(1, utente.getEmail());
-         statement.setString(2, utente.getPassword());
+            ResultSet set = statement.executeQuery();
+            Utente utenteDB = null;
 
-         ResultSet set = statement.executeQuery();
-         Utente utenteDB = null;
+            if (set.next()) {
+               utenteDB = extract(set);
+            }
 
-         if (set.next()) {
-            utenteDB = extract(set);
+            return utenteDB;
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
-
-         return utenteDB;
-      } catch (SQLException e) {
-         throw new RuntimeException("SQL error: " + e.getMessage());
       }
    }
 
@@ -99,31 +99,31 @@ public final class UtenteDAO implements DAO<Utente> {
    public boolean update(final Utente entity) {
       if (entity == null) {
          throw new IllegalArgumentException("Null Object");
-      }
+      } else {
+         try (Connection connection =
+                      ConPool.getInstance().getConnection()) {
+            String query =
+                    "UPDATE utente SET dataBan = ?, admin = ?,"
+                            + "fotoProfilo = ?, passwordhash = ?,"
+                            + " telefono = ?, nome = ?, "
+                            + "cognome = ?, email = ?,"
+                            + " strada = ?, città = ?"
+                            + ", cap = ?, cf = ?, dataDiNascita = ?"
+                            + "WHERE idUtente = ?";
 
-      try (Connection connection =
-                   ConPool.getInstance().getConnection()) {
-         String query =
-                 "UPDATE utente SET dataBan = ?, admin = ?,"
-                         + "fotoProfilo = ?, passwordhash = ?,"
-                         + " telefono = ?, nome = ?, "
-                         + "cognome = ?, email = ?,"
-                         + " strada = ?, città = ?"
-                         + ", cap = ?, cf = ?, dataDiNascita = ?"
-                         + "WHERE idUtente = ?";
+            try (PreparedStatement preparedStatement =
+                         connection.prepareStatement(query)) {
 
-         try (PreparedStatement preparedStatement =
-                      connection.prepareStatement(query)) {
+               int index = fillPreparedStatement(preparedStatement,
+                       entity);
+               preparedStatement.setInt(index, entity.getIdUtente());
 
-            int index = fillPreparedStatement(preparedStatement,
-                    entity);
-            preparedStatement.setInt(index, entity.getIdUtente());
+               return preparedStatement.executeUpdate() > 0;
+            }
 
-            return preparedStatement.executeUpdate() > 0;
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
-
-      } catch (SQLException e) {
-         throw new RuntimeException("SQL error: " + e.getMessage());
       }
    }
 
@@ -131,36 +131,36 @@ public final class UtenteDAO implements DAO<Utente> {
    public boolean save(final Utente entity) {
       if (entity == null) {
          throw new IllegalArgumentException("Null Object");
-      }
+      } else {
+         try (Connection connection =
+                      ConPool.getInstance().getConnection()) {
+            String query =
+                    "INSERT INTO utente (dataBan, admin, fotoProfilo, "
+                            + "passwordhash, telefono, nome,"
+                            + " cognome, email,"
+                            + " strada, città, cap, cf, dataDiNascita) "
+                            + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-      try (Connection connection =
-                   ConPool.getInstance().getConnection()) {
-         String query =
-                 "INSERT INTO utente (dataBan, admin, fotoProfilo, "
-                         + "passwordhash, telefono, nome,"
-                         + " cognome, email,"
-                         + " strada, città, cap, cf, dataDiNascita) "
-                         + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            try (PreparedStatement preparedStatement =
+                         connection.prepareStatement(query,
+                                 PreparedStatement
+                                         .RETURN_GENERATED_KEYS)) {
 
-         try (PreparedStatement preparedStatement =
-                      connection.prepareStatement(query,
-                              PreparedStatement
-                                      .RETURN_GENERATED_KEYS)) {
+               fillPreparedStatement(preparedStatement, entity);
 
-            fillPreparedStatement(preparedStatement, entity);
+               boolean esito = preparedStatement.executeUpdate() > 0;
 
-            boolean esito = preparedStatement.executeUpdate() > 0;
+               ResultSet set = preparedStatement.getGeneratedKeys();
 
-            ResultSet set = preparedStatement.getGeneratedKeys();
-
-            if (set.next()) {
-               entity.setIdUtente(set.getInt(1));
+               if (set.next()) {
+                  entity.setIdUtente(set.getInt(1));
+               }
+               return esito;
             }
-            return esito;
-         }
 
-      } catch (SQLException e) {
-         throw new RuntimeException("SQL error: " + e.getMessage());
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
+         }
       }
    }
 
@@ -192,11 +192,8 @@ public final class UtenteDAO implements DAO<Utente> {
            throws SQLException {
       if (resultSet == null) {
          throw new IllegalArgumentException("Null ResultSet");
-      }
-
-      Utente utente = null;
-
-      if (resultSet != null) {
+      } else {
+         Utente utente = null;
          utente = new Utente();
 
          utente.setAdmin(resultSet.getBoolean("admin"));
@@ -222,16 +219,16 @@ public final class UtenteDAO implements DAO<Utente> {
          utente.setCampagne(null);
          utente.setDonazioni(null);
          utente.setSegnalazioni(null);
-      }
 
-      return utente;
+         return utente;
+      }
    }
 
    /**
     * Riempe il preparedStatement.
     *
     * @param preparedStatement il preparedStatement da riempire
-    * @param entity l'entità da dove prelevare le informazioni
+    * @param entity            l'entità da dove prelevare le informazioni
     * @return l'indice del prossimo campo da riempire
     * @throws SQLException l'eccezione
     */

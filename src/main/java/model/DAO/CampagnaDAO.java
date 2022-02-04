@@ -25,24 +25,24 @@ public final class CampagnaDAO
    public Campagna getById(final int id) {
       if (id <= 0) {
          throw new IllegalArgumentException("Id <= 0");
-      }
+      } else {
+         try (Connection connection = ConPool.getInstance().getConnection();
+              PreparedStatement statement = connection.prepareStatement("SELECT"
+                      + " * FROM campagna "
+                      + " WHERE idCampagna = ?")) {
+            int index = 1;
 
-      try (Connection connection = ConPool.getInstance().getConnection();
-           PreparedStatement statement = connection.prepareStatement("SELECT"
-                   + " * FROM campagna "
-                   + " WHERE idCampagna = ?")) {
-         int index = 1;
+            statement.setInt(index, id);
 
-         statement.setInt(index, id);
-
-         ResultSet set = statement.executeQuery();
-         Campagna campagna = null;
-         if (set.next()) {
-            campagna = extract(set);
+            ResultSet set = statement.executeQuery();
+            Campagna campagna = null;
+            if (set.next()) {
+               campagna = extract(set);
+            }
+            return campagna;
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
-         return campagna;
-      } catch (SQLException e) {
-         throw new RuntimeException("SQL error: " + e.getMessage());
       }
    }
 
@@ -55,26 +55,26 @@ public final class CampagnaDAO
 
       if (idUtente <= 0) {
          throw new IllegalArgumentException("Id <= 0");
-      }
+      } else {
+         try (Connection connection = ConPool.getInstance().getConnection();
+              PreparedStatement statement =
+                      connection.prepareStatement("SELECT *"
+                              + " FROM campagna"
+                              + " WHERE idUtente = ?")) {
 
-      try (Connection connection = ConPool.getInstance().getConnection();
-           PreparedStatement statement =
-                   connection.prepareStatement("SELECT *"
-                           + " FROM campagna"
-                           + " WHERE idUtente = ?")) {
+            statement.setInt(1, idUtente);
+            List<Campagna> list = new ArrayList<>();
 
-         statement.setInt(1, idUtente);
-         List<Campagna> list = new ArrayList<>();
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+               list.add(extract(set));
+            }
 
-         ResultSet set = statement.executeQuery();
-         while (set.next()) {
-            list.add(extract(set));
+            return list;
+
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
-
-         return list;
-
-      } catch (SQLException e) {
-         throw new RuntimeException("SQL error: " + e.getMessage());
       }
    }
 
@@ -108,36 +108,36 @@ public final class CampagnaDAO
    public boolean save(final Campagna entity) {
       if (entity == null) {
          throw new IllegalArgumentException("Null object");
-      }
+      } else {
+         try (Connection connection = ConPool.getInstance().getConnection();
+              PreparedStatement statement =
+                      connection.prepareStatement("INSERT INTO campagna "
+                                      + "(STATO, TITOLO, DESCRIZIONE,"
+                                      + " SOMMARACCOLTA, SOMMATARGET,"
+                                      + " IDCATEGORIA, IDUTENTE)"
+                                      + "VALUES (?,?,?,?,?,?,?)",
+                              PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-      try (Connection connection = ConPool.getInstance().getConnection();
-           PreparedStatement statement =
-                   connection.prepareStatement("INSERT INTO campagna "
-                                   + "(STATO, TITOLO, DESCRIZIONE,"
-                                   + " SOMMARACCOLTA, SOMMATARGET,"
-                                   + " IDCATEGORIA, IDUTENTE)"
-                                   + "VALUES (?,?,?,?,?,?,?)",
-                           PreparedStatement.RETURN_GENERATED_KEYS)) {
+            int index = 1;
+            statement.setString(index++, entity.getStato().toString());
+            statement.setString(index++, entity.getTitolo());
+            statement.setString(index++, entity.getDescrizione());
+            statement.setDouble(index++, entity.getSommaRaccolta());
+            statement.setDouble(index++, entity.getSommaTarget());
+            statement.setInt(index++,
+                    entity.getCategoria().getIdCategoria());
+            statement.setInt(index, entity.getUtente().getIdUtente());
 
-         int index = 1;
-         statement.setString(index++, entity.getStato().toString());
-         statement.setString(index++, entity.getTitolo());
-         statement.setString(index++, entity.getDescrizione());
-         statement.setDouble(index++, entity.getSommaRaccolta());
-         statement.setDouble(index++, entity.getSommaTarget());
-         statement.setInt(index++,
-                 entity.getCategoria().getIdCategoria());
-         statement.setInt(index, entity.getUtente().getIdUtente());
+            int ret = statement.executeUpdate();
+            ResultSet set = statement.getGeneratedKeys();
+            if (set.next()) {
+               entity.setIdCampagna(set.getInt(1));
+            }
 
-         int ret = statement.executeUpdate();
-         ResultSet set = statement.getGeneratedKeys();
-         if (set.next()) {
-            entity.setIdCampagna(set.getInt(1));
+            return ret > 0;
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
-
-         return ret > 0;
-      } catch (SQLException e) {
-         throw new RuntimeException("SQL error: " + e.getMessage());
       }
    }
 
@@ -150,27 +150,27 @@ public final class CampagnaDAO
    public boolean update(final Campagna entity) {
       if (entity == null) {
          throw new IllegalArgumentException("Null object");
-      }
+      } else {
+         try (Connection connection = ConPool.getInstance().getConnection();
+              PreparedStatement statement =
+                      connection.prepareStatement("UPDATE campagna SET"
+                              + " Stato = ?, titolo = ?, descrizione = ?,"
+                              + " sommaRaccolta = ?, sommaTarget = ?,"
+                              + " idCategoria = ?"
+                              + " WHERE idCampagna = ?")) {
+            int index = 0;
+            statement.setString(++index, entity.getStato().toString());
+            statement.setString(++index, entity.getTitolo());
+            statement.setString(++index, entity.getDescrizione());
+            statement.setDouble(++index, entity.getSommaRaccolta());
+            statement.setDouble(++index, entity.getSommaTarget());
+            statement.setInt(++index, entity.getCategoria().getIdCategoria());
+            statement.setInt(++index, entity.getIdCampagna());
 
-      try (Connection connection = ConPool.getInstance().getConnection();
-           PreparedStatement statement =
-                   connection.prepareStatement("UPDATE campagna SET"
-                           + " Stato = ?, titolo = ?, descrizione = ?,"
-                           + " sommaRaccolta = ?, sommaTarget = ?,"
-                           + " idCategoria = ?"
-                           + " WHERE idCampagna = ?")) {
-         int index = 0;
-         statement.setString(++index, entity.getStato().toString());
-         statement.setString(++index, entity.getTitolo());
-         statement.setString(++index, entity.getDescrizione());
-         statement.setDouble(++index, entity.getSommaRaccolta());
-         statement.setDouble(++index, entity.getSommaTarget());
-         statement.setInt(++index, entity.getCategoria().getIdCategoria());
-         statement.setInt(++index, entity.getIdCampagna());
-
-         return statement.executeUpdate() > 0;
-      } catch (SQLException e) {
-         throw new RuntimeException("SQL error: " + e.getMessage());
+            return statement.executeUpdate() > 0;
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
+         }
       }
    }
 
@@ -183,17 +183,17 @@ public final class CampagnaDAO
    public boolean delete(final Campagna entity) {
       if (entity == null) {
          throw new IllegalArgumentException("Null object");
-      }
+      } else {
+         try (Connection connection = ConPool.getInstance().getConnection();
+              PreparedStatement statement =
+                      connection.prepareStatement("DELETE FROM campagna"
+                              + " WHERE idCampagna = ?")) {
+            statement.setInt(1, entity.getIdCampagna());
 
-      try (Connection connection = ConPool.getInstance().getConnection();
-           PreparedStatement statement =
-                   connection.prepareStatement("DELETE FROM campagna"
-                           + " WHERE idCampagna = ?")) {
-         statement.setInt(1, entity.getIdCampagna());
-
-         return statement.executeUpdate() > 0;
-      } catch (SQLException e) {
-         throw new RuntimeException("SQL error: " + e.getMessage());
+            return statement.executeUpdate() > 0;
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
+         }
       }
    }
 
@@ -209,23 +209,23 @@ public final class CampagnaDAO
 
       if (resultSet == null) {
          throw new IllegalArgumentException("Null object");
+      } else {
+         Campagna c = new Campagna();
+         c.setIdCampagna(resultSet.getInt("idCampagna"));
+         c.setStato(StatoCampagna.valueOf(
+                 resultSet.getString("Stato").toUpperCase()));
+         c.setTitolo(resultSet.getString("titolo"));
+         c.setDescrizione(resultSet.getString("descrizione"));
+         c.setSommaRaccolta(resultSet.getDouble("sommaRaccolta"));
+         c.setSommaTarget(resultSet.getDouble("sommaTarget"));
+         Categoria c1 = new Categoria();
+         c1.setIdCategoria(resultSet.getInt("idCategoria"));
+         c.setCategoria(c1);
+         Utente utente = new Utente();
+         utente.setIdUtente(resultSet.getInt("idUtente"));
+         c.setUtente(utente);
+         return c;
       }
-
-      Campagna c = new Campagna();
-      c.setIdCampagna(resultSet.getInt("idCampagna"));
-      c.setStato(StatoCampagna.valueOf(
-              resultSet.getString("Stato").toUpperCase()));
-      c.setTitolo(resultSet.getString("titolo"));
-      c.setDescrizione(resultSet.getString("descrizione"));
-      c.setSommaRaccolta(resultSet.getDouble("sommaRaccolta"));
-      c.setSommaTarget(resultSet.getDouble("sommaTarget"));
-      Categoria c1 = new Categoria();
-      c1.setIdCategoria(resultSet.getInt("idCategoria"));
-      c.setCategoria(c1);
-      Utente utente = new Utente();
-      utente.setIdUtente(resultSet.getInt("idUtente"));
-      c.setUtente(utente);
-      return c;
    }
 
    /**
@@ -237,27 +237,27 @@ public final class CampagnaDAO
    public List<Campagna> getByKeyword(final String text) {
       if (text == null) {
          throw new IllegalArgumentException("Null object");
-      }
+      } else {
+         try (Connection connection = ConPool.getInstance().getConnection();
+              PreparedStatement statement = connection.prepareStatement(
+                      "SELECT * FROM campagna "
+                              + " where UPPER(CONCAT"
+                              + "(idCampagna, titolo, descrizione)) "
+                              + "LIKE UPPER(?)"
+              )) {
+            List<Campagna> campagnaList = new ArrayList<>();
+            statement.setString(1, "%" + text + "%");
 
-      try (Connection connection = ConPool.getInstance().getConnection();
-           PreparedStatement statement = connection.prepareStatement(
-                   "SELECT * FROM campagna "
-                           + " where UPPER(CONCAT"
-                           + "(idCampagna, titolo, descrizione)) "
-                           + "LIKE UPPER(?)"
-           )) {
-         List<Campagna> campagnaList = new ArrayList<>();
-         statement.setString(1, "%" + text + "%");
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+               campagnaList.add(extract(set));
+            }
 
-         ResultSet set = statement.executeQuery();
-         while (set.next()) {
-            campagnaList.add(extract(set));
+            return campagnaList;
+
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
-
-         return campagnaList;
-
-      } catch (SQLException e) {
-         throw new RuntimeException("SQL error: " + e.getMessage());
       }
    }
 
@@ -271,25 +271,25 @@ public final class CampagnaDAO
    public List<Campagna> getBySizeOffset(final int size, final int offset) {
       if (size <= 0 || offset < 0) {
          throw new IllegalArgumentException("Null object");
-      }
+      } else {
+         try (Connection connection = ConPool.getInstance().getConnection();
+              PreparedStatement statement = connection.prepareStatement(
+                      "SELECT * FROM campagna LIMIT ?, ?"
+              )) {
 
-      try (Connection connection = ConPool.getInstance().getConnection();
-           PreparedStatement statement = connection.prepareStatement(
-                   "SELECT * FROM campagna LIMIT ?, ?"
-           )) {
+            int index = 1;
+            List<Campagna> campagnaList = new ArrayList<>();
+            statement.setInt(index++, offset);
+            statement.setInt(index, size);
 
-         int index = 1;
-         List<Campagna> campagnaList = new ArrayList<>();
-         statement.setInt(index++, offset);
-         statement.setInt(index, size);
-
-         ResultSet set = statement.executeQuery();
-         while (set.next()) {
-            campagnaList.add(extract(set));
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+               campagnaList.add(extract(set));
+            }
+            return campagnaList;
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
          }
-         return campagnaList;
-      } catch (SQLException e) {
-         throw new RuntimeException("SQL error: " + e.getMessage());
       }
    }
 }
