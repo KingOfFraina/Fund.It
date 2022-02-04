@@ -78,8 +78,7 @@ public class SegnalazioneDAOTest {
         s1.setSegnalatore(segnalatore);
         s1.setSegnalato(segnalatore);
         s1.setCampagnaSegnalata(campagna);
-
-
+        dao.save(s1);
     }
 
     @Test
@@ -89,23 +88,9 @@ public class SegnalazioneDAOTest {
         assertThrows(IllegalArgumentException.class,
                 () -> dao.getById(id));
 
-        Segnalazione s2 = new Segnalazione();
-        Utente utente = new Utente();
-        utente.setIdUtente(1);
-        s2.setSegnalatore(utente);
-        s2.setSegnalato(utente);
-        s2.setDescrizione("Descrizione");
-        s2.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
-        s2.setDataOra(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES));
-        Campagna c = new Campagna();
-        c.setIdCampagna(1);
-        s2.setCampagnaSegnalata(c);
-
-        assertTrue(dao.save(s2));
-        Segnalazione s3 = dao.getById(s2.getIdSegnalazione());
+        Segnalazione s3 = dao.getById(s1.getIdSegnalazione());
         assertNotNull(s3);
-        assertEquals(s2.getIdSegnalazione(), s3.getIdSegnalazione());
-        assertTrue(dao.delete(s2));
+        assertEquals(s1.getIdSegnalazione(), s3.getIdSegnalazione());
     }
 
     @Test
@@ -123,19 +108,19 @@ public class SegnalazioneDAOTest {
 
     @Test
     public void testSaveEntity() {
-        Segnalazione s1 = new Segnalazione();
-        s1.setStatoSegnalazione(StatoSegnalazione.ARCHIVIATA);
+        Segnalazione s2 = new Segnalazione();
+        s2.setStatoSegnalazione(StatoSegnalazione.ARCHIVIATA);
         Utente utente = new Utente();
         utente.setIdUtente(1);
-        s1.setSegnalato(utente);
-        s1.setSegnalatore(utente);
-        s1.setDescrizione("descrizione");
+        s2.setSegnalato(utente);
+        s2.setSegnalatore(utente);
+        s2.setDescrizione("descrizione");
         Campagna c1 = new Campagna();
         c1.setIdCampagna(1);
-        s1.setCampagnaSegnalata(c1);
-        s1.setDataOra(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES));
-        assertTrue(dao.save(s1));
-        assertTrue(dao.delete(s1));
+        s2.setCampagnaSegnalata(c1);
+        s2.setDataOra(LocalDateTime.now());
+        assertTrue(dao.save(s2));
+        assertTrue(dao.delete(s2));
     }
 
     @Test
@@ -146,11 +131,11 @@ public class SegnalazioneDAOTest {
 
     @Test
     public void testUpdateEntity() {
-        Segnalazione s1 = dao.getById(1);
-        assertNotNull(s1);
-        s1.setStatoSegnalazione(StatoSegnalazione.RISOLTA);
-        assertTrue(dao.update(s1));
-        assertEquals(s1.getStatoSegnalazione(), dao.getById(1).getStatoSegnalazione());
+        Segnalazione s2 = dao.getById(s1.getIdSegnalazione());
+        assertNotNull(s2);
+        s2.setStatoSegnalazione(StatoSegnalazione.RISOLTA);
+        assertTrue(dao.update(s2));
+        assertEquals(s2.getStatoSegnalazione(), dao.getById(s1.getIdSegnalazione()).getStatoSegnalazione());
     }
 
     @Test
@@ -162,7 +147,7 @@ public class SegnalazioneDAOTest {
     @Test
     public void testGetByIdUtente() {
         SegnalazioneDAO segnalazioneDAO = (SegnalazioneDAO) dao;
-        List<Segnalazione> segnalazioni = segnalazioneDAO.getByIdUtente(1);
+        List<Segnalazione> segnalazioni = segnalazioneDAO.getByIdUtente(segnalatore.getIdUtente());
         assertNotNull(segnalazioni);
         assertTrue(segnalazioni.size() > 0);
     }
@@ -184,7 +169,7 @@ public class SegnalazioneDAOTest {
     @Test
     public void testGetByIdCampagna() {
         SegnalazioneDAO segnalazioneDAO = (SegnalazioneDAO) dao;
-        List<Segnalazione> segnalazioni = segnalazioneDAO.getByIdCampagna(1);
+        List<Segnalazione> segnalazioni = segnalazioneDAO.getByIdCampagna(s1.getCampagnaSegnalata().getIdCampagna());
         assertNotNull(segnalazioni);
         assertTrue(segnalazioni.size() > 0);
     }
