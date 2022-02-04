@@ -4,11 +4,21 @@ import controller.utils.FileServlet;
 import model.DAO.CampagnaDAO;
 import model.DAO.CategoriaDAO;
 import model.DAO.DAO;
-import model.beans.*;
+import model.beans.Campagna;
+import model.beans.Categoria;
+import model.beans.Donazione;
+import model.beans.Immagine;
+import model.beans.StatoCampagna;
+import model.beans.Utente;
 import model.beans.proxies.CampagnaProxy;
 import model.beans.proxies.DonazioneProxy;
 import model.beans.proxyInterfaces.CampagnaInterface;
-import model.services.*;
+import model.services.CampagnaService;
+import model.services.CampagnaServiceImpl;
+import model.services.CategoriaService;
+import model.services.CategoriaServiceImpl;
+import model.services.ImmagineService;
+import model.services.ImmagineServiceImpl;
 import model.storage.ConPool;
 
 import javax.servlet.RequestDispatcher;
@@ -71,9 +81,9 @@ public final class GestioneCampagnaController extends HttpServlet {
         }*/
 
         switch (request.getPathInfo()) {
-            case "/test":
+            case "/main":
                 resource = "/WEB-INF/results/main_page.jsp";
-                break; //todo che roba è?
+                break;
             case "/creaCampagna":
                 request.setAttribute("categorie",
                         categoriaService.visualizzaCategorie());
