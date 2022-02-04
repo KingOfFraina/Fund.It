@@ -1,9 +1,14 @@
 package DAO;
 
+import model.DAO.CampagnaDAO;
+import model.DAO.CategoriaDAO;
 import model.DAO.DAO;
 import model.DAO.SegnalazioneDAO;
+import model.DAO.UtenteDAO;
 import model.beans.Campagna;
+import model.beans.Categoria;
 import model.beans.Segnalazione;
+import model.beans.StatoCampagna;
 import model.beans.StatoSegnalazione;
 import model.beans.Utente;
 import model.storage.ConPool;
@@ -11,6 +16,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -19,12 +25,61 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SegnalazioneDAOTest {
     static DAO<Segnalazione> dao;
+    static DAO<Utente> utenteDAO;
+    static DAO<Campagna> campagnaDAO;
+    static DAO<Categoria> categoriaDAO;
     static Segnalazione s1;
+    static Utente segnalatore;
+    static Campagna campagna;
+    static Categoria categoria;
+
 
     @BeforeClass
     public static void setUp() {
         dao = new SegnalazioneDAO();
+        campagnaDAO = new CampagnaDAO();
+        utenteDAO = new UtenteDAO();
+        categoriaDAO = new CategoriaDAO();
+        segnalatore = new Utente();
+        campagna = new Campagna();
+        categoria = new Categoria();
         s1 = new Segnalazione();
+
+        categoria.setNome("cat");
+        categoriaDAO.save(categoria);
+
+        segnalatore.setCf("We");
+        segnalatore.setAdmin(true);
+        segnalatore.setDataBan(LocalDateTime.now());
+        segnalatore.setNome("strunz");
+        segnalatore.setDataDiNascita(LocalDate.now());
+        segnalatore.setCognome("lollo");
+        segnalatore.setEmail("emailbella");
+        segnalatore.setFotoProfilo("foto");
+        segnalatore.setCap("cap");
+        segnalatore.setCitta("city");
+        segnalatore.setStrada("strada");
+        segnalatore.setTelefono("sexo");
+        segnalatore.setPassword("ldfoefer");
+        utenteDAO.save(segnalatore);
+
+        campagna.setStato(StatoCampagna.ATTIVA);
+        campagna.setSommaRaccolta(100.0);
+        campagna.setSommaTarget(900.0);
+        campagna.setCategoria(categoria);
+        campagna.setTitolo("titolo");
+        campagna.setDescrizione("desc");
+        campagna.setUtente(segnalatore);
+        campagnaDAO.save(campagna);
+
+        s1.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
+        s1.setDescrizione("descrizione segnalazione");
+        s1.setDataOra(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES));
+        s1.setSegnalatore(segnalatore);
+        s1.setSegnalato(segnalatore);
+        s1.setCampagnaSegnalata(campagna);
+
+
     }
 
     @Test
@@ -136,6 +191,10 @@ public class SegnalazioneDAOTest {
 
     @AfterClass
     public static void clearAll() {
+        categoriaDAO.delete(categoria);
+        utenteDAO.delete(segnalatore);
+        campagnaDAO.delete(campagna);
+        dao.delete(s1);
         ConPool.getInstance().closeDataSource();
     }
 }
