@@ -12,16 +12,19 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CategoriaDAOTest {
-   DAO<Categoria> categoriaDAO;
+   static DAO<Categoria> categoriaDAO;
+   static Categoria categoria;
 
    @BeforeClass
-   public static void openConnection() throws SQLException {
+   public static void setup() throws SQLException {
       ConPool.getInstance().getConnection();
-   }
 
-   @Before
-   public void setup() {
       categoriaDAO = new CategoriaDAO();
+
+      categoria = new Categoria();
+      categoria.setNome("nomeCategoria");
+
+      categoriaDAO.save(categoria);
    }
 
    @Test
@@ -33,10 +36,9 @@ public class CategoriaDAOTest {
 
    @Test
    public void getById() {
-      Categoria categoria = new Categoria();
       categoria.setNome("nomeCategoria");
+      categoriaDAO.update(categoria);
 
-      categoriaDAO.save(categoria);
       Categoria categoriaDB = categoriaDAO.getById(categoria.getIdCategoria());
 
       assertAll(
@@ -44,25 +46,16 @@ public class CategoriaDAOTest {
               () -> assertEquals(categoria.getNome(), categoriaDB.getNome()),
               () -> assertEquals(categoria.getIdCategoria(), categoriaDB.getIdCategoria())
       );
-
-      categoriaDAO.delete(categoria);
    }
 
    @Test
    public void getAll() {
-      Categoria categoria = new Categoria();
-      categoria.setNome("nomeCategoria");
-
-      categoriaDAO.save(categoria);
-
       List<Categoria> categoriaList = categoriaDAO.getAll();
 
       assertAll(
               () -> assertNotNull(categoriaList),
               () -> assertTrue(categoriaList.size() > 0)
       );
-
-      categoriaDAO.delete(categoria);
    }
 
    @Test
@@ -107,15 +100,9 @@ public class CategoriaDAOTest {
 
    @Test
    public void delete() {
-      Categoria categoria = new Categoria();
-      categoria.setNome("");
+     assertTrue(categoriaDAO.delete(categoria));
 
       categoriaDAO.save(categoria);
-
-      assertAll(
-              () -> assertTrue(categoriaDAO.delete(categoria)),
-              () -> assertNull(categoriaDAO.getById(categoria.getIdCategoria()))
-      );
    }
 
    @Test
@@ -127,49 +114,38 @@ public class CategoriaDAOTest {
 
    @Test
    public void updateEmptyObject() {
-      Categoria categoria = new Categoria();
-      categoria.setNome("");
-
-      categoriaDAO.save(categoria);
 
       assertThrows(RuntimeException.class, () -> {
          categoria.setNome(null);
          categoriaDAO.update(categoria);
       });
 
-      categoriaDAO.delete(categoria);
+      categoria.setNome("nomeCategoria");
    }
 
    @Test
    public void update() {
-      Categoria categoria = new Categoria();
-      categoria.setNome("");
-
-      categoriaDAO.save(categoria);
       categoria.setNome("---");
 
       assertTrue(categoriaDAO.update(categoria));
 
-      categoriaDAO.delete(categoria);
+      categoria.setNome("nomeCategoria");
    }
 
    @Test
    public void updatePartialObject() {
-      Categoria categoria = new Categoria();
-      categoria.setNome("");
-
-      categoriaDAO.save(categoria);
 
       assertThrows(RuntimeException.class, () -> {
          categoria.setNome(null);
          categoriaDAO.update(categoria);
       });
 
-      categoriaDAO.delete(categoria);
+      categoria.setNome("nomeCategoria");
    }
 
    @AfterClass
-   public static void closeConnection() {
+   public static void clear() {
+      categoriaDAO.delete(categoria);
       ConPool.getInstance().closeDataSource();
    }
 }

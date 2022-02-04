@@ -90,7 +90,7 @@ public class CampagnaDAOTest {
    @Test
    public void getByIdUtenteInvalidId() {
       assertThrows(IllegalArgumentException.class, () -> {
-         campagnaDAO.getById(-1);
+         ((CampagnaDAO) campagnaDAO).getByIdUtente(-1);
       });
    }
 
@@ -141,7 +141,7 @@ public class CampagnaDAOTest {
    @Test
    public void updateNullEntity() {
       assertThrows(IllegalArgumentException.class, () -> {
-         campagnaDAO.save(null);
+         campagnaDAO.update(null);
       });
    }
 
@@ -196,34 +196,34 @@ public class CampagnaDAOTest {
    @Test
    public void getBySizeOffsetInvalid() {
       assertThrows(IllegalArgumentException.class, () -> {
-         ((CampagnaDAO)campagnaDAO).getBySizeOffset(0, 10);
+         ((CampagnaDAO) campagnaDAO).getBySizeOffset(0, 10);
       });
    }
 
    @Test
    public void getBySizeOffset() {
-      List<Campagna> campagnaList = ((CampagnaDAO)campagnaDAO).getBySizeOffset(1, 0);
+      List<Campagna> campagnaList = ((CampagnaDAO) campagnaDAO).getBySizeOffset(1, 0);
 
       assertAll(
               () -> assertNotNull(campagnaList),
-              () ->assertTrue(campagnaList.size() > 0)
+              () -> assertTrue(campagnaList.size() > 0)
       );
    }
 
    @Test
    public void getByKeywordInvalid() {
       assertThrows(IllegalArgumentException.class, () -> {
-         ((CampagnaDAO)campagnaDAO).getByKeyword(null);
+         ((CampagnaDAO) campagnaDAO).getByKeyword(null);
       });
    }
 
    @Test
    public void getByKeyword() {
-      List<Campagna> campagnaList = ((CampagnaDAO)campagnaDAO).getByKeyword("");
+      List<Campagna> campagnaList = ((CampagnaDAO) campagnaDAO).getByKeyword("");
 
       assertAll(
               () -> assertNotNull(campagnaList),
-              () ->assertTrue(campagnaList.size() > 0)
+              () -> assertTrue(campagnaList.size() > 0)
       );
    }
 
@@ -237,11 +237,3 @@ public class CampagnaDAOTest {
 
 
 }
-/*
-} catch (SQLException e) {
-            throw new RuntimeException("SQL error: " + e.getMessage());
-         }
-      } else {
-         throw new IllegalArgumentException("Id <= 0");
-      }
- */

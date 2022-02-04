@@ -1,3 +1,5 @@
+package DAO;
+
 import model.DAO.*;
 import model.beans.*;
 import model.storage.ConPool;
@@ -11,22 +13,19 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ImmagineDAOTest {
-   DAO<Immagine> immagineDAO;
-   DAO<Campagna> campagnaDAO;
-   DAO<Categoria> categoriaDAO;
-   DAO<Utente> utenteDAO;
-   Immagine immagine;
-   Campagna campagna;
-   Categoria categoria;
-   Utente utente;
+   static DAO<Immagine> immagineDAO;
+   static DAO<Campagna> campagnaDAO;
+   static DAO<Categoria> categoriaDAO;
+   static DAO<Utente> utenteDAO;
+   static Immagine immagine;
+   static Campagna campagna;
+   static Categoria categoria;
+   static Utente utente;
 
    @BeforeClass
-   public static void openConnection() throws SQLException {
+   public static void setup() throws SQLException {
       ConPool.getInstance().getConnection();
-   }
 
-   @Before
-   public void setup() {
       immagineDAO = new ImmagineDAO();
       campagnaDAO = new CampagnaDAO();
       categoriaDAO = new CategoriaDAO();
@@ -54,6 +53,7 @@ public class ImmagineDAOTest {
       utente.setCampagne(null);
       utente.setDonazioni(null);
       utente.setSegnalazioni(null);
+
       utenteDAO.save(utente);
 
       campagna = new Campagna();
@@ -64,11 +64,14 @@ public class ImmagineDAOTest {
       campagna.setSommaRaccolta(0d);
       campagna.setCategoria(categoria);
       campagna.setUtente(utente);
+
       campagnaDAO.save(campagna);
 
       immagine = new Immagine();
       immagine.setCampagna(campagna);
       immagine.setPath("");
+
+      immagineDAO.save(immagine);
    }
 
    @Test
@@ -80,25 +83,17 @@ public class ImmagineDAOTest {
 
    @Test
    public void getById() {
-      immagineDAO.save(immagine);
-
       assertNotNull(immagineDAO.getById(immagine.getId()));
-
-      immagineDAO.delete(immagine);
    }
 
    @Test
    public void getAll() {
-      immagineDAO.save(immagine);
-
       List<Immagine> immagineList = immagineDAO.getAll();
 
       assertAll(
               () -> assertNotNull(immagineList),
               () -> assertTrue(immagineList.size() > 0)
       );
-
-      immagineDAO.delete(immagine);
    }
 
    @Test
@@ -117,8 +112,9 @@ public class ImmagineDAOTest {
 
    @Test
    public void save() {
-      assertTrue(immagineDAO.save(immagine));
       immagineDAO.delete(immagine);
+
+      assertTrue(immagineDAO.save(immagine));
    }
 
    @Test
@@ -138,13 +134,10 @@ public class ImmagineDAOTest {
 
    @Test
    public void update() {
-      immagineDAO.save(immagine);
-
       Immagine immagine2 = immagine;
       immagine2.setPath("----");
-      assertTrue(immagineDAO.update(immagine2));
 
-      immagineDAO.delete(immagine);
+      assertTrue(immagineDAO.update(immagine2));
    }
 
    @Test
@@ -164,9 +157,8 @@ public class ImmagineDAOTest {
 
    @Test
    public void delete() {
-      immagineDAO.save(immagine);
-
       assertTrue(immagineDAO.delete(immagine));
+      immagineDAO.save(immagine);
    }
 
    @Test
@@ -178,9 +170,9 @@ public class ImmagineDAOTest {
 
    @Test
    public void deleteByIdCampagna() {
-      immagineDAO.save(immagine);
-
       assertTrue(((ImmagineDAO)immagineDAO).deleteByIdCampagna(immagine.getCampagna().getIdCampagna()));
+
+      immagineDAO.save(immagine);
    }
 
    @Test
@@ -192,16 +184,12 @@ public class ImmagineDAOTest {
 
    @Test
    public void getByIdCampagna() {
-      immagineDAO.save(immagine);
-
       List<Immagine> immagineList = ((ImmagineDAO)immagineDAO).getByIdCampagna(immagine.getCampagna().getIdCampagna());
 
       assertAll(
               () -> assertNotNull(immagineList),
               () -> assertTrue(immagineList.size() > 0)
       );
-
-      immagineDAO.delete(immagine);
    }
 
    @Test
@@ -211,15 +199,12 @@ public class ImmagineDAOTest {
       });
    }
 
-   @After
-   public void clean() {
-      categoriaDAO.delete(categoria);
-      campagnaDAO.delete(campagna);
-      utenteDAO.delete(utente);
-   }
-
    @AfterClass
    public static void closeConnection() {
+      campagnaDAO.delete(campagna);
+      immagineDAO.delete(immagine);
+      categoriaDAO.delete(categoria);
+      utenteDAO.delete(utente);
       ConPool.getInstance().closeDataSource();
    }
 }

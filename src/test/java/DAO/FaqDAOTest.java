@@ -2,31 +2,59 @@ package DAO;
 
 import model.DAO.DAO;
 import model.DAO.FaqDAO;
+import model.DAO.UtenteDAO;
 import model.beans.FAQ;
 import model.beans.Utente;
 import model.storage.ConPool;
 import org.junit.*;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FaqDAOTest {
-
-   DAO<FAQ> faqDAO;
-   Utente utente;
+   static DAO<FAQ> faqDAO;
+   static DAO<Utente> utenteDAO;
+   static Utente utente;
+   static FAQ faq;
 
    @BeforeClass
    public static void openConnection() throws SQLException {
       ConPool.getInstance().getConnection();
-   }
 
-   @Before
-   public void setup() {
       faqDAO = new FaqDAO();
+      utenteDAO = new UtenteDAO();
+
       utente = new Utente();
-      utente.setIdUtente(1);
+
+      utente.setAdmin(true);
+      utente.setCap("cap");
+      utente.setCf("cf");
+      utente.setCitta("città");
+      utente.setCognome("cognome");
+      utente.setDataBan(LocalDateTime.now());
+      utente.setDataDiNascita(LocalDate.now());
+      utente.setEmail("email");
+      utente.setFotoProfilo("fotoProfilo");
+      utente.setNome("nome");
+      utente.setPassword("passwordhash");
+      utente.setStrada("strada");
+      utente.setTelefono("telefono");
+      utente.setCampagne(null);
+      utente.setDonazioni(null);
+      utente.setSegnalazioni(null);
+
+      utenteDAO.save(utente);
+
+      faq = new FAQ();
+      faq.setDomanda("");
+      faq.setRisposta("");
+      faq.setUtenteCreatore(utente);
+
+      faqDAO.save(faq);
    }
 
    @Test
@@ -45,26 +73,20 @@ public class FaqDAOTest {
 
    @Test
    public void savePartialObject() {
-      FAQ faq = new FAQ();
-      faq.setDomanda("");
       faq.setRisposta(null);
-      faq.setUtenteCreatore(utente);
 
       assertThrows(RuntimeException.class, () -> {
          faqDAO.save(faq);
       });
+
+      faq.setRisposta("");
    }
 
    @Test
    public void saveObject() {
-      FAQ faq = new FAQ();
-      faq.setDomanda("");
-      faq.setRisposta("");
-      faq.setUtenteCreatore(utente);
+      faqDAO.delete(faq);
 
       assertTrue(faqDAO.save(faq));
-
-      faqDAO.delete(faq);
    }
 
    @Test
@@ -76,13 +98,7 @@ public class FaqDAOTest {
 
    @Test
    public void getById() {
-      FAQ faq = new FAQ();
-      faq.setDomanda("Domanda");
-      faq.setRisposta("Risposta");
-      faq.setUtenteCreatore(utente);
-
-      faqDAO.save(faq);
-      FAQ faqDB = (FAQ) faqDAO.getById(faq.getIdFaq());
+      FAQ faqDB = faqDAO.getById(faq.getIdFaq());
 
       assertAll(
               () -> assertNotNull(faqDB),
@@ -92,8 +108,6 @@ public class FaqDAOTest {
               () -> assertEquals(faq.getUtenteCreatore().getIdUtente(),
                       faqDB.getUtenteCreatore().getIdUtente())
       );
-
-      faqDAO.delete(faqDB);
    }
 
    @Test
@@ -112,59 +126,37 @@ public class FaqDAOTest {
 
    @Test
    public void update() {
-      FAQ faq = new FAQ();
-      faq.setDomanda("Domanda");
-      faq.setRisposta("Risposta");
-      faq.setUtenteCreatore(utente);
-
-      faqDAO.save(faq);
-
       faq.setDomanda("DomandaCambiata");
       faq.setRisposta("RispostaCambiata");
 
       assertTrue(faqDAO.update(faq));
 
-      faqDAO.delete(faq);
+      faq.setDomanda("");
+      faq.setRisposta("");
+
+      assertTrue(faqDAO.update(faq));
    }
 
 
    @Test
    public void updatePartialObject() {
-      FAQ faq = new FAQ();
-      faq.setDomanda("Domanda");
-      faq.setRisposta("Risposta");
-      faq.setUtenteCreatore(utente);
+      faq.setRisposta(null);
 
-      faqDAO.save(faq);
+      assertThrows(RuntimeException.class, () -> {
+         faqDAO.update(faq);
+      });
 
-      assertAll(
-              () -> assertThrows(RuntimeException.class, () -> {
-                 faq.setDomanda("DomandaCambiata");
-                 faq.setRisposta(null);
-                 faqDAO.update(faq);
-              })
-      );
-
-      faqDAO.delete(faq);
+      faq.setRisposta("");
    }
 
    @Test
    public void getAll() {
-      FAQ faq = new FAQ();
-      faq.setDomanda("Domanda");
-      faq.setRisposta("Risposta");
-      faq.setUtenteCreatore(utente);
-
-      faqDAO.save(faq);
-
       List<FAQ> faqList = faqDAO.getAll();
 
       assertAll(
               () -> assertNotNull(faqList),
               () -> assertTrue(faqList.size() > 0)
       );
-
-      faqDAO.delete(faq);
    }
 
    @Test
@@ -176,14 +168,9 @@ public class FaqDAOTest {
 
    @Test
    public void delete() {
-      FAQ faq = new FAQ();
-      faq.setDomanda("Domanda");
-      faq.setRisposta("Risposta");
-      faq.setUtenteCreatore(utente);
+      assertTrue(faqDAO.delete(faq));
 
       faqDAO.save(faq);
-
-      assertTrue(faqDAO.delete(faq));
    }
 
    @Test
@@ -194,7 +181,9 @@ public class FaqDAOTest {
    }
 
    @AfterClass
-   public static void closeConnection() {
+   public static void clear() {
+      faqDAO.delete(faq);
+      utenteDAO.delete(utente);
       ConPool.getInstance().closeDataSource();
    }
 }

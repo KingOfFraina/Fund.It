@@ -14,16 +14,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UtenteDAOTest {
-   DAO<Utente> utenteDAO;
-   Utente utente;
+   static DAO<Utente> utenteDAO;
+   static Utente utente;
 
    @BeforeClass
-   public static void openConnection() throws SQLException {
+   public static void setup() throws SQLException {
       ConPool.getInstance().getConnection();
-   }
 
-   @Before
-   public void setup() {
       utenteDAO = new UtenteDAO();
       utente = new Utente();
 
@@ -43,6 +40,8 @@ public class UtenteDAOTest {
       utente.setCampagne(null);
       utente.setDonazioni(null);
       utente.setSegnalazioni(null);
+
+      utenteDAO.save(utente);
    }
 
    @Test
@@ -66,9 +65,9 @@ public class UtenteDAOTest {
 
    @Test
    public void delete() {
-      utenteDAO.save(utente);
-
       assertTrue(utenteDAO.delete(utente));
+
+      utenteDAO.save(utente);
    }
 
    @Test
@@ -91,12 +90,15 @@ public class UtenteDAOTest {
       assertThrows(RuntimeException.class, () -> {
          utenteDAO.save(utente);
       });
+
+      utente.setDataDiNascita(LocalDate.now());
    }
 
    @Test
    public void save() {
-      assertTrue(utenteDAO.save(utente));
       utenteDAO.delete(utente);
+
+      assertTrue(utenteDAO.save(utente));
    }
 
    @Test
@@ -115,34 +117,28 @@ public class UtenteDAOTest {
 
    @Test
    public void updatePartialObject() {
-      utenteDAO.save(utente);
       utente.setDataDiNascita(null);
       assertThrows(RuntimeException.class, () -> {
          utenteDAO.update(utente);
       });
-      utenteDAO.delete(utente);
+
+      utente.setDataDiNascita(LocalDate.now());
    }
 
    @Test
    public void update() {
-      utenteDAO.save(utente);
       utente.setDataBan(LocalDateTime.now());
       assertTrue(utenteDAO.update(utente));
-      utenteDAO.delete(utente);
    }
 
    @Test
    public void getAll() {
-      utenteDAO.save(utente);
-
       List<Utente> utenteList = utenteDAO.getAll();
 
       assertAll(
               () -> assertNotNull(utenteList),
               () ->assertTrue(utenteList.size() > 0)
       );
-
-      utenteDAO.delete(utente);
    }
 
    @Test
@@ -154,11 +150,7 @@ public class UtenteDAOTest {
 
    @Test
    public void getById() {
-      utenteDAO.save(utente);
-
       assertNotNull(utenteDAO.getById(utente.getIdUtente()));
-
-      utenteDAO.delete(utente);
    }
 
    @Test
@@ -179,11 +171,7 @@ public class UtenteDAOTest {
 
    @Test
    public void doLoginExistUser() {
-      utenteDAO.save(utente);
-
       assertNotNull(((UtenteDAO)utenteDAO).doLogin(utente));
-
-      utenteDAO.delete(utente);
    }
 
    @Test
@@ -195,6 +183,7 @@ public class UtenteDAOTest {
 
    @AfterClass
    public static void closeConnection() {
+      utenteDAO.delete(utente);
       ConPool.getInstance().closeDataSource();
    }
 }
