@@ -42,4 +42,15 @@ public final class DonazioniServiceImpl implements DonazioniService {
     public boolean commenta(final Donazione d) {
         return dao.update(d);
     }
+
+    /**
+     * Trova tutte le donazioni effettuate sul sistema.
+     *
+     * @return lista delle donazioni attualmente fatte sul sistema
+     */
+    @Override
+    public List<Donazione> visualizzaDonazioni() {
+        return dao.getAll();
+    }
+
 }
