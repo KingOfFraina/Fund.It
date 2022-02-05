@@ -30,17 +30,21 @@ public final class DonazioniServiceImpl implements DonazioniService {
 
     @Override
     public List<Donazione> visualizzaDonazioni(final Utente u) {
-        if (!u.isAdmin()) {
+        if (u == null) {
+            throw new IllegalArgumentException("Argument must be not null");
+        } else {
             DonazioneDAO donazioneDAO = (DonazioneDAO) dao;
             return donazioneDAO.getAllByUtente(u.getIdUtente());
         }
-
-        return dao.getAll();
     }
 
     @Override
     public boolean commenta(final Donazione d) {
-        return dao.update(d);
+        if (d == null) {
+            throw new IllegalArgumentException("Argument must be not null");
+        } else {
+            return dao.update(d);
+        }
     }
 
     /**
