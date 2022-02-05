@@ -1,5 +1,6 @@
 package controller;
 
+import model.DAO.FaqDAO;
 import model.beans.FAQ;
 import model.beans.Utente;
 import model.services.FaqServiceImpl;
@@ -37,8 +38,9 @@ public final class GestioneFAQController extends HttpServlet {
             }
 
             if (path.equals("/modificaFAQ")) {
-               request.setAttribute("faq", new FaqServiceImpl().visualizzaFaq(
-                       Integer.parseInt(request.getParameter("idFaq"))));
+               request.setAttribute("faq", new FaqServiceImpl(new FaqDAO())
+                       .visualizzaFaq(Integer
+                               .parseInt(request.getParameter("idFaq"))));
             }
 
             resource = "/WEB-INF/results/formFAQ.jsp";
@@ -83,7 +85,8 @@ public final class GestioneFAQController extends HttpServlet {
    }
 
    private void visualizzaFAQ(final HttpServletRequest request) {
-      request.setAttribute("faqList", new FaqServiceImpl().visualizzaFaq());
+      request.setAttribute("faqList", new FaqServiceImpl(new FaqDAO())
+              .visualizzaFaq());
    }
 
    private void inserisciFAQ(final HttpServletRequest request) {
@@ -103,7 +106,7 @@ public final class GestioneFAQController extends HttpServlet {
       faq.setRisposta(risposta);
       faq.setUtenteCreatore(utente);
 
-      new FaqServiceImpl().inserisciFaq(faq);
+      new FaqServiceImpl(new FaqDAO()).inserisciFaq(faq);
    }
 
    private void modificaFAQ(final HttpServletRequest request) {
@@ -125,13 +128,13 @@ public final class GestioneFAQController extends HttpServlet {
       faq.setRisposta(risposta);
       faq.setUtenteCreatore(utente);
 
-      new FaqServiceImpl().modificaFaq(faq);
+      new FaqServiceImpl(new FaqDAO()).modificaFaq(faq);
    }
 
    private void cancellaFAQ(final HttpServletRequest request) {
 
       FAQ faq = new FAQ();
       faq.setIdFaq(Integer.parseInt(request.getParameter("idFaq")));
-      new FaqServiceImpl().cancellaFaq(faq);
+      new FaqServiceImpl(new FaqDAO()).cancellaFaq(faq);
    }
 }
