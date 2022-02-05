@@ -55,7 +55,7 @@ public class UtenteServiceImpl implements UtenteService {
    @Override
    public List<Utente> visualizzaUtenti(final Utente richiedente) {
       if (richiedente != null) {
-         if (richiedente.isAdmin()) {
+         if (!richiedente.isAdmin()) {
             throw new IllegalCallerException("Only Admin");
          } else {
             return dao.getAll();
@@ -73,15 +73,19 @@ public class UtenteServiceImpl implements UtenteService {
    @Override
    public boolean promuoviDeclassaUtente(final Utente richiedente,
                                          final Utente soggetto) {
-      if (richiedente == null || soggetto == null) {
-         throw new IllegalArgumentException("Null Object");
-      } else {
-         if (!richiedente.isAdmin()) {
-            throw new IllegalCallerException("Only Admin");
+      if (richiedente != null) {
+         if (soggetto == null) {
+            throw new IllegalArgumentException("Null Object");
          } else {
-            soggetto.setAdmin(!soggetto.isAdmin());
-            return dao.update(soggetto);
+            if (!richiedente.isAdmin()) {
+               throw new IllegalCallerException("Only Admin");
+            } else {
+               soggetto.setAdmin(!soggetto.isAdmin());
+               return dao.update(soggetto);
+            }
          }
+      } else {
+         throw new IllegalArgumentException("Null Object");
       }
    }
 
