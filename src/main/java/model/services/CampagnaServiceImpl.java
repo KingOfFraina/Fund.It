@@ -28,12 +28,20 @@ public final class CampagnaServiceImpl implements CampagnaService {
 
    @Override
    public boolean creazioneCampagna(final Campagna campagna) {
-      return dao.save(campagna);
+      if (campagna == null) {
+         throw new IllegalArgumentException("Null Object");
+      } else {
+         return dao.save(campagna);
+      }
    }
 
    @Override
    public boolean modificaCampagna(final Campagna campagna) {
-      return dao.update(campagna);
+      if (campagna == null) {
+         throw new IllegalArgumentException("Null Object");
+      } else {
+         return dao.update(campagna);
+      }
    }
 
    @Override
@@ -41,45 +49,70 @@ public final class CampagnaServiceImpl implements CampagnaService {
                                                 final HttpServletRequest req) {
       Campagna campagna = dao.getById(idCampagna);
 
-      if (campagna != null) {
-         HashMap<String, String> link = new HashMap<>();
-         String path = "http://" + req.getServerName() + ":"
-                 + req.getServerPort() + req.getContextPath()
-                 + "/GestioneCampagnaController/campagna?idCampagna="
-                 + campagna.getIdCampagna();
-         String subject = "Dona a questa campagna presente su Fund.It ";
+      if (campagna == null) {
+         throw new IllegalArgumentException("Null Object");
+      } else {
+         if (req == null) {
+            throw new IllegalArgumentException("Null Object");
+         } else {
+            HashMap<String, String> link = new HashMap<>();
+            String path = "http://" + req.getServerName() + ":"
+                    + req.getServerPort() + req.getContextPath()
+                    + "/GestioneCampagnaController/campagna?idCampagna="
+                    + campagna.getIdCampagna();
+            String subject = "Dona a questa campagna presente su Fund.It ";
 
-         link.put("mail", "mailto:?body=" + path + "&amp;subject= Titolo: "
-                 + subject + campagna.getTitolo());
-         link.put("whatsapp", "https://wa.me/?text=" + subject + path);
-         link.put("facebook", "https://www.facebook.com/sharer/sharer.php?u="
-                 + path);
-         link.put("twitter", "https://twitter.com/share?text=" + subject
-                 + "&amp;url=" + path + "/&amp;via=Fund.It");
-         link.put("link", path);
+            link.put("mail", "mailto:?body=" + path + "&amp;subject= Titolo: "
+                    + subject + campagna.getTitolo());
+            link.put("whatsapp", "https://wa.me/?text=" + subject + path);
+            link.put("facebook", "https://www.facebook.com/sharer/sharer.php?u="
+                    + path);
+            link.put("twitter", "https://twitter.com/share?text=" + subject
+                    + "&amp;url=" + path + "/&amp;via=Fund.It");
+            link.put("link", path);
 
-         return link;
+            return link;
+         }
       }
+   }
 
-      return null;
+   /**
+    * Esegue i rimborsi delle eventuali donazioni
+    * effettuate sulla campagna.
+    *
+    * @param campagna istanza di Campagna
+    * @param proxy    proxy di Campagna per trovare le donazioni della campagna
+    * @return true se l'operazione è andata a buon fine, false altrimenti
+    */
+   @Override
+   public boolean rimborsaDonazioni(final Campagna campagna,
+                                    final CampagnaInterface proxy) {
+      if (campagna == null || proxy == null) {
+         throw new IllegalArgumentException("Invalid argument");
+      } else {
+         List<Donazione> donazioni = proxy.getDonazioni();
+         DAO<Donazione> daoDonazione = new DonazioneDAO();
+         donazioni.forEach(d -> d.setSommaDonata(-d.getSommaDonata()));
+         boolean flag = donazioni.stream().allMatch(daoDonazione::update);
+
+         campagna.setDonazioni(donazioni);
+         return flag;
+      }
    }
 
    @Override
    public List<Campagna> ricercaCampagna(final String text) {
-      CampagnaDAO campagnaDAO = (CampagnaDAO) dao;
-      return campagnaDAO.getByKeyword(text);
+      return ((CampagnaDAO) dao).getByKeyword(text);
    }
 
    @Override
    public List<Campagna> ricercaCampagnaPerCategoria(final String text) {
-      CampagnaDAO campagnaDAO = (CampagnaDAO) dao;
-      return campagnaDAO.getByCategory(text);
+      return ((CampagnaDAO) dao).getByCategory(text);
    }
 
    @Override
    public List<Campagna> visualizzaCampagne(final int size, final int offset) {
-      CampagnaDAO campagnaDAO = (CampagnaDAO) dao;
-      return campagnaDAO.getBySizeOffset(size, offset);
+      return ((CampagnaDAO) dao).getBySizeOffset(size, offset);
    }
 
    /**
@@ -101,28 +134,5 @@ public final class CampagnaServiceImpl implements CampagnaService {
    public boolean cancellaCampagna(final Campagna campagna) {
       campagna.setStato(StatoCampagna.CANCELLATA);
       return modificaCampagna(campagna);
-   }
-
-   /**
-    * Esegue i rimborsi delle eventuali donazioni
-    * effettuate sulla campagna.
-    *
-    * @param campagna istanza di Campagna
-    * @param proxy    proxy di Campagna per trovare le donazioni della campagna
-    * @return true se l'operazione è andata a buon fine, false altrimenti
-    */
-   @Override
-   public boolean rimborsaDonazioni(final Campagna campagna,
-                                    final CampagnaInterface proxy) {
-      if (campagna == null || proxy == null) {
-         throw new IllegalArgumentException("Invalid argument");
-      }
-      List<Donazione> donazioni = proxy.getDonazioni();
-      DAO<Donazione> daoDonazione = new DonazioneDAO();
-      donazioni.forEach(d -> d.setSommaDonata(-d.getSommaDonata()));
-      boolean flag = donazioni.stream().allMatch(daoDonazione::update);
-
-      campagna.setDonazioni(donazioni);
-      return flag;
    }
 }
