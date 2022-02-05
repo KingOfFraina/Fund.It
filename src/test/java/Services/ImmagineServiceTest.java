@@ -14,8 +14,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ImmagineServiceTest {
-   ImmagineService immagineService;
-   DAO<Immagine> immagineDAO;
    Immagine immagine;
 
    @Before
@@ -28,38 +26,38 @@ public class ImmagineServiceTest {
 
    @Test
    public void salvaImmagine1() {
-      immagineDAO = Mockito.mock(ImmagineDAO.class);
+      DAO<Immagine> immagineDAO = Mockito.mock(ImmagineDAO.class);
       Mockito.when(immagineDAO.save(immagine)).thenReturn(false);
-      immagineService = new ImmagineServiceImpl(immagineDAO);
+      ImmagineService immagineService = new ImmagineServiceImpl(immagineDAO);
 
       assertFalse(immagineService.salvaImmagine(immagine));
    }
 
    @Test
    public void salvaImmagine2() {
-      immagineDAO = Mockito.mock(ImmagineDAO.class);
+      DAO<Immagine> immagineDAO = Mockito.mock(ImmagineDAO.class);
       Mockito.when(immagineDAO.save(immagine)).thenReturn(true);
-      immagineService = new ImmagineServiceImpl(immagineDAO);
+      ImmagineService immagineService = new ImmagineServiceImpl(immagineDAO);
 
       assertTrue(immagineService.salvaImmagine(immagine));
    }
 
    @Test
    public void eliminaImmaginiCampagna1() {
-      immagineDAO = Mockito.mock(ImmagineDAO.class);
+      DAO<Immagine> immagineDAO = Mockito.mock(ImmagineDAO.class);
       Mockito.when(((ImmagineDAO) immagineDAO)
               .deleteByIdCampagna(immagine.getCampagna().getIdCampagna())).thenReturn(false);
-      immagineService = new ImmagineServiceImpl(immagineDAO);
+      ImmagineService immagineService = new ImmagineServiceImpl(immagineDAO);
 
       assertFalse(immagineService.eliminaImmaginiCampagna(immagine.getCampagna().getIdCampagna()));
    }
 
    @Test
    public void eliminaImmaginiCampagna2() {
-      immagineDAO = Mockito.mock(ImmagineDAO.class);
+      DAO<Immagine> immagineDAO = Mockito.mock(ImmagineDAO.class);
       Mockito.when(((ImmagineDAO) immagineDAO)
               .deleteByIdCampagna(immagine.getCampagna().getIdCampagna())).thenReturn(true);
-      immagineService = new ImmagineServiceImpl(immagineDAO);
+      ImmagineService immagineService = new ImmagineServiceImpl(immagineDAO);
 
       assertTrue(immagineService.eliminaImmaginiCampagna(immagine.getCampagna().getIdCampagna()));
    }

@@ -9,14 +9,14 @@ import model.services.FaqServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class FaqServiceTest {
-   FaqService faqService;
-   DAO<FAQ> faqDAO;
    FAQ faq;
    Utente utente;
 
@@ -33,9 +33,9 @@ public class FaqServiceTest {
    @Test
    public void inserisciFaq1() {
       utente.setAdmin(true);
-      faqDAO = Mockito.mock(FaqDAO.class);
+      DAO<FAQ> faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.save(faq)).thenReturn(false);
-      faqService = new FaqServiceImpl(faqDAO);
+      FaqService faqService = new FaqServiceImpl(faqDAO);
 
       assertFalse(faqService.inserisciFaq(faq));
    }
@@ -43,9 +43,9 @@ public class FaqServiceTest {
    @Test
    public void inserisciFaq2() {
       utente.setAdmin(true);
-      faqDAO = Mockito.mock(FaqDAO.class);
+      DAO<FAQ> faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.save(faq)).thenReturn(true);
-      faqService = new FaqServiceImpl(faqDAO);
+      FaqService faqService = new FaqServiceImpl(faqDAO);
 
       assertTrue(faqService.inserisciFaq(faq));
    }
@@ -53,7 +53,7 @@ public class FaqServiceTest {
    @Test
    public void inserisciFaq3() {
       utente.setAdmin(false);
-      faqService = new FaqServiceImpl(null);
+      FaqService faqService = new FaqServiceImpl(null);
 
       assertThrows(IllegalCallerException.class, () -> faqService.inserisciFaq(faq));
    }
@@ -61,9 +61,9 @@ public class FaqServiceTest {
    @Test
    public void modificaFaq1() {
       utente.setAdmin(true);
-      faqDAO = Mockito.mock(FaqDAO.class);
+      DAO<FAQ> faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.update(faq)).thenReturn(true);
-      faqService = new FaqServiceImpl(faqDAO);
+      FaqService faqService = new FaqServiceImpl(faqDAO);
 
       assertTrue(faqService.modificaFaq(faq));
    }
@@ -71,9 +71,9 @@ public class FaqServiceTest {
    @Test
    public void modificaFaq2() {
       utente.setAdmin(true);
-      faqDAO = Mockito.mock(FaqDAO.class);
+      DAO<FAQ> faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.update(faq)).thenReturn(false);
-      faqService = new FaqServiceImpl(faqDAO);
+      FaqService faqService = new FaqServiceImpl(faqDAO);
 
       assertFalse(faqService.modificaFaq(faq));
    }
@@ -81,7 +81,7 @@ public class FaqServiceTest {
    @Test
    public void modificaFaq3() {
       utente.setAdmin(false);
-      faqService = new FaqServiceImpl(null);
+      FaqService faqService = new FaqServiceImpl(null);
 
       assertThrows(IllegalCallerException.class, () -> faqService.modificaFaq(faq));
    }
@@ -89,9 +89,9 @@ public class FaqServiceTest {
    @Test
    public void cancellaFaq1() {
       utente.setAdmin(true);
-      faqDAO = Mockito.mock(FaqDAO.class);
+      DAO<FAQ> faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.delete(faq)).thenReturn(false);
-      faqService = new FaqServiceImpl(faqDAO);
+      FaqService faqService = new FaqServiceImpl(faqDAO);
 
       assertFalse(faqService.cancellaFaq(faq));
    }
@@ -99,9 +99,9 @@ public class FaqServiceTest {
    @Test
    public void cancellaFaq2() {
       utente.setAdmin(true);
-      faqDAO = Mockito.mock(FaqDAO.class);
+      DAO<FAQ> faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.delete(faq)).thenReturn(true);
-      faqService = new FaqServiceImpl(faqDAO);
+      FaqService faqService = new FaqServiceImpl(faqDAO);
 
       assertTrue(faqService.cancellaFaq(faq));
    }
@@ -109,25 +109,25 @@ public class FaqServiceTest {
    @Test
    public void cancellaFaq3() {
       utente.setAdmin(false);
-      faqService = new FaqServiceImpl(null);
+      FaqService faqService = new FaqServiceImpl(null);
 
       assertThrows(IllegalCallerException.class, () -> faqService.cancellaFaq(faq));
    }
 
    @Test
    public void visualizzaFaqParamNull() {
-      faqDAO = Mockito.mock(FaqDAO.class);
+      DAO<FAQ> faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.getById(faq.getIdFaq())).thenReturn(null);
-      faqService = new FaqServiceImpl(faqDAO);
+      FaqService faqService = new FaqServiceImpl(faqDAO);
 
       assertNull(faqService.visualizzaFaq(faq.getIdFaq()));
    }
 
-  @Test
+   @Test
    public void visualizzaFaqParam() {
-      faqDAO = Mockito.mock(FaqDAO.class);
-     Mockito.when(faqDAO.getById(faq.getIdFaq())).thenReturn(faq);
-      faqService = new FaqServiceImpl(faqDAO);
+      DAO<FAQ> faqDAO = Mockito.mock(FaqDAO.class);
+      Mockito.when(faqDAO.getById(faq.getIdFaq())).thenReturn(faq);
+      FaqService faqService = new FaqServiceImpl(faqDAO);
       FAQ faqDB = faqService.visualizzaFaq(faq.getIdFaq());
 
       assertAll(
@@ -140,9 +140,9 @@ public class FaqServiceTest {
 
    @Test
    public void visualizzaFaqEmptySet() {
-      faqDAO = Mockito.mock(FaqDAO.class);
+      DAO<FAQ> faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.getAll()).thenReturn(new ArrayList<>());
-      faqService = new FaqServiceImpl(faqDAO);
+      FaqService faqService = new FaqServiceImpl(faqDAO);
       List<FAQ> faqList = faqService.visualizzaFaq();
 
       assertAll(
@@ -153,9 +153,9 @@ public class FaqServiceTest {
 
    @Test
    public void visualizzaFaq() {
-      faqDAO = Mockito.mock(FaqDAO.class);
+      DAO<FAQ> faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.getAll()).thenReturn(List.of(faq));
-      faqService = new FaqServiceImpl(faqDAO);
+      FaqService faqService = new FaqServiceImpl(faqDAO);
       List<FAQ> faqList = faqService.visualizzaFaq();
 
       assertAll(
