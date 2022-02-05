@@ -97,6 +97,7 @@ public class CampagnaServiceTest {
    @Test
    public void condividiCampagna1() {
       DAO<Campagna> campagnaDAO = Mockito.mock(CampagnaDAO.class);
+      Mockito.when(campagnaDAO.getById(campagna.getIdCampagna())).thenReturn(campagna);
       CampagnaService campagnaService = new CampagnaServiceImpl(campagnaDAO);
 
       assertThrows(IllegalArgumentException.class, () -> campagnaService.condividiCampagna(1, null));
