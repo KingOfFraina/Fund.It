@@ -6,20 +6,21 @@ import model.beans.FAQ;
 import model.beans.Utente;
 import model.services.FaqService;
 import model.services.FaqServiceImpl;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.mockito.Mockito;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.util.ArrayList;
+import java.util.List;
+import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class FaqServiceTest {
    FaqService faqService;
    DAO<FAQ> faqDAO;
-   static FAQ faq;
+   FAQ faq;
 
-   @BeforeAll
-   public static void setup() {
+   @Before
+   public void setup() {
       faq = new FAQ();
       faq.setIdFaq(1);
       faq.setDomanda("");
@@ -32,7 +33,26 @@ public class FaqServiceTest {
       faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.save(faq)).thenReturn(false);
       faqService = new FaqServiceImpl(faqDAO);
+
       assertFalse(faqService.inserisciFaq(faq));
+   }
+
+   @Test
+   public void modificaFaqTrue() {
+      faqDAO = Mockito.mock(FaqDAO.class);
+      Mockito.when(faqDAO.update(faq)).thenReturn(true);
+      faqService = new FaqServiceImpl(faqDAO);
+
+      assertTrue(faqService.modificaFaq(faq));
+   }
+
+   @Test
+   public void modificaFaqFalse() {
+      faqDAO = Mockito.mock(FaqDAO.class);
+      Mockito.when(faqDAO.update(faq)).thenReturn(false);
+      faqService = new FaqServiceImpl(faqDAO);
+
+      assertFalse(faqService.modificaFaq(faq));
    }
 
    @Test
@@ -40,6 +60,7 @@ public class FaqServiceTest {
       faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.save(faq)).thenReturn(true);
       faqService = new FaqServiceImpl(faqDAO);
+
       assertTrue(faqService.inserisciFaq(faq));
    }
 
@@ -48,6 +69,7 @@ public class FaqServiceTest {
       faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.delete(faq)).thenReturn(false);
       faqService = new FaqServiceImpl(faqDAO);
+
       assertFalse(faqService.cancellaFaq(faq));
    }
 
@@ -56,22 +78,60 @@ public class FaqServiceTest {
       faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.delete(faq)).thenReturn(true);
       faqService = new FaqServiceImpl(faqDAO);
+
       assertTrue(faqService.cancellaFaq(faq));
    }
 
    @Test
-   public void modificaFaqFalse() {
+   public void visualizzaFaqParamNull() {
       faqDAO = Mockito.mock(FaqDAO.class);
-      Mockito.when(faqDAO.update(faq)).thenReturn(false);
+      Mockito.when(faqDAO.getById(faq.getIdFaq())).thenReturn(null);
       faqService = new FaqServiceImpl(faqDAO);
-      assertFalse(faqService.modificaFaq(faq));
+
+      assertNull(faqService.visualizzaFaq(faq.getIdFaq()));
+   }
+
+  @Test
+   public void visualizzaFaqParam() {
+      faqDAO = Mockito.mock(FaqDAO.class);
+     Mockito.when(faqDAO.getById(faq.getIdFaq())).thenReturn(faq);
+      faqService = new FaqServiceImpl(faqDAO);
+      FAQ faqDB = faqService.visualizzaFaq(faq.getIdFaq());
+
+      assertAll(
+              () -> assertNotNull(faqDB),
+              () -> assertEquals(faqDB.getIdFaq(), faq.getIdFaq()),
+              () -> assertEquals(faqDB.getDomanda(), faq.getDomanda()),
+              () -> assertEquals(faqDB.getRisposta(), faq.getRisposta())
+      );
    }
 
    @Test
-   public void modificaFaqTrue() {
+   public void visualizzaFaqEmptySet() {
       faqDAO = Mockito.mock(FaqDAO.class);
-      Mockito.when(faqDAO.update(faq)).thenReturn(true);
+      Mockito.when(faqDAO.getAll()).thenReturn(new ArrayList<>());
       faqService = new FaqServiceImpl(faqDAO);
-      assertTrue(faqService.modificaFaq(faq));
+      List<FAQ> faqList = faqService.visualizzaFaq();
+
+      assertAll(
+              () -> assertNotNull(faqList),
+              () -> assertEquals(0, faqList.size())
+      );
+   }
+
+   @Test
+   public void visualizzaFaq() {
+      faqDAO = Mockito.mock(FaqDAO.class);
+      Mockito.when(faqDAO.getAll()).thenReturn(List.of(faq));
+      faqService = new FaqServiceImpl(faqDAO);
+      List<FAQ> faqList = faqService.visualizzaFaq();
+
+      assertAll(
+              () -> assertNotNull(faqList),
+              () -> assertTrue(faqList.size() > 0),
+              () -> assertEquals(faq.getIdFaq(), faqList.get(0).getIdFaq()),
+              () -> assertEquals(faq.getDomanda(), faqList.get(0).getDomanda()),
+              () -> assertEquals(faq.getRisposta(), faqList.get(0).getRisposta())
+      );
    }
 }
