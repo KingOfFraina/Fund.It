@@ -150,6 +150,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                 } else {
                     request.setAttribute("errorSearch",
                             "Nessun risultato trovato");
+                    resource = "/WEB-INF/results/campagne.jsp";
                 }
                 break;
             default:

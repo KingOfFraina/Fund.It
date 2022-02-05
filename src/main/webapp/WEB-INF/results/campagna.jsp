@@ -180,7 +180,11 @@
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalChiusura"
                             style="background-color: crimson; border-color: crimson">Chiudi campagna
                     </button>
+                    <div class = "container">
+                        <button class = "btn btn-primary pulsante mt-4" onclick = "location.href = '${pageContext.request.contextPath}/GestioneCampagnaController/modificaCampagna?idCampagna=${requestScope.campagna.idCampagna}'" style="border-color: #00AB98; background-color: #00AB98">Modifica campagna</button>
+                    </div>
                 </c:if>
+
 
             </div>
 

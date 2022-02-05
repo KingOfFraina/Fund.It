@@ -29,9 +29,20 @@
         <div style="display: block">
             <!--Searchbar-->
             <div class="navbar-text center mt-4">
-                <form class="form-inline mx-2 my-2" action="##">
-                    <input class="form-control mr-sm-2 mx-3" id="searchbar" type="search"
-                           placeholder="Cerca in Fund.it">
+                <form class="form-inline mx-2 my-2" action="${pageContext.request.contextPath}/GestioneCampagnaController/ricerca">
+                    <div class="row">
+                        <div class = "col">
+                            <input class="form-control mr-sm-2 mx-3" id="searchbar" type="search" name = "searchText"
+                                   placeholder="Cerca in Fund.it">
+                        </div>
+
+                        <div class = "col">
+                            <button class = "btn primary-btn mt-3" type="submit" style="background-color: #00AB98; border-color: #00AB98; color: white">
+                                <i class="fas fa-search" style="font-size: 30px;"></i>
+                            </button>
+                        </div>
+                    </div>
+
                 </form>
             </div>
         </div>
