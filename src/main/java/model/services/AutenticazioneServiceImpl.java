@@ -19,7 +19,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     private final DAO<Utente> dao;
 
     /**
-     * @param session Sessione attuale dell'utente
+     * @param session   Sessione attuale dell'utente
      * @param utenteDAO istanza di UtenteDAO
      */
     public AutenticazioneServiceImpl(final HttpSession session,
@@ -35,17 +35,21 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     @Override
     public Utente login(final Utente utente) {
         if (utente == null) {
-            throw new RuntimeException("Utente null");
+            throw new IllegalArgumentException("Argument must be not null");
+        } else {
+            UtenteDAO userDao = (UtenteDAO) dao;
+            Utente ut = userDao.doLogin(utente);
+            if (ut == null) {
+                return null;
+            } else {
+                if (ut.getDataBan() != null) {
+                    ut.setIdUtente(-1);
+                    return ut;
+                } else {
+                    return ut;
+                }
+            }
         }
-        UtenteDAO userDao = (UtenteDAO) dao;
-        Utente ut = userDao.doLogin(utente);
-        if (ut == null) {
-            return null;
-        }
-        if (ut.getDataBan() != null) {
-            ut.setIdUtente(-1);
-        }
-        return ut;
     }
 
     /**
@@ -55,16 +59,17 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     @Override
     public boolean registrazione(final Utente utente) {
         if (utente == null) {
-            throw new RuntimeException("Utente null");
+            throw new IllegalArgumentException("Argument must be not null");
+        } else {
+            return dao.save(utente);
         }
-        return dao.save(utente);
     }
 
     /**
-     * @param utente Istanza di Utente che desidera fare il logout
+     * Esegue il logout dell'utente presente in sessione.
      */
     @Override
-    public void logout(final Utente utente) {
+    public void logout() {
         sessionWrapper.invalidate();
     }
 }

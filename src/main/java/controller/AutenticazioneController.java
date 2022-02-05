@@ -50,7 +50,7 @@ public final class AutenticazioneController extends HttpServlet {
          case "/logout":
             AutenticazioneService service =
                     new AutenticazioneServiceImpl(session, new UtenteDAO());
-            service.logout(userSession);
+            service.logout();
             response.sendRedirect(getServletContext().getContextPath()
                     + "/index.jsp");
 
