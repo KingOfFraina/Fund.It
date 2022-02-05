@@ -145,8 +145,8 @@ public final class GestioneCampagnaController extends HttpServlet {
                 searchText = searchText.trim();
                 List<Campagna> campagne = service.ricercaCampagna(searchText);
                 if (campagne.size() > 0 && !searchText.isBlank()) {
-                    campagne.forEach(d ->
-                            System.out.println(d.getIdCampagna()));
+                    request.setAttribute("campagneList", campagne);
+                    resource = "/WEB-INF/results/campagne.jsp";
                 } else {
                     request.setAttribute("errorSearch",
                             "Nessun risultato trovato");
