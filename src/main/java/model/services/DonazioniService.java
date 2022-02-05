@@ -24,4 +24,10 @@ public interface DonazioniService {
      * @return esito dell'inserimento del commento.
      */
     boolean commenta(Donazione d);
+
+    /**
+     * Trova tutte le donazioni effettuate sul sistema.
+     * @return lista delle donazioni attualmente fatte sul sistema
+     */
+    List<Donazione> visualizzaDonazioni();
 }

@@ -34,14 +34,6 @@ public final class DonazioneProxy implements DonazioneInterface {
       this.donazione = newDonazione;
    }
 
-   /**
-    * Recupera tutte le donazioni.
-    *
-    * @return la lista delle donazioni
-    */
-   public List<Donazione> getAll() {
-      return new DonazioneDAO().getAll();
-   }
 
    @Override
    public Campagna getCampagna() {

@@ -29,8 +29,8 @@
         <div style="display: block">
             <!--Searchbar-->
             <div class="navbar-text center mt-4">
-                <form class="form-inline mx-2 my-2" action="##">
-                    <input class="form-control mr-sm-2 mx-3" id="searchbar" type="search"
+                <form class="form-inline mx-2 my-2" action="${pageContext.request.contextPath}/GestioneCampagnaController/ricerca">
+                    <input class="form-control mr-sm-2 mx-3" id="searchbar" type="search" name = "searchText"
                            placeholder="Cerca in Fund.it">
                 </form>
             </div>
