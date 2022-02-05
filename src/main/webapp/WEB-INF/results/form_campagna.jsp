@@ -41,9 +41,9 @@
                     <div class="col mt-4">
                         <label for="inputDescrizione" class="form-label">Descrizione</label>
                         <div class="form-floating">
-                            <textarea name="descrizione" class="form-control" placeholder="Descrivi la tua campagna"
-                                      id="inputDescrizione" maxlength="3000" style="height: 100px"
-                                      required>${requestScope.campagna.descrizione}</textarea>
+<textarea name="descrizione" class="form-control" placeholder="Descrivi la tua campagna"
+          id="inputDescrizione" maxlength="3000" style="height: 100px"
+          required>${requestScope.campagna.descrizione}</textarea>
                         </div>
                         <div class=invalid-feedback>
                             La descrizione deve essere lunga max. 3000 caratteri
@@ -54,8 +54,7 @@
                     <div class="col mt-4">
                         <label for="selectCategorie" class="form-label">Categoria</label>
                         <select name="idCategoria" id="selectCategorie" class="form-select"
-                                aria-label="Default select example">
-                            <option selected disabled>Seleziona la categoria della tua raccolta</option>
+                                aria-label="Default select example" required>
                             <c:forEach items="${categorie}" var="cat">
                                 <c:choose>
                                     <c:when test="${requestScope.campagna.categoria.idCategoria == cat.idCategoria}">
@@ -78,19 +77,30 @@
                     </div>
 
                     <!--File-->
-                    <div class="mt-4 mb-3">
-                        <label for="formFileMultiple" class="form-label">Allega immagini per la tua campagna</label>
-                        <input class="form-control" name="file" type="file" id="formFileMultiple" multiple accept="image/*,.jpg">
-                    </div>
+
                     <c:choose>
                         <c:when test="${requestScope.campagna != null}">
+                            <div class="mt-4 mb-3">
+                                <label for="formFileMultipleI" class="form-label">Allega una o più immagini per la tua
+                                    campagna</label>
+                                <input class="form-control" name="file" type="file" id="formFileMultipleI" multiple
+                                       accept="image/*,.jpg">
+                            </div>
                             <button type="submit" class="btn btn-primary pulsante mt-4 mb-3"
-                                    formaction="${pageContext.request.contextPath}/GestioneCampagnaController/modificaCampagna">
+                                    formaction="${pageContext.request.contextPath}/GestioneCampagnaController/modificaCampagna"
+                                    style="background-color: #00AB98; border-color: #00AB98">
                                 Salva modifiche
                             </button>
                         </c:when>
                         <c:otherwise>
-                            <button type="submit" class="btn btn-primary pulsante mt-4 mb-3" style="border-color: #00AB98; background-color: #00AB98"
+                            <div class="mt-4 mb-3">
+                                <label for="formFileMultipleII" class="form-label">Allega una o più immagini per la tua
+                                    campagna</label>
+                                <input class="form-control" name="file" type="file" id="formFileMultipleII" multiple
+                                       accept="image/*,.jpg" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary pulsante mt-4 mb-3"
+                                    style="border-color: #00AB98; background-color: #00AB98"
                                     formaction="${pageContext.request.contextPath}/GestioneCampagnaController/creaCampagna">
                                 Crea campagna
                             </button>

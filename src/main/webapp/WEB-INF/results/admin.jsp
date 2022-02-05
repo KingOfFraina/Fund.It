@@ -22,6 +22,10 @@
         <%@include file="../components/admin/campaign_table.jsp" %>
     </div>
 
+    <div class="container mt-3" style="display: none" id="donations_table">
+        <%@include file="../components/admin/donations_table.jsp" %>
+    </div>
+
 </div>
 
 
