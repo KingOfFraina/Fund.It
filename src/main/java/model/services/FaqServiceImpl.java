@@ -13,6 +13,7 @@ public final class FaqServiceImpl implements FaqService {
 
    /**
     * Il costruttore per la classe FAQ.
+    *
     * @param newDAO il DAO da utilizzare per eseguire le operazioni richieste.
     */
    public FaqServiceImpl(final DAO<FAQ> newDAO) {
@@ -21,17 +22,29 @@ public final class FaqServiceImpl implements FaqService {
 
    @Override
    public boolean inserisciFaq(final FAQ faq) {
-      return dao.save(faq);
+      if (faq.getUtenteCreatore().isAdmin()) {
+         return dao.save(faq);
+      } else {
+         throw new IllegalCallerException("Only admin");
+      }
    }
 
    @Override
    public boolean cancellaFaq(final FAQ faq) {
-      return dao.delete(faq);
+      if (faq.getUtenteCreatore().isAdmin()) {
+         return dao.delete(faq);
+      } else {
+         throw new IllegalCallerException("Only admin");
+      }
    }
 
    @Override
    public boolean modificaFaq(final FAQ faq) {
-      return dao.update(faq);
+      if (faq.getUtenteCreatore().isAdmin()) {
+         return dao.update(faq);
+      } else {
+         throw new IllegalCallerException("Only admin");
+      }
    }
 
    @Override
