@@ -3,22 +3,26 @@ package model.services;
 import model.DAO.DAO;
 import model.DAO.UtenteDAO;
 import model.beans.Utente;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class UtenteServiceImpl implements UtenteService {
 
-    private DAO<Utente> dao;
+    private final DAO<Utente> dao;
 
 
-    //public UtenteServiceImpl(final DAO<Uten>)
+    public UtenteServiceImpl(final DAO<Utente> utenteDAO) {
+        this.dao = utenteDAO;
+    }
+
     /**
      * @param id idUtente.
      * @return l'istanza di utente presente nel database
      */
     @Override
     public Utente visualizzaDashboardUtente(final int id) {
-        return new UtenteDAO().getById(id);
+        return dao.getById(id);
     }
 
     /**

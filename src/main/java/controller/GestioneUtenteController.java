@@ -4,6 +4,7 @@ import controller.utils.FileServlet;
 import controller.utils.Validator;
 import model.DAO.DAO;
 import model.DAO.DonazioneDAO;
+import model.DAO.SegnalazioneDAO;
 import model.DAO.UtenteDAO;
 import model.beans.Segnalazione;
 import model.beans.Utente;
@@ -46,9 +47,8 @@ public final class GestioneUtenteController extends HttpServlet {
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND,
                         "Risorsa non trovata");
-                return;
+                break;
         }
-        return;
     }
 
     @Override
@@ -70,9 +70,8 @@ public final class GestioneUtenteController extends HttpServlet {
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND,
                         "Risorsa non trovata");
-                return;
+                break;
         }
-        return;
     }
 
     private void visualizzaDashboardAdmin(final HttpServletRequest request,
@@ -90,8 +89,8 @@ public final class GestioneUtenteController extends HttpServlet {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                     "Non autorizzato.");
         }
-        UtenteService us = new UtenteServiceImpl();
-        SegnalazioniService segnalazioniService = new SegnalazioniServiceImpl();
+        UtenteService us = new UtenteServiceImpl(new UtenteDAO());
+        SegnalazioniService segnalazioniService = new SegnalazioniServiceImpl(new SegnalazioneDAO());
         DonazioniService donazioniService = new DonazioniServiceImpl(new DonazioneDAO());
 
 
@@ -146,7 +145,7 @@ public final class GestioneUtenteController extends HttpServlet {
                     "Input errato");
             return;
         }
-        UtenteService us = new UtenteServiceImpl();
+        UtenteService us = new UtenteServiceImpl(new UtenteDAO());
 
         us.modificaProfilo(utente);
         session.setAttribute("utente", utente);
@@ -184,10 +183,9 @@ public final class GestioneUtenteController extends HttpServlet {
             }
         }
 
-        DAO dao = new UtenteDAO();
-        Utente banned = (Utente) dao.getById(idUtenteban);
-        UtenteService us = new UtenteServiceImpl();
-        us.sospensioneUtente(banned);
+        UtenteService utenteService = new UtenteServiceImpl(new UtenteDAO());
+        Utente utenteBannato = utenteService.visualizzaDashboardUtente(idUtenteban);
+        utenteService.sospensioneUtente(utenteBannato);
         //todo return!!
     }
 
@@ -203,7 +201,7 @@ public final class GestioneUtenteController extends HttpServlet {
             return;
         }
 
-        UtenteService uts = new UtenteServiceImpl();
+        UtenteService uts = new UtenteServiceImpl(new UtenteDAO());
         Utente ut = uts.visualizzaDashboardUtente(
                 ((Utente) session.getAttribute("utente")).getIdUtente());
 
@@ -220,7 +218,7 @@ public final class GestioneUtenteController extends HttpServlet {
     private void promuoviDeclassaUtente(final HttpServletRequest request,
                                         final HttpServletResponse response)
             throws IOException, ServletException {
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession();
 
         if (!new Validator(request).isValidBean(new Utente(),
                 session.getAttribute("utente"))) {
@@ -236,26 +234,26 @@ public final class GestioneUtenteController extends HttpServlet {
             return;
         }
 
-        String parameter = request.getParameter("utentemod");
-        DAO dao = new UtenteDAO();
+        String idUtente = request.getParameter("utentemod");
+        DAO<Utente> dao = new UtenteDAO();
         Utente ut = null;
+        UtenteService utenteService = new UtenteServiceImpl(dao);
 
-        if (parameter != null) {
+        if (idUtente != null) {
             try {
-                ut = (Utente) dao.getById(Integer.parseInt(parameter));
+                ut = utenteService.visualizzaDashboardUtente(Integer.parseInt(idUtente));
             } catch (NumberFormatException e) {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                         "Errore conversione");
                 return;
             }
 
-            new UtenteServiceImpl().promuoviDeclassaUtente(utente, ut);
+            utenteService.promuoviDeclassaUtente(utente, ut);
             visualizzaDashboardAdmin(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Errore input");
         }
-        return;
     }
 
     @Override

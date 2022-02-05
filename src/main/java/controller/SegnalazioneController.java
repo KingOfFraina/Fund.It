@@ -3,6 +3,8 @@ package controller;
 
 import controller.utils.Validator;
 import model.DAO.CampagnaDAO;
+import model.DAO.SegnalazioneDAO;
+import model.DAO.UtenteDAO;
 import model.beans.Campagna;
 import model.beans.Segnalazione;
 import model.beans.StatoSegnalazione;
@@ -45,7 +47,7 @@ public final class SegnalazioneController extends HttpServlet {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        SegnalazioniService service = new SegnalazioniServiceImpl();
+        SegnalazioniService service = new SegnalazioniServiceImpl(new SegnalazioneDAO());
 
 
         switch (path) {
@@ -85,7 +87,8 @@ public final class SegnalazioneController extends HttpServlet {
         CampagnaService campagnaService =
                 new CampagnaServiceImpl(new CampagnaDAO());
         SegnalazioniService segnalazioniService =
-                new SegnalazioniServiceImpl();
+                new SegnalazioniServiceImpl(new SegnalazioneDAO());
+        UtenteService utenteService = new UtenteServiceImpl(new UtenteDAO());
 
         String descrizione = request.getParameter("descrizione");
         String resource = "/";
@@ -118,7 +121,6 @@ public final class SegnalazioneController extends HttpServlet {
                         Integer.parseInt(
                                 request.getParameter("idSegnalazione"));
 
-                UtenteService utenteService = new UtenteServiceImpl();
                 Campagna campagna = campagnaService.trovaCampagna(id);
                 if (scelta.equals("Risolvi")) {
                     segnalazioniService
@@ -137,13 +139,6 @@ public final class SegnalazioneController extends HttpServlet {
                     } else {
                         System.out.println("errore");
                     }
-                    /*List<Donazione> donazioni =
-                            campagnaProxy.getDonazioni();
-                    DAO<Donazione> dao = new DonazioneDAO();
-                    donazioni.forEach(d -> {
-                        d.setSommaDonata(-d.getSommaDonata());
-                        dao.update(d);
-                    });*/
                 } else {
                     segnalazioniService
                             .risolviSegnalazione(idSegnalazione,
@@ -151,6 +146,7 @@ public final class SegnalazioneController extends HttpServlet {
                 }
                 break;
             default:
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 break;
         }
     }
