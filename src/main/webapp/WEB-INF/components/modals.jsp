@@ -79,16 +79,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
                 <div class="modal-body">
-                    <a href="${sessionScope.linkList.get('mail')}" target="_blank">Mail</a>
+                    <a style="text-decoration: none; font-size: 20px; color: #00AB98;" href="${sessionScope.linkList.get('mail')}" target="_blank">E-mail <i class="fas fa-envelope"></i></a>
                     <hr>
-                    <a href="${sessionScope.linkList.get('whatsapp')}" target="_blank">Whatsapp</a>
+                    <a style="text-decoration: none; font-size: 20px; color: #00AB98;" href="${sessionScope.linkList.get('whatsapp')}" target="_blank">Whatsapp <i class="fab fa-whatsapp"></i></a>
                     <hr>
-                    <a href="${sessionScope.linkList.get('facebook')}" target="_blank">Facebook</a>
+                    <a style="text-decoration: none; font-size: 20px; color: #00AB98;" href="${sessionScope.linkList.get('facebook')}" target="_blank">Facebook  <i class="fab fa-facebook"></i></a>
                     <hr>
-                    <a href="${sessionScope.linkList.get('twitter')}" target="_blank">Twitter</a>
+                    <a style="text-decoration: none; font-size: 20px; color: #00AB98;" href="${sessionScope.linkList.get('twitter')}" target="_blank">Twitter <i class="fab fa-twitter"></i></a>
                     <hr>
-                    <input type="text" readonly id="box" value="${sessionScope.linkList.get('link')}"/>
-                    <button id="btn" onclick="foo()">Copia link</button>
+                    <input type="text" class = "form-control" readonly id="box" value="${sessionScope.linkList.get('link')}"/>
+
+                    <button  class = "btn btn-primary mt-3" style="background-color: #00AB98; border-color: #00AB98" id="btn" onclick="foo()"> <i class="fas fa-copy"></i></button>
                     <script>
                         function foo() {
                             var copyText = document.getElementById("box");

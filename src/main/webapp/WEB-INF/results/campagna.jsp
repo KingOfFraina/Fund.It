@@ -33,7 +33,7 @@
                              class="d-block w-100" alt="...">
                     </div>
 
-                    <c:forEach items="${requestScope.campagna.immagini}" var="immagine" begin = "1">
+                    <c:forEach items="${requestScope.campagna.immagini}" var="immagine" begin="1">
                         <div class="carousel-item">
                             <img src="${pageContext.request.contextPath}/file/${immagine.path}"
                                  class="d-block w-100" alt="...">
@@ -118,7 +118,8 @@
 
             <div class="d-grid gap-2 my-3">
                 <input type="hidden" id="idCampagna" value="${campagna.idCampagna}">
-                <button id="condividiButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCondivisione"
+                <button id="condividiButton" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#modalCondivisione"
                         style=" background-color: #00AB98; border-color: #00AB98">Condividi
                 </button>
                 <c:choose>
@@ -181,8 +182,11 @@
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalChiusura"
                             style="background-color: crimson; border-color: crimson">Chiudi campagna
                     </button>
-                    <div class = "container">
-                        <button class = "btn btn-primary pulsante mt-4" onclick = "location.href = '${pageContext.request.contextPath}/GestioneCampagnaController/modificaCampagna?idCampagna=${requestScope.campagna.idCampagna}'" style="border-color: #00AB98; background-color: #00AB98">Modifica campagna</button>
+                    <div class="container">
+                        <button class="btn btn-primary pulsante mt-4"
+                                onclick="location.href = '${pageContext.request.contextPath}/GestioneCampagnaController/modificaCampagna?idCampagna=${requestScope.campagna.idCampagna}'"
+                                style="border-color: #00AB98; background-color: #00AB98">Modifica campagna
+                        </button>
                     </div>
                 </c:if>
 
@@ -212,7 +216,7 @@
 <script defer>
     $("#condividiButton").click(
         function () {
-            $.get(window.location.origin + window.location.pathname.substring(0, window.location.pathname.indexOf('/',1)) + "/GestioneCampagnaController/condividiCampagna?idCampagna=" + document.getElementById('idCampagna').value);
+            $.get(window.location.origin + window.location.pathname.substring(0, window.location.pathname.indexOf('/', 1)) + "/GestioneCampagnaController/condividiCampagna?idCampagna=" + document.getElementById('idCampagna').value);
         }
     )
 </script>
