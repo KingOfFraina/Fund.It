@@ -7,6 +7,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class UtenteServiceImpl implements UtenteService {
+
+    private DAO<Utente> dao;
+
+
+    //public UtenteServiceImpl(final DAO<Uten>)
     /**
      * @param id idUtente.
      * @return l'istanza di utente presente nel database

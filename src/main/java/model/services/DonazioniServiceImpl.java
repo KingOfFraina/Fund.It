@@ -35,7 +35,7 @@ public final class DonazioniServiceImpl implements DonazioniService {
             return donazioneDAO.getAllByUtente(u.getIdUtente());
         }
 
-        return new DonazioneDAO().getAll();
+        return dao.getAll();
     }
 
     @Override

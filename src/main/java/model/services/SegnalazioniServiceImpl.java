@@ -1,32 +1,27 @@
 package model.services;
 
 import model.DAO.DAO;
-import model.DAO.SegnalazioneDAO;
 import model.beans.Campagna;
 import model.beans.Segnalazione;
 import model.beans.StatoSegnalazione;
 import model.beans.Utente;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class SegnalazioniServiceImpl implements SegnalazioniService {
 
     /**
-     * Wrapper di istanza di SegnalazioneDAO.
+     * Wrapper d'istanza di SegnalazioneDAO.
      */
-    private static DAO<Segnalazione> dao;
+    private final DAO<Segnalazione> dao;
 
     /**
-     * Costruttore.
+     * @param segnalazioneDAO istanza di interfaccia DAO<T>
      */
-    public SegnalazioniServiceImpl() {
-        if (dao == null) {
-            dao = new SegnalazioneDAO();
-        }
+    public SegnalazioniServiceImpl(final DAO<Segnalazione> segnalazioneDAO) {
+        this.dao = segnalazioneDAO;
     }
-
 
     /**
      * @return lista delle segnalazioni effettuate dall'utente
@@ -64,7 +59,7 @@ public class SegnalazioniServiceImpl implements SegnalazioniService {
 
     /**
      * @param campagna    istanza di Campagna da segnalare
-     * @param segnalatore istanza di Utente che effettua la segnalazionr
+     * @param segnalatore istanza di Utente che effettua la segnalazione
      * @param descrizione Stringa di descrizione della segnalazione
      * @return true se l'operazione è andata a buon fine, false altrimenti
      */
@@ -80,7 +75,7 @@ public class SegnalazioniServiceImpl implements SegnalazioniService {
         s.setSegnalato(campagna.getUtente());
         s.setSegnalatore(segnalatore);
         s.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
-        s.setDataOra(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES));
+        s.setDataOra(LocalDateTime.now());
         s.setDescrizione(descrizione);
         return dao.save(s);
     }
