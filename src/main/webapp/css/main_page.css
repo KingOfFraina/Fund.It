@@ -121,7 +121,7 @@ ul ul a {
     background: #6d7fcc;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 0px) {
     #sidebar {
         margin-left: -250px;
     }

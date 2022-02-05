@@ -117,7 +117,7 @@
             </div>
 
             <div class="d-grid gap-2 my-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCondivisione"
+                <button onclick="window.location.href = '${pageContext.request.contextPath}/GestioneCampagnaController/condividiCampagna?id=${requestScope.campagna.idCampagna}'" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCondivisione"
                         style=" background-color: #00AB98; border-color: #00AB98">Condividi
                 </button>
                 <c:choose>
@@ -195,8 +195,7 @@
 
 <%@include file="../components/footer.jsp" %>
 
-<%@include file="../components/modal_donazioni.jsp" %>
-<%@include file="../components/modal_segnalazioni.jsp" %>
+<%@include file="../components/modals.jsp" %>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"

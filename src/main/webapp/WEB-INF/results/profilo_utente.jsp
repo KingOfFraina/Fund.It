@@ -33,7 +33,7 @@
 
     <div class="row mb-3" style="width: fit-content; margin-left: 10px;">
         <button id="backII" class="btn btn-primary mt-4 mb-3 pulsante"
-                onclick="hideModifica()" style="display: none">
+                onclick="hideModifica()" style="display: none; background-color: #00AB98; border-color: #00AB98;">
             <i class="fas fa-arrow-left"></i></button>
     </div>
 
@@ -66,7 +66,7 @@
     </div>
 </div>
 
-<div class="row text-center mt-4">
+<div class="row text-center mt-4" id = "adminOption">
     <c:if test="${sessionScope.utente.admin}">
         <a style="text-decoration: none; color: black"
            href="${pageContext.request.contextPath}/GestioneUtenteController/visualizzaDashboardAdmin"

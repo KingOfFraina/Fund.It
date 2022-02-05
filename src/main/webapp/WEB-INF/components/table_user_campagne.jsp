@@ -1,3 +1,11 @@
+
+<div class="row mb-3" style="width: fit-content; margin-left: 10px">
+    <button id="back" class="btn btn-primary mt-4 mb-3"
+            onclick="hideCampagneTable()"
+            style="background-color: #00AB98; border-color: #00AB98">
+        <i class="fas fa-arrow-left"></i></button>
+</div>
+
 <table class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
