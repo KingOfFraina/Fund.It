@@ -125,9 +125,8 @@ public final class GestioneCampagnaController extends HttpServlet {
                                        request);
 
                if (map != null) {
-                  request.setAttribute("linkList", map);
-
-                  resource = "/WEB-INF/results/condividiCampagnaBeta.jsp";
+                  request.getSession().setAttribute("linkList", map);
+                  return;
                } else {
                   response.sendRedirect(
                           getServletContext().getContextPath()
@@ -140,7 +139,6 @@ public final class GestioneCampagnaController extends HttpServlet {
                return;
             }
 
-            break;
          case "/ricerca":
             String searchText = request.getParameter("searchText");
             searchText = searchText.trim();

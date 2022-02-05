@@ -117,7 +117,8 @@
             </div>
 
             <div class="d-grid gap-2 my-3">
-                <button onclick="window.location.href = '${pageContext.request.contextPath}/GestioneCampagnaController/condividiCampagna?id=${requestScope.campagna.idCampagna}'" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCondivisione"
+                <input type="hidden" id="idCampagna" value="${campagna.idCampagna}">
+                <button id="condividiButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCondivisione"
                         style=" background-color: #00AB98; border-color: #00AB98">Condividi
                 </button>
                 <c:choose>
@@ -207,7 +208,14 @@
         crossorigin="anonymous"></script>
 
 <script src=${pageContext.request.contextPath}/js/campagna.js></script>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer>
+    $("#condividiButton").click(
+        function () {
+            $.get(window.location.origin + window.location.pathname.substring(0, window.location.pathname.indexOf('/',1)) + "/GestioneCampagnaController/condividiCampagna?idCampagna=" + document.getElementById('idCampagna').value);
+        }
+    )
+</script>
 </body>
 
 </html>

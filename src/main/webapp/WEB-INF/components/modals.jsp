@@ -78,17 +78,16 @@
                 <h5 class="modal-title" id="condivisioneLabel">Condividi campagna</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-
                 <div class="modal-body">
-                    <a href="${requestScope.linkList.get('mail')}" target="_blank">Mail</a>
+                    <a href="${sessionScope.linkList.get('mail')}" target="_blank">Mail</a>
                     <hr>
-                    <a href="${requestScope.linkList.get('whatsapp')}" target="_blank">Whatsapp</a>
+                    <a href="${sessionScope.linkList.get('whatsapp')}" target="_blank">Whatsapp</a>
                     <hr>
-                    <a href="${requestScope.linkList.get('facebook')}" target="_blank">Facebook</a>
+                    <a href="${sessionScope.linkList.get('facebook')}" target="_blank">Facebook</a>
                     <hr>
-                    <a href="${requestScope.linkList.get('twitter')}" target="_blank">Twitter</a>
+                    <a href="${sessionScope.linkList.get('twitter')}" target="_blank">Twitter</a>
                     <hr>
-                    <input type="text" readonly id="box" value="${requestScope.linkList.get('link')}"/>
+                    <input type="text" readonly id="box" value="${sessionScope.linkList.get('link')}"/>
                     <button id="btn" onclick="foo()">Copia link</button>
                     <script>
                         function foo() {
@@ -96,7 +95,6 @@
                             copyText.select();
                             copyText.setSelectionRange(0, 99999);
                             navigator.clipboard.writeText(copyText.value);
-                            alert("Copied the text: " + copyText.value);
                         }
                     </script>
                 </div>
