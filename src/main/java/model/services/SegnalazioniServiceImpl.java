@@ -37,7 +37,11 @@ public class SegnalazioniServiceImpl implements SegnalazioniService {
      */
     @Override
     public Segnalazione trovaSegnalazione(final int idSegnalazione) {
-        return dao.getById(idSegnalazione);
+        if (idSegnalazione <= 0) {
+            throw new IllegalArgumentException("Argument must be > 0");
+        } else {
+            return dao.getById(idSegnalazione);
+        }
     }
 
     /**
@@ -48,13 +52,18 @@ public class SegnalazioniServiceImpl implements SegnalazioniService {
     @Override
     public boolean risolviSegnalazione(final int idSegnalazione,
                                        final StatoSegnalazione stato) {
-        Segnalazione s = dao.getById(idSegnalazione);
-        if (s == null) {
-            throw new RuntimeException("Segnalazione non trovata con id: "
-                    + idSegnalazione);
+        if (idSegnalazione <= 0) {
+            throw new IllegalArgumentException("Argument id must be > 0");
+        } else {
+            Segnalazione s = dao.getById(idSegnalazione);
+            if (s == null) {
+                throw new RuntimeException("Segnalazione non trovata con id: "
+                        + idSegnalazione);
+            } else {
+                s.setStatoSegnalazione(stato);
+                return dao.update(s);
+            }
         }
-        s.setStatoSegnalazione(stato);
-        return dao.update(s);
     }
 
     /**
@@ -67,16 +76,17 @@ public class SegnalazioniServiceImpl implements SegnalazioniService {
     public boolean segnalaCampagna(final Campagna campagna,
                                    final Utente segnalatore,
                                    final String descrizione) {
-        if (campagna == null || segnalatore == null) {
-            throw new RuntimeException("Campagna o segnalatore sono null");
+        if (campagna == null || segnalatore == null || descrizione == null) {
+            throw new IllegalArgumentException("Arguments must be not null");
+        } else {
+            Segnalazione s = new Segnalazione();
+            s.setCampagnaSegnalata(campagna);
+            s.setSegnalato(campagna.getUtente());
+            s.setSegnalatore(segnalatore);
+            s.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
+            s.setDataOra(LocalDateTime.now());
+            s.setDescrizione(descrizione);
+            return dao.save(s);
         }
-        Segnalazione s = new Segnalazione();
-        s.setCampagnaSegnalata(campagna);
-        s.setSegnalato(campagna.getUtente());
-        s.setSegnalatore(segnalatore);
-        s.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
-        s.setDataOra(LocalDateTime.now());
-        s.setDescrizione(descrizione);
-        return dao.save(s);
     }
 }
