@@ -142,7 +142,6 @@ public final class GestioneCampagnaController extends HttpServlet {
                 break;
             case "/ricerca":
                 String searchText = request.getParameter("searchText");
-                System.out.println("TESTO: " + searchText);
                 searchText = searchText.trim();
                 List<Campagna> campagne = service.ricercaCampagna(searchText);
                 if (campagne.size() > 0 && !searchText.isBlank()) {
