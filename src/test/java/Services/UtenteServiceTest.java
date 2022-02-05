@@ -11,6 +11,8 @@ import org.mockito.Mockito;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -167,6 +169,15 @@ public class UtenteServiceTest {
 
    @Test
    public void promuoviDeclassaUtente2() {
+      DAO<Utente> utenteDAO = Mockito.mock(UtenteDAO.class);
+      UtenteService utenteService = new UtenteServiceImpl(utenteDAO);
+
+      assertThrows(IllegalArgumentException.class,
+              () -> utenteService.promuoviDeclassaUtente(utente, null));
+   }
+
+   @Test
+   public void promuoviDeclassaUtente3() {
       utente.setAdmin(false);
       DAO<Utente> utenteDAO = Mockito.mock(UtenteDAO.class);
       UtenteService utenteService = new UtenteServiceImpl(utenteDAO);
@@ -176,7 +187,7 @@ public class UtenteServiceTest {
    }
 
    @Test
-   public void promuoviDeclassaUtente3() {
+   public void promuoviDeclassaUtente4() {
       DAO<Utente> utenteDAO = Mockito.mock(UtenteDAO.class);
       Mockito.when(utenteDAO.update(utente)).thenReturn(false);
       UtenteService utenteService = new UtenteServiceImpl(utenteDAO);
@@ -185,11 +196,67 @@ public class UtenteServiceTest {
    }
 
    @Test
-   public void promuoviDeclassaUtente4() {
+   public void promuoviDeclassaUtente5() {
       DAO<Utente> utenteDAO = Mockito.mock(UtenteDAO.class);
       Mockito.when(utenteDAO.update(utente)).thenReturn(true);
       UtenteService utenteService = new UtenteServiceImpl(utenteDAO);
 
       assertTrue(utenteService.promuoviDeclassaUtente(utente, utente));
+   }
+
+   @Test
+   public void visualizzaUtenti1() {
+      DAO<Utente> utenteDAO = Mockito.mock(UtenteDAO.class);
+      UtenteService utenteService = new UtenteServiceImpl(utenteDAO);
+
+      assertThrows(IllegalArgumentException.class, () -> utenteService.visualizzaUtenti(null));
+   }
+
+   @Test
+   public void visualizzaUtenti2() {
+      utente.setAdmin(false);
+      DAO<Utente> utenteDAO = Mockito.mock(UtenteDAO.class);
+      UtenteService utenteService = new UtenteServiceImpl(utenteDAO);
+
+      assertThrows(IllegalCallerException.class, () -> utenteService.visualizzaUtenti(utente));
+   }
+
+   @Test
+   public void visualizzaUtenti3() {
+      DAO<Utente> utenteDAO = Mockito.mock(UtenteDAO.class);
+      Mockito.when(utenteDAO.getAll()).thenReturn(new ArrayList<>());
+      UtenteService utenteService = new UtenteServiceImpl(utenteDAO);
+      List<Utente> utenteList = utenteService.visualizzaUtenti(utente);
+
+      assertAll(
+              () -> assertNotNull(utenteList),
+              () -> assertEquals(0, utenteList.size())
+      );
+   }
+
+   @Test
+   public void visualizzaUtenti4() {
+      DAO<Utente> utenteDAO = Mockito.mock(UtenteDAO.class);
+      Mockito.when(utenteDAO.getAll()).thenReturn(List.of(utente));
+      UtenteService utenteService = new UtenteServiceImpl(utenteDAO);
+      List<Utente> utenteList = utenteService.visualizzaUtenti(utente);
+
+      assertAll(
+              () -> assertNotNull(utenteList),
+              () -> assertEquals(1, utenteList.size()),
+              () -> assertEquals(utente.isAdmin(), utenteList.get(0).isAdmin()),
+              () -> assertEquals(utente.getCap(), utenteList.get(0).getCap()),
+              () -> assertEquals(utente.getCf(), utenteList.get(0).getCf()),
+              () -> assertEquals(utente.getCitta(), utenteList.get(0).getCitta()),
+              () -> assertEquals(utente.getCognome(), utenteList.get(0).getCognome()),
+              () -> assertEquals(utente.getDataBan(), utenteList.get(0).getDataBan()),
+              () -> assertEquals(utente.getDataDiNascita(), utenteList.get(0).getDataDiNascita()),
+              () -> assertEquals(utente.getEmail(), utenteList.get(0).getEmail()),
+              () -> assertEquals(utente.getFotoProfilo(), utenteList.get(0).getFotoProfilo()),
+              () -> assertEquals(utente.getNome(), utenteList.get(0).getNome()),
+              () -> assertEquals(utente.getPassword(), utenteList.get(0).getPassword()),
+              () -> assertEquals(utente.getStrada(), utenteList.get(0).getStrada()),
+              () -> assertEquals(utente.getTelefono(), utenteList.get(0).getTelefono())
+      );
    }
 }
