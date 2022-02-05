@@ -18,6 +18,7 @@ public class FaqServiceTest {
    FaqService faqService;
    DAO<FAQ> faqDAO;
    FAQ faq;
+   Utente utente;
 
    @Before
    public void setup() {
@@ -25,11 +26,13 @@ public class FaqServiceTest {
       faq.setIdFaq(1);
       faq.setDomanda("");
       faq.setRisposta("");
-      faq.setUtenteCreatore(new Utente());
+      utente = new Utente();
+      faq.setUtenteCreatore(utente);
    }
 
    @Test
-   public void inserisciFaqFalse() {
+   public void inserisciFaq1() {
+      utente.setAdmin(true);
       faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.save(faq)).thenReturn(false);
       faqService = new FaqServiceImpl(faqDAO);
@@ -38,25 +41,8 @@ public class FaqServiceTest {
    }
 
    @Test
-   public void modificaFaqTrue() {
-      faqDAO = Mockito.mock(FaqDAO.class);
-      Mockito.when(faqDAO.update(faq)).thenReturn(true);
-      faqService = new FaqServiceImpl(faqDAO);
-
-      assertTrue(faqService.modificaFaq(faq));
-   }
-
-   @Test
-   public void modificaFaqFalse() {
-      faqDAO = Mockito.mock(FaqDAO.class);
-      Mockito.when(faqDAO.update(faq)).thenReturn(false);
-      faqService = new FaqServiceImpl(faqDAO);
-
-      assertFalse(faqService.modificaFaq(faq));
-   }
-
-   @Test
-   public void inserisciFaqTrue() {
+   public void inserisciFaq2() {
+      utente.setAdmin(true);
       faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.save(faq)).thenReturn(true);
       faqService = new FaqServiceImpl(faqDAO);
@@ -65,7 +51,44 @@ public class FaqServiceTest {
    }
 
    @Test
-   public void cancellaFaqFalse() {
+   public void inserisciFaq3() {
+      utente.setAdmin(false);
+      faqService = new FaqServiceImpl(null);
+
+      assertThrows(IllegalCallerException.class, () -> faqService.inserisciFaq(faq));
+   }
+
+   @Test
+   public void modificaFaq1() {
+      utente.setAdmin(true);
+      faqDAO = Mockito.mock(FaqDAO.class);
+      Mockito.when(faqDAO.update(faq)).thenReturn(true);
+      faqService = new FaqServiceImpl(faqDAO);
+
+      assertTrue(faqService.modificaFaq(faq));
+   }
+
+   @Test
+   public void modificaFaq2() {
+      utente.setAdmin(true);
+      faqDAO = Mockito.mock(FaqDAO.class);
+      Mockito.when(faqDAO.update(faq)).thenReturn(false);
+      faqService = new FaqServiceImpl(faqDAO);
+
+      assertFalse(faqService.modificaFaq(faq));
+   }
+
+   @Test
+   public void modificaFaq3() {
+      utente.setAdmin(false);
+      faqService = new FaqServiceImpl(null);
+
+      assertThrows(IllegalCallerException.class, () -> faqService.modificaFaq(faq));
+   }
+
+   @Test
+   public void cancellaFaq1() {
+      utente.setAdmin(true);
       faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.delete(faq)).thenReturn(false);
       faqService = new FaqServiceImpl(faqDAO);
@@ -74,12 +97,21 @@ public class FaqServiceTest {
    }
 
    @Test
-   public void cancellaFaqTrue() {
+   public void cancellaFaq2() {
+      utente.setAdmin(true);
       faqDAO = Mockito.mock(FaqDAO.class);
       Mockito.when(faqDAO.delete(faq)).thenReturn(true);
       faqService = new FaqServiceImpl(faqDAO);
 
       assertTrue(faqService.cancellaFaq(faq));
+   }
+
+   @Test
+   public void cancellaFaq3() {
+      utente.setAdmin(false);
+      faqService = new FaqServiceImpl(null);
+
+      assertThrows(IllegalCallerException.class, () -> faqService.cancellaFaq(faq));
    }
 
    @Test
