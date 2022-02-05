@@ -18,6 +18,14 @@ public interface CampagnaService {
    List<Campagna> ricercaCampagna(String text);
 
    /**
+    * Permette la ricerca di campagne data una categoria.
+    *
+    * @param text una categoria
+    * @return la lista di campagne che soddisfano il parametro passato
+    */
+   List<Campagna> ricercaCampagnaPerCategoria(String text);
+
+   /**
     * Permette la creazione di una nuova campagna.
     *
     * @param campagna il bean che contiene informazioni sulla campagna

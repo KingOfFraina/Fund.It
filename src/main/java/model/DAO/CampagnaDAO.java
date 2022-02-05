@@ -262,6 +262,39 @@ public final class CampagnaDAO
    }
 
    /**
+    * Permette la ricerca di campagne.
+    *
+    * @param category una stringa per effettuare la ricerca
+    * @return la lista di campagne che soddisfano il parametro passato
+    */
+   public List<Campagna> getByCategory(final String category) {
+      if (category == null) {
+         throw new IllegalArgumentException("Null object");
+      } else {
+         try (Connection connection = ConPool.getInstance().getConnection();
+              PreparedStatement statement = connection.prepareStatement(
+                      "SELECT * FROM campagna c "
+                              + "LEFT JOIN categoria ca "
+                              + "ON c.idCategoria = ca.idCategoria"
+                              + " WHERE ca.nomeCategoria = ?"
+              )) {
+            List<Campagna> campagnaList = new ArrayList<>();
+            statement.setString(1, category);
+
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+               campagnaList.add(extract(set));
+            }
+
+            return campagnaList;
+
+         } catch (SQLException e) {
+            throw new RuntimeException("SQL error: " + e.getMessage());
+         }
+      }
+   }
+
+   /**
     * Permette la ricerca di una porzione precisa delle campagne presenti.
     *
     * @param size   il numero di campagne da recuperare

@@ -71,6 +71,12 @@ public final class CampagnaServiceImpl implements CampagnaService {
    }
 
    @Override
+   public List<Campagna> ricercaCampagnaPerCategoria(final String text) {
+      CampagnaDAO campagnaDAO = (CampagnaDAO) dao;
+      return campagnaDAO.getByCategory(text);
+   }
+
+   @Override
    public List<Campagna> visualizzaCampagne(final int size, final int offset) {
       CampagnaDAO campagnaDAO = (CampagnaDAO) dao;
       return campagnaDAO.getBySizeOffset(size, offset);

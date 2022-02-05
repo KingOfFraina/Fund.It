@@ -227,6 +227,23 @@ public class CampagnaDAOTest {
       );
    }
 
+   @Test
+   public void getByCategoryInvalid() {
+      assertThrows(IllegalArgumentException.class, () -> {
+         ((CampagnaDAO) campagnaDAO).getByCategory(null);
+      });
+   }
+
+   @Test
+   public void getByCategory() {
+      List<Campagna> campagnaList = ((CampagnaDAO) campagnaDAO).getByCategory(categoria.getNome());
+
+      assertAll(
+              () -> assertNotNull(campagnaList),
+              () -> assertTrue(campagnaList.size() > 0)
+      );
+   }
+
    @AfterClass
    public static void clear() {
       campagnaDAO.delete(campagna);
@@ -234,6 +251,4 @@ public class CampagnaDAOTest {
       categoriaDAO.delete(categoria);
       ConPool.getInstance().closeDataSource();
    }
-
-
 }
