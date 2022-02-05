@@ -107,7 +107,11 @@ public final class Utente implements UtenteInterface {
      * @param data Data del ban.
      */
     public void setDataBan(final LocalDateTime data) {
-        this.dataBan = data.truncatedTo(ChronoUnit.MINUTES);
+        if (data == null) {
+            this.dataBan = null;
+        } else {
+            this.dataBan = data.truncatedTo(ChronoUnit.MINUTES);
+        }
     }
 
     /**

@@ -31,9 +31,9 @@ public interface UtenteService {
     boolean promuoviDeclassaUtente(Utente richiedente, Utente soggetto);
 
     /**
-     * @param cattivone da bannare.
+     * @param utente da bannare.
      * @return esito operazione.
      */
-    boolean sospensioneUtente(Utente cattivone);
+    boolean sospensioneUtente(Utente utente);
 
 }

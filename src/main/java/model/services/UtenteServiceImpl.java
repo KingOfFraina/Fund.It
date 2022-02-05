@@ -1,7 +1,6 @@
 package model.services;
 
 import model.DAO.DAO;
-import model.DAO.UtenteDAO;
 import model.beans.Utente;
 
 import java.time.LocalDateTime;
@@ -16,7 +15,8 @@ public class UtenteServiceImpl implements UtenteService {
    /**
     * Il costruttore per la classe FAQService.
     *
-    * @param utenteDAO il DAO da utilizzare per eseguire le operazioni richieste.
+    * @param utenteDAO il DAO da utilizzare
+    *                  per eseguire le operazioni richieste.
     */
    public UtenteServiceImpl(final DAO<Utente> utenteDAO) {
       this.dao = utenteDAO;
@@ -42,7 +42,7 @@ public class UtenteServiceImpl implements UtenteService {
    @Override
    public boolean modificaProfilo(final Utente utente) {
       if (utente != null) {
-         return new UtenteDAO().update(utente);
+         return dao.update(utente);
       } else {
          throw new IllegalArgumentException("Null Object");
       }
@@ -58,7 +58,7 @@ public class UtenteServiceImpl implements UtenteService {
          if (richiedente.isAdmin()) {
             throw new IllegalCallerException("Only Admin");
          } else {
-            return new UtenteDAO().getAll();
+            return dao.getAll();
          }
       } else {
          throw new IllegalArgumentException("Null Object");
@@ -76,7 +76,7 @@ public class UtenteServiceImpl implements UtenteService {
       if (richiedente == null || soggetto == null) {
          throw new IllegalArgumentException("Null Object");
       } else {
-         if (richiedente.isAdmin()) {
+         if (!richiedente.isAdmin()) {
             throw new IllegalCallerException("Only Admin");
          } else {
             soggetto.setAdmin(!soggetto.isAdmin());
@@ -99,8 +99,7 @@ public class UtenteServiceImpl implements UtenteService {
          } else {
             utente.setDataBan(LocalDateTime.now());
          }
-         DAO<Utente> utenteDAO = new UtenteDAO();
-         return utenteDAO.update(utente);
+         return dao.update(utente);
       }
    }
 }
