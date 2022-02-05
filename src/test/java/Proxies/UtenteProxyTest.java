@@ -1,3 +1,5 @@
+package Proxies;
+
 import model.DAO.*;
 import model.beans.*;
 import model.beans.proxies.UtenteProxy;
