@@ -3,6 +3,7 @@ package controller;
 import controller.utils.FileServlet;
 import model.DAO.CampagnaDAO;
 import model.DAO.CategoriaDAO;
+import model.DAO.ImmagineDAO;
 import model.DAO.DAO;
 import model.beans.Campagna;
 import model.beans.Categoria;
@@ -328,12 +329,13 @@ public final class GestioneCampagnaController extends HttpServlet {
                            final Campagna campagna) throws ServletException,
            IOException {
       List<String> fotoList = FileServlet.uploadFoto(request);
-      ImmagineService immagineService = new ImmagineServiceImpl();
+      ImmagineService immagineService =
+              new ImmagineServiceImpl(new ImmagineDAO());
       Immagine immagine = new Immagine();
       immagine.setCampagna(campagna);
 
       if (!fotoList.isEmpty()) {
-         immagineService.eliminaImmagini(campagna.getIdCampagna());
+         immagineService.eliminaImmaginiCampagna(campagna.getIdCampagna());
       }
 
       for (String fotoPath : fotoList) {

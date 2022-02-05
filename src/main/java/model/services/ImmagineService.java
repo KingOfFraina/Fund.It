@@ -16,5 +16,5 @@ public interface ImmagineService {
     * @param idCampagna l'idCampagna della campagna
     * @return l'esito con cui si è conclusa l'operazione
     */
-   boolean eliminaImmagini(int idCampagna);
+   boolean eliminaImmaginiCampagna(int idCampagna);
 }

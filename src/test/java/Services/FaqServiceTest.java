@@ -24,8 +24,8 @@ public class FaqServiceTest {
    public void setup() {
       faq = new FAQ();
       faq.setIdFaq(1);
-      faq.setDomanda("");
-      faq.setRisposta("");
+      faq.setDomanda("Domanda");
+      faq.setRisposta("Risposta");
       utente = new Utente();
       faq.setUtenteCreatore(utente);
    }

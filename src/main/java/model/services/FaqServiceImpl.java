@@ -12,7 +12,7 @@ public final class FaqServiceImpl implements FaqService {
    private DAO<FAQ> dao;
 
    /**
-    * Il costruttore per la classe FAQ.
+    * Il costruttore per la classe FAQService.
     *
     * @param newDAO il DAO da utilizzare per eseguire le operazioni richieste.
     */

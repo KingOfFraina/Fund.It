@@ -1,17 +1,31 @@
 package model.services;
 
+import model.DAO.DAO;
 import model.DAO.ImmagineDAO;
 import model.beans.Immagine;
 
 public final class ImmagineServiceImpl implements ImmagineService {
+   /**
+    * Il DAO usato per eseguire le operazioni.
+    */
+   private DAO<Immagine> dao;
 
-   @Override
-   public boolean salvaImmagine(final Immagine immagine) {
-      return new ImmagineDAO().save(immagine);
+   /**
+    * Il costruttore per la classe ImmagineService.
+    *
+    * @param newDAO il DAO da utilizzare per eseguire le operazioni richieste.
+    */
+   public ImmagineServiceImpl(final DAO<Immagine> newDAO) {
+      this.dao = newDAO;
    }
 
    @Override
-   public boolean eliminaImmagini(final int idCampagna) {
-      return new ImmagineDAO().deleteByIdCampagna(idCampagna);
+   public boolean salvaImmagine(final Immagine immagine) {
+      return dao.save(immagine);
+   }
+
+   @Override
+   public boolean eliminaImmaginiCampagna(final int idCampagna) {
+      return ((ImmagineDAO) dao).deleteByIdCampagna(idCampagna);
    }
 }
