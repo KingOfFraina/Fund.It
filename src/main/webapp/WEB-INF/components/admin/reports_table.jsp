@@ -5,6 +5,7 @@
         <th scope="col">#ID Segnalazione</th>
         <th scope="col">#ID Campagna</th>
         <th scope="col">Motivazione</th>
+        <th scope="col">Stato</th>
         <th scope="col">Archivia</th>
         <th scope="col">Risolvi</th>
     </tr>
@@ -17,7 +18,7 @@
                     <th scope="row">${segnalazione.idSegnalazione}</th>
                     <td onclick="window.location.href ='${pageContext.request.contextPath}/campagna/campagna?idCampagna=${segnalazione.campagnaSegnalata.idCampagna}'">${segnalazione.campagnaSegnalata.idCampagna}</td>
                     <td>${segnalazione.descrizione}</td>
-
+                    <td>${segnalazione.statoSegnalazione}</td>
                     <td>
                         <form action="${pageContext.request.contextPath}/segnalazioni/risolvi" method="post">
                             <input type="hidden" name="idCampagna" value="${segnalazione.campagnaSegnalata.idCampagna}">
@@ -44,6 +45,7 @@
                     <th scope="row">${segnalazione.idSegnalazione}</th>
                     <td>${segnalazione.campagnaSegnalata.idCampagna}</td>
                     <td>${segnalazione.descrizione}</td>
+                    <td>${segnalazione.statoSegnalazione}</td>
                 </tr>
             </c:otherwise>
         </c:choose>
