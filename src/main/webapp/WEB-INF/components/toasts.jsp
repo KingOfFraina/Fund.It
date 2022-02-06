@@ -7,7 +7,7 @@
     var option =
         {
             animation : true,
-            delay : 5000
+            delay : 10000
         };
 
     function Toasty( )

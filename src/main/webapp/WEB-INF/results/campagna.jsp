@@ -9,9 +9,13 @@
 <body onload="percentage(${campagna.sommaTarget}, ${campagna.sommaRaccolta})">
 
 <div>
-    <%@include file="../components/toasts.jsp" %>
+
     <!--Navbar-->
     <%@include file="../components/navbar.jsp" %>
+    <div class="text-center mt-2">
+        <%@include file="../components/toasts.jsp" %>
+    </div>
+
 
     <!--Report-->
     <c:if test="${sessionScope.titoloReport.length() > 0}">
