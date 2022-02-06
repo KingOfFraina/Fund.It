@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 @WebServlet(name = "GestioneDonazioneController",
         value = "/donazione/*")
@@ -74,8 +73,8 @@ public final class GestioneDonazioneController extends HttpServlet {
 
         Campagna campagna = campagnaService
                 .trovaCampagna(id);
-
-        String path = request.getPathInfo() == null ? "/" : request.getPathInfo();
+        String path = request.getPathInfo() == null ? "/"
+                : request.getPathInfo();
         switch (path) {
             case "/registraDonazione" -> {
                 HttpSession session = request.getSession();
