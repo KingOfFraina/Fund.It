@@ -23,7 +23,16 @@
             onclick="window.location.href ='${pageContext.request.contextPath}/campagna/campagna?idCampagna=${campagna.idCampagna}'">
             <th scope="row">${campagna.idCampagna}</th>
             <td>${campagna.titolo}</td>
-            <td>${campagna.stato}</td>
+            <c:choose>
+                <c:when test="${campagna.stato.toString().equalsIgnoreCase('Attiva')}">
+                    <td style="color: green">${campagna.stato.toString()}</td>
+                </c:when>
+
+                <c:otherwise>
+                    <td style="color: red">${campagna.stato.toString()}</td>
+                </c:otherwise>
+
+            </c:choose>
             <td>${campagna.sommaRaccolta}&euro;</td>
             <td>${campagna.sommaTarget}&euro;</td>
         </tr>

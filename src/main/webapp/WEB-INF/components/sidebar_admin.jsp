@@ -32,11 +32,16 @@
 
         <li>
             <a onclick="showCategoriesTable()"
-               style="font-family: Comfortaa, cursive; font-size: 20px; text-decoration: none; color: black; margin-bottom: 20px;">Gestisci Categoria
+               style="font-family: Comfortaa, cursive; font-size: 20px; text-decoration: none; color: black; margin-bottom: 20px;">Gestisci Categorie
             </a>
         </li>
 
-
     </ul>
 </nav>
+
+<style>
+    li:hover{
+        cursor: pointer;
+    }
+</style>
 
