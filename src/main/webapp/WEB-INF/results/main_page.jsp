@@ -29,7 +29,7 @@
         <div style="display: block">
             <!--Searchbar-->
             <div class="navbar-text center mt-4">
-                <form class="form-inline mx-2 my-2" action="${pageContext.request.contextPath}/GestioneCampagnaController/ricerca">
+                <form class="form-inline mx-2 my-2" action="${pageContext.request.contextPath}/campagna/ricerca">
                     <div class="row">
                         <div class = "col">
                             <input class="form-control mr-sm-2 mx-3" id="searchbar" type="search" name = "searchText"
@@ -50,7 +50,7 @@
 
         <!--Bottone-->
         <div class="text-center" style="margin-top: 70px; margin-bottom: 150px;">
-            <button id="crea" type="button" class="" onclick="location.href = '${pageContext.request.contextPath}/GestioneCampagnaController/creaCampagna'">Crea una campagna</button>
+            <button id="crea" type="button" class="" onclick="location.href = '${pageContext.request.contextPath}/campagna/creaCampagna'">Crea una campagna</button>
         </div>
 
 
@@ -78,7 +78,7 @@
                                              alt="Card image cap">
                                         <div class="card-body">
                                             <h5 class="card-title">${campagna.titolo}</h5>
-                                            <a href="${pageContext.request.contextPath}/GestioneCampagnaController/campagna?idCampagna=${campagna.idCampagna}" class="btn btn-primary mt-3"
+                                            <a href="${pageContext.request.contextPath}/campagna/campagna?idCampagna=${campagna.idCampagna}" class="btn btn-primary mt-3"
                                                style="background-color: #00AB98; border-color: #00AB98;">Vai alla campagna</a>
                                         </div>
                                     </div>
