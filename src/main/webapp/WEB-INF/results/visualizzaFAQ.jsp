@@ -7,6 +7,23 @@
 </head>
 <body>
 <%@include file="../components/navbar.jsp" %>
+<div class="text-center mt-2">
+    <%@include file="../components/toasts.jsp" %>
+</div>
+
+
+<!--Report-->
+<c:if test="${sessionScope.titoloReport.length() > 0}">
+    <input id="message" type="hidden"
+           value="${sessionScope.tipoReport}+${sessionScope.titoloReport}+${sessionScope.bodyReport}">
+    <script>
+
+        Toasty();
+    </script>
+    ${sessionScope.tipoReport = null}
+    ${sessionScope.titoloReport = null}
+    ${sessionScope.bodyReport = null}
+</c:if>
 
 <div class="container text-center mt-4">
     <h1>FAQ</h1>
