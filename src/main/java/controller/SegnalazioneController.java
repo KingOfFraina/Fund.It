@@ -18,6 +18,7 @@ import model.services.UtenteService;
 import model.services.ReportService;
 import model.services.UtenteServiceImpl;
 import model.services.TipoReport;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -100,48 +101,48 @@ public final class SegnalazioneController extends HttpServlet {
                        HttpServletResponse.SC_UNAUTHORIZED,
                        "Non autorizzato");
                return;
-            }
-            String scelta = request.getParameter("sceltaSegnalazione");
-            int id = Integer.parseInt(request.getParameter("idCampagna"));
-            int idSegnalazione =
-                    Integer.parseInt(
-                            request.getParameter("idSegnalazione"));
-            Campagna campagna = campagnaService.trovaCampagna(id);
-            if (scelta.equals("Risolvi")) {
-               segnalazioniService
-                       .risolviSegnalazione(idSegnalazione,
-                               StatoSegnalazione.RISOLTA);
-               Utente utenteSegnalato =
-                       utenteService.visualizzaDashboardUtente(
-                               campagna.getUtente().getIdUtente());
-               campagnaService.cancellaCampagna(campagna);
-               utenteService.sospensioneUtente(utenteSegnalato);
-               CampagnaInterface campagnaProxy =
-                       new CampagnaProxy(campagna);
-               if (campagnaService
-                       .rimborsaDonazioni(campagna, campagnaProxy)) {
-                  ReportService.creaReport(request, TipoReport.INFO,
-                          "Esito operazione:", "Segnalazione risolta");
-               } else {
-                  ReportService.creaReport(request, TipoReport.ERRORE,
-                          "Esito operazione:", "Segnalazione non risolta");
-               }
             } else {
-               if (segnalazioniService
-                       .risolviSegnalazione(idSegnalazione,
-                               StatoSegnalazione.ARCHIVIATA)) {
-                  ReportService.creaReport(request, TipoReport.INFO,
-                          "Esito operazione:", "Segnalazione archiviata");
+               String scelta = request.getParameter("sceltaSegnalazione");
+               int id = Integer.parseInt(request.getParameter("idCampagna"));
+               int idSegnalazione =
+                       Integer.parseInt(
+                               request.getParameter("idSegnalazione"));
+               Campagna campagna = campagnaService.trovaCampagna(id);
+               if (scelta.equals("Risolvi")) {
+                  segnalazioniService
+                          .risolviSegnalazione(idSegnalazione,
+                                  StatoSegnalazione.RISOLTA);
+                  Utente utenteSegnalato =
+                          utenteService.visualizzaDashboardUtente(
+                                  campagna.getUtente().getIdUtente());
+                  campagnaService.cancellaCampagna(campagna);
+                  utenteService.sospensioneUtente(utenteSegnalato);
+                  CampagnaInterface campagnaProxy =
+                          new CampagnaProxy(campagna);
+                  if (campagnaService
+                          .rimborsaDonazioni(campagna, campagnaProxy)) {
+                     ReportService.creaReport(request, TipoReport.INFO,
+                             "Esito operazione:", "Segnalazione risolta");
+                  } else {
+                     ReportService.creaReport(request, TipoReport.ERRORE,
+                             "Esito operazione:", "Segnalazione non risolta");
+                  }
                } else {
-                  ReportService.creaReport(request, TipoReport.ERRORE,
-                          "Esito operazione:", "Segnalazione non archviata");
+                  if (segnalazioniService
+                          .risolviSegnalazione(idSegnalazione,
+                                  StatoSegnalazione.ARCHIVIATA)) {
+                     ReportService.creaReport(request, TipoReport.INFO,
+                             "Esito operazione:", "Segnalazione archiviata");
+                  } else {
+                     ReportService.creaReport(request, TipoReport.ERRORE,
+                             "Esito operazione:", "Segnalazione non archviata");
+                  }
                }
+               response.sendRedirect(request
+                       .getServletContext().getContextPath()
+                       + "/GestioneUtenteController/visualizzaDashboard");
             }
-            response.sendRedirect(request
-                    .getServletContext().getContextPath()
-                    + "/GestioneUtenteController/visualizzaDashboard");
          }
-
          default -> response.sendError(HttpServletResponse.SC_NOT_FOUND);
       }
    }
