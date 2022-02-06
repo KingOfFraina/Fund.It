@@ -2,6 +2,7 @@ package model.beans;
 
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 
 public final class Segnalazione {
@@ -59,7 +60,7 @@ public final class Segnalazione {
      * @param data La nuova data della segnalazione.
      */
     public void setDataOra(final LocalDateTime data) {
-        this.dataOra = data;
+        this.dataOra = data.truncatedTo(ChronoUnit.MINUTES);
     }
 
     /**

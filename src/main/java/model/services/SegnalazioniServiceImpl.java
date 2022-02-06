@@ -66,27 +66,20 @@ public class SegnalazioniServiceImpl implements SegnalazioniService {
         }
     }
 
+
     /**
-     * @param campagna    istanza di Campagna da segnalare
-     * @param segnalatore istanza di Utente che effettua la segnalazione
-     * @param descrizione Stringa di descrizione della segnalazione
+     * @param segnalazione istanza di Segnalazione che esprime una
+     *                     segnalazione fatta da un utente verso una campagna
      * @return true se l'operazione è andata a buon fine, false altrimenti
      */
     @Override
-    public boolean segnalaCampagna(final Campagna campagna,
-                                   final Utente segnalatore,
-                                   final String descrizione) {
-        if (campagna == null || segnalatore == null || descrizione == null) {
+    public boolean segnalaCampagna(final Segnalazione segnalazione) {
+        if (segnalazione == null || segnalazione.getCampagnaSegnalata() == null
+                || segnalazione.getSegnalatore() == null || segnalazione.getSegnalato() == null
+                || segnalazione.getDescrizione() == null) {
             throw new IllegalArgumentException("Arguments must be not null");
         } else {
-            Segnalazione s = new Segnalazione();
-            s.setCampagnaSegnalata(campagna);
-            s.setSegnalato(campagna.getUtente());
-            s.setSegnalatore(segnalatore);
-            s.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
-            s.setDataOra(LocalDateTime.now());
-            s.setDescrizione(descrizione);
-            return dao.save(s);
+            return dao.save(segnalazione);
         }
     }
 }

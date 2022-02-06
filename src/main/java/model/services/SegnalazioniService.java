@@ -27,11 +27,9 @@ public interface SegnalazioniService {
    boolean risolviSegnalazione(int idSegnalazione, StatoSegnalazione stato);
 
    /**
-    * @param campagna    istanza di Campagna da segnalare
-    * @param segnalatore istanza di Utente che effettua la segnalazionr
-    * @param descrizione Stringa di descrizione della segnalazione
+    * @param segnalazione istanza di Segnalazione che esprime una
+    *                     segnalazione fatta da un utente verso una campagna
     * @return true se l'operazione è andata a buon fine, false altrimenti
     */
-   boolean segnalaCampagna(Campagna campagna, Utente segnalatore,
-                           String descrizione);
+   boolean segnalaCampagna(Segnalazione segnalazione);
 }

@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -92,6 +93,7 @@ public final class SegnalazioneController extends HttpServlet {
 
         String descrizione = request.getParameter("descrizione");
         String resource = "/";
+        Segnalazione segnalazione = new Segnalazione();
 
         switch (path) {
             case "/segnala":
@@ -100,8 +102,14 @@ public final class SegnalazioneController extends HttpServlet {
                 Utente utente = new Utente();
                 utente.setIdUtente(//todo attenzione al campo; la jsp manda solo idutente
                         Integer.parseInt(request.getParameter("idUtente")));
+                segnalazione.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
+                segnalazione.setSegnalatore(utente);
+                segnalazione.setCampagnaSegnalata(c);
+                segnalazione.setSegnalato(c.getUtente());
+                segnalazione.setDescrizione(descrizione);
+                segnalazione.setDataOra(LocalDateTime.now());
                 if (segnalazioniService.
-                        segnalaCampagna(c, utente, descrizione)) {
+                        segnalaCampagna(segnalazione)) {
                     response.sendRedirect(
                             getServletContext().getContextPath()
                                     + "/index.jsp");
