@@ -103,9 +103,9 @@
                                     class="fas fa-flag"></i> Segnala la raccolta fondi</a>
                         </c:when>
                         <c:otherwise>
-                            <a data-bs-toggle="modal" data-bs-target="#modalSegnalazioni"
+                            <a data-bs-toggle="modal" onclick="alert('Effettua prima il login!')"
                                style="color: black; font-size: 20px"><i
-                                    class="fas fa-flag" onclick="alert('Effettua prima il login!')"></i> Segnala la
+                                    class="fas fa-flag" ></i> Segnala la
                                 raccolta
                                 fondi</a>
                         </c:otherwise>
