@@ -12,6 +12,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SegnalazioniServiceTest {
@@ -29,6 +31,7 @@ public class SegnalazioniServiceTest {
         segnalazione = new Segnalazione();
         utente = new Utente();
         campagna = new Campagna();
+        campagna.setUtente(utente);
         segnalazione.setIdSegnalazione(10);
     }
 
@@ -70,23 +73,56 @@ public class SegnalazioniServiceTest {
 
     @Test
     public void testSegnalaCampagnaNullArguments() {
-        assertAll(() ->
-                        assertThrows(IllegalArgumentException.class,
-                                () -> segnalazioniService
-                                        .segnalaCampagna(campagna, utente, null)),
+        Segnalazione segnalazione1 = new Segnalazione();
+        segnalazione1.setSegnalatore(null);
+        segnalazione1.setCampagnaSegnalata(campagna);
+        segnalazione1.setDescrizione("");
+
+        Segnalazione segnalazione2 = new Segnalazione();
+        segnalazione2.setSegnalatore(utente);
+        segnalazione2.setCampagnaSegnalata(null);
+        segnalazione2.setDescrizione("");
+
+        Segnalazione segnalazione3 = new Segnalazione();
+        segnalazione3.setSegnalatore(utente);
+        segnalazione3.setCampagnaSegnalata(campagna);
+        segnalazione3.setDescrizione(null);
+
+        Segnalazione segnalazione4 = new Segnalazione();
+        segnalazione4.setDescrizione("");
+        segnalazione4.setSegnalatore(utente);
+        segnalazione4.setCampagnaSegnalata(campagna);
+        segnalazione4.setSegnalato(null);
+        assertAll(() -> assertThrows(IllegalArgumentException.class,
+                        () -> segnalazioniService
+                                .segnalaCampagna(null)),
                 () ->
                         assertThrows(IllegalArgumentException.class,
                                 () -> segnalazioniService
-                                        .segnalaCampagna(null, utente, "")),
+                                        .segnalaCampagna(segnalazione1)),
                 () ->
                         assertThrows(IllegalArgumentException.class,
                                 () -> segnalazioniService
-                                        .segnalaCampagna(campagna, null, "")));
+                                        .segnalaCampagna(segnalazione2)),
+                () ->
+                        assertThrows(IllegalArgumentException.class,
+                                () -> segnalazioniService
+                                        .segnalaCampagna(segnalazione3)),
+                () ->
+                        assertThrows(IllegalArgumentException.class,
+                                () -> segnalazioniService
+                                        .segnalaCampagna(segnalazione4)));
     }
 
-   /* @Test
+    @Test
     public void testSegnalaCampagna() {
-        assertTrue(segnalazioniService.segnalaCampagna(campagna, utente, "We"));
-    }*/
+        Mockito.when(mockDao.save(segnalazione)).thenReturn(true);
+        segnalazione.setCampagnaSegnalata(campagna);
+        segnalazione.setSegnalatore(utente);
+        segnalazione.setSegnalato(campagna.getUtente());
+        segnalazione.setDataOra(LocalDateTime.now());
+        segnalazione.setDescrizione("descrizione");
+        assertTrue(segnalazioniService.segnalaCampagna(segnalazione));
+    }
 
 }
