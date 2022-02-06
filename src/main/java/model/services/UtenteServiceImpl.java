@@ -1,6 +1,7 @@
 package model.services;
 
 import model.DAO.DAO;
+import model.DAO.UtenteDAO;
 import model.beans.Utente;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,13 @@ public class UtenteServiceImpl implements UtenteService {
     */
    public UtenteServiceImpl(final DAO<Utente> utenteDAO) {
       this.dao = utenteDAO;
+   }
+
+   /**
+    * Il costruttore per la classe FAQService.
+    */
+   public UtenteServiceImpl() {
+      this.dao = new UtenteDAO();
    }
 
    /**

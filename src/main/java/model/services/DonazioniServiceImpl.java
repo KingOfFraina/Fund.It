@@ -14,10 +14,18 @@ public final class DonazioniServiceImpl implements DonazioniService {
     private final DAO<Donazione> dao;
 
     /**
+     * Costruttore Donazione Service.
      * @param donazioneDAO istanza di DonazioneDAO
      */
     public DonazioniServiceImpl(final DAO<Donazione> donazioneDAO) {
         this.dao = donazioneDAO;
+    }
+
+    /**
+     * Costruttore Donazione Service.
+     */
+    public DonazioniServiceImpl() {
+        this.dao = new DonazioneDAO();
     }
 
     @Override
