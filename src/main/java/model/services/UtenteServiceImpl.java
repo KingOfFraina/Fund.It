@@ -101,7 +101,9 @@ public class UtenteServiceImpl implements UtenteService {
          if (utente.getDataBan() != null) {
             utente.setDataBan(null);
          } else {
-            utente.setDataBan(LocalDateTime.now());
+            final long giorniBan = 5;
+            utente.setDataBan(LocalDateTime.now()
+                    .plusDays(giorniBan));
          }
          return dao.update(utente);
       }

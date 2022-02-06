@@ -1,4 +1,3 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <table class="table table-striped table-bordered table-hover">
     <thead>
@@ -19,8 +18,24 @@
                     <td onclick="window.location.href ='${pageContext.request.contextPath}/campagna/campagna?idCampagna=${segnalazione.campagnaSegnalata.idCampagna}'">${segnalazione.campagnaSegnalata.idCampagna}</td>
                     <td>${segnalazione.descrizione}</td>
 
-                    <td><button class="btn btn-primary pulsante" style="border-color: #00AB98; background-color: #00AB98; color: white" id="archiviaBtn"><i class="fas fa-archive"></i></button></td>
-                    <td><button class="btn btn-primary pulsante" style="border-color: #00AB98; background-color: #00AB98; color: white" id="risolviBtn"><i class="fas fa-check-square"></i></button></td>
+                    <td>
+                        <form action="${pageContext.request.contextPath}/segnalazioni/risolvi" method="post">
+                            <input type="hidden" name="idCampagna" value="${segnalazione.campagnaSegnalata.idCampagna}">
+                            <input type="hidden" name="idSegnalazione" value="${segnalazione.idSegnalazione}">
+                            <button class="btn btn-primary pulsante" style="border-color: #00AB98; background-color: #00AB98; color: white" name="sceltaSegnalazione" value="Archivia">
+                                <i class="fas fa-archive"></i>
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="${pageContext.request.contextPath}/segnalazioni/risolvi" method="post">
+                            <input type="hidden" name="idCampagna" value="${segnalazione.campagnaSegnalata.idCampagna}">
+                            <input type="hidden" name="idSegnalazione" value="${segnalazione.idSegnalazione}">
+                            <button class="btn btn-primary pulsante" style="border-color: #00AB98; background-color: #00AB98; color: white" name="sceltaSegnalazione" value="Risolvi">
+                                <i class="fas fa-check-square"></i>
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             </c:when>
             <c:otherwise>
@@ -34,32 +49,4 @@
         </c:choose>
     </c:forEach>
     </tbody>
-    <script>
-        $(document).ready(
-            function () {
-                $("#archiviaBtn").click(
-                    function () {
-                        $.post("./segnalazioni/risolvi",
-                            {
-                                sceltaSegnalazione: "Archivia"
-                            },
-                            function (data, status) {
-                                location.reload();
-                            });
-                    }
-                )
-
-                $("#risolviBtn").click(
-                    function () {
-                        $.post("./segnalazioni/risolvi",
-                            {
-                                sceltaSegnalazione: "Risolvi"
-                            },
-                            function (data, status) {
-                                location.reload();
-                            });
-                    }
-                )
-            });
-    </script>
 </table>

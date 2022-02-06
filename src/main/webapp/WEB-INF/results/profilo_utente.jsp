@@ -10,6 +10,22 @@
 <!--Navbar-->
 <%@include file="../components/navbar.jsp" %>
 <div id="div-info" class="container text-center my-5">
+    <!--Report-->
+
+    <div class="text-center mt-2">
+        <%@include file="../components/toasts.jsp" %>
+    </div>
+    <c:if test="${sessionScope.titoloReport.length() > 0}">
+        <input id="message" type="hidden"
+               value="${sessionScope.tipoReport}+${sessionScope.titoloReport}+${sessionScope.bodyReport}">
+        <script>
+
+            Toasty();
+        </script>
+        ${sessionScope.tipoReport = null}
+        ${sessionScope.titoloReport = null}
+        ${sessionScope.bodyReport = null}
+    </c:if>
     <div id="informazioni">
         <h2>Bentornato ${utente.nome}!</h2>
         <c:choose>

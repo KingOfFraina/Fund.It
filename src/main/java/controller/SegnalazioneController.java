@@ -119,7 +119,7 @@ public final class SegnalazioneController extends HttpServlet {
             }
 
             response.sendRedirect(request.getServletContext().getContextPath()
-                   + "/campagna/campagna?idCampagna=" + idCampagna);
+                    + "/campagna/campagna?idCampagna=" + idCampagna);
 
             return;
          }
@@ -149,15 +149,26 @@ public final class SegnalazioneController extends HttpServlet {
                        new CampagnaProxy(campagna);
                if (campagnaService
                        .rimborsaDonazioni(campagna, campagnaProxy)) {
-                  System.out.println("tutto bene");
+                  ReportService.creaReport(request, TipoReport.INFO,
+                          "Esito operazione:", "Segnalazione risolta");
                } else {
-                  System.out.println("errore");
+                  ReportService.creaReport(request, TipoReport.ERRORE,
+                          "Esito operazione:", "Segnalazione non risolta");
                }
             } else {
-               segnalazioniService
+               if (segnalazioniService
                        .risolviSegnalazione(idSegnalazione,
-                               StatoSegnalazione.ARCHIVIATA);
+                               StatoSegnalazione.ARCHIVIATA)) {
+                  ReportService.creaReport(request, TipoReport.INFO,
+                          "Esito operazione:", "Segnalazione archiviata");
+               } else {
+                  ReportService.creaReport(request, TipoReport.ERRORE,
+                          "Esito operazione:", "Segnalazione non archviata");
+               }
             }
+            response.sendRedirect(request
+                    .getServletContext().getContextPath()
+                    + "/GestioneUtenteController/visualizzaDashboard");
          }
 
          default -> response.sendError(HttpServletResponse.SC_NOT_FOUND);
