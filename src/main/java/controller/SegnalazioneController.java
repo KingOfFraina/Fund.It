@@ -18,6 +18,7 @@ import model.services.UtenteService;
 import model.services.ReportService;
 import model.services.UtenteServiceImpl;
 import model.services.TipoReport;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -108,16 +109,19 @@ public final class SegnalazioneController extends HttpServlet {
             segnalazione.setDescrizione(descrizione);
             segnalazione.setDataOra(LocalDateTime.now());
             segnalazione.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
+
             if (segnalazioniService.segnalaCampagna(segnalazione)) {
-               request.getRequestDispatcher("/campagna/campagna"
-                               + "?idCampagna=" + idCampagna)
-                       .forward(request, response);
-               return;
+               ReportService.creaReport(request, TipoReport.INFO,
+                       "Esito operazione:", "Segnalazione inviata");
             } else {
                ReportService.creaReport(request, TipoReport.ERRORE,
-                       "Segnalazione non inviata");
-               return;
+                       "Esito operazione:", "Segnalazione non inviata");
             }
+
+            response.sendRedirect(request.getServletContext().getContextPath()
+                   + "/campagna/campagna?idCampagna=" + idCampagna);
+
+            return;
          }
          case "/risolvi" -> {
             if (!userSession.isAdmin()) {

@@ -17,8 +17,8 @@ public interface ReportService {
    static boolean creaReport(HttpServletRequest request, TipoReport tipoReport,
                              String titolo, String... arguments) {
       if (request != null) {
-         request.setAttribute("tipoReport", tipoReport.toString());
-         request.setAttribute("titoloReport", titolo);
+         request.getSession().setAttribute("tipoReport", tipoReport.toString());
+         request.getSession().setAttribute("titoloReport", titolo);
 
          StringBuilder body = new StringBuilder();
 
@@ -27,7 +27,7 @@ public interface ReportService {
             body.append(it.next()).append("\n");
          }
 
-         request.setAttribute("bodyReport", body.toString());
+         request.getSession().setAttribute("bodyReport", body.toString());
          return true;
       } else {
          return false;
