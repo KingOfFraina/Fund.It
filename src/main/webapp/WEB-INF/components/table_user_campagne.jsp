@@ -20,7 +20,7 @@
     <c:forEach items="${utente.campagne}" var="campagna">
 
         <tr class="clickable clickable-row"
-            onclick="window.location.href ='${pageContext.request.contextPath}/GestioneCampagnaController/campagna?idCampagna=${campagna.idCampagna}'">
+            onclick="window.location.href ='${pageContext.request.contextPath}/campagna/campagna?idCampagna=${campagna.idCampagna}'">
             <th scope="row">${campagna.idCampagna}</th>
             <td>${campagna.titolo}</td>
             <td>${campagna.stato}</td>
