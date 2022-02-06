@@ -27,7 +27,8 @@ public final class CampagnaDAO
             throw new IllegalArgumentException("Id <= 0");
         } else {
             try (Connection connection = ConPool.getInstance().getConnection();
-                 PreparedStatement statement = connection.prepareStatement("SELECT"
+                 PreparedStatement statement =
+                         connection.prepareStatement("SELECT"
                          + " * FROM campagna "
                          + " WHERE idCampagna = ?")) {
                 int index = 1;
@@ -164,7 +165,8 @@ public final class CampagnaDAO
                 statement.setString(++index, entity.getDescrizione());
                 statement.setDouble(++index, entity.getSommaRaccolta());
                 statement.setDouble(++index, entity.getSommaTarget());
-                statement.setInt(++index, entity.getCategoria().getIdCategoria());
+                statement.setInt(++index,
+                        entity.getCategoria().getIdCategoria());
                 statement.setInt(++index, entity.getIdCampagna());
 
                 return statement.executeUpdate() > 0;

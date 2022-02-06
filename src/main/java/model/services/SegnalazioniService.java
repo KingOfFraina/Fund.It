@@ -1,9 +1,7 @@
 package model.services;
 
-import model.beans.Campagna;
 import model.beans.Segnalazione;
 import model.beans.StatoSegnalazione;
-import model.beans.Utente;
 
 import java.util.List;
 

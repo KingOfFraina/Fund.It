@@ -1,12 +1,9 @@
 package model.services;
 
 import model.DAO.DAO;
-import model.beans.Campagna;
 import model.beans.Segnalazione;
 import model.beans.StatoSegnalazione;
-import model.beans.Utente;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class SegnalazioniServiceImpl implements SegnalazioniService {
@@ -75,7 +72,8 @@ public class SegnalazioniServiceImpl implements SegnalazioniService {
     @Override
     public boolean segnalaCampagna(final Segnalazione segnalazione) {
         if (segnalazione == null || segnalazione.getCampagnaSegnalata() == null
-                || segnalazione.getSegnalatore() == null || segnalazione.getSegnalato() == null
+                || segnalazione.getSegnalatore() == null
+                || segnalazione.getSegnalato() == null
                 || segnalazione.getDescrizione() == null) {
             throw new IllegalArgumentException("Arguments must be not null");
         } else {

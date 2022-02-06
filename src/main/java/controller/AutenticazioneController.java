@@ -113,7 +113,8 @@ public final class AutenticazioneController extends HttpServlet {
       } else if (utente.getIdUtente() == -1) {
          response.sendRedirect(
                  getServletContext().getContextPath()
-                         + "/AutenticazioneController/login"); //todo reinderizzamento a messaggio di errore/BAN
+                         + "/AutenticazioneController/login");
+         //todo reinderizzamento a messaggio di errore/BAN
       } else {
          response.sendRedirect(
                  getServletContext().getContextPath()

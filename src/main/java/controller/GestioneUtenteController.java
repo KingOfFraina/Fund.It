@@ -6,10 +6,14 @@ import model.DAO.DAO;
 import model.DAO.DonazioneDAO;
 import model.DAO.SegnalazioneDAO;
 import model.DAO.UtenteDAO;
-import model.beans.Segnalazione;
 import model.beans.Utente;
 import model.beans.proxies.UtenteProxy;
-import model.services.*;
+import model.services.DonazioniService;
+import model.services.DonazioniServiceImpl;
+import model.services.SegnalazioniService;
+import model.services.SegnalazioniServiceImpl;
+import model.services.UtenteService;
+import model.services.UtenteServiceImpl;
 import model.storage.ConPool;
 
 import javax.servlet.RequestDispatcher;
@@ -90,12 +94,15 @@ public final class GestioneUtenteController extends HttpServlet {
                     "Non autorizzato.");
         }
         UtenteService us = new UtenteServiceImpl(new UtenteDAO());
-        SegnalazioniService segnalazioniService = new SegnalazioniServiceImpl(new SegnalazioneDAO());
-        DonazioniService donazioniService = new DonazioniServiceImpl(new DonazioneDAO());
+        SegnalazioniService segnalazioniService =
+                new SegnalazioniServiceImpl(new SegnalazioneDAO());
+        DonazioniService donazioniService =
+                new DonazioniServiceImpl(new DonazioneDAO());
 
 
         request.setAttribute("utentiList", us.visualizzaUtenti(ut));
-        request.setAttribute("segnalazioniList", segnalazioniService.trovaSegnalazioni());
+        request.setAttribute("segnalazioniList",
+                segnalazioniService.trovaSegnalazioni());
         request.setAttribute("donazioniList", null);
 
         RequestDispatcher dispatcher =
@@ -184,7 +191,8 @@ public final class GestioneUtenteController extends HttpServlet {
         }
 
         UtenteService utenteService = new UtenteServiceImpl(new UtenteDAO());
-        Utente utenteBannato = utenteService.visualizzaDashboardUtente(idUtenteban);
+        Utente utenteBannato =
+                utenteService.visualizzaDashboardUtente(idUtenteban);
         utenteService.sospensioneUtente(utenteBannato);
         //todo return!!
     }
@@ -241,7 +249,8 @@ public final class GestioneUtenteController extends HttpServlet {
 
         if (idUtente != null) {
             try {
-                ut = utenteService.visualizzaDashboardUtente(Integer.parseInt(idUtente));
+                ut = utenteService
+                        .visualizzaDashboardUtente(Integer.parseInt(idUtente));
             } catch (NumberFormatException e) {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                         "Errore conversione");

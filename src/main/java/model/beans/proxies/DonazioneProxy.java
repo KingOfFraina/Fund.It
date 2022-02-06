@@ -2,14 +2,11 @@ package model.beans.proxies;
 
 import model.DAO.CampagnaDAO;
 import model.DAO.DAO;
-import model.DAO.DonazioneDAO;
 import model.DAO.UtenteDAO;
 import model.beans.Campagna;
 import model.beans.Donazione;
 import model.beans.Utente;
 import model.beans.proxyInterfaces.DonazioneInterface;
-
-import java.util.List;
 
 public final class DonazioneProxy implements DonazioneInterface {
     /**
