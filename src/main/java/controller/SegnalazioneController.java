@@ -2,7 +2,6 @@ package controller;
 
 import controller.utils.Validator;
 import model.DAO.CampagnaDAO;
-import model.DAO.SegnalazioneDAO;
 import model.DAO.UtenteDAO;
 import model.beans.Campagna;
 import model.beans.Segnalazione;
@@ -34,9 +33,7 @@ public final class SegnalazioneController extends HttpServlet {
    @Override
    protected void doGet(final HttpServletRequest request,
                         final HttpServletResponse response) {
-      SegnalazioniService service =
-              new SegnalazioniServiceImpl(new SegnalazioneDAO());
-
+      SegnalazioniService service = new SegnalazioniServiceImpl();
       List<Segnalazione> segnalazioni = service.trovaSegnalazioni();
       request.setAttribute("segnalazioni", segnalazioni);
    }
@@ -61,8 +58,7 @@ public final class SegnalazioneController extends HttpServlet {
       String idCampagna = request.getParameter("idCampagna");
       CampagnaService campagnaService =
               new CampagnaServiceImpl(new CampagnaDAO());
-      SegnalazioniService segnalazioniService =
-              new SegnalazioniServiceImpl(new SegnalazioneDAO());
+      SegnalazioniService segnalazioniService = new SegnalazioniServiceImpl();
       UtenteService utenteService = new UtenteServiceImpl(new UtenteDAO());
 
       switch (path) {

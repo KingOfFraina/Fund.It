@@ -1,6 +1,7 @@
 package model.services;
 
 import model.DAO.DAO;
+import model.DAO.SegnalazioneDAO;
 import model.beans.Segnalazione;
 import model.beans.StatoSegnalazione;
 
@@ -14,10 +15,18 @@ public class SegnalazioniServiceImpl implements SegnalazioniService {
     private final DAO<Segnalazione> dao;
 
     /**
+     * Costruttore della classe SegnalazioniService.
      * @param segnalazioneDAO istanza di interfaccia DAO<T>
      */
     public SegnalazioniServiceImpl(final DAO<Segnalazione> segnalazioneDAO) {
         this.dao = segnalazioneDAO;
+    }
+
+    /**
+     * Costruttore della classe SegnalazioniService.
+     */
+    public SegnalazioniServiceImpl() {
+        this.dao = new SegnalazioneDAO();
     }
 
     /**

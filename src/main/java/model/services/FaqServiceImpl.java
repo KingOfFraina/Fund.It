@@ -1,6 +1,7 @@
 package model.services;
 
 import model.DAO.DAO;
+import model.DAO.FaqDAO;
 import model.beans.FAQ;
 
 import java.util.List;
@@ -18,6 +19,13 @@ public final class FaqServiceImpl implements FaqService {
     */
    public FaqServiceImpl(final DAO<FAQ> newDAO) {
       this.dao = newDAO;
+   }
+
+   /**
+    * Il costruttore per la classe FAQService.
+    */
+   public FaqServiceImpl() {
+      this.dao = new FaqDAO();
    }
 
    @Override

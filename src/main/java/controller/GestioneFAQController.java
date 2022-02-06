@@ -1,10 +1,10 @@
 package controller;
 
-import model.DAO.FaqDAO;
 import model.beans.FAQ;
 import model.beans.Utente;
 import model.services.FaqServiceImpl;
-
+import model.services.ReportService;
+import model.services.TipoReport;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,8 +22,8 @@ public final class GestioneFAQController extends HttpServlet {
                         final HttpServletResponse response)
            throws ServletException, IOException {
 
-      String path = request.getPathInfo();
       String resource = "/WEB-INF/results/visualizzaFAQ.jsp";
+      String path = request.getPathInfo();
 
       if (!path.equals("/visualizzaFAQ")) {
          HttpSession session = request.getSession(false);
@@ -35,15 +35,18 @@ public final class GestioneFAQController extends HttpServlet {
                response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                        "Non Autorizzato");
                return;
-            }
+            } else {
+               if (path.equals("/modificaFAQ")) {
+                  request.setAttribute("faq", new FaqServiceImpl()
+                          .visualizzaFaq(Integer
+                                  .parseInt(request.getParameter("idFaq"))));
+               } else if (!path.equals("/inserisciFAQ")) {
+                  response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                  return;
+               }
 
-            if (path.equals("/modificaFAQ")) {
-               request.setAttribute("faq", new FaqServiceImpl(new FaqDAO())
-                       .visualizzaFaq(Integer
-                               .parseInt(request.getParameter("idFaq"))));
+               resource = "/WEB-INF/results/formFAQ.jsp";
             }
-
-            resource = "/WEB-INF/results/formFAQ.jsp";
          } else {
             response.sendRedirect(
                     getServletContext().getContextPath()
@@ -51,7 +54,8 @@ public final class GestioneFAQController extends HttpServlet {
             return;
          }
       } else {
-         visualizzaFAQ(request);
+         request.setAttribute("faqList", new FaqServiceImpl()
+                 .visualizzaFaq());
       }
 
       request.getRequestDispatcher(resource).forward(request, response);
@@ -62,79 +66,84 @@ public final class GestioneFAQController extends HttpServlet {
                          final HttpServletResponse response)
            throws IOException {
       String path = request.getPathInfo();
+      HttpSession session = request.getSession(false);
 
-      switch (path) {
-         case "/inserisciFAQ":
-            inserisciFAQ(request);
-            break;
-         case "/modificaFAQ":
-            modificaFAQ(request);
-            break;
-         case "/eliminaFAQ":
-            cancellaFAQ(request);
-            break;
-         default:
-            response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                    "Risorsa non trovata");
-            return;
+      if (session != null && session.getAttribute("utente") != null) {
+         Utente utente = (Utente) session.getAttribute("utente");
+
+         switch (path) {
+            case "/inserisciFAQ" -> {
+               String domanda = request.getParameter("domanda");
+               String risposta = request.getParameter("risposta");
+
+               if (domanda == null || domanda.isBlank()
+                       || risposta == null || domanda.isBlank()) {
+                  new IllegalArgumentException("Input errati");
+               }
+
+               FAQ faq = new FAQ();
+               faq.setDomanda(domanda);
+               faq.setRisposta(risposta);
+               faq.setUtenteCreatore(utente);
+
+               if (new FaqServiceImpl().inserisciFaq(faq)) {
+                  ReportService.creaReport(request, TipoReport.INFO,
+                          "Esito operazione:", "FAQ inserita con successo");
+               } else {
+                  ReportService.creaReport(request, TipoReport.ERRORE,
+                          "Esito operazione:", "FAQ non inserita");
+               }
+            }
+            case "/modificaFAQ" -> {
+               String domanda = request.getParameter("domanda");
+               String risposta = request.getParameter("risposta");
+               int idFAQ = Integer.parseInt(request.getParameter("idFaq"));
+
+               if (domanda == null || domanda.isBlank()
+                       || risposta == null || domanda.isBlank()) {
+
+                  new IllegalArgumentException("Input errati");
+               }
+
+               FAQ faq = new FAQ();
+               faq.setIdFaq(idFAQ);
+               faq.setDomanda(domanda);
+               faq.setRisposta(risposta);
+               faq.setUtenteCreatore(utente);
+
+               if (new FaqServiceImpl().modificaFaq(faq)) {
+                  ReportService.creaReport(request, TipoReport.INFO,
+                          "Esito operazione:", "FAQ modificata con successo");
+               } else {
+                  ReportService.creaReport(request, TipoReport.ERRORE,
+                          "Esito operazione:", "FAQ non modificata");
+               }
+            }
+            case "/eliminaFAQ" -> {
+               FAQ faq = new FAQ();
+               faq.setIdFaq(Integer.parseInt(request.getParameter("idFaq")));
+               faq.setUtenteCreatore(utente);
+
+               if (new FaqServiceImpl().cancellaFaq(faq)) {
+                  ReportService.creaReport(request, TipoReport.INFO,
+                          "Esito operazione:", "FAQ eliminata con successo");
+               } else {
+                  ReportService.creaReport(request, TipoReport.ERRORE,
+                          "Esito operazione:", "FAQ non eliminata");
+               }
+            }
+            default -> {
+               response.sendError(HttpServletResponse.SC_NOT_FOUND,
+                       "Risorsa non trovata");
+               return;
+            }
+         }
+
+         response.sendRedirect(
+                 getServletContext().getContextPath()
+                         + "/faq/visualizzaFAQ");
+      } else {
+         response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
       }
-
-      response.sendRedirect(
-              getServletContext().getContextPath()
-                      + "/faq/visualizzaFAQ");
-   }
-
-   private void visualizzaFAQ(final HttpServletRequest request) {
-      request.setAttribute("faqList", new FaqServiceImpl(new FaqDAO())
-              .visualizzaFaq());
-   }
-
-   private void inserisciFAQ(final HttpServletRequest request) {
-      Utente utente = (Utente) request.getSession(false).getAttribute("utente");
-
-      String domanda = request.getParameter("domanda");
-      String risposta = request.getParameter("risposta");
-
-      if (domanda == null || domanda.isBlank()
-              || risposta == null || domanda.isBlank()) {
-
-         new IllegalArgumentException("Input errati");
-      }
-
-      FAQ faq = new FAQ();
-      faq.setDomanda(domanda);
-      faq.setRisposta(risposta);
-      faq.setUtenteCreatore(utente);
-
-      new FaqServiceImpl(new FaqDAO()).inserisciFaq(faq);
-   }
-
-   private void modificaFAQ(final HttpServletRequest request) {
-      Utente utente = (Utente) request.getSession(false).getAttribute("utente");
-
-      String domanda = request.getParameter("domanda");
-      String risposta = request.getParameter("risposta");
-      int idFAQ = Integer.parseInt(request.getParameter("idFaq"));
-
-      if (domanda == null || domanda.isBlank()
-              || risposta == null || domanda.isBlank()) {
-
-         new IllegalArgumentException("Input errati");
-      }
-
-      FAQ faq = new FAQ();
-      faq.setIdFaq(idFAQ);
-      faq.setDomanda(domanda);
-      faq.setRisposta(risposta);
-      faq.setUtenteCreatore(utente);
-
-      new FaqServiceImpl(new FaqDAO()).modificaFaq(faq);
-   }
-
-   private void cancellaFAQ(final HttpServletRequest request) {
-
-      FAQ faq = new FAQ();
-      faq.setIdFaq(Integer.parseInt(request.getParameter("idFaq")));
-      new FaqServiceImpl(new FaqDAO()).cancellaFaq(faq);
    }
 }
