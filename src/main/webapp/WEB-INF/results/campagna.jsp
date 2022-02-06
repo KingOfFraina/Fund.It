@@ -9,7 +9,7 @@
 <body onload="percentage(${campagna.sommaTarget}, ${campagna.sommaRaccolta})">
 
 <div>
-
+    <%@include file="../components/toasts.jsp" %>
     <!--Navbar-->
     <%@include file="../components/navbar.jsp" %>
 
@@ -18,7 +18,8 @@
     <input id="message" type="hidden"
            value="${sessionScope.tipoReport}+${sessionScope.titoloReport}+${sessionScope.bodyReport}">
     <script>
-        alert(document.getElementById('message').value.replaceAll('+', '\n'));
+
+        Toasty();
     </script>
         ${sessionScope.tipoReport = null}
         ${sessionScope.titoloReport = null}
