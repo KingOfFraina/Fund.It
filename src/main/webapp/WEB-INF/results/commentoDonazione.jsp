@@ -4,6 +4,7 @@
   </head>
   <body>
     <form method="post" action="${pageContext.request.contextPath}/donazione/scriviCommento">
+        <input type="hidden" name="idCampagna" value="${requestScope.idCampagna}">
         <input type="text" name="commento" placeholder="Il tuo commento">
         <div>
             <input type="checkbox" name="anonimo" id="anonimo">
