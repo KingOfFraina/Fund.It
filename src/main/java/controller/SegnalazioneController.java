@@ -18,9 +18,6 @@ import model.services.UtenteService;
 import model.services.ReportService;
 import model.services.UtenteServiceImpl;
 import model.services.TipoReport;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,44 +32,18 @@ import java.util.List;
 public final class SegnalazioneController extends HttpServlet {
    @Override
    protected void doGet(final HttpServletRequest request,
-                        final HttpServletResponse response)
-           throws ServletException, IOException {
-
-      String path = request.getPathInfo();
-      HttpSession session = request.getSession();
-      String idSegnalazione = request.getParameter("idSegnalazione");
-      int id = 0;
-      try {
-         id = Integer.parseInt(idSegnalazione);
-      } catch (NumberFormatException e) {
-         e.printStackTrace();
-      }
+                        final HttpServletResponse response) {
       SegnalazioniService service =
               new SegnalazioniServiceImpl(new SegnalazioneDAO());
 
-
-      switch (path) {
-         case "/get" -> {
-            Segnalazione s = service.trovaSegnalazione(id);
-            request.setAttribute("segnalazione", s);
-         }
-         case "/getAll" -> {
-            List<Segnalazione> segnalazioni = service.trovaSegnalazioni();
-            request.setAttribute("segnalazioni", segnalazioni);
-         }
-         default -> {
-         }
-      }
-
-      RequestDispatcher dispatcher = request.getRequestDispatcher("");
-      dispatcher.forward(request, response);
-
+      List<Segnalazione> segnalazioni = service.trovaSegnalazioni();
+      request.setAttribute("segnalazioni", segnalazioni);
    }
 
    @Override
    protected void doPost(final HttpServletRequest request,
                          final HttpServletResponse response)
-           throws IOException, ServletException {
+           throws IOException {
 
       String path = request.getPathInfo();
       HttpSession session = request.getSession();
