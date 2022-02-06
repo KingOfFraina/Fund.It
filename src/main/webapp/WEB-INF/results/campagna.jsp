@@ -20,9 +20,9 @@
     <script>
         alert(document.getElementById('message').value.replaceAll('+', '\n'));
     </script>
-        <c:remove var="${sessionScope.tipoReport}"/>
-        <c:remove var="${sessionScope.titoloReport}"/>
-        <c:remove var="${sessionScope.bodyReport}"/>
+        ${sessionScope.tipoReport = null}
+        ${sessionScope.titoloReport = null}
+        ${sessionScope.bodyReport = null}
     </c:if>
 
     <div>
