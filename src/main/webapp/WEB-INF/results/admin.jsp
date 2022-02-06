@@ -30,6 +30,11 @@
         <%@include file="../components/admin/reports_table.jsp" %>
     </div>
 
+    <div class="container mt-3" style="display: none" id="categories_table">
+        <%@include file="../components/admin/categories_table.jsp" %>
+    </div>
+
+
 </div>
 
 

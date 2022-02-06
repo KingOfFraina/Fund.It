@@ -4,6 +4,7 @@ function showUserTable(){
     document.getElementById("campaign_table").style.display = "none";
     document.getElementById("donations_table").style.display = "none";
     document.getElementById("reports_table").style.display = "none";
+    document.getElementById("categories_table").style.display = "none";
 }
 
 function showCampaignTable(){
@@ -12,6 +13,7 @@ function showCampaignTable(){
     document.getElementById("user_table").style.display = "none";
     document.getElementById("donations_table").style.display = "none";
     document.getElementById("reports_table").style.display = "none";
+    document.getElementById("categories_table").style.display = "none";
 }
 
 function showDonationsTable(){
@@ -20,6 +22,7 @@ function showDonationsTable(){
     document.getElementById("user_table").style.display = "none";
     document.getElementById("campaign_table").style.display = "none";
     document.getElementById("reports_table").style.display = "none";
+    document.getElementById("categories_table").style.display = "none";
 }
 
 function showReportsTable(){
@@ -28,5 +31,15 @@ function showReportsTable(){
     document.getElementById("user_table").style.display = "none";
     document.getElementById("campaign_table").style.display = "none";
     document.getElementById("donations_table").style.display = "none";
+    document.getElementById("categories_table").style.display = "none";
+}
+
+function showCategoriesTable(){
+    let x = document.getElementById("categories_table");
+    x.style.display = "block";
+    document.getElementById("user_table").style.display = "none";
+    document.getElementById("campaign_table").style.display = "none";
+    document.getElementById("donations_table").style.display = "none";
+    document.getElementById("reports_table").style.display = "none";
 }
 
