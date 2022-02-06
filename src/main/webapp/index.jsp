@@ -33,7 +33,7 @@
 
     <img src="${pageContext.request.contextPath}/img/group_selfie.svg" alt="">
     <button id="scopri" type="submit" class="btn btn-primary btn-lg mx-5 my-5"
-            onclick="location.href = '${pageContext.request.contextPath}/GestioneCampagnaController/main'">
+            onclick="location.href = '${pageContext.request.contextPath}/campagna/main'">
         Scopri di pi&ugrave
     </button>
 </div>

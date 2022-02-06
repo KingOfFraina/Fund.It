@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 @WebServlet(name = "GestioneCampagnaController",
-        value = "/GestioneCampagnaController/*",
+        value = "/campagna/*",
         loadOnStartup = 0)
 @MultipartConfig
 public final class GestioneCampagnaController extends HttpServlet {
@@ -292,7 +292,7 @@ public final class GestioneCampagnaController extends HttpServlet {
       } else {
          res.sendRedirect(
                  getServletContext().getContextPath()
-                         + "/GestioneCampagnaController/creaCampagna");
+                         + "/campagna/creaCampagna");
       }
    }
 
@@ -352,7 +352,7 @@ public final class GestioneCampagnaController extends HttpServlet {
          response.sendRedirect(
                  getServletContext().getContextPath() + "/index.jsp");
       } else {
-         request.getRequestDispatcher("/GestioneCampagnaController"
+         request.getRequestDispatcher("/campagna"
                  + "/modificaCampagna").forward(request, response);
       }
    }

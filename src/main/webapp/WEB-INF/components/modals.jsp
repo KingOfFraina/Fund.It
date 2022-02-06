@@ -21,9 +21,7 @@
 
                 <div class="form-group">
                     <label for="textAraeSegnalazioni">Spiegaci i motivi della segnalazione(max. 300 caratteri)</label>
-                    <textarea name = "descrizione" class="form-control" id="textAraeSegnalazioni" rows="5" required maxlength="300">
-
-                    </textarea>
+                    <textarea name = "descrizione" class="form-control" id="textAraeSegnalazioni" rows="5" required maxlength="300"></textarea>
                     <input type="text" name = "idUtente" value="${sessionScope.utente.idUtente}" hidden>
                     <input type="text" name = "idCampagna" value="${campagna.idCampagna}" hidden>
                 </div>
@@ -79,15 +77,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
                 <div class="modal-body">
-                    <a style="text-decoration: none; font-size: 20px; color: #00AB98;" href="${sessionScope.linkList.get('mail')}" target="_blank">E-mail <i class="fas fa-envelope"></i></a>
+                    <a style="text-decoration: none; font-size: 20px; color: #00AB98;" href="${requestScope.linkList.get('mail')}" target="_blank">E-mail <i class="fas fa-envelope"></i></a>
                     <hr>
-                    <a style="text-decoration: none; font-size: 20px; color: #00AB98;" href="${sessionScope.linkList.get('whatsapp')}" target="_blank">Whatsapp <i class="fab fa-whatsapp"></i></a>
+                    <a style="text-decoration: none; font-size: 20px; color: #00AB98;" href="${requestScope.linkList.get('whatsapp')}" target="_blank">Whatsapp <i class="fab fa-whatsapp"></i></a>
                     <hr>
-                    <a style="text-decoration: none; font-size: 20px; color: #00AB98;" href="${sessionScope.linkList.get('facebook')}" target="_blank">Facebook  <i class="fab fa-facebook"></i></a>
+                    <a style="text-decoration: none; font-size: 20px; color: #00AB98;" href="${requestScope.linkList.get('facebook')}" target="_blank">Facebook  <i class="fab fa-facebook"></i></a>
                     <hr>
-                    <a style="text-decoration: none; font-size: 20px; color: #00AB98;" href="${sessionScope.linkList.get('twitter')}" target="_blank">Twitter <i class="fab fa-twitter"></i></a>
+                    <a style="text-decoration: none; font-size: 20px; color: #00AB98;" href="${requestScope.linkList.get('twitter')}" target="_blank">Twitter <i class="fab fa-twitter"></i></a>
                     <hr>
-                    <input type="text" class = "form-control" readonly id="box" value="${sessionScope.linkList.get('link')}"/>
+                    <input type="text" class = "form-control" readonly id="box" value="${requestScope.linkList.get('link')}"/>
 
                     <button  class = "btn btn-primary mt-3" style="background-color: #00AB98; border-color: #00AB98" id="btn" onclick="foo()"> <i class="fas fa-copy"></i></button>
                     <script>

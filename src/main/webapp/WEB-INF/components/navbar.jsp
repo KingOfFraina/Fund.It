@@ -34,7 +34,7 @@
 
                 </li>
                 <li class="nav-item mx-4">
-                    <a class="nav-link active text-black navbar-text" href="${pageContext.request.contextPath}/GestioneCampagnaController/main">In Evidenza</a>
+                    <a class="nav-link active text-black navbar-text" href="${pageContext.request.contextPath}/campagna/main">In Evidenza</a>
                 </li>
                 <li class="nav-item mx-4">
                     <a class="nav-link active text-black navbar-text" href="${pageContext.request.contextPath}/faq/visualizzaFAQ">FAQ</a>

@@ -32,7 +32,7 @@
                          alt="Card image cap">
                     <div class="card-body">
                         <h5 class="card-title">${campagna.titolo}</h5>
-                        <a href="${pageContext.request.contextPath}/GestioneCampagnaController/campagna?idCampagna=${campagna.idCampagna}" class="btn btn-primary mt-3"
+                        <a href="${pageContext.request.contextPath}/campagna/campagna?idCampagna=${campagna.idCampagna}" class="btn btn-primary mt-3"
                            style="background-color: #00AB98; border-color: #00AB98;">Vai alla campagna</a>
                     </div>
                 </div>

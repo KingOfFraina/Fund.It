@@ -184,7 +184,7 @@
                     </button>
                     <div class="container">
                         <button class="btn btn-primary pulsante mt-4"
-                                onclick="location.href = '${pageContext.request.contextPath}/GestioneCampagnaController/modificaCampagna?idCampagna=${requestScope.campagna.idCampagna}'"
+                                onclick="location.href = '${pageContext.request.contextPath}/campagna/modificaCampagna?idCampagna=${requestScope.campagna.idCampagna}'"
                                 style="border-color: #00AB98; background-color: #00AB98">Modifica campagna
                         </button>
                     </div>
@@ -216,7 +216,7 @@
 <script defer>
     $("#condividiButton").click(
         function () {
-            $.get(window.location.origin + window.location.pathname.substring(0, window.location.pathname.indexOf('/', 1)) + "/GestioneCampagnaController/condividiCampagna?idCampagna=" + document.getElementById('idCampagna').value);
+            $.get(window.location.origin + window.location.pathname.substring(0, window.location.pathname.indexOf('/', 1)) + "/campagna/condividiCampagna?idCampagna=" + document.getElementById('idCampagna').value);
         }
     )
 </script>

@@ -58,7 +58,7 @@ public final class CampagnaServiceImpl implements CampagnaService {
             HashMap<String, String> link = new HashMap<>();
             String path = "http://" + req.getServerName() + ":"
                     + req.getServerPort() + req.getContextPath()
-                    + "/GestioneCampagnaController/campagna?idCampagna="
+                    + "/campagna/campagna?idCampagna="
                     + campagna.getIdCampagna();
             String subject = "Dona a questa campagna presente su Fund.It ";
 
