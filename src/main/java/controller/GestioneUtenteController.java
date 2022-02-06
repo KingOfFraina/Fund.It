@@ -2,9 +2,6 @@ package controller;
 
 import controller.utils.FileServlet;
 import controller.utils.Validator;
-import model.DAO.DAO;
-import model.DAO.DonazioneDAO;
-import model.DAO.SegnalazioneDAO;
 import model.beans.Donazione;
 import model.beans.Utente;
 import model.beans.proxies.DonazioneProxy;
@@ -14,10 +11,10 @@ import model.services.DonazioniServiceImpl;
 import model.services.SegnalazioniService;
 import model.services.SegnalazioniServiceImpl;
 import model.services.UtenteService;
+import model.services.TipoReport;
+import model.services.ReportService;
 import model.services.UtenteServiceImpl;
 import model.storage.ConPool;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -66,9 +63,6 @@ public final class GestioneUtenteController extends HttpServlet {
          case "/promuoviDeclassaUtente":
             promuoviDeclassaUtente(request, response);
             break;
-         case "/sospensioneUtente":
-            sospensioneUtente(request, response);
-            break;
          default:
             response.sendError(HttpServletResponse.SC_NOT_FOUND,
                     "Risorsa non trovata");
@@ -107,98 +101,10 @@ public final class GestioneUtenteController extends HttpServlet {
                     segnalazioniService.trovaSegnalazioni());
             request.setAttribute("donazioniList", list);
 
-            RequestDispatcher dispatcher =
-                    request.getRequestDispatcher("/WEB-INF/results/admin.jsp");
-            dispatcher.forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/results/admin.jsp")
+                    .forward(request, response);
          }
       }
-   }
-
-   private void modificaProfilo(final HttpServletRequest request,
-                                final HttpServletResponse response)
-           throws IOException, ServletException {
-      HttpSession session = request.getSession();
-      Validator val = new Validator(request);
-      if (!val.isValidBean(new Utente(), session.getAttribute("utente"))) {
-         response.sendRedirect(request.getServletContext().getContextPath()
-                 + "/AutenticazioneController/login");
-         return;
-      }
-      Utente utente = new Utente();
-      if (request.getParameter("password").equals(
-              request.getParameter("confermaPassword"))
-              && request.getParameter("email").equals(
-              request.getParameter("confermaEmail"))) {
-         if (val.assertUtente()) {
-            utente.setIdUtente(((Utente) session.getAttribute("utente"))
-                    .getIdUtente());
-            utente.createPasswordHash(request.getParameter("password"));
-            utente.setEmail(request.getParameter("email"));
-            utente.setNome(request.getParameter("nome"));
-            utente.setCognome(request.getParameter("cognome"));
-            utente.setDataDiNascita(
-                    LocalDate.parse(request.getParameter("dataDiNascita")));
-            utente.setTelefono(request.getParameter("telefono"));
-            utente.setStrada(request.getParameter("indirizzo"));
-            utente.setCitta(request.getParameter("citta"));
-            utente.setCap(request.getParameter("cap"));
-            utente.setCf(request.getParameter("cf"));
-            List<String> listFoto = FileServlet.uploadFoto(request);
-            if (!listFoto.isEmpty()) {
-               utente.setFotoProfilo(listFoto.get(0));
-            } else {
-               Utente inSessione = (Utente) session.getAttribute("utente");
-               utente.setFotoProfilo(inSessione.getFotoProfilo());
-            }
-         }
-      } else {
-         response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
-                 "Input errato");
-         return;
-      }
-      UtenteService us = new UtenteServiceImpl();
-
-      us.modificaProfilo(utente);
-      session.setAttribute("utente", utente);
-      RequestDispatcher dispatcher =
-              request.getRequestDispatcher(
-                      "/WEB-INF/results/profilo_utente.jsp");
-      dispatcher.forward(request, response);
-   }
-
-   private void sospensioneUtente(final HttpServletRequest request,
-                                  final HttpServletResponse response)
-           throws IOException {
-      HttpSession session = request.getSession();
-
-      Validator val = new Validator(request);
-      if (!val.isValidBean(new Utente(), session.getAttribute("utente"))) {
-         response.sendRedirect(request.getServletContext().getContextPath()
-                 + "/AutenticazioneController/login");
-         return;
-      }
-      Utente utente = (Utente) session.getAttribute("utente");
-      if (!utente.isAdmin()) {
-         response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                 "Non Autorizzato");
-         return;
-      }
-      String parameter = request.getParameter("utenteban");
-      int idUtenteban = -1;
-      if (parameter != null) {
-         try {
-            idUtenteban = Integer.parseInt(parameter);
-         } catch (NumberFormatException e) {
-            e.printStackTrace(); //todo
-            return;
-         }
-      }
-
-      UtenteService utenteService = new UtenteServiceImpl();
-      Utente utenteBannato =
-              utenteService.visualizzaDashboardUtente(idUtenteban);
-      utenteService.sospensioneUtente(utenteBannato);
-      //todo return!!
    }
 
    private void visualizzaDashboard(final HttpServletRequest request,
@@ -206,25 +112,88 @@ public final class GestioneUtenteController extends HttpServlet {
            throws ServletException, IOException {
       HttpSession session = request.getSession();
 
-      Validator val = new Validator(request);
-      if (!val.isValidBean(new Utente(), session.getAttribute("utente"))) {
+      if (!new Validator(request).isValidBean(new Utente(),
+              session.getAttribute("utente"))) {
          response.sendRedirect(request.getServletContext().getContextPath()
                  + "/AutenticazioneController/login");
          return;
+      } else {
+         UtenteService uts = new UtenteServiceImpl();
+         Utente ut = uts.visualizzaDashboardUtente(
+                 ((Utente) session.getAttribute("utente")).getIdUtente());
+
+         UtenteProxy utenteProxy = new UtenteProxy(ut);
+         ut.setDonazioni(utenteProxy.getDonazioni());
+         ut.setCampagne(utenteProxy.getCampagne());
+
+         request.setAttribute("utente", ut);
+
+         request.getRequestDispatcher("/WEB-INF/results/profilo_utente.jsp")
+                 .forward(request, response);
       }
+   }
 
-      UtenteService uts = new UtenteServiceImpl();
-      Utente ut = uts.visualizzaDashboardUtente(
-              ((Utente) session.getAttribute("utente")).getIdUtente());
+   private void modificaProfilo(final HttpServletRequest request,
+                                final HttpServletResponse response)
+           throws IOException, ServletException {
+      HttpSession session = request.getSession();
+      if (!new Validator(request).isValidBean(new Utente(),
+              session.getAttribute("utente"))) {
+         response.sendRedirect(request.getServletContext().getContextPath()
+                 + "/AutenticazioneController/login");
+         return;
+      } else {
+         Utente utente = new Utente();
+         if (request.getParameter("password").equals(
+                 request.getParameter("confermaPassword"))
+                 && request.getParameter("email").equals(
+                 request.getParameter("confermaEmail"))) {
+            if (new Validator(request).assertUtente()) {
+               utente.setIdUtente(((Utente) session.getAttribute("utente"))
+                       .getIdUtente());
+               utente.createPasswordHash(request.getParameter("password"));
+               utente.setEmail(request.getParameter("email"));
+               utente.setNome(request.getParameter("nome"));
+               utente.setCognome(request.getParameter("cognome"));
+               utente.setDataDiNascita(
+                       LocalDate.parse(request.getParameter("dataDiNascita")));
+               utente.setTelefono(request.getParameter("telefono"));
+               utente.setStrada(request.getParameter("indirizzo"));
+               utente.setCitta(request.getParameter("citta"));
+               utente.setCap(request.getParameter("cap"));
+               utente.setCf(request.getParameter("cf"));
+               List<String> listFoto = FileServlet.uploadFoto(request);
 
-      UtenteProxy utenteProxy = new UtenteProxy(ut);
-      ut.setDonazioni(utenteProxy.getDonazioni());
-      ut.setCampagne(utenteProxy.getCampagne());
+               if (!listFoto.isEmpty()) {
+                  utente.setFotoProfilo(listFoto.get(0));
+               } else {
+                  Utente inSessione = (Utente) session.getAttribute("utente");
+                  utente.setFotoProfilo(inSessione.getFotoProfilo());
+               }
 
-      request.setAttribute("utente", ut);
+               if (new UtenteServiceImpl().modificaProfilo(utente)) {
+                  ReportService.creaReport(request, TipoReport.INFO,
+                          "Esito operazione:",
+                          "Modifica effettuata con successo");
+               } else {
+                  ReportService.creaReport(request, TipoReport.ERRORE,
+                          "Esito operazione:",
+                          "Modifica non effettuata con successo");
+               }
 
-      request.getRequestDispatcher("/WEB-INF/results/profilo_utente.jsp")
-              .forward(request, response);
+               session.setAttribute("utente", utente);
+               request.getRequestDispatcher(
+                               "/WEB-INF/results/profilo_utente.jsp")
+                       .forward(request, response);
+            } else {
+               response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+               return;
+            }
+         } else {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+         }
+      }
    }
 
    private void promuoviDeclassaUtente(final HttpServletRequest request,
@@ -244,27 +213,26 @@ public final class GestioneUtenteController extends HttpServlet {
          response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                  "Non Autorizzato");
          return;
-      }
+      } else {
+         String idUtente = request.getParameter("utentemod");
+         Utente ut = null;
+         UtenteService utenteService = new UtenteServiceImpl();
 
-      String idUtente = request.getParameter("utentemod");
-      Utente ut = null;
-      UtenteService utenteService = new UtenteServiceImpl();
+         if (idUtente != null) {
+            try {
+               ut = utenteService
+                       .visualizzaDashboardUtente(Integer.parseInt(idUtente));
+            } catch (NumberFormatException e) {
+               response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+               return;
+            }
 
-      if (idUtente != null) {
-         try {
-            ut = utenteService
-                    .visualizzaDashboardUtente(Integer.parseInt(idUtente));
-         } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "Errore conversione");
+            utenteService.promuoviDeclassaUtente(utente, ut);
+            visualizzaDashboardAdmin(request, response);
+         } else {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
          }
-
-         utenteService.promuoviDeclassaUtente(utente, ut);
-         visualizzaDashboardAdmin(request, response);
-      } else {
-         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                 "Errore input");
       }
    }
 
