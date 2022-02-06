@@ -103,7 +103,8 @@ public final class GestioneUtenteController extends HttpServlet {
         request.setAttribute("utentiList", us.visualizzaUtenti(ut));
         request.setAttribute("segnalazioniList",
                 segnalazioniService.trovaSegnalazioni());
-        request.setAttribute("donazioniList", null);
+        request.setAttribute("donazioniList", donazioniService
+                .visualizzaDonazioni());
 
         RequestDispatcher dispatcher =
                 request.getRequestDispatcher("/WEB-INF/results/admin.jsp");
