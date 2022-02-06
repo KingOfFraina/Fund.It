@@ -15,6 +15,7 @@ import model.services.TipoReport;
 import model.services.ReportService;
 import model.services.UtenteServiceImpl;
 import model.storage.ConPool;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -149,6 +150,7 @@ public final class GestioneUtenteController extends HttpServlet {
                  && request.getParameter("email").equals(
                  request.getParameter("confermaEmail"))) {
             if (new Validator(request).assertUtente()) {
+               Utente inSessione = (Utente) session.getAttribute("utente");
                utente.setIdUtente(((Utente) session.getAttribute("utente"))
                        .getIdUtente());
                utente.createPasswordHash(request.getParameter("password"));
@@ -162,12 +164,12 @@ public final class GestioneUtenteController extends HttpServlet {
                utente.setCitta(request.getParameter("citta"));
                utente.setCap(request.getParameter("cap"));
                utente.setCf(request.getParameter("cf"));
+               utente.setAdmin(inSessione.isAdmin());
                List<String> listFoto = FileServlet.uploadFoto(request);
 
                if (!listFoto.isEmpty()) {
                   utente.setFotoProfilo(listFoto.get(0));
                } else {
-                  Utente inSessione = (Utente) session.getAttribute("utente");
                   utente.setFotoProfilo(inSessione.getFotoProfilo());
                }
 
@@ -206,32 +208,43 @@ public final class GestioneUtenteController extends HttpServlet {
          response.sendRedirect(request.getServletContext().getContextPath()
                  + "/AutenticazioneController/login");
          return;
-      }
-
-      Utente utente = (Utente) session.getAttribute("utente");
-      if (!utente.isAdmin()) {
-         response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                 "Non Autorizzato");
-         return;
       } else {
-         String idUtente = request.getParameter("utentemod");
-         Utente ut = null;
-         UtenteService utenteService = new UtenteServiceImpl();
+         Utente utente = (Utente) session.getAttribute("utente");
 
-         if (idUtente != null) {
-            try {
-               ut = utenteService
-                       .visualizzaDashboardUtente(Integer.parseInt(idUtente));
-            } catch (NumberFormatException e) {
+         if (!utente.isAdmin()) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                    "Non Autorizzato");
+            return;
+         } else {
+            String idUtente = request.getParameter("utentemod");
+            Utente ut = null;
+            UtenteService utenteService = new UtenteServiceImpl();
+
+            if (idUtente != null) {
+               try {
+                  ut = utenteService
+                          .visualizzaDashboardUtente(
+                                  Integer.parseInt(idUtente));
+               } catch (NumberFormatException e) {
+                  response.sendError(HttpServletResponse
+                          .SC_INTERNAL_SERVER_ERROR);
+                  return;
+               }
+
+               if (utenteService.promuoviDeclassaUtente(utente, ut)) {
+                  ReportService.creaReport(request, TipoReport.INFO,
+                          "Esito operazione:",
+                          "Modifica effettuata con successo");
+               } else {
+                  ReportService.creaReport(request, TipoReport.ERRORE,
+                          "Esito operazione:",
+                          "Modifica non effettuata con successo");
+               }
+               visualizzaDashboardAdmin(request, response);
+            } else {
                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                return;
             }
-
-            utenteService.promuoviDeclassaUtente(utente, ut);
-            visualizzaDashboardAdmin(request, response);
-         } else {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return;
          }
       }
    }
