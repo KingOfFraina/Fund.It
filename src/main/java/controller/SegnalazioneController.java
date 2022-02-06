@@ -1,6 +1,5 @@
 package controller;
 
-
 import controller.utils.Validator;
 import model.DAO.CampagnaDAO;
 import model.DAO.SegnalazioneDAO;
@@ -16,8 +15,9 @@ import model.services.CampagnaServiceImpl;
 import model.services.SegnalazioniService;
 import model.services.SegnalazioniServiceImpl;
 import model.services.UtenteService;
+import model.services.ReportService;
 import model.services.UtenteServiceImpl;
-
+import model.services.TipoReport;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,11 +25,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-
 
 @WebServlet(name = "SegnalazioneController",
         value = "/segnalazioni/*")
@@ -53,16 +51,16 @@ public final class SegnalazioneController extends HttpServlet {
 
 
       switch (path) {
-         case "/get":
+         case "/get" -> {
             Segnalazione s = service.trovaSegnalazione(id);
             request.setAttribute("segnalazione", s);
-            break;
-         case "/getAll":
+         }
+         case "/getAll" -> {
             List<Segnalazione> segnalazioni = service.trovaSegnalazioni();
             request.setAttribute("segnalazioni", segnalazioni);
-            break;
-         default:
-            break;
+         }
+         default -> {
+         }
       }
 
       RequestDispatcher dispatcher = request.getRequestDispatcher("");
@@ -73,17 +71,19 @@ public final class SegnalazioneController extends HttpServlet {
    @Override
    protected void doPost(final HttpServletRequest request,
                          final HttpServletResponse response)
-           throws IOException {
+           throws IOException, ServletException {
 
       String path = request.getPathInfo();
       HttpSession session = request.getSession();
 
-      Validator val = new Validator(request);
-      if (!val.isValidBean(new Utente(), session.getAttribute("utente"))) {
-         response.sendRedirect(
-                 getServletContext().getContextPath() + "/index.jsp");
+      if (!new Validator(request)
+              .isValidBean(new Utente(), session.getAttribute("utente"))) {
+
+         response.sendRedirect(getServletContext().getContextPath()
+                 + "/AutenticazioneController/login");
          return;
       }
+
       Utente userSession = (Utente) session.getAttribute("utente");
       String idCampagna = request.getParameter("idCampagna");
       CampagnaService campagnaService =
@@ -92,17 +92,16 @@ public final class SegnalazioneController extends HttpServlet {
               new SegnalazioniServiceImpl(new SegnalazioneDAO());
       UtenteService utenteService = new UtenteServiceImpl(new UtenteDAO());
 
-      String descrizione = request.getParameter("descrizione");
-      String resource = "/";
-      Segnalazione segnalazione = new Segnalazione();
-
       switch (path) {
-         case "/segnala":
+         case "/segnala" -> {
+            Segnalazione segnalazione = new Segnalazione();
+            String descrizione = request.getParameter("descrizione");
             Campagna c = campagnaService.
                     trovaCampagna(Integer.parseInt(idCampagna));
             Utente utente = new Utente();
             utente.setIdUtente(
                     Integer.parseInt(request.getParameter("idUtente")));
+
             segnalazione.setCampagnaSegnalata(c);
             segnalazione.setSegnalato(utente);
             segnalazione.setSegnalatore(userSession);
@@ -110,14 +109,17 @@ public final class SegnalazioneController extends HttpServlet {
             segnalazione.setDataOra(LocalDateTime.now());
             segnalazione.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
             if (segnalazioniService.segnalaCampagna(segnalazione)) {
-               response.sendRedirect(
-                       request.getServletContext().getContextPath()
-                               + "/campagna/campagna?idCampagna="
-                               + idCampagna);
+               request.getRequestDispatcher("/campagna/campagna"
+                               + "?idCampagna=" + idCampagna)
+                       .forward(request, response);
+               return;
+            } else {
+               ReportService.creaReport(request, TipoReport.ERRORE,
+                       "Segnalazione non inviata");
                return;
             }
-            break;
-         case "/risolvi":
+         }
+         case "/risolvi" -> {
             if (!userSession.isAdmin()) {
                response.sendError(
                        HttpServletResponse.SC_UNAUTHORIZED,
@@ -129,7 +131,6 @@ public final class SegnalazioneController extends HttpServlet {
             int idSegnalazione =
                     Integer.parseInt(
                             request.getParameter("idSegnalazione"));
-
             Campagna campagna = campagnaService.trovaCampagna(id);
             if (scelta.equals("Risolvi")) {
                segnalazioniService
@@ -153,10 +154,9 @@ public final class SegnalazioneController extends HttpServlet {
                        .risolviSegnalazione(idSegnalazione,
                                StatoSegnalazione.ARCHIVIATA);
             }
-            break;
-         default:
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            break;
+         }
+
+         default -> response.sendError(HttpServletResponse.SC_NOT_FOUND);
       }
    }
 }
