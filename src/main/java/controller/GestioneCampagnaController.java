@@ -52,7 +52,6 @@ public final class GestioneCampagnaController extends HttpServlet {
             CampagnaInterface proxy = new CampagnaProxy(c);
             proxy.getUtente();
             proxy.getImmagini();
-            System.out.println(proxy.getImmagini());
          });
       }
 
@@ -113,31 +112,9 @@ public final class GestioneCampagnaController extends HttpServlet {
             });
             c.setDonazioni(proxy.getDonazioni());
             request.setAttribute("campagna", c);
+            condividiCampagna(request, response, c.getIdCampagna());
             resource = "/WEB-INF/results/campagna.jsp";
             break;
-         case "/condividiCampagna":
-            String idCampagna = request.getParameter("idCampagna");
-            if (idCampagna != null) {
-               Map<String, String> map =
-                       new CampagnaServiceImpl(new CampagnaDAO())
-                               .condividiCampagna(
-                                       Integer.parseInt(idCampagna),
-                                       request);
-
-               if (map != null) {
-                  request.getSession().setAttribute("linkList", map);
-                  return;
-               } else {
-                  response.sendRedirect(
-                          getServletContext().getContextPath()
-                                  + "/index.jsp");
-                  return;
-               }
-            } else {
-               response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                       "Bad Request");
-               return;
-            }
 
          case "/ricerca":
             String searchText = request.getParameter("searchText");
@@ -165,6 +142,24 @@ public final class GestioneCampagnaController extends HttpServlet {
       RequestDispatcher dispatcher =
               request.getRequestDispatcher(resource);
       dispatcher.forward(request, response);
+   }
+
+   private void condividiCampagna(final HttpServletRequest request,
+                                  final HttpServletResponse response,
+                                  final int idCampagna) throws IOException {
+      Map<String, String> map =
+              new CampagnaServiceImpl(new CampagnaDAO())
+                      .condividiCampagna(idCampagna, request);
+
+      if (map != null) {
+         request.setAttribute("linkList", map);
+         return;
+      } else {
+         response.sendRedirect(
+                 getServletContext().getContextPath()
+                         + "/index.jsp");
+         return;
+      }
    }
 
    private void visualizzaModificaCampagna(final HttpServletRequest request,

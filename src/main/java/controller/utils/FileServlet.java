@@ -55,6 +55,8 @@ public class FileServlet extends HttpServlet {
 
       this.basePath = System.getenv("CATALINA_HOME") + File.separator
               + "webapps" + File.separator + "uploads";
+      //this.basePath = "." + File.separator
+      // + "webapps" + File.separator + "uploads";
       System.out.println(basePath);
 
       // Validate base path.
