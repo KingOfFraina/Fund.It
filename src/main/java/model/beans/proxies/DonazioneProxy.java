@@ -59,12 +59,16 @@ public final class DonazioneProxy implements DonazioneInterface {
         if (donazione.getUtente().getCf() == null) {
             DAO<Utente> utenteDAO = new UtenteDAO();
             Utente u = utenteDAO.getById(donazione.getUtente().getIdUtente());
-            Utente utenteNuovo = donazione.getUtente();
-            utenteNuovo.setIdUtente(u.getIdUtente());
-            utenteNuovo.setNome(u.getNome());
-            utenteNuovo.setCognome(u.getCognome());
-            donazione.setUtente(utenteNuovo);
-            return donazione.getUtente();
+            if (u != null) {
+                System.out.println(u.getIdUtente());
+                Utente utenteNuovo = donazione.getUtente();
+                utenteNuovo.setIdUtente(u.getIdUtente());
+                utenteNuovo.setNome(u.getNome());
+                utenteNuovo.setCognome(u.getCognome());
+                donazione.setUtente(utenteNuovo);
+                return donazione.getUtente();
+            }
+            return null;
         } else {
             return donazione.getUtente();
         }

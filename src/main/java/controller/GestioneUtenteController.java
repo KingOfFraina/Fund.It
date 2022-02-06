@@ -106,7 +106,7 @@ public final class GestioneUtenteController extends HttpServlet {
         DonazioneProxy proxy = new DonazioneProxy(new Donazione());
         list.forEach(d -> {
             proxy.setDonazione(d);
-            proxy.getUtente();
+            d.setUtente(proxy.getUtente());
         });
 
         System.out.println(list);
