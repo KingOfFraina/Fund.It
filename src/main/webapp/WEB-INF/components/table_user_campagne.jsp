@@ -31,3 +31,9 @@
     </c:forEach>
     </tbody>
 </table>
+
+<div class = "container text-center">
+    <button class = "btn btn-primary pulsante" style="background-color: #00AB98; border-color: #00AB98" onclick="window.location.href = '${pageContext.request.contextPath}/campagna/creaCampagna'">
+        Crea campagna
+    </button>
+</div>

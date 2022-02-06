@@ -50,7 +50,7 @@
 
         <!--Bottone-->
         <div class="text-center" style="margin-top: 70px; margin-bottom: 150px;">
-            <button id="crea" type="button" class="" onclick="location.href = '${pageContext.request.contextPath}/campagna/creaCampagna'">Crea una campagna</button>
+            <button id="crea" type="button" class= "btn btn-primary" onclick="location.href = '${pageContext.request.contextPath}/campagna/creaCampagna'">Crea una campagna</button>
         </div>
 
 
