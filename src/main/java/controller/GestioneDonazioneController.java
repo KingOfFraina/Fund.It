@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @WebServlet(name = "GestioneDonazioneController",
         value = "/donazione/*")
@@ -63,17 +64,23 @@ public final class GestioneDonazioneController extends HttpServlet {
     protected void doPost(final HttpServletRequest request,
                           final HttpServletResponse response)
             throws IOException, ServletException {
+
         CampagnaService campagnaService =
                 new CampagnaServiceImpl(new CampagnaDAO());
+        System.out.println("Inizializzazione campagnaService");
+        int id = 0;
+
+        id = Integer.parseInt(request.getParameter("idCampagna"));
+
         Campagna campagna = campagnaService
-                .trovaCampagna(Integer.parseInt(
-                        request.getParameter("idCampagna")));
-        switch (request.getPathInfo()) {
-            case "/registraDonazione":
-                HttpSession session = request.getSession(false);
+                .trovaCampagna(id);
+
+        String path = request.getPathInfo() == null ? "/" : request.getPathInfo();
+        switch (path) {
+            case "/registraDonazione" -> {
+                HttpSession session = request.getSession();
                 if (session != null && session.getAttribute("utente") != null) {
                     Donazione donazione = new Donazione();
-
                     donazione.setCampagna(campagna);
                     donazione.setUtente((Utente)
                             session.getAttribute("utente"));
@@ -86,15 +93,16 @@ public final class GestioneDonazioneController extends HttpServlet {
 
                     session.setAttribute("donazione", donazione);
 
+                    request.setAttribute("idCampagna", id);
                     request.getRequestDispatcher(
                                     "/WEB-INF/results/commentoDonazione.jsp")
                             .forward(request, response);
                     return;
                 }
-                break;
-
-            case "/scriviCommento":
+            }
+            case "/scriviCommento" -> {
                 if (request.getSession(false) != null) {
+                    System.out.println("Entrata branch if");
                     Donazione donazione = (Donazione) request.getSession(false)
                             .getAttribute("donazione");
 
@@ -106,6 +114,7 @@ public final class GestioneDonazioneController extends HttpServlet {
 
                         DonazioniService donazioniService =
                                 new DonazioniServiceImpl(new DonazioneDAO());
+
                         if (donazioniService.effettuaDonazione(donazione)) {
                             campagna.setSommaRaccolta(
                                     campagna.getSommaRaccolta()
@@ -116,16 +125,16 @@ public final class GestioneDonazioneController extends HttpServlet {
                         }
                     }
                 }
-                break;
-
-            default:
+            }
+            default -> {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND,
                         "Risorsa non trovata");
                 return;
+            }
         }
 
         response.sendRedirect(
                 getServletContext().getContextPath()
-                        + "/donazione/");
+                        + "/");
     }
 }
