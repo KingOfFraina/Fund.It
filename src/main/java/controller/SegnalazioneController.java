@@ -108,6 +108,7 @@ public final class SegnalazioneController extends HttpServlet {
             segnalazione.setSegnalatore(userSession);
             segnalazione.setDescrizione(descrizione);
             segnalazione.setDataOra(LocalDateTime.now());
+            segnalazione.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
             if (segnalazioniService.segnalaCampagna(segnalazione)) {
                response.sendRedirect(
                        request.getServletContext().getContextPath()

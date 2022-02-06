@@ -96,9 +96,20 @@
 
                 <!--Segnalazione-->
                 <div class="container" style="margin-top: 120px">
-                    <a data-bs-toggle="modal" data-bs-target="#modalSegnalazioni" style="color: black; font-size: 20px"><i
-                            class="fas fa-flag"></i> Segnala la raccolta
-                        fondi</a>
+                    <c:choose>
+                        <c:when test="${sessionScope.utente != null}">
+                            <a data-bs-toggle="modal" data-bs-target="#modalSegnalazioni"
+                               style="color: black; font-size: 20px"><i
+                                    class="fas fa-flag"></i> Segnala la raccolta fondi</a>
+                        </c:when>
+                        <c:otherwise>
+                            <a data-bs-toggle="modal" onclick="alert('Effettua prima il login!')"
+                               style="color: black; font-size: 20px"><i
+                                    class="fas fa-flag" ></i> Segnala la
+                                raccolta
+                                fondi</a>
+                        </c:otherwise>
+                    </c:choose>
                     <hr class="solid text-black">
                 </div>
 
