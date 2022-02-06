@@ -104,7 +104,7 @@
             <label for="inputIndirizzo" class="form-label">Indirizzo</label>
             <input name="indirizzo" type="text" class="form-control" id="inputIndirizzo"
                    placeholder="Via Roma, 10"
-                   pattern="[a-zA-Z]+ [a-zA-Z]+,\s[0-9]+" value="${utente.strada}" required>
+                   pattern="([a-zA-Z]+( [a-zA-Z]+)+),\s[0-9]+" value="${utente.strada}" required>
             <div class=invalid-feedback>
                 Formato indirizzo non corretto(Strada, civico)
             </div>

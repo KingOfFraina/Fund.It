@@ -50,7 +50,8 @@
                 <h5 class="modal-title" id="chiusuraLabel">Chiudi campagna</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action = "#" method="post">
+            <form action = "${pageContext.request.contextPath}/campagna/chiudiCampagna" method="post">
+                <input type="text" name = "idCampagna" value = "${requestScope.campagna.idCampagna}" hidden>
                 <div class="modal-body">
                     <p>Sei sicuro di voler chiudere la campagna? I fondi raccolti fino ad ora saranno trasferiti sul tuo conto.</p>
                 </div>
@@ -127,4 +128,47 @@
         </div>
     </div>
 </div>
+
+<div class="modal scrollable fade" id="modalCategoria" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="condivisioneLabell">Condividi campagna</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal scrollable fade" id="modalAnnullamento" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" >Annullamento creazione della campagna</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+                <div class="modal-body">
+                    <p style="font-size: 20px">Sei sicuro di voler annullare la creazione della campagna?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary pulsante" data-bs-dismiss="modal"
+                            style="background-color: #00AB98; border-color: #00AB98">Chiudi
+                    </button>
+
+                    <button type="submit" class="btn btn-secondary pulsante" onclick="window.location.href='javascript:history.go(-1)'"
+                            style="background-color: crimson; border-color: crimson">Sono sicuro
+                    </button>
+
+                </div>
+
+        </div>
+    </div>
+</div>
+
 

@@ -30,5 +30,13 @@
                 </a>
         </li>
 
+        <li>
+            <a onclick=""
+               style="font-family: Comfortaa, cursive; font-size: 20px; text-decoration: none; color: black; margin-bottom: 20px;">Gestisci Categoria
+            </a>
+        </li>
+
+
     </ul>
 </nav>
+

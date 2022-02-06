@@ -10,15 +10,17 @@
 <body>
 
 <%@include file="../components/navbar.jsp" %>
+<%@include file="../components/modals.jsp" %>
 
 <!--Definizione colonne-->
 <div class="container">
     <div class="row">
         <div class="col-6">
             <div id="form-div" class="container my-5 div-login">
+
                 <div class="row mb-3" style="width: fit-content; margin-left: 10px">
                     <button id="back" class="btn btn-primary mt-4 mb-3"
-                            onclick="">
+                            data-bs-toggle="modal" data-bs-target="#modalAnnullamento">
                         <i class="fas fa-arrow-left"></i></button>
                 </div>
 

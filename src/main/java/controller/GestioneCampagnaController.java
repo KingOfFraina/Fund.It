@@ -258,7 +258,7 @@ public final class GestioneCampagnaController extends HttpServlet {
             id = Integer.parseInt(idCampagna);
             Campagna campagna1 = service.trovaCampagna(id);
             if (service.chiudiCampagna(campagna1)) {
-               System.out.println("chiusura campagna ok");
+
             } else {
                System.out.println("chiusura campagna errore");
             }
