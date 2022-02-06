@@ -6,8 +6,11 @@ import model.DAO.DAO;
 import model.DAO.DonazioneDAO;
 import model.DAO.SegnalazioneDAO;
 import model.DAO.UtenteDAO;
+import model.beans.Donazione;
 import model.beans.Utente;
+import model.beans.proxies.DonazioneProxy;
 import model.beans.proxies.UtenteProxy;
+import model.beans.proxyInterfaces.DonazioneInterface;
 import model.services.DonazioniService;
 import model.services.DonazioniServiceImpl;
 import model.services.SegnalazioniService;
@@ -99,12 +102,18 @@ public final class GestioneUtenteController extends HttpServlet {
         DonazioniService donazioniService =
                 new DonazioniServiceImpl(new DonazioneDAO());
 
+        List<Donazione> list = donazioniService.visualizzaDonazioni();
+        DonazioneProxy proxy = new DonazioneProxy(new Donazione());
+        list.forEach(d -> {
+            proxy.setDonazione(d);
+            proxy.getUtente();
+        });
 
+        System.out.println(list);
         request.setAttribute("utentiList", us.visualizzaUtenti(ut));
         request.setAttribute("segnalazioniList",
                 segnalazioniService.trovaSegnalazioni());
-        request.setAttribute("donazioniList", donazioniService
-                .visualizzaDonazioni());
+        request.setAttribute("donazioniList", list);
 
         RequestDispatcher dispatcher =
                 request.getRequestDispatcher("/WEB-INF/results/admin.jsp");
