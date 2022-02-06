@@ -16,7 +16,7 @@
             onclick="window.location.href ='${pageContext.request.contextPath}/campagna/campagna?idCampagna=${donazione.campagna.idCampagna}'">
             <th scope="row">${donazione.idDonazione}</th>
             <td>${donazione.campagna.idCampagna}</td>
-            <td>${donazione.nome} ${donazione.cognome}</td>
+            <td>${donazione.utente.nome} ${donazione.utente.cognome}</td>
             <td>${donazione.sommaDonata}&euro;</td>
             <td>${donazione.dataOra}</td>
         </tr>
