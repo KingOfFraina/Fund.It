@@ -258,11 +258,12 @@ public final class GestioneCampagnaController extends HttpServlet {
             id = Integer.parseInt(idCampagna);
             Campagna campagna1 = service.trovaCampagna(id);
             if (service.chiudiCampagna(campagna1)) {
-
+               response.sendRedirect(getServletContext().getContextPath()
+                       + "/GestioneUtenteController/visualizzaDashboard");
             } else {
-               System.out.println("chiusura campagna errore");
+               response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
-            break;
+            return;
          default:
             response.sendError(
                     HttpServletResponse.SC_NOT_FOUND,
