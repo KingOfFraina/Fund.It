@@ -87,7 +87,7 @@
                                        accept="image/*,.jpg">
                             </div>
                             <button type="submit" class="btn btn-primary pulsante mt-4 mb-3"
-                                    formaction="${pageContext.request.contextPath}/GestioneCampagnaController/modificaCampagna"
+                                    formaction="${pageContext.request.contextPath}/campagna/modificaCampagna"
                                     style="background-color: #00AB98; border-color: #00AB98">
                                 Salva modifiche
                             </button>
@@ -101,7 +101,7 @@
                             </div>
                             <button type="submit" class="btn btn-primary pulsante mt-4 mb-3"
                                     style="border-color: #00AB98; background-color: #00AB98"
-                                    formaction="${pageContext.request.contextPath}/GestioneCampagnaController/creaCampagna">
+                                    formaction="${pageContext.request.contextPath}/campagna/creaCampagna">
                                 Crea campagna
                             </button>
                         </c:otherwise>
