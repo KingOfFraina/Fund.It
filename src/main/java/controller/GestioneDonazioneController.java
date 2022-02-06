@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 
 @WebServlet(name = "GestioneDonazioneController",
         value = "/donazione/*")
-
 public final class GestioneDonazioneController extends HttpServlet {
     @Override
     protected void doGet(final HttpServletRequest request,
@@ -34,9 +33,7 @@ public final class GestioneDonazioneController extends HttpServlet {
         if (session != null && session.getAttribute("utente") != null) {
 
             switch (request.getPathInfo()) {
-
                 case "/scriviCommento":
-
                     if (session.getAttribute("donazione") != null) {
                         request.getRequestDispatcher(
                                         "/WEB-INF/results/"
@@ -44,7 +41,6 @@ public final class GestioneDonazioneController extends HttpServlet {
                                 .forward(request, response);
                         return;
                     }
-
                 default:
                     request.setAttribute("donazioniList",
                             new DonazioniServiceImpl(new DonazioneDAO())
@@ -113,7 +109,7 @@ public final class GestioneDonazioneController extends HttpServlet {
                         if (donazioniService.effettuaDonazione(donazione)) {
                             campagna.setSommaRaccolta(
                                     campagna.getSommaRaccolta()
-                                    + donazione.getSommaDonata());
+                                            + donazione.getSommaDonata());
                             campagnaService.modificaCampagna(campagna);
                         } else {
                             System.out.println("errore");
