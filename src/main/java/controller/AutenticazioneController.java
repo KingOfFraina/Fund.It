@@ -66,94 +66,99 @@ public final class AutenticazioneController extends HttpServlet {
            throws IOException, ServletException {
       HttpSession session = request.getSession();
 
-      if (!new Validator(request)
-              .isValidBean(Utente.class, session.getAttribute("utente"))) {
+      Utente utente;
 
-         Utente utente;
+      switch (request.getPathInfo()) {
+         case "/login" -> {
+            utente = new Utente();
+            utente.setEmail(request.getParameter("email"));
+            utente.createPasswordHash(request.getParameter("password"));
 
-         switch (request.getPathInfo()) {
-            case "/login" -> {
-               utente = new Utente();
-               utente.setEmail(request.getParameter("email"));
-               utente.createPasswordHash(request.getParameter("password"));
+            utente = new AutenticazioneServiceImpl(
+                    request.getSession(true)).login(utente);
 
-               utente = new AutenticazioneServiceImpl(
-                       request.getSession(true)).login(utente);
-
-               if (utente != null && utente.getIdUtente() != -1) {
-                  session.setAttribute("utente", utente);
-               } else if (utente.getIdUtente() == -1) {
-                  ReportService.creaReport(request, TipoReport.ERRORE,
-                          "Utente bannato", "Ritenta il login tra "
-                                  + ChronoUnit.HOURS
-                                  .between(LocalDateTime.now(),
-                                          utente.getDataBan()) + " ore",
-                          "e " + ChronoUnit.MINUTES
-                                  .between(LocalDateTime.now(),
-                                          utente.getDataBan()) + " minuti");
-                  response.sendRedirect(
-                          getServletContext().getContextPath()
-                                  + "/autenticazione/login");
-               } else {
-                  ReportService.creaReport(request, TipoReport.ERRORE,
-                          "Credenziali sbagliate", "Ritenta il login");
-                  response.sendRedirect(
-                          getServletContext().getContextPath()
-                                  + "/autenticazione/login");
-               }
-            }
-            case "/registrazione" -> {
-               utente = new Utente();
-
-               if (request.getParameter("password").equals(
-                       request.getParameter("confermaPassword"))
-                       && request.getParameter("email").equals(
-                       request.getParameter("confermaEmail"))) {
-                  utente.createPasswordHash(request.getParameter("password"));
-                  utente.setEmail(request.getParameter("email"));
-                  utente.setNome(request.getParameter("nome"));
-                  utente.setCognome(request.getParameter("cognome"));
-                  utente.setDataDiNascita(
-                          LocalDate.parse(
-                                  request.getParameter("dataDiNascita")));
-                  utente.setTelefono(request.getParameter("telefono"));
-                  utente.setStrada(request.getParameter("indirizzo"));
-                  utente.setCitta(request.getParameter("citta"));
-                  utente.setCap(request.getParameter("cap"));
-                  utente.setCf(request.getParameter("cf"));
-
-                  List<String> fileNames = FileServlet.uploadFoto(request);
-
-                  if (fileNames.size() > 0) {
-                     utente.setFotoProfilo(fileNames.get(0));
-                  } else {
-                     utente.setFotoProfilo("");
-                  }
-
-                  if (new AutenticazioneServiceImpl(session)
-                          .registrazione(utente)) {
-                     session.setAttribute("utente", utente);
-                  } else {
-
-                  }
-               } else {
-                  response.sendRedirect(
-                          getServletContext().getContextPath()
-                                  + "/autenticazione/registrazione");
-               }
-            }
-
-            default -> {
-               response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            if (utente != null && utente.getIdUtente() != -1) {
+               session.setAttribute("utente", utente);
+            } else if (utente != null && utente.getIdUtente() == -1) {
+               ReportService.creaReport(request, TipoReport.ERRORE,
+                       "Utente bannato", "Ritenta il login tra "
+                               + ChronoUnit.HOURS
+                               .between(LocalDateTime.now(),
+                                       utente.getDataBan()) + " ore",
+                       "e " + ChronoUnit.MINUTES
+                               .between(LocalDateTime.now(),
+                                       utente.getDataBan()) + " minuti");
+               response.sendRedirect(
+                       getServletContext().getContextPath()
+                               + "/autenticazione/login");
+               return;
+            } else {
+               ReportService.creaReport(request, TipoReport.ERRORE,
+                       "Credenziali sbagliate", "Ritenta il login");
+               response.sendRedirect(
+                       getServletContext().getContextPath()
+                               + "/autenticazione/login");
                return;
             }
          }
+         case "/registrazione" -> {
+            utente = new Utente();
 
-         response.sendRedirect(getServletContext().getContextPath()
-                 + "/index.jsp");
-      } else {
-         response.sendRedirect(getServletContext().getContextPath()
-                 + "/autenticazione/login");
+            if (request.getParameter("password").equals(
+                    request.getParameter("confermaPassword"))
+                    && request.getParameter("email").equals(
+                    request.getParameter("confermaEmail"))) {
+               utente.createPasswordHash(request.getParameter("password"));
+               utente.setEmail(request.getParameter("email"));
+               utente.setNome(request.getParameter("nome"));
+               utente.setCognome(request.getParameter("cognome"));
+               utente.setDataDiNascita(
+                       LocalDate.parse(
+                               request.getParameter("dataDiNascita")));
+               utente.setTelefono(request.getParameter("telefono"));
+               utente.setStrada(request.getParameter("indirizzo"));
+               utente.setCitta(request.getParameter("citta"));
+               utente.setCap(request.getParameter("cap"));
+               utente.setCf(request.getParameter("cf"));
+
+               List<String> fileNames = FileServlet.uploadFoto(request);
+
+               if (fileNames.size() > 0) {
+                  utente.setFotoProfilo(fileNames.get(0));
+               } else {
+                  utente.setFotoProfilo("");
+               }
+
+               if (new AutenticazioneServiceImpl(session)
+                       .registrazione(utente)) {
+                  session.setAttribute("utente", utente);
+
+                  ReportService.creaReport(request, TipoReport.INFO,
+                          "Esito operazione:",
+                          "Registrazione avvenuta con successo");
+               } else {
+                  ReportService.creaReport(request, TipoReport.ERRORE,
+                          "Esito operazione:",
+                          "Registrazione non avvenuta con successo");
+               }
+            } else {
+               ReportService.creaReport(request, TipoReport.ERRORE,
+                       "Esito operazione:",
+                       "Registrazione non avvenuta con successo");
+
+               response.sendRedirect(
+                       getServletContext().getContextPath()
+                               + "/autenticazione/registrazione");
+            }
+         }
+
+         default -> {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+         }
       }
+
+      response.sendRedirect(getServletContext().getContextPath()
+              + "/index.jsp");
    }
 }
