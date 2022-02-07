@@ -18,7 +18,8 @@
             <td>
                 <form action="${pageContext.request.contextPath}/categorie/modificaCategoria" method="post">
                     <input type="text" value="${categoria.idCategoria}" name="idCategoria" hidden>
-                    <input type="text" class="form-control" value="${categoria.nome}" name="nomeCategoria">
+                    <input type="text" class="form-control" value="${categoria.nome}"
+                           pattern = "^[A-Za-zà-ź \s]{2,100}$" name="nomeCategoria">
 
                     <button type="submit" class="btn btn-primary mt-3"
                             style="background-color: #00AB98; border-color: #00AB98; color: white">
