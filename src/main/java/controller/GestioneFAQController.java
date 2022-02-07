@@ -20,7 +20,7 @@ public final class GestioneFAQController extends HttpServlet {
 
    @Override
    public void doGet(final HttpServletRequest request,
-                        final HttpServletResponse response)
+                     final HttpServletResponse response)
            throws ServletException, IOException {
 
       String resource = "/WEB-INF/results/visualizzaFAQ.jsp";
@@ -51,7 +51,7 @@ public final class GestioneFAQController extends HttpServlet {
             }
          } else {
             response.sendRedirect(
-                    getServletContext().getContextPath()
+                    request.getServletContext().getContextPath()
                             + "/autenticazione/login");
             return;
          }
@@ -65,7 +65,7 @@ public final class GestioneFAQController extends HttpServlet {
 
    @Override
    public void doPost(final HttpServletRequest request,
-                         final HttpServletResponse response)
+                      final HttpServletResponse response)
            throws IOException {
       String path = request.getPathInfo();
       HttpSession session = request.getSession(false);
@@ -81,19 +81,19 @@ public final class GestioneFAQController extends HttpServlet {
                if (domanda == null || domanda.isBlank()
                        || risposta == null || domanda.isBlank()) {
                   throw new IllegalArgumentException("Input errati");
-               }
-
-               FAQ faq = new FAQ();
-               faq.setDomanda(domanda);
-               faq.setRisposta(risposta);
-               faq.setUtenteCreatore(utente);
-
-               if (new FaqServiceImpl().inserisciFaq(faq)) {
-                  ReportService.creaReport(request, TipoReport.INFO,
-                          "Esito operazione:", "FAQ inserita con successo");
                } else {
-                  ReportService.creaReport(request, TipoReport.ERRORE,
-                          "Esito operazione:", "FAQ non inserita");
+                  FAQ faq = new FAQ();
+                  faq.setDomanda(domanda);
+                  faq.setRisposta(risposta);
+                  faq.setUtenteCreatore(utente);
+
+                  if (new FaqServiceImpl().inserisciFaq(faq)) {
+                     ReportService.creaReport(request, TipoReport.INFO,
+                             "Esito operazione:", "FAQ inserita con successo");
+                  } else {
+                     ReportService.creaReport(request, TipoReport.ERRORE,
+                             "Esito operazione:", "FAQ non inserita");
+                  }
                }
             }
             case "/modificaFAQ" -> {
