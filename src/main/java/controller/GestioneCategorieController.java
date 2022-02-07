@@ -34,7 +34,7 @@ public final class GestioneCategorieController extends HttpServlet {
       switch (path) {
          case "/inserisciCategoria" -> {
             if (!new Validator(request)
-                    .isValidBean(new Utente(),
+                    .isValidBean(Utente.class,
                             session.getAttribute("utente"))) {
 
                response.sendRedirect(getServletContext().getContextPath()
@@ -69,12 +69,10 @@ public final class GestioneCategorieController extends HttpServlet {
                   }
                }
             }
-
-            break;
          }
          case "/modificaCategoria" -> {
             if (!new Validator(request)
-                    .isValidBean(new Utente(),
+                    .isValidBean(Utente.class,
                             session.getAttribute("utente"))) {
 
                response.sendRedirect(getServletContext().getContextPath()
@@ -108,7 +106,6 @@ public final class GestioneCategorieController extends HttpServlet {
                   }
                }
             }
-            break;
          }
 
          default -> {
