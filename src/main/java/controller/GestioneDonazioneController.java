@@ -28,25 +28,28 @@ public final class GestioneDonazioneController extends HttpServlet {
             throws ServletException, IOException {
 
         String resource = "/WEB-INF/results/visualizzaDonazioni.jsp";
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession();
+        Utente userSession = (Utente) session.getAttribute("utente");
+        String path = request.getPathInfo() == null
+                ? "/" : request.getPathInfo();
+        Donazione donazione = (Donazione) session.getAttribute("donazione");
+        DonazioniService donazioniService =
+                new DonazioniServiceImpl(new DonazioneDAO());
 
-        if (session != null && session.getAttribute("utente") != null) {
-
-            if ("/scriviCommento".equals(request.getPathInfo())) {
-                if (session.getAttribute("donazione") != null) {
+        if (userSession != null) {
+            if ("/scriviCommento".equals(path)) {
+                if (donazione != null) {
                     request.getRequestDispatcher(
                                     "/WEB-INF/results/"
                                             + "commentoDonazione.jsp")
                             .forward(request, response);
                     return;
                 }
+            } else {
+                request.setAttribute("donazioniList",
+                        donazioniService
+                                .visualizzaDonazioni(userSession));
             }
-            request.setAttribute("donazioniList",
-                    new DonazioniServiceImpl(new DonazioneDAO())
-                            .visualizzaDonazioni(
-                                    (Utente) session
-                                            .getAttribute("utente")));
-
         } else {
             response.sendRedirect(
                     getServletContext().getContextPath()
@@ -62,20 +65,21 @@ public final class GestioneDonazioneController extends HttpServlet {
                           final HttpServletResponse response)
             throws IOException, ServletException {
 
+        String path = request.getPathInfo() == null ? "/"
+                : request.getPathInfo();
         CampagnaService campagnaService =
                 new CampagnaServiceImpl(new CampagnaDAO());
-        System.out.println("Inizializzazione campagnaService");
-        int id;
+        DonazioniService donazioniService =
+                new DonazioniServiceImpl(new DonazioneDAO());
 
-        id = Integer.parseInt(request.getParameter("idCampagna"));
+        int id = Integer.parseInt(request.getParameter("idCampagna"));
+        HttpSession session = request.getSession();
 
         Campagna campagna = campagnaService
                 .trovaCampagna(id);
-        String path = request.getPathInfo() == null ? "/"
-                : request.getPathInfo();
+
         switch (path) {
             case "/registraDonazione" -> {
-                HttpSession session = request.getSession();
                 if (session != null && session.getAttribute("utente") != null) {
                     Donazione donazione = new Donazione();
                     donazione.setCampagna(campagna);
@@ -98,28 +102,21 @@ public final class GestioneDonazioneController extends HttpServlet {
                 }
             }
             case "/scriviCommento" -> {
-                if (request.getSession(false) != null) {
-                    System.out.println("Entrata branch if");
-                    Donazione donazione = (Donazione) request.getSession(false)
-                            .getAttribute("donazione");
-
-                    if (donazione != null) {
-                        donazione.setCommento(request.getParameter("commento"));
-                        if (request.getParameter("anonimo") != null) {
-                            donazione.setAnonimo(true);
-                        }
-
-                        DonazioniService donazioniService =
-                                new DonazioniServiceImpl(new DonazioneDAO());
-
-                        if (donazioniService.effettuaDonazione(donazione)) {
-                            campagna.setSommaRaccolta(
-                                    campagna.getSommaRaccolta()
-                                            + donazione.getSommaDonata());
-                            campagnaService.modificaCampagna(campagna);
-                        } else {
-                            System.out.println("errore");
-                        }
+                Donazione donazione = (Donazione) session
+                        .getAttribute("donazione");
+                if (donazione != null) {
+                    donazione.setCommento(request.getParameter("commento"));
+                    if (request.getParameter("anonimo") != null) {
+                        donazione.setAnonimo(true);
+                    }
+                    if (donazioniService.effettuaDonazione(donazione)) {
+                        campagna.setSommaRaccolta(
+                                campagna.getSommaRaccolta()
+                                        + donazione.getSommaDonata());
+                        campagnaService.modificaCampagna(campagna);
+                        session.removeAttribute("donazione");
+                    } else {
+                        System.out.println("errore");
                     }
                 }
             }
@@ -129,7 +126,6 @@ public final class GestioneDonazioneController extends HttpServlet {
                 return;
             }
         }
-
         response.sendRedirect(
                 getServletContext().getContextPath()
                         + "/");
