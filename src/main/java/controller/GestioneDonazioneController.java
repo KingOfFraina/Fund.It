@@ -4,10 +4,7 @@ import model.DAO.DonazioneDAO;
 import model.beans.Campagna;
 import model.beans.Donazione;
 import model.beans.Utente;
-import model.services.CampagnaService;
-import model.services.CampagnaServiceImpl;
-import model.services.DonazioniService;
-import model.services.DonazioniServiceImpl;
+import model.services.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -113,8 +110,14 @@ public final class GestioneDonazioneController extends HttpServlet {
                                         + donazione.getSommaDonata());
                         campagnaService.modificaCampagna(campagna);
                         session.removeAttribute("donazione");
+                        ReportService.creaReport(request, TipoReport.INFO, "Donazione andata a buon fine");
+                        response.sendRedirect(getServletContext()
+                                .getContextPath() + "/campagna/campagna?idCampagna=" + campagna.getIdCampagna());
+                        return;
                     } else {
-                        System.out.println("errore");
+                        ReportService.creaReport(request, TipoReport.ERRORE, "Donazione non salvata");
+                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        return;
                     }
                 }
             }
