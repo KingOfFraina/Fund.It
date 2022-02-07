@@ -21,7 +21,7 @@
 
                 <div class="form-group">
                     <label for="textAraeSegnalazioni">Spiegaci i motivi della segnalazione(max. 300 caratteri)</label>
-                    <textarea name = "descrizione" class="form-control" id="textAraeSegnalazioni" rows="5" required maxlength="300"></textarea>
+                    <textarea name = "descrizione" class="form-control" id="textAraeSegnalazioni" rows="5" minlength="2" required maxlength="300"></textarea>
                     <input type="text" name = "idUtente" value="${sessionScope.utente.idUtente}" hidden>
                     <input type="text" name = "idCampagna" value="${campagna.idCampagna}" hidden>
                 </div>
