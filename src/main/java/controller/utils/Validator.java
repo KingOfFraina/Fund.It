@@ -283,11 +283,11 @@ public final class Validator {
     * @param attr Object da castare.
     * @return true se attr corrisponde, false altrimenti.
     */
-   public boolean isValidBean(final Object type, final Object attr) {
+   public boolean isValidBean(final Class type, final Object attr) {
       return (type != null
               && attr != null
               && (attr.getClass().getSimpleName().equals(
-                      type.getClass().getSimpleName())));
+                      type.getSimpleName())));
    }
 
    /**

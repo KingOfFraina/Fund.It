@@ -47,7 +47,7 @@ public final class SegnalazioneController extends HttpServlet {
       HttpSession session = request.getSession();
 
       if (!new Validator(request)
-              .isValidBean(new Utente(), session.getAttribute("utente"))) {
+              .isValidBean(Utente.class, session.getAttribute("utente"))) {
 
          response.sendRedirect(getServletContext().getContextPath()
                  + "/AutenticazioneController/login");

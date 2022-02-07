@@ -74,7 +74,7 @@ public final class GestioneUtenteController extends HttpServlet {
    private void visualizzaDashboardAdmin(final HttpServletRequest request,
                                          final HttpServletResponse response)
            throws IOException, ServletException {
-      if (!new Validator(request).isValidBean(new Utente(),
+      if (!new Validator(request).isValidBean(Utente.class,
               request.getSession().getAttribute("utente"))) {
          response.sendRedirect(request.getServletContext().getContextPath()
                  + "/AutenticazioneController/login");
@@ -113,7 +113,7 @@ public final class GestioneUtenteController extends HttpServlet {
            throws ServletException, IOException {
       HttpSession session = request.getSession();
 
-      if (!new Validator(request).isValidBean(new Utente(),
+      if (!new Validator(request).isValidBean(Utente.class,
               session.getAttribute("utente"))) {
          response.sendRedirect(request.getServletContext().getContextPath()
                  + "/AutenticazioneController/login");
@@ -138,7 +138,7 @@ public final class GestioneUtenteController extends HttpServlet {
                                 final HttpServletResponse response)
            throws IOException, ServletException {
       HttpSession session = request.getSession();
-      if (!new Validator(request).isValidBean(new Utente(),
+      if (!new Validator(request).isValidBean(Utente.class,
               session.getAttribute("utente"))) {
          response.sendRedirect(request.getServletContext().getContextPath()
                  + "/AutenticazioneController/login");
@@ -203,7 +203,7 @@ public final class GestioneUtenteController extends HttpServlet {
            throws IOException, ServletException {
       HttpSession session = request.getSession();
 
-      if (!new Validator(request).isValidBean(new Utente(),
+      if (!new Validator(request).isValidBean(Utente.class,
               session.getAttribute("utente"))) {
          response.sendRedirect(request.getServletContext().getContextPath()
                  + "/AutenticazioneController/login");
