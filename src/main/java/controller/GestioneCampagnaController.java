@@ -34,7 +34,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @WebServlet(name = "GestioneCampagnaController",
         value = "/campagna/*",
@@ -67,7 +66,7 @@ public final class GestioneCampagnaController extends HttpServlet {
             throws ServletException, IOException {
         String resource = "/";
         HttpSession session = request.getSession();
-        CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
+        CampagnaService service = new CampagnaServiceImpl();
         CategoriaService categoriaService =
                 new CategoriaServiceImpl(new CategoriaDAO());
 
@@ -154,9 +153,9 @@ public final class GestioneCampagnaController extends HttpServlet {
     private void condividiCampagna(final HttpServletRequest request,
                                    final HttpServletResponse response,
                                    final int idCampagna) throws IOException {
+        CampagnaService cs = new CampagnaServiceImpl();
         Map<String, String> map =
-                new CampagnaServiceImpl(new CampagnaDAO())
-                        .condividiCampagna(idCampagna, request);
+                cs.condividiCampagna(idCampagna, request);
 
         if (map != null) {
             request.setAttribute("linkList", map);
@@ -171,7 +170,7 @@ public final class GestioneCampagnaController extends HttpServlet {
     private void visualizzaModificaCampagna(final HttpServletRequest request,
                                             final HttpServletResponse response)
             throws ServletException, IOException {
-        CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
+        CampagnaService service = new CampagnaServiceImpl();
         CategoriaService categoriaService =
                 new CategoriaServiceImpl(new CategoriaDAO());
         HttpSession session = request.getSession();
@@ -216,7 +215,7 @@ public final class GestioneCampagnaController extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
+        CampagnaService service = new CampagnaServiceImpl();
 
         if (new Validator(request).isValidBean(Utente.class,
                 session.getAttribute("utente"))) {
@@ -229,11 +228,12 @@ public final class GestioneCampagnaController extends HttpServlet {
         Utente userSession = (Utente) session.getAttribute("utente");
         String idCampagna = request.getParameter("idCampagna");
         int id = 0;
-        String path = request.getPathInfo() == null ? "/" : request.getPathInfo();
+        String path = request.getPathInfo()
+                == null ? "/" : request.getPathInfo();
 
         switch (path) {
             case "/creaCampagna":
-                creaCampagna(request, response);
+                creaCampagna(request, response, userSession);
                 break;
             case "/modificaCampagna":
                 if (idCampagna != null) {
@@ -246,8 +246,8 @@ public final class GestioneCampagnaController extends HttpServlet {
                 id = Integer.parseInt(idCampagna);
                 Campagna campagna = service.trovaCampagna(id);
 
-                    if(campagna.getUtente().getIdUtente()
-                            != userSession.getIdUtente()){
+                    if (campagna.getUtente().getIdUtente()
+                            != userSession.getIdUtente()) {
                         response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                                 "Non Autorizzato");
                         return;
@@ -273,7 +273,8 @@ public final class GestioneCampagnaController extends HttpServlet {
                     response.sendRedirect(getServletContext().getContextPath()
                             + "/GestioneUtenteController/visualizzaDashboard");
                 } else {
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    response.sendError(
+                            HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 }
                 return;
             default:
@@ -291,14 +292,15 @@ public final class GestioneCampagnaController extends HttpServlet {
     }
 
     private void creaCampagna(final HttpServletRequest req,
-                              final HttpServletResponse res)
+                              final HttpServletResponse res,
+                              final Utente utente)
             throws IOException, ServletException {
 
         Campagna c = extractCampagna(req);
         c.setSommaRaccolta(0d);
-        c.setUtente((Utente) req.getSession().getAttribute("utente"));
-
-        if (new CampagnaServiceImpl(new CampagnaDAO()).creazioneCampagna(c)) {
+        c.setUtente(utente);
+        CampagnaService cs = new CampagnaServiceImpl();
+        if (cs.creazioneCampagna(c)) {
             uploadFoto(req, c);
             res.sendRedirect(
                     getServletContext().getContextPath() + "/index.jsp");
@@ -324,9 +326,10 @@ public final class GestioneCampagnaController extends HttpServlet {
         categoria.setIdCategoria(Integer.parseInt(
                 request.getParameter("idCategoria")));
 
+        CategoriaService cs = new CategoriaServiceImpl();
+
         c.setCategoria(
-                new CategoriaServiceImpl(new CategoriaDAO())
-                        .visualizzaCategoria(categoria));
+                cs.visualizzaCategoria(categoria));
 
         return c;
     }
@@ -358,7 +361,7 @@ public final class GestioneCampagnaController extends HttpServlet {
 
         Campagna c = extractCampagna(request);
 
-        if(c.getUtente().getIdUtente() != utente.getIdUtente()){
+        if (c.getUtente().getIdUtente() != utente.getIdUtente()) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                     "Non Autorizzato");
             return;
@@ -366,8 +369,9 @@ public final class GestioneCampagnaController extends HttpServlet {
 
         c.setIdCampagna(campagna.getIdCampagna());
         c.setSommaRaccolta(campagna.getSommaRaccolta());
+        CampagnaService cs = new CampagnaServiceImpl();
 
-        if (new CampagnaServiceImpl(new CampagnaDAO()).modificaCampagna(c)) {
+        if (cs.modificaCampagna(c)) {
             uploadFoto(request, c);
             response.sendRedirect(
                     getServletContext().getContextPath() + "/index.jsp");

@@ -67,7 +67,7 @@ public final class GestioneDonazioneController extends HttpServlet {
         String path = request.getPathInfo() == null ? "/"
                 : request.getPathInfo();
         CampagnaService campagnaService =
-                new CampagnaServiceImpl(new CampagnaDAO());
+                new CampagnaServiceImpl();
         DonazioniService donazioniService =
                 new DonazioniServiceImpl(new DonazioneDAO());
 
