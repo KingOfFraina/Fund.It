@@ -79,14 +79,15 @@ public final class AutenticazioneController extends HttpServlet {
             if (utente != null && utente.getIdUtente() != -1) {
                session.setAttribute("utente", utente);
             } else if (utente != null && utente.getIdUtente() == -1) {
+               long minuti = ChronoUnit.MINUTES
+                       .between(LocalDateTime.now(), utente.getDataBan());
+               final long min = 60;
+               long ore = minuti / min;
+               minuti = minuti - (ore * min);
+
                ReportService.creaReport(request, TipoReport.ERRORE,
                        "Utente bannato", "Ritenta il login tra "
-                               + ChronoUnit.HOURS
-                               .between(LocalDateTime.now(),
-                                       utente.getDataBan()) + " ore",
-                       "e " + ChronoUnit.MINUTES
-                               .between(LocalDateTime.now(),
-                                       utente.getDataBan()) + " minuti");
+                               + ore + " ore", "e " + minuti + " minuti");
                response.sendRedirect(
                        getServletContext().getContextPath()
                                + "/autenticazione/login");
