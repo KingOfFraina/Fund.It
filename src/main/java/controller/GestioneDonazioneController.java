@@ -56,7 +56,6 @@ public final class GestioneDonazioneController extends HttpServlet {
                             + "/autenticazione/login");
             return;
         }
-
         request.getRequestDispatcher(resource).forward(request, response);
     }
 

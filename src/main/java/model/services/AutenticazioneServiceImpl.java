@@ -7,6 +7,7 @@ import model.beans.Utente;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class AutenticazioneServiceImpl implements AutenticazioneService {
 
@@ -56,13 +57,13 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
             return null;
          } else {
             if (ut.getDataBan() != null) {
-               if (ut.getDataBan().isBefore(LocalDateTime.now())) {
+               if (ut.getDataBan().isBefore(LocalDateTime.now()
+                       .truncatedTo(ChronoUnit.MINUTES))) {
                   ut.setDataBan(null);
                   userDao.update(ut);
                } else {
                   ut.setIdUtente(-1);
                }
-
                return ut;
             } else {
                return ut;
