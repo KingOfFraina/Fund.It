@@ -1,5 +1,6 @@
 package model.services;
 
+import model.DAO.CategoriaDAO;
 import model.DAO.DAO;
 import model.beans.Categoria;
 
@@ -17,10 +18,18 @@ public final class CategoriaServiceImpl implements CategoriaService {
    private final DAO<Categoria> dao;
 
    /**
+    * Costruttore di CampagnaService.
     * @param categoriaDAO istanza di CategoriaDAO
     */
    public CategoriaServiceImpl(final DAO<Categoria> categoriaDAO) {
       this.dao = categoriaDAO;
+   }
+
+   /**
+    * Costruttore di CampagnaService.
+    */
+   public CategoriaServiceImpl() {
+      this.dao = new CategoriaDAO();
    }
 
    @Override

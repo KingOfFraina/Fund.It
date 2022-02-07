@@ -1,12 +1,13 @@
 package controller;
 
+import controller.utils.Validator;
 import model.DAO.CategoriaDAO;
 import model.beans.Categoria;
+import model.beans.Utente;
 import model.services.CategoriaService;
 import model.services.CategoriaServiceImpl;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
+import model.services.ReportService;
+import model.services.TipoReport;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,74 +21,84 @@ import java.util.Optional;
         value = "/categorie/*", loadOnStartup = 0)
 public final class GestioneCategorieController extends HttpServlet {
 
-    @Override
-    public void init() {
-        CategoriaService cs = new CategoriaServiceImpl(new CategoriaDAO());
+   @Override
+   public void init() {
+      this.getServletContext().setAttribute("categorieList",
+              new CategoriaServiceImpl().visualizzaCategorie());
+   }
 
-        this.getServletContext().setAttribute("categorieList",
-                cs.visualizzaCategorie());
-    }
-
-    @Override
-    protected void doGet(final HttpServletRequest request,
+   @Override
+   protected void doPost(final HttpServletRequest request,
                          final HttpServletResponse response)
-            throws ServletException, IOException {
-        String path = request.getPathInfo();
-        String resource = "/";
+           throws IOException {
+      String path = request.getPathInfo();
+      HttpSession session = request.getSession();
 
-        switch (path) {
-            case "/inserisciCategoria":
-                resource = "/WEB-INF/results/ddfgf";
-                break;
-            case "/modificaCategoria":
-                resource = "/WEB-INF/results/dd";
-                break;
-            case "/visualizzaCategorie":
-                resource = "/WEB-INF/results/ffwe";
-                visualizzaCategorie(request);
-                break;
-            default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                        "Risorsa non trovata");
-                return;
-        }
+      switch (path) {
+         case "/inserisciCategoria" -> {
+            if (!new Validator(request)
+                    .isValidBean(new Utente(),
+                            session.getAttribute("utente"))) {
 
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher(resource);
-        dispatcher.forward(request, response);
-    }
+               response.sendRedirect(getServletContext().getContextPath()
+                       + "/AutenticazioneController/login");
+               return;
+            } else {
+               Utente utente = (Utente) session.getAttribute("utente");
 
-    @Override
-    protected void doPost(final HttpServletRequest request,
-                          final HttpServletResponse response)
-            throws IOException, ServletException {
-        String path = request.getPathInfo();
-        HttpSession session = request.getSession();
+               if (!utente.isAdmin()) {
+                  response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                  return;
+               } else {
+                  String nomeCategoria = request.getParameter("nomeCategoria");
 
-        switch (path) {
-            case "/inserisciCategoria":
-                inserisciCategoria(request, response, session);
-                break;
-            case "/modificaCategoria":
-                modificaCategoria(request, response, session);
-                break;
-            default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                        "Risorsa non trovata");
-                break;
-        }
-    }
+                  if (nomeCategoria.isBlank()) {
+                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                     return;
+                  }
 
-    private void visualizzaCategorie(final HttpServletRequest request) {
-        CategoriaService cs = new CategoriaServiceImpl(new CategoriaDAO());
+                  Categoria c = new Categoria();
+                  c.setNome(nomeCategoria);
 
-        request.setAttribute("categorieList", cs.visualizzaCategorie());
-    }
+                  if (new CategoriaServiceImpl().inserisciCategoria(c)) {
+                     visualizzaCategorie();
+                     ReportService.creaReport(request, TipoReport.INFO,
+                             "Esito operazione:",
+                             "Aggiunta categoria eseguita");
+                  } else {
+                     ReportService.creaReport(request, TipoReport.ERRORE,
+                             "Esito operazione:",
+                             "Aggiunta categoria non eseguita");
+                  }
+               }
+            }
 
-    private void modificaCategoria(final HttpServletRequest request,
-                                   final HttpServletResponse response,
-                                   final HttpSession session)
-            throws IOException {
+            break;
+         }
+         case "/modificaCategoria" -> {
+            modificaCategoria(request, response, session);
+            break;
+         }
+
+         default -> {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+         }
+      }
+
+      response.sendRedirect(getServletContext().getContextPath()
+              + "/GestioneUtenteController/visualizzaDashboardAdmin");
+   }
+
+   private void visualizzaCategorie() {
+       this.getServletContext().setAttribute("categorieList",
+              new CategoriaServiceImpl().visualizzaCategorie());
+   }
+
+   private void modificaCategoria(final HttpServletRequest request,
+                                  final HttpServletResponse response,
+                                  final HttpSession session)
+           throws IOException {
 
         /*Utente utente = (Utente) session.getAttribute("utente");
 
@@ -103,76 +114,33 @@ public final class GestioneCategorieController extends HttpServlet {
             return;
         }*/
 
-        int idCategoria = Integer.parseInt(request.getParameter("idCategoria"));
-        String nomeCategoria = request.getParameter("nomeCategoria");
-        CategoriaService service = new CategoriaServiceImpl(new CategoriaDAO());
-        Categoria c = new Categoria();
-        c.setIdCategoria(idCategoria);
-        c = service.visualizzaCategoria(c);
+      int idCategoria = Integer.parseInt(request.getParameter("idCategoria"));
+      String nomeCategoria = request.getParameter("nomeCategoria");
+      CategoriaService service = new CategoriaServiceImpl(new CategoriaDAO());
+      Categoria c = new Categoria();
+      c.setIdCategoria(idCategoria);
+      c = service.visualizzaCategoria(c);
 
-        c.setNome(nomeCategoria);
-        if (service.modificaCategoria(c)) {
-            System.out.println("ok");
-            List<Categoria> categorie =
-                    (List<Categoria>)
-                            getServletContext().getAttribute("categorieList");
+      c.setNome(nomeCategoria);
+      if (service.modificaCategoria(c)) {
+         System.out.println("ok");
+         List<Categoria> categorie =
+                 (List<Categoria>)
+                         getServletContext().getAttribute("categorieList");
 
-            Optional<Categoria> optional = categorie.stream()
-                    .filter(c1 -> c1.getIdCategoria() == idCategoria)
-                    .findFirst();
-            if (optional.isPresent()) {
-                Categoria categoria = optional.get();
-                categoria.setNome(nomeCategoria);
+         Optional<Categoria> optional = categorie.stream()
+                 .filter(c1 -> c1.getIdCategoria() == idCategoria)
+                 .findFirst();
+         if (optional.isPresent()) {
+            Categoria categoria = optional.get();
+            categoria.setNome(nomeCategoria);
 
-            } else {
-                System.out.println("not found");
-            }
-        } else {
-            System.out.println("errore");
-        }
+         } else {
+            System.out.println("not found");
+         }
+      } else {
+         System.out.println("errore");
+      }
 
-    }
-
-    private void inserisciCategoria(final HttpServletRequest request,
-                                    final HttpServletResponse response,
-                                    final HttpSession session)
-            throws IOException {
-
-
-
-       /* Utente utente = (Utente) session.getAttribute("utente");
-
-        if (utente == null) {
-            response.sendRedirect(request.getServletContext().getContextPath()
-                    + "/AutenticazioneController/login");
-            return;
-        }
-
-        if (!utente.isAdmin()) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                    "Non Autorizzato");
-            return;
-        }*/
-
-        String nomeCategoria = request.getParameter("nomeCategoria");
-
-        if (nomeCategoria.isBlank()) {
-            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
-                    "Input errato");
-            return;
-        }
-
-        Categoria c = new Categoria();
-        c.setNome(nomeCategoria);
-        CategoriaService cs = new CategoriaServiceImpl(new CategoriaDAO());
-        if (cs.inserisciCategoria(c)) {
-            System.out.println("ok");
-            List<Categoria> categorie =
-                    (List<Categoria>) getServletContext()
-                            .getAttribute("categorieList");
-            categorie.add(c);
-        } else {
-            System.out.println("errore");
-        }
-    }
+   }
 }
