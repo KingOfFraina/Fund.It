@@ -28,7 +28,7 @@
 
                         <c:otherwise>
                             <a class="nav-link active text-black navbar-text"
-                               href="${pageContext.request.contextPath}/AutenticazioneController/login">Profilo</a>
+                               href="${pageContext.request.contextPath}/autenticazione/login">Profilo</a>
                         </c:otherwise>
                     </c:choose>
 
@@ -45,12 +45,12 @@
             <c:choose>
                 <c:when test="${sessionScope.utente != null}">
                     <a class="login-logout-font"
-                       href="${pageContext.request.contextPath}/AutenticazioneController/logout"><i
+                       href="${pageContext.request.contextPath}/autenticazione/logout"><i
                             class="fas fa-sign-out-alt login-logout"></i> Logout</a>
                 </c:when>
                 <c:otherwise>
                     <a class="login-logout-font"
-                       href="${pageContext.request.contextPath}/AutenticazioneController/login"><i
+                       href="${pageContext.request.contextPath}/autenticazione/login"><i
                             class="fas fa-sign-in-alt login-logout"></i> Login</a>
                 </c:otherwise>
             </c:choose>

@@ -77,7 +77,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                 equals(Utente.class.getSimpleName())) {
             response.sendRedirect(
                     getServletContext().getContextPath()
-                            + "/AutenticazioneController/login");
+                            + "/autenticazione/login");
             return;
         }
 
@@ -173,7 +173,7 @@ public final class GestioneCampagnaController extends HttpServlet {
         if (session == null || session.getAttribute("utente") == null) {
             response.sendRedirect(
                     getServletContext().getContextPath()
-                            + "/AutenticazioneController/login");
+                            + "/autenticazione/login");
             return;
         }
 
@@ -218,7 +218,7 @@ public final class GestioneCampagnaController extends HttpServlet {
         if (userSession == null) {
             response.sendRedirect(
                     getServletContext().getContextPath()
-                            + "/AutenticazioneController/login");
+                            + "/autenticazione/login");
 
             return;
         }

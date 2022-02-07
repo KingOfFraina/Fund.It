@@ -50,7 +50,7 @@ public final class GestioneFAQController extends HttpServlet {
          } else {
             response.sendRedirect(
                     getServletContext().getContextPath()
-                            + "/AutenticazioneController/login");
+                            + "/autenticazione/login");
             return;
          }
       } else {

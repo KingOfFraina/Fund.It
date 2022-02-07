@@ -50,7 +50,7 @@ public final class SegnalazioneController extends HttpServlet {
               .isValidBean(Utente.class, session.getAttribute("utente"))) {
 
          response.sendRedirect(getServletContext().getContextPath()
-                 + "/AutenticazioneController/login");
+                 + "/autenticazione/login");
          return;
       }
 

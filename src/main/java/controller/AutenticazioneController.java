@@ -22,7 +22,7 @@ import java.util.List;
 
 
 @WebServlet(name = "AutenticazioneController",
-        value = "/AutenticazioneController/*")
+        value = "/autenticazione/*")
 @MultipartConfig
 public final class AutenticazioneController extends HttpServlet {
 
@@ -117,11 +117,11 @@ public final class AutenticazioneController extends HttpServlet {
                     "Utente bannato", "Ritenta il login dopo 5 giorni");
             response.sendRedirect(
                     getServletContext().getContextPath()
-                            + "/AutenticazioneController/login");
+                            + "/autenticazione/login");
         } else {
             response.sendRedirect(
                     getServletContext().getContextPath()
-                            + "/AutenticazioneController/login");
+                            + "/autenticazione/login");
         }
     }
 
@@ -166,7 +166,7 @@ public final class AutenticazioneController extends HttpServlet {
             } else {
                 response.sendRedirect(
                         getServletContext().getContextPath()
-                                + "/AutenticazioneController/registrazione");
+                                + "/autenticazione/registrazione");
             }
 
         }

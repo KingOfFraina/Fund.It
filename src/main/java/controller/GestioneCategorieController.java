@@ -38,7 +38,7 @@ public final class GestioneCategorieController extends HttpServlet {
                             session.getAttribute("utente"))) {
 
                response.sendRedirect(getServletContext().getContextPath()
-                       + "/AutenticazioneController/login");
+                       + "/autenticazione/login");
                return;
             } else {
                Utente utente = (Utente) session.getAttribute("utente");
@@ -76,7 +76,7 @@ public final class GestioneCategorieController extends HttpServlet {
                             session.getAttribute("utente"))) {
 
                response.sendRedirect(getServletContext().getContextPath()
-                       + "/AutenticazioneController/login");
+                       + "/autenticazione/login");
                return;
             } else {
                Utente utente = (Utente) session.getAttribute("utente");

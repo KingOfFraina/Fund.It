@@ -33,7 +33,7 @@
         <div class="col-6">
             <div id="form-div" class="container my-5 div-login">
                 <form id="form" class="needs-validation" novalidate
-                      action="${pageContext.request.contextPath}/AutenticazioneController/login" method="post">
+                      action="${pageContext.request.contextPath}/autenticazione/login" method="post">
 
                     <!--email-->
                     <div>
@@ -66,7 +66,7 @@
 
                     <button type="submit" class="btn btn-primary pulsante mt-4 mb-3">Login</button>
                 </form>
-                <a class="text-black" href="${pageContext.request.contextPath}/AutenticazioneController/registrazione">Non
+                <a class="text-black" href="${pageContext.request.contextPath}/autenticazione/registrazione">Non
                     sei registrato? Iscriviti ora!</a>
             </div>
         </div>

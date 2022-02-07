@@ -16,13 +16,13 @@
 
                 <div class="row mb-3" style="width: fit-content; margin-left: 10px">
                     <button id="back" class="btn btn-primary mt-4 mb-3"
-                            onclick="location.href = '${pageContext.request.contextPath}/AutenticazioneController/login'"
+                            onclick="location.href = '${pageContext.request.contextPath}/autenticazione/login'"
                             style="background-color: #00AB98; border-color: #00AB98">
                         <i class="fas fa-arrow-left"></i></button>
                 </div>
 
                 <form id="form" class="needs-validation" method="post" enctype="multipart/form-data"
-                      action="${pageContext.request.contextPath}/AutenticazioneController/registrazione" novalidate>
+                      action="${pageContext.request.contextPath}/autenticazione/registrazione" novalidate>
                     <!--Form dati utente-->
                     <%@include file="../components/dati_utente.jsp" %>
 
