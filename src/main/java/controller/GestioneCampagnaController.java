@@ -34,6 +34,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "GestioneCampagnaController",
         value = "/campagna/*",
@@ -47,6 +48,10 @@ public final class GestioneCampagnaController extends HttpServlet {
         List<Campagna> campagne;
         DAO<Campagna> campagnaDAO = new CampagnaDAO();
         campagne = campagnaDAO.getAll();
+        campagne = campagne.stream().
+                filter(campagna -> campagna.getStato()
+                        == StatoCampagna.ATTIVA).
+                collect(Collectors.toList());
 
         if (campagne != null) {
             campagne.forEach(c -> {
@@ -125,6 +130,11 @@ public final class GestioneCampagnaController extends HttpServlet {
                 String searchText = request.getParameter("searchText");
                 searchText = searchText.trim();
                 List<Campagna> campagne = service.ricercaCampagna(searchText);
+                campagne = campagne.stream().
+                        filter(campagna -> campagna.getStato()
+                                == StatoCampagna.ATTIVA).
+                        collect(Collectors.toList());
+
                 if (campagne.size() > 0 && !searchText.isBlank()) {
                     for (Campagna campagna : campagne) {
                         new CampagnaProxy(campagna).getImmagini();
