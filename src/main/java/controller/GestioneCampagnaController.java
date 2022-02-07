@@ -64,35 +64,34 @@ public final class GestioneCampagnaController extends HttpServlet {
                          final HttpServletResponse response)
             throws ServletException, IOException {
         String resource = "/";
-        HttpSession session;
+        HttpSession session = request.getSession();
         CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
         CategoriaService categoriaService =
                 new CategoriaServiceImpl(new CategoriaDAO());
 
         session = request.getSession();
 
-        /*if (session.getAttribute("utente") == null
+        if (session.getAttribute("utente") == null
                 || !session.getAttribute("utente").getClass().getSimpleName().
                 equals(Utente.class.getSimpleName())) {
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/AutenticazioneController/login");
             return;
-        }*/
+        }
 
         switch (request.getPathInfo()) {
-            case "/main":
-                resource = "/WEB-INF/results/main_page.jsp";
-                break;
-            case "/creaCampagna":
+            case "/main" -> resource = "/WEB-INF/results/main_page.jsp";
+            case "/creaCampagna" -> {
                 request.setAttribute("categorie",
                         categoriaService.visualizzaCategorie());
                 resource = "/WEB-INF/results/form_campagna.jsp";
-                break;
-            case "/modificaCampagna":
+            }
+            case "/modificaCampagna" -> {
                 visualizzaModificaCampagna(request, response);
                 return;
-            case "/campagna":
+            }
+            case "/campagna" -> {
                 String id = request.getParameter("idCampagna");
                 Campagna c = service.trovaCampagna(Integer.parseInt(id));
                 if (c == null) {
@@ -114,9 +113,8 @@ public final class GestioneCampagnaController extends HttpServlet {
                 request.setAttribute("campagna", c);
                 condividiCampagna(request, response, c.getIdCampagna());
                 resource = "/WEB-INF/results/campagna.jsp";
-                break;
-
-            case "/ricerca":
+            }
+            case "/ricerca" -> {
                 String searchText = request.getParameter("searchText");
                 searchText = searchText.trim();
                 List<Campagna> campagne = service.ricercaCampagna(searchText);
@@ -131,12 +129,13 @@ public final class GestioneCampagnaController extends HttpServlet {
                             "Nessun risultato trovato");
                     resource = "/WEB-INF/results/campagne.jsp";
                 }
-                break;
-            default:
+            }
+            default -> {
                 response.sendError(
                         HttpServletResponse.SC_NOT_FOUND,
                         "Risorsa non trovata");
                 return;
+            }
         }
 
         RequestDispatcher dispatcher =
@@ -153,13 +152,12 @@ public final class GestioneCampagnaController extends HttpServlet {
 
         if (map != null) {
             request.setAttribute("linkList", map);
-            return;
         } else {
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/index.jsp");
-            return;
         }
+        return;
     }
 
     private void visualizzaModificaCampagna(final HttpServletRequest request,
