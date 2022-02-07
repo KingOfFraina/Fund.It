@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public final class CampagnaServiceImpl implements CampagnaService {
     /**
@@ -106,6 +107,20 @@ public final class CampagnaServiceImpl implements CampagnaService {
             campagna.setDonazioni(donazioni);
             return flag;
         }
+    }
+
+    @Override
+    public List<Campagna> getAllCampagne() {
+        return dao.getAll();
+    }
+
+    @Override
+    public List<Campagna> getActiveCampagne() {
+        List<Campagna> lst = dao.getAll();
+        lst = lst.stream().filter(c ->
+            c.getStato() == StatoCampagna.ATTIVA
+        ).collect(Collectors.toList());
+        return lst;
     }
 
     @Override

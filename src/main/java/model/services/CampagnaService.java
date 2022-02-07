@@ -92,4 +92,16 @@ public interface CampagnaService {
     * @return true se l'operazione è andata a buon fine, false altrimenti
     */
    boolean rimborsaDonazioni(Campagna campagna, CampagnaInterface proxy);
+
+   /**
+    * Metodo per ritornare tutte le campagne, aperte o chiuse che siano.
+    * @return list di campagne.
+    */
+   List<Campagna> getAllCampagne();
+
+   /**
+    * Metodo per ottenere le campagne attive.
+    * @return list. di campagne attive.
+    */
+   List<Campagna> getActiveCampagne();
 }
