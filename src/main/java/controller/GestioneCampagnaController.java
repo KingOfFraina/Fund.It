@@ -69,7 +69,7 @@ public final class GestioneCampagnaController extends HttpServlet {
         HttpSession session = request.getSession();
         CampagnaService service = new CampagnaServiceImpl();
         CategoriaService categoriaService =
-                new CategoriaServiceImpl(new CategoriaDAO());
+                new CategoriaServiceImpl();
 
 
         switch (request.getPathInfo()) {
@@ -152,8 +152,20 @@ public final class GestioneCampagnaController extends HttpServlet {
                 }
                 break;
             case "/ricercaCategoria":
-                String cat = request.getParameter("searchText");
+                String cat = request.getParameter("idCat");
                 cat = cat.trim();
+                int idcat = 0;
+                try {
+                    idcat = Integer.parseInt(cat);
+                } catch (NumberFormatException e) {
+                    response.sendError(HttpServletResponse
+                            .SC_BAD_REQUEST);
+                    return;
+                }
+                Categoria ct = new Categoria();
+                ct.setIdCategoria(idcat);
+                categoriaService.visualizzaCategoria(ct);
+
                 List<Campagna> campagneSearched = service.ricercaCampagnaPerCategoria(cat);
                 campagne = campagneSearched.stream().
                         filter(campagna -> campagna.getStato()
