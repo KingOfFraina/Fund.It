@@ -52,16 +52,11 @@ public final class GestioneCampagnaController extends HttpServlet {
                 filter(campagna -> campagna.getStato()
                         == StatoCampagna.ATTIVA).
                 collect(Collectors.toList());
-
-        if (campagne != null) {
-            campagne.forEach(c -> {
-                CampagnaInterface proxy = new CampagnaProxy(c);
-                proxy.getUtente();
-                proxy.getImmagini();
-            });
-        }
-
-
+        campagne.forEach(c -> {
+            CampagnaInterface proxy = new CampagnaProxy(c);
+            proxy.getUtente();
+            proxy.getImmagini();
+        });
         getServletContext().setAttribute("campagneList", campagne);
     }
 
@@ -118,10 +113,9 @@ public final class GestioneCampagnaController extends HttpServlet {
                     c.setDonazioni(proxy.getDonazioni());
                     if (service.modificaCampagna(c)) {
                         request.setAttribute("campagna", c);
-                        condividiCampagna(request, response, c.getIdCampagna());
+                        condividiCampagna(request, c.getIdCampagna());
                         resource = "/WEB-INF/results/campagna.jsp";
                     } else {
-                        System.out.println("mammt");
                         response.sendError(HttpServletResponse.SC_NOT_FOUND);
                     }
                 }
@@ -140,12 +134,11 @@ public final class GestioneCampagnaController extends HttpServlet {
                         new CampagnaProxy(campagna).getImmagini();
                     }
                     request.setAttribute("campagneList", campagne);
-                    resource = "/WEB-INF/results/campagne.jsp";
                 } else {
                     request.setAttribute("errorSearch",
                             "Nessun risultato trovato");
-                    resource = "/WEB-INF/results/campagne.jsp";
                 }
+                resource = "/WEB-INF/results/campagne.jsp";
                 break;
             default:
                 response.sendError(
@@ -160,20 +153,12 @@ public final class GestioneCampagnaController extends HttpServlet {
     }
 
     private void condividiCampagna(final HttpServletRequest request,
-                                   final HttpServletResponse response,
-                                   final int idCampagna) throws IOException {
+                                   final int idCampagna) {
         CampagnaService cs = new CampagnaServiceImpl();
         Map<String, String> map =
                 cs.condividiCampagna(idCampagna, request);
 
-        if (map != null) {
-            request.setAttribute("linkList", map);
-        } else {
-            response.sendRedirect(
-                    getServletContext().getContextPath()
-                            + "/index.jsp");
-        }
-        return;
+        request.setAttribute("linkList", map);
     }
 
     private void visualizzaModificaCampagna(final HttpServletRequest request,
@@ -237,7 +222,7 @@ public final class GestioneCampagnaController extends HttpServlet {
 
         Utente userSession = (Utente) session.getAttribute("utente");
         String idCampagna = request.getParameter("idCampagna");
-        int id = 0;
+        int id;
         String path = request.getPathInfo()
                 == null ? "/" : request.getPathInfo();
 
@@ -248,7 +233,8 @@ public final class GestioneCampagnaController extends HttpServlet {
             case "/modificaCampagna":
                 if (idCampagna != null) {
                     modificaCampagna(request, response, service
-                            .trovaCampagna(Integer.parseInt(idCampagna)),
+                                    .trovaCampagna(
+                                            Integer.parseInt(idCampagna)),
                             userSession);
                 }
                 break;
@@ -256,12 +242,12 @@ public final class GestioneCampagnaController extends HttpServlet {
                 id = Integer.parseInt(idCampagna);
                 Campagna campagna = service.trovaCampagna(id);
 
-                    if (campagna.getUtente().getIdUtente()
-                            != userSession.getIdUtente()) {
-                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                                "Non Autorizzato");
-                        return;
-                    }
+                if (campagna.getUtente().getIdUtente()
+                        != userSession.getIdUtente()) {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                            "Non Autorizzato");
+                    return;
+                }
 
 
                 if (service.cancellaCampagna(campagna)) {

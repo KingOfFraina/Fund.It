@@ -4,7 +4,12 @@ import model.DAO.DonazioneDAO;
 import model.beans.Campagna;
 import model.beans.Donazione;
 import model.beans.Utente;
-import model.services.*;
+import model.services.CampagnaService;
+import model.services.CampagnaServiceImpl;
+import model.services.DonazioniService;
+import model.services.DonazioniServiceImpl;
+import model.services.ReportService;
+import model.services.TipoReport;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -69,13 +74,14 @@ public final class GestioneDonazioneController extends HttpServlet {
 
         int id = Integer.parseInt(request.getParameter("idCampagna"));
         HttpSession session = request.getSession();
+        Utente utente = (Utente) session.getAttribute("utente");
 
         Campagna campagna = campagnaService
                 .trovaCampagna(id);
 
         switch (path) {
             case "/registraDonazione" -> {
-                if (session != null && session.getAttribute("utente") != null) {
+                if (utente != null) {
                     Donazione donazione = new Donazione();
                     donazione.setCampagna(campagna);
                     donazione.setUtente((Utente)
@@ -110,13 +116,20 @@ public final class GestioneDonazioneController extends HttpServlet {
                                         + donazione.getSommaDonata());
                         campagnaService.modificaCampagna(campagna);
                         session.removeAttribute("donazione");
-                        ReportService.creaReport(request, TipoReport.INFO, "Donazione andata a buon fine");
+                        ReportService.creaReport(request,
+                                TipoReport.INFO,
+                                "Donazione andata a buon fine");
                         response.sendRedirect(getServletContext()
-                                .getContextPath() + "/campagna/campagna?idCampagna=" + campagna.getIdCampagna());
+                                .getContextPath()
+                                + "/campagna/campagna?idCampagna="
+                                + campagna.getIdCampagna());
                         return;
                     } else {
-                        ReportService.creaReport(request, TipoReport.ERRORE, "Donazione non salvata");
-                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        ReportService.creaReport(request, TipoReport.ERRORE,
+                                "Donazione non salvata");
+                        response
+                                .sendError(HttpServletResponse
+                                        .SC_INTERNAL_SERVER_ERROR);
                         return;
                     }
                 }

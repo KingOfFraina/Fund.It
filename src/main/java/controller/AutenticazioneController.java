@@ -25,140 +25,135 @@ import java.util.List;
 @MultipartConfig
 public final class AutenticazioneController extends HttpServlet {
 
-   @Override
-   protected void doGet(final HttpServletRequest request,
-                        final HttpServletResponse response)
-           throws ServletException, IOException {
-      HttpSession session = request.getSession();
-      String path;
+    @Override
+    protected void doGet(final HttpServletRequest request,
+                         final HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String path;
 
-      if (!new Validator(request)
-              .isValidBean(Utente.class, session.getAttribute("utente"))) {
-         switch (request.getPathInfo()) {
-            case "/login" -> {
-               path = "/WEB-INF/results/login.jsp";
+        if (!new Validator(request)
+                .isValidBean(Utente.class, session.getAttribute("utente"))) {
+            String pathInfo = request.getPathInfo();
+            if ("/login".equals(pathInfo)) {
+                path = "/WEB-INF/results/login.jsp";
+            } else if ("/registrazione".equals(pathInfo)) {
+                path = "/WEB-INF/results/registrazione.jsp";
+            } else {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
             }
+            request.getRequestDispatcher(path).forward(request, response);
+        } else {
+            if (request.getPathInfo().equals("/logout")) {
+                new AutenticazioneServiceImpl(session).logout();
+                response.sendRedirect(getServletContext().getContextPath()
+                        + "/index.jsp");
+            } else {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            }
+        }
+    }
 
+    @Override
+    protected void doPost(final HttpServletRequest request,
+                          final HttpServletResponse response)
+            throws IOException, ServletException {
+        HttpSession session = request.getSession();
+        Utente utente;
+
+        switch (request.getPathInfo()) {
+            case "/login" -> {
+                utente = new Utente();
+                utente.setEmail(request.getParameter("email"));
+                utente.createPasswordHash(request.getParameter("password"));
+
+                utente = new AutenticazioneServiceImpl(
+                        request.getSession(true)).login(utente);
+
+                if (utente != null && utente.getIdUtente() != -1) {
+                    session.setAttribute("utente", utente);
+                } else if (utente != null && utente.getIdUtente() == -1) {
+                    long minuti = ChronoUnit.MINUTES
+                            .between(LocalDateTime.now(), utente.getDataBan());
+                    final long min = 60;
+                    long ore = minuti / min;
+                    minuti = minuti - (ore * min);
+
+                    ReportService.creaReport(request, TipoReport.ERRORE,
+                            "Utente bannato", "Ritenta il login tra "
+                                    + ore + " ore", "e " + minuti + " minuti");
+                    response.sendRedirect(
+                            getServletContext().getContextPath()
+                                    + "/autenticazione/login");
+                    return;
+                } else {
+                    ReportService.creaReport(request, TipoReport.ERRORE,
+                            "Credenziali sbagliate", "Ritenta il login");
+                    response.sendRedirect(
+                            getServletContext().getContextPath()
+                                    + "/autenticazione/login");
+                    return;
+                }
+            }
             case "/registrazione" -> {
-               path = "/WEB-INF/results/registrazione.jsp";
+                utente = new Utente();
+
+                if (request.getParameter("password").equals(
+                        request.getParameter("confermaPassword"))
+                        && request.getParameter("email").equals(
+                        request.getParameter("confermaEmail"))) {
+                    utente.createPasswordHash(request.getParameter("password"));
+                    utente.setEmail(request.getParameter("email"));
+                    utente.setNome(request.getParameter("nome"));
+                    utente.setCognome(request.getParameter("cognome"));
+                    utente.setDataDiNascita(
+                            LocalDate.parse(
+                                    request.getParameter("dataDiNascita")));
+                    utente.setTelefono(request.getParameter("telefono"));
+                    utente.setStrada(request.getParameter("indirizzo"));
+                    utente.setCitta(request.getParameter("citta"));
+                    utente.setCap(request.getParameter("cap"));
+                    utente.setCf(request.getParameter("cf"));
+
+                    List<String> fileNames = FileServlet.uploadFoto(request);
+
+                    if (fileNames.size() > 0) {
+                        utente.setFotoProfilo(fileNames.get(0));
+                    } else {
+                        utente.setFotoProfilo("");
+                    }
+
+                    if (new AutenticazioneServiceImpl(session)
+                            .registrazione(utente)) {
+                        session.setAttribute("utente", utente);
+
+                        ReportService.creaReport(request, TipoReport.INFO,
+                                "Esito operazione:",
+                                "Registrazione avvenuta con successo");
+                    } else {
+                        ReportService.creaReport(request, TipoReport.ERRORE,
+                                "Esito operazione:",
+                                "Registrazione non avvenuta con successo");
+                    }
+                } else {
+                    ReportService.creaReport(request, TipoReport.ERRORE,
+                            "Esito operazione:",
+                            "Registrazione non avvenuta con successo");
+
+                    response.sendRedirect(
+                            getServletContext().getContextPath()
+                                    + "/autenticazione/registrazione");
+                }
             }
 
             default -> {
-               response.sendError(HttpServletResponse.SC_NOT_FOUND);
-               return;
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
             }
-         }
-         request.getRequestDispatcher(path).forward(request, response);
-      } else {
-         if (request.getPathInfo().equals("/logout")) {
-            new AutenticazioneServiceImpl(session).logout();
-            response.sendRedirect(getServletContext().getContextPath()
-                    + "/index.jsp");
-         } else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-         }
-      }
-   }
+        }
 
-   @Override
-   protected void doPost(final HttpServletRequest request,
-                         final HttpServletResponse response)
-           throws IOException, ServletException {
-      HttpSession session = request.getSession();
-      Utente utente;
-
-      switch (request.getPathInfo()) {
-         case "/login" -> {
-            utente = new Utente();
-            utente.setEmail(request.getParameter("email"));
-            utente.createPasswordHash(request.getParameter("password"));
-
-            utente = new AutenticazioneServiceImpl(
-                    request.getSession(true)).login(utente);
-
-            if (utente != null && utente.getIdUtente() != -1) {
-               session.setAttribute("utente", utente);
-            } else if (utente != null && utente.getIdUtente() == -1) {
-               long minuti = ChronoUnit.MINUTES
-                       .between(LocalDateTime.now(), utente.getDataBan());
-               final long min = 60;
-               long ore = minuti / min;
-               minuti = minuti - (ore * min);
-
-               ReportService.creaReport(request, TipoReport.ERRORE,
-                       "Utente bannato", "Ritenta il login tra "
-                               + ore + " ore", "e " + minuti + " minuti");
-               response.sendRedirect(
-                       getServletContext().getContextPath()
-                               + "/autenticazione/login");
-               return;
-            } else {
-               ReportService.creaReport(request, TipoReport.ERRORE,
-                       "Credenziali sbagliate", "Ritenta il login");
-               response.sendRedirect(
-                       getServletContext().getContextPath()
-                               + "/autenticazione/login");
-               return;
-            }
-         }
-         case "/registrazione" -> {
-            utente = new Utente();
-
-            if (request.getParameter("password").equals(
-                    request.getParameter("confermaPassword"))
-                    && request.getParameter("email").equals(
-                    request.getParameter("confermaEmail"))) {
-               utente.createPasswordHash(request.getParameter("password"));
-               utente.setEmail(request.getParameter("email"));
-               utente.setNome(request.getParameter("nome"));
-               utente.setCognome(request.getParameter("cognome"));
-               utente.setDataDiNascita(
-                       LocalDate.parse(
-                               request.getParameter("dataDiNascita")));
-               utente.setTelefono(request.getParameter("telefono"));
-               utente.setStrada(request.getParameter("indirizzo"));
-               utente.setCitta(request.getParameter("citta"));
-               utente.setCap(request.getParameter("cap"));
-               utente.setCf(request.getParameter("cf"));
-
-               List<String> fileNames = FileServlet.uploadFoto(request);
-
-               if (fileNames.size() > 0) {
-                  utente.setFotoProfilo(fileNames.get(0));
-               } else {
-                  utente.setFotoProfilo("");
-               }
-
-               if (new AutenticazioneServiceImpl(session)
-                       .registrazione(utente)) {
-                  session.setAttribute("utente", utente);
-
-                  ReportService.creaReport(request, TipoReport.INFO,
-                          "Esito operazione:",
-                          "Registrazione avvenuta con successo");
-               } else {
-                  ReportService.creaReport(request, TipoReport.ERRORE,
-                          "Esito operazione:",
-                          "Registrazione non avvenuta con successo");
-               }
-            } else {
-               ReportService.creaReport(request, TipoReport.ERRORE,
-                       "Esito operazione:",
-                       "Registrazione non avvenuta con successo");
-
-               response.sendRedirect(
-                       getServletContext().getContextPath()
-                               + "/autenticazione/registrazione");
-            }
-         }
-
-         default -> {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-         }
-      }
-
-      response.sendRedirect(getServletContext().getContextPath()
-              + "/index.jsp");
-   }
+        response.sendRedirect(getServletContext().getContextPath()
+                + "/index.jsp");
+    }
 }
