@@ -38,10 +38,13 @@ public final class GestioneUtenteController extends HttpServlet {
                          final HttpServletResponse response)
             throws ServletException, IOException {
         switch (request.getPathInfo()) {
-            case "/visualizzaDashboard" -> visualizzaDashboard(request, response);
-            case "/visualizzaDashboardAdmin" -> visualizzaDashboardAdmin(request, response);
-            default -> response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                    "Risorsa non trovata");
+            case "/visualizzaDashboard" -> {
+                visualizzaDashboard(request, response);
+            }
+            case "/visualizzaDashboardAdmin" -> {
+                visualizzaDashboardAdmin(request, response);
+            }
+            default -> response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
@@ -53,9 +56,10 @@ public final class GestioneUtenteController extends HttpServlet {
 
         switch (path) {
             case "/modificaProfilo" -> modificaProfilo(request, response);
-            case "/promuoviDeclassaUtente" -> promuoviDeclassaUtente(request, response);
-            default -> response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                    "Risorsa non trovata");
+            case "/promuoviDeclassaUtente" -> {
+                promuoviDeclassaUtente(request, response);
+            }
+            default -> response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
@@ -146,7 +150,8 @@ public final class GestioneUtenteController extends HttpServlet {
                     utente.setNome(request.getParameter("nome"));
                     utente.setCognome(request.getParameter("cognome"));
                     utente.setDataDiNascita(
-                            LocalDate.parse(request.getParameter("dataDiNascita")));
+                            LocalDate.parse(
+                                    request.getParameter("dataDiNascita")));
                     utente.setTelefono(request.getParameter("telefono"));
                     utente.setStrada(request.getParameter("indirizzo"));
                     utente.setCitta(request.getParameter("citta"));
@@ -226,8 +231,8 @@ public final class GestioneUtenteController extends HttpServlet {
                     }
                     visualizzaDashboardAdmin(request, response);
                 } else {
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-
+                    response.sendError(HttpServletResponse.
+                            SC_INTERNAL_SERVER_ERROR);
                 }
             }
         }

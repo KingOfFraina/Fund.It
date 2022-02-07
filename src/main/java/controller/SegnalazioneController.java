@@ -1,7 +1,6 @@
 package controller;
 
 import controller.utils.Validator;
-import model.DAO.CampagnaDAO;
 import model.DAO.UtenteDAO;
 import model.beans.Campagna;
 import model.beans.Segnalazione;

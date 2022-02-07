@@ -13,6 +13,23 @@
 
 
 <%@include file="WEB-INF/components/navbar.jsp" %>
+<div class="text-center mt-2">
+    <%@include file="WEB-INF/components/toasts.jsp" %>
+</div>
+
+
+<!--Report-->
+<c:if test="${sessionScope.titoloReport.length() > 0}">
+    <input id="message" type="hidden"
+           value="${sessionScope.tipoReport}+${sessionScope.titoloReport}+${sessionScope.bodyReport}">
+    <script>
+
+        Toasty();
+    </script>
+    ${sessionScope.tipoReport = null}
+    ${sessionScope.titoloReport = null}
+    ${sessionScope.bodyReport = null}
+</c:if>
 
 <!-- div testo e presentazione-->
 
