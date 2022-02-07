@@ -62,11 +62,13 @@ public final class CampagnaServiceImpl implements CampagnaService {
                         + campagna.getIdCampagna();
                 String subject = "Dona a questa campagna presente su Fund.It ";
 
-                link.put("mail", "mailto:?body=" + path + "&amp;subject= Titolo: "
+                link.put("mail", "mailto:?body="
+                        + path + "&amp;subject= Titolo: "
                         + subject + campagna.getTitolo());
                 link.put("whatsapp", "https://wa.me/?text=" + subject + path);
-                link.put("facebook", "https://www.facebook.com/sharer/sharer.php?u="
-                        + path);
+                link.put("facebook",
+                        "https://www.facebook.com/sharer/sharer.php?u="
+                                + path);
                 link.put("twitter", "https://twitter.com/share?text=" + subject
                         + "&amp;url=" + path + "/&amp;via=Fund.It");
                 link.put("link", path);
