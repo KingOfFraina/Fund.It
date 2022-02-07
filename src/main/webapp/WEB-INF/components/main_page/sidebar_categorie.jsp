@@ -9,12 +9,11 @@
 
         <c:forEach items="${applicationScope.categorieList}" var="cat">
         <li>
-            <form action="${pageContext.request.contextPath}/campagna/ricercaCategoria" method="get">
-            <input type="text" value="${cat.idCategoria}" name = "idCat" hidden>
-                <button type="submit"
+                <input type="text" value="${cat.idCategoria}" name = "idCat" hidden>
+                <a href = '${pageContext.request.contextPath}/campagna/ricercaCategoria?idCat=${cat.idCategoria}'
                style="font-family: Comfortaa, cursive; font-size: 20px; text-decoration: none; color: black;">${cat.nome}
-                &nbsp; &nbsp;<i class="fas fa-chevron-right"></i></button>
-            </form>
+                &nbsp; &nbsp;<i class="fas fa-chevron-right"></i></a>
+
         </li>
         </c:forEach>
 

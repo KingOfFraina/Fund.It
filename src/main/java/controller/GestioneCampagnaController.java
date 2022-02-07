@@ -152,13 +152,26 @@ public final class GestioneCampagnaController extends HttpServlet {
                 break;
             case "/ricercaCategoria":
                 String cat = request.getParameter("idCat");
+                if(cat.isBlank()){
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    return;
+                }
                 String idcattrimmed = cat.trim();
-                System.out.println("idcat: " + idcattrimmed);
                 Categoria categoria = new Categoria();
-                categoria.setIdCategoria(Integer.parseInt(idcattrimmed));
+                try {
+                    categoria.setIdCategoria(Integer.parseInt(idcattrimmed));
+                } catch (NumberFormatException e) {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
                 categoria = categoriaService.visualizzaCategoria(categoria);
 
+                if(categoria == null){
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    return;
+                }
+
                 List<Campagna> campagneSearched = campagnaService.
+
                         ricercaCampagnaPerCategoria(categoria.getNome());
                 System.out.println(campagneSearched);
 
