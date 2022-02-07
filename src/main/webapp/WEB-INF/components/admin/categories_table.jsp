@@ -37,7 +37,8 @@
     <form method="post" action="${pageContext.request.contextPath}/categorie/inserisciCategoria" class = "needs-validation" novalidate>
 
         <label for = "nomeCategoria">Inserisci categoria</label>
-        <input id = "nomeCategoria" type="text" class="form-control " name="nomeCategoria" required >
+        <input id = "nomeCategoria" type="text" class="form-control " name="nomeCategoria"
+               pattern = "^[A-Za-zà-ź \s]{2,100}$" required >
 
 
         <button type="submit" class="btn btn-primary mt-3"
