@@ -74,7 +74,7 @@ public final class GestioneCampagnaController extends HttpServlet {
 
         switch (request.getPathInfo()) {
             case "/main" -> resource = "/WEB-INF/results/main_page.jsp";
-            case "/creaCampagna" -> {
+            case "/creaCampagna" -> { //sstocazzo
                 if (new Validator(request).isValidBean(Utente.class,
                         session.getAttribute("utente"))) {
                     response.sendRedirect(
