@@ -77,7 +77,7 @@ public final class GestioneUtenteController extends HttpServlet {
       if (!new Validator(request).isValidBean(Utente.class,
               request.getSession().getAttribute("utente"))) {
          response.sendRedirect(request.getServletContext().getContextPath()
-                 + "/AutenticazioneController/login");
+                 + "/autenticazione/login");
          return;
       } else {
          Utente ut = (Utente) request.getSession().getAttribute("utente");
@@ -116,7 +116,7 @@ public final class GestioneUtenteController extends HttpServlet {
       if (!new Validator(request).isValidBean(Utente.class,
               session.getAttribute("utente"))) {
          response.sendRedirect(request.getServletContext().getContextPath()
-                 + "/AutenticazioneController/login");
+                 + "/autenticazione/login");
          return;
       } else {
          UtenteService uts = new UtenteServiceImpl();
@@ -141,7 +141,7 @@ public final class GestioneUtenteController extends HttpServlet {
       if (!new Validator(request).isValidBean(Utente.class,
               session.getAttribute("utente"))) {
          response.sendRedirect(request.getServletContext().getContextPath()
-                 + "/AutenticazioneController/login");
+                 + "/autenticazione/login");
          return;
       } else {
          Utente utente = new Utente();
@@ -206,7 +206,7 @@ public final class GestioneUtenteController extends HttpServlet {
       if (!new Validator(request).isValidBean(Utente.class,
               session.getAttribute("utente"))) {
          response.sendRedirect(request.getServletContext().getContextPath()
-                 + "/AutenticazioneController/login");
+                 + "/autenticazione/login");
          return;
       } else {
          Utente utente = (Utente) session.getAttribute("utente");
