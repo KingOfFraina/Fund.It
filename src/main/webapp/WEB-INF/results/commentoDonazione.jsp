@@ -35,7 +35,7 @@
 
         </form>
 
-        <form method="post" action="${pageContext.request.contextPath}/donazione/registraDonazione">
+        <form method="post" action="${pageContext.request.contextPath}/index.jsp">
             <input type="hidden" name="idCampagna" value="${requestScope.idCampagna}">
             <button class = "pulsante btn-secondary btn mt-3">
                 Prosegui senza commentare

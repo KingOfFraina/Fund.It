@@ -19,7 +19,7 @@ import java.io.IOException;
 public final class GestioneFAQController extends HttpServlet {
 
    @Override
-   protected void doGet(final HttpServletRequest request,
+   public void doGet(final HttpServletRequest request,
                         final HttpServletResponse response)
            throws ServletException, IOException {
 
@@ -64,7 +64,7 @@ public final class GestioneFAQController extends HttpServlet {
    }
 
    @Override
-   protected void doPost(final HttpServletRequest request,
+   public void doPost(final HttpServletRequest request,
                          final HttpServletResponse response)
            throws IOException {
       String path = request.getPathInfo();
