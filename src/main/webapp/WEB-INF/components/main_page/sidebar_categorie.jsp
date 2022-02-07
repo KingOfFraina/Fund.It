@@ -9,7 +9,7 @@
 
         <c:forEach items="${applicationScope.categorieList}" var="cat">
         <li>
-            <form action="${pageContext.request.contextPath}/categorie/ricercaCategoria" method="get">
+            <form action="${pageContext.request.contextPath}/campagna/ricercaCategoria" method="get">
             <input type="text" value="${cat.idCategoria}" name = "idCat" hidden>
                 <button type="submit"
                style="font-family: Comfortaa, cursive; font-size: 20px; text-decoration: none; color: black;">${cat.nome}
