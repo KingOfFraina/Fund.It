@@ -74,7 +74,7 @@ public final class GestioneCampagnaController extends HttpServlet {
         switch (request.getPathInfo()) {
             case "/main" -> resource = "/WEB-INF/results/main_page.jsp";
             case "/creaCampagna" -> {
-                if (new Validator(request).isValidBean(Utente.class,
+                if (!new Validator(request).isValidBean(Utente.class,
                         session.getAttribute("utente"))) {
                     response.sendRedirect(
                             getServletContext().getContextPath()
@@ -95,7 +95,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                 int idCampagna = Integer.parseInt(id);
                 Campagna c = service.trovaCampagna(idCampagna);
 
-                if (c == null) {
+                if (c == null || c.getStato() != StatoCampagna.ATTIVA) {
                     response.sendError(
                             HttpServletResponse.SC_NOT_FOUND,
                             "Campagna non trovata");
@@ -175,7 +175,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                 new CategoriaServiceImpl(new CategoriaDAO());
         HttpSession session = request.getSession();
 
-        if (new Validator(request).isValidBean(Utente.class,
+        if (!new Validator(request).isValidBean(Utente.class,
                 session.getAttribute("utente") == null)) {
             response.sendRedirect(
                     getServletContext().getContextPath()
@@ -217,11 +217,12 @@ public final class GestioneCampagnaController extends HttpServlet {
         HttpSession session = request.getSession();
         CampagnaService service = new CampagnaServiceImpl();
 
-        if (new Validator(request).isValidBean(Utente.class,
+        if (!new Validator(request).isValidBean(Utente.class,
                 session.getAttribute("utente"))) {
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/autenticazione/login");
+            System.out.println("we");
             return;
         }
 
