@@ -1,6 +1,6 @@
 package controller;
 
-import model.DAO.CampagnaDAO;
+
 import model.DAO.DonazioneDAO;
 import model.beans.Campagna;
 import model.beans.Donazione;

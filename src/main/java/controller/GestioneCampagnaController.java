@@ -77,8 +77,10 @@ public final class GestioneCampagnaController extends HttpServlet {
 
 
         switch (request.getPathInfo()) {
-            case "/main" -> resource = "/WEB-INF/results/main_page.jsp";
-            case "/creaCampagna" -> {
+            case "/main":
+                resource = "/WEB-INF/results/main_page.jsp";
+                break;
+            case "/creaCampagna":
                 if (!new Validator(request).isValidBean(Utente.class,
                         session.getAttribute("utente"))) {
                     response.sendRedirect(
@@ -90,16 +92,14 @@ public final class GestioneCampagnaController extends HttpServlet {
                             categoriaService.visualizzaCategorie());
                     resource = "/WEB-INF/results/form_campagna.jsp";
                 }
-            }
-            case "/modificaCampagna" -> {
+                break;
+            case "/modificaCampagna":
                 visualizzaModificaCampagna(request, response);
                 return;
-            }
-            case "/campagna" -> {
+            case "/campagna":
                 String id = request.getParameter("idCampagna");
                 int idCampagna = Integer.parseInt(id);
                 Campagna c = service.trovaCampagna(idCampagna);
-
                 if (c == null || c.getStato() != StatoCampagna.ATTIVA) {
                     response.sendError(
                             HttpServletResponse.SC_NOT_FOUND,
@@ -125,8 +125,8 @@ public final class GestioneCampagnaController extends HttpServlet {
                         response.sendError(HttpServletResponse.SC_NOT_FOUND);
                     }
                 }
-            }
-            case "/ricerca" -> {
+                break;
+            case "/ricerca":
                 String searchText = request.getParameter("searchText");
                 searchText = searchText.trim();
                 List<Campagna> campagne = service.ricercaCampagna(searchText);
@@ -146,13 +146,12 @@ public final class GestioneCampagnaController extends HttpServlet {
                             "Nessun risultato trovato");
                     resource = "/WEB-INF/results/campagne.jsp";
                 }
-            }
-            default -> {
+                break;
+            default:
                 response.sendError(
                         HttpServletResponse.SC_NOT_FOUND,
                         "Risorsa non trovata");
                 return;
-            }
         }
 
         RequestDispatcher dispatcher =
