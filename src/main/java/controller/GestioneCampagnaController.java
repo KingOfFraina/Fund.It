@@ -2,10 +2,8 @@ package controller;
 
 import controller.utils.FileServlet;
 import controller.utils.Validator;
-import model.DAO.CampagnaDAO;
 import model.DAO.CategoriaDAO;
 import model.DAO.ImmagineDAO;
-import model.DAO.DAO;
 import model.beans.Campagna;
 import model.beans.Categoria;
 import model.beans.Donazione;
@@ -67,7 +65,7 @@ public final class GestioneCampagnaController extends HttpServlet {
             throws ServletException, IOException {
         String resource = "/";
         HttpSession session = request.getSession();
-        CampagnaService service = new CampagnaServiceImpl();
+        CampagnaService campagnaService = new CampagnaServiceImpl();
         CategoriaService categoriaService =
                 new CategoriaServiceImpl();
 
@@ -103,7 +101,7 @@ public final class GestioneCampagnaController extends HttpServlet {
             case "/campagna":
                 String id = request.getParameter("idCampagna");
                 int idCampagna = Integer.parseInt(id);
-                Campagna c = service.trovaCampagna(idCampagna);
+                Campagna c = campagnaService.trovaCampagna(idCampagna);
                 if (c == null || c.getStato() != StatoCampagna.ATTIVA) {
                     response.sendError(
                             HttpServletResponse.SC_NOT_FOUND,
@@ -120,7 +118,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                         d.setUtente(proxy2.getUtente());
                     });
                     c.setDonazioni(proxy.getDonazioni());
-                    if (service.modificaCampagna(c)) {
+                    if (campagnaService.modificaCampagna(c)) {
                         request.setAttribute("campagna", c);
                         condividiCampagna(request, response, c.getIdCampagna());
                         resource = "/WEB-INF/results/campagna.jsp";
@@ -133,7 +131,8 @@ public final class GestioneCampagnaController extends HttpServlet {
             case "/ricerca":
                 String searchText = request.getParameter("searchText");
                 searchText = searchText.trim();
-                List<Campagna> campagne = service.ricercaCampagna(searchText);
+                List<Campagna> campagne = campagnaService.
+                        ricercaCampagna(searchText);
                 campagne = campagne.stream().
                         filter(campagna -> campagna.getStato()
                                 == StatoCampagna.ATTIVA).
@@ -153,20 +152,16 @@ public final class GestioneCampagnaController extends HttpServlet {
                 break;
             case "/ricercaCategoria":
                 String cat = request.getParameter("idCat");
-                cat = cat.trim();
-                int idcat = 0;
-                try {
-                    idcat = Integer.parseInt(cat);
-                } catch (NumberFormatException e) {
-                    response.sendError(HttpServletResponse
-                            .SC_BAD_REQUEST);
-                    return;
-                }
-                Categoria ct = new Categoria();
-                ct.setIdCategoria(idcat);
-                categoriaService.visualizzaCategoria(ct);
+                String idcattrimmed = cat.trim();
+                System.out.println("idcat: " + idcattrimmed);
+                Categoria categoria = new Categoria();
+                categoria.setIdCategoria(Integer.parseInt(idcattrimmed));
+                categoria = categoriaService.visualizzaCategoria(categoria);
 
-                List<Campagna> campagneSearched = service.ricercaCampagnaPerCategoria(cat);
+                List<Campagna> campagneSearched = campagnaService.
+                        ricercaCampagnaPerCategoria(categoria.getNome());
+                System.out.println(campagneSearched);
+
                 campagne = campagneSearched.stream().
                         filter(campagna -> campagna.getStato()
                                 == StatoCampagna.ATTIVA).

@@ -31,8 +31,10 @@ import java.util.List;
 public final class GestioneSegnalazioneController extends HttpServlet {
     @Override
     protected void doGet(final HttpServletRequest request,
-                         final HttpServletResponse response) throws IOException {
-        Utente userSession = (Utente) request.getSession().getAttribute("utente");
+                         final HttpServletResponse response)
+            throws IOException {
+        Utente userSession = (Utente)
+                request.getSession().getAttribute("utente");
         if (userSession.isAdmin()) {
             SegnalazioniService service = new SegnalazioniServiceImpl();
             List<Segnalazione> segnalazioni = service.trovaSegnalazioni();
@@ -90,7 +92,8 @@ public final class GestioneSegnalazioneController extends HttpServlet {
                             "Esito operazione:", "Segnalazione non inviata");
                 }
 
-                response.sendRedirect(request.getServletContext().getContextPath()
+                response.sendRedirect(request.getServletContext().
+                        getContextPath()
                         + "/campagna/campagna?idCampagna=" + idCampagna);
 
             }
@@ -101,7 +104,8 @@ public final class GestioneSegnalazioneController extends HttpServlet {
                             "Non autorizzato");
                 } else {
                     String scelta = request.getParameter("sceltaSegnalazione");
-                    int id = Integer.parseInt(request.getParameter("idCampagna"));
+                    int id = Integer.parseInt(
+                            request.getParameter("idCampagna"));
                     int idSegnalazione =
                             Integer.parseInt(
                                     request.getParameter("idSegnalazione"));
@@ -120,20 +124,24 @@ public final class GestioneSegnalazioneController extends HttpServlet {
                         if (campagnaService
                                 .rimborsaDonazioni(campagna, campagnaProxy)) {
                             ReportService.creaReport(request, TipoReport.INFO,
-                                    "Esito operazione:", "Segnalazione risolta");
+                                    "Esito operazione:",
+                                    "Segnalazione risolta");
                         } else {
                             ReportService.creaReport(request, TipoReport.ERRORE,
-                                    "Esito operazione:", "Segnalazione non risolta");
+                                    "Esito operazione:",
+                                    "Segnalazione non risolta");
                         }
                     } else {
                         if (segnalazioniService
                                 .risolviSegnalazione(idSegnalazione,
                                         StatoSegnalazione.ARCHIVIATA)) {
                             ReportService.creaReport(request, TipoReport.INFO,
-                                    "Esito operazione:", "Segnalazione archiviata");
+                                    "Esito operazione:",
+                                    "Segnalazione archiviata");
                         } else {
                             ReportService.creaReport(request, TipoReport.ERRORE,
-                                    "Esito operazione:", "Segnalazione non archviata");
+                                    "Esito operazione:",
+                                    "Segnalazione non archviata");
                         }
                     }
                     response.sendRedirect(request
