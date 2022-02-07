@@ -70,24 +70,22 @@ public final class GestioneCampagnaController extends HttpServlet {
         CategoriaService categoriaService =
                 new CategoriaServiceImpl(new CategoriaDAO());
 
-        session = request.getSession();
-
-        if (session.getAttribute("utente") == null
-                || !session.getAttribute("utente").getClass().getSimpleName().
-                equals(Utente.class.getSimpleName())) {
-            response.sendRedirect(
-                    getServletContext().getContextPath()
-                            + "/AutenticazioneController/login");
-            return;
-        }
 
 
         switch (request.getPathInfo()) {
             case "/main" -> resource = "/WEB-INF/results/main_page.jsp";
             case "/creaCampagna" -> {
-                request.setAttribute("categorie",
-                        categoriaService.visualizzaCategorie());
-                resource = "/WEB-INF/results/form_campagna.jsp";
+                if (new Validator(request).isValidBean(Utente.class,
+                        session.getAttribute("utente"))) {
+                    response.sendRedirect(
+                            getServletContext().getContextPath()
+                                    + "/AutenticazioneController/login");
+                    return;
+                } else {
+                    request.setAttribute("categorie",
+                            categoriaService.visualizzaCategorie());
+                    resource = "/WEB-INF/results/form_campagna.jsp";
+                }
             }
             case "/modificaCampagna" -> {
                 visualizzaModificaCampagna(request, response);
@@ -101,20 +99,21 @@ public final class GestioneCampagnaController extends HttpServlet {
                             HttpServletResponse.SC_NOT_FOUND,
                             "Campagna non trovata");
                     return;
+                } else {
+                    CampagnaInterface proxy = new CampagnaProxy(c);
+                    c.setUtente(proxy.getUtente());
+                    DonazioneProxy proxy2 = new DonazioneProxy();
+                    c.setImmagini(proxy.getImmagini());
+                    List<Donazione> donazioni = proxy.getDonazioni();
+                    donazioni.forEach(d -> {
+                        proxy2.setDonazione(d);
+                        d.setUtente(proxy2.getUtente());
+                    });
+                    c.setDonazioni(proxy.getDonazioni());
+                    request.setAttribute("campagna", c);
+                    condividiCampagna(request, response, c.getIdCampagna());
+                    resource = "/WEB-INF/results/campagna.jsp";
                 }
-                CampagnaInterface proxy = new CampagnaProxy(c);
-                c.setUtente(proxy.getUtente());
-                DonazioneProxy proxy2 = new DonazioneProxy();
-                c.setImmagini(proxy.getImmagini());
-                List<Donazione> donazioni = proxy.getDonazioni();
-                donazioni.forEach(d -> {
-                    proxy2.setDonazione(d);
-                    d.setUtente(proxy2.getUtente());
-                });
-                c.setDonazioni(proxy.getDonazioni());
-                request.setAttribute("campagna", c);
-                condividiCampagna(request, response, c.getIdCampagna());
-                resource = "/WEB-INF/results/campagna.jsp";
             }
             case "/ricerca" -> {
                 String searchText = request.getParameter("searchText");
