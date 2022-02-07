@@ -151,6 +151,27 @@ public final class GestioneCampagnaController extends HttpServlet {
                     resource = "/WEB-INF/results/campagne.jsp";
                 }
                 break;
+            case "/ricercaCategoria":
+                String cat = request.getParameter("searchText");
+                cat = cat.trim();
+                List<Campagna> campagneSearched = service.ricercaCampagnaPerCategoria(cat);
+                campagne = campagneSearched.stream().
+                        filter(campagna -> campagna.getStato()
+                                == StatoCampagna.ATTIVA).
+                        collect(Collectors.toList());
+
+                if (campagne.size() > 0 && !cat.isBlank()) {
+                    for (Campagna campagna : campagne) {
+                        new CampagnaProxy(campagna).getImmagini();
+                    }
+                    request.setAttribute("campagneList", campagne);
+                    resource = "/WEB-INF/results/campagne.jsp";
+                } else {
+                    request.setAttribute("errorSearch",
+                            "Nessun risultato trovato");
+                    resource = "/WEB-INF/results/campagne.jsp";
+                }
+                break;
             default:
                 response.sendError(
                         HttpServletResponse.SC_NOT_FOUND,
