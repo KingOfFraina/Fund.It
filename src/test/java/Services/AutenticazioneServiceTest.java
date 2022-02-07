@@ -58,7 +58,7 @@ public class AutenticazioneServiceTest {
         Utente temp = new Utente();
         Utente expected = new Utente();
         expected.setIdUtente(-1);
-        temp.setDataBan(LocalDateTime.now());
+        temp.setDataBan(LocalDateTime.now().plusDays(5));
         UtenteDAO mockUtenteDAO = (UtenteDAO) mockDao;
         Mockito.when(mockUtenteDAO.doLogin(temp)).thenReturn(temp);
         Mockito.when(mockUtenteDAO.update(temp)).thenReturn(true);
