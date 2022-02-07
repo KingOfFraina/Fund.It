@@ -45,6 +45,7 @@ public final class GestioneCampagnaController extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
+        /*
         List<Campagna> campagne;
         DAO<Campagna> campagnaDAO = new CampagnaDAO();
         campagne = campagnaDAO.getAll();
@@ -57,7 +58,7 @@ public final class GestioneCampagnaController extends HttpServlet {
             proxy.getUtente();
             proxy.getImmagini();
         });
-        getServletContext().setAttribute("campagneList", campagne);
+        getServletContext().setAttribute("campagneList", campagne);*/
     }
 
     @Override
