@@ -19,6 +19,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     private final DAO<Utente> dao;
 
     /**
+     * Costruttore di AutenticazioneService.
      * @param session   Sessione attuale dell'utente
      * @param utenteDAO istanza di UtenteDAO
      */
@@ -26,6 +27,15 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
                                      final DAO<Utente> utenteDAO) {
         this.sessionWrapper = session;
         this.dao = utenteDAO;
+    }
+
+    /**
+     * Costruttore di AutenticazioneService.
+     * @param session   Sessione attuale dell'utente
+     */
+    public AutenticazioneServiceImpl(final HttpSession session) {
+        this.sessionWrapper = session;
+        this.dao = new UtenteDAO();
     }
 
     /**
