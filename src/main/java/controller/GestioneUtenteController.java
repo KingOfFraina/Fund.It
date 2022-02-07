@@ -2,18 +2,14 @@ package controller;
 
 import controller.utils.FileServlet;
 import controller.utils.Validator;
+import model.beans.Campagna;
 import model.beans.Donazione;
 import model.beans.Utente;
+import model.beans.proxies.CampagnaProxy;
 import model.beans.proxies.DonazioneProxy;
 import model.beans.proxies.UtenteProxy;
-import model.services.DonazioniService;
-import model.services.DonazioniServiceImpl;
-import model.services.SegnalazioniService;
-import model.services.SegnalazioniServiceImpl;
-import model.services.UtenteService;
-import model.services.TipoReport;
-import model.services.ReportService;
-import model.services.UtenteServiceImpl;
+import model.beans.proxyInterfaces.CampagnaInterface;
+import model.services.*;
 import model.storage.ConPool;
 
 import javax.servlet.ServletException;
@@ -70,7 +66,6 @@ public final class GestioneUtenteController extends HttpServlet {
                 request.getSession().getAttribute("utente"))) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/autenticazione/login");
-            //return;
         } else {
             Utente ut = (Utente) request.getSession().getAttribute("utente");
             if (!ut.isAdmin()) {
@@ -89,6 +84,14 @@ public final class GestioneUtenteController extends HttpServlet {
                     d.setUtente(proxy.getUtente());
                 });
 
+                CampagnaService cs = new CampagnaServiceImpl();
+                List<Campagna> lst = cs.getAllCampagne();
+                lst.forEach(c -> {
+                    CampagnaInterface proxyCamp = new CampagnaProxy(c);
+                    proxyCamp.getUtente();
+                });
+
+                request.setAttribute("campagneList", lst);
                 request.setAttribute("utentiList", us.visualizzaUtenti(ut));
                 request.setAttribute("segnalazioniList",
                         segnalazioniService.trovaSegnalazioni());
