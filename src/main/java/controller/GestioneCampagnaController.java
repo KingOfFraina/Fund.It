@@ -119,7 +119,6 @@ public final class GestioneCampagnaController extends HttpServlet {
                     } else {
                         System.out.println("mammt");
                         response.sendError(HttpServletResponse.SC_NOT_FOUND);
-
                     }
                 }
             }
@@ -177,7 +176,8 @@ public final class GestioneCampagnaController extends HttpServlet {
                 new CategoriaServiceImpl(new CategoriaDAO());
         HttpSession session = request.getSession();
 
-        if (session == null || session.getAttribute("utente") == null) {
+        if (new Validator(request).isValidBean(Utente.class,
+                session.getAttribute("utente") == null)) {
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/autenticazione/login");
@@ -217,18 +217,19 @@ public final class GestioneCampagnaController extends HttpServlet {
 
         HttpSession session = request.getSession();
         CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
+
+        if (new Validator(request).isValidBean(Utente.class,
+                session.getAttribute("utente"))) {
+            response.sendRedirect(
+                    getServletContext().getContextPath()
+                            + "/autenticazione/login");
+            return;
+        }
+
         Utente userSession = (Utente) session.getAttribute("utente");
         String idCampagna = request.getParameter("idCampagna");
         int id = 0;
         String path = request.getPathInfo() == null ? "/" : request.getPathInfo();
-
-        if (userSession == null) {
-            response.sendRedirect(
-                    getServletContext().getContextPath()
-                            + "/autenticazione/login");
-
-            return;
-        }
 
         switch (path) {
             case "/creaCampagna":
@@ -237,13 +238,22 @@ public final class GestioneCampagnaController extends HttpServlet {
             case "/modificaCampagna":
                 if (idCampagna != null) {
                     modificaCampagna(request, response, service
-                            .trovaCampagna(Integer.parseInt(idCampagna)));
+                            .trovaCampagna(Integer.parseInt(idCampagna)),
+                            userSession);
                 }
-
                 break;
             case "/cancellaCampagna":
                 id = Integer.parseInt(idCampagna);
                 Campagna campagna = service.trovaCampagna(id);
+
+                    if(campagna.getUtente().getIdUtente()
+                            != userSession.getIdUtente()){
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                                "Non Autorizzato");
+                        return;
+                    }
+
+
                 if (service.cancellaCampagna(campagna)) {
                     if (service.rimborsaDonazioni(campagna,
                             new CampagnaProxy(campagna))) {
@@ -342,10 +352,17 @@ public final class GestioneCampagnaController extends HttpServlet {
 
     private void modificaCampagna(final HttpServletRequest request,
                                   final HttpServletResponse response,
-                                  final Campagna campagna)
+                                  final Campagna campagna,
+                                  final Utente utente)
             throws IOException, ServletException {
 
         Campagna c = extractCampagna(request);
+
+        if(c.getUtente().getIdUtente() != utente.getIdUtente()){
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                    "Non Autorizzato");
+            return;
+        }
 
         c.setIdCampagna(campagna.getIdCampagna());
         c.setSommaRaccolta(campagna.getSommaRaccolta());
