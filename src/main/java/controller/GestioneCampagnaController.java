@@ -40,36 +40,36 @@ import java.util.Map;
 @MultipartConfig
 public final class GestioneCampagnaController extends HttpServlet {
 
-   @Override
-   public void init() throws ServletException {
-      super.init();
-      List<Campagna> campagne;
-      DAO<Campagna> campagnaDAO = new CampagnaDAO();
-      campagne = campagnaDAO.getAll();
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        List<Campagna> campagne;
+        DAO<Campagna> campagnaDAO = new CampagnaDAO();
+        campagne = campagnaDAO.getAll();
 
-      if (campagne != null) {
-         campagne.forEach(c -> {
-            CampagnaInterface proxy = new CampagnaProxy(c);
-            proxy.getUtente();
-            proxy.getImmagini();
-         });
-      }
+        if (campagne != null) {
+            campagne.forEach(c -> {
+                CampagnaInterface proxy = new CampagnaProxy(c);
+                proxy.getUtente();
+                proxy.getImmagini();
+            });
+        }
 
 
-      getServletContext().setAttribute("campagneList", campagne);
-   }
+        getServletContext().setAttribute("campagneList", campagne);
+    }
 
-   @Override
-   protected void doGet(final HttpServletRequest request,
-                        final HttpServletResponse response)
-           throws ServletException, IOException {
-      String resource = "/";
-      HttpSession session;
-      CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
-      CategoriaService categoriaService =
-              new CategoriaServiceImpl(new CategoriaDAO());
+    @Override
+    protected void doGet(final HttpServletRequest request,
+                         final HttpServletResponse response)
+            throws ServletException, IOException {
+        String resource = "/";
+        HttpSession session;
+        CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
+        CategoriaService categoriaService =
+                new CategoriaServiceImpl(new CategoriaDAO());
 
-      session = request.getSession();
+        session = request.getSession();
 
         /*if (session.getAttribute("utente") == null
                 || !session.getAttribute("utente").getClass().getSimpleName().
@@ -80,281 +80,276 @@ public final class GestioneCampagnaController extends HttpServlet {
             return;
         }*/
 
-      switch (request.getPathInfo()) {
-         case "/main":
-            resource = "/WEB-INF/results/main_page.jsp";
-            break;
-         case "/creaCampagna":
-            request.setAttribute("categorie",
-                    categoriaService.visualizzaCategorie());
-            resource = "/WEB-INF/results/form_campagna.jsp";
-            break;
-         case "/modificaCampagna":
-            visualizzaModificaCampagna(request, response);
+        switch (request.getPathInfo()) {
+            case "/main":
+                resource = "/WEB-INF/results/main_page.jsp";
+                break;
+            case "/creaCampagna":
+                request.setAttribute("categorie",
+                        categoriaService.visualizzaCategorie());
+                resource = "/WEB-INF/results/form_campagna.jsp";
+                break;
+            case "/modificaCampagna":
+                visualizzaModificaCampagna(request, response);
+                return;
+            case "/campagna":
+                String id = request.getParameter("idCampagna");
+                Campagna c = service.trovaCampagna(Integer.parseInt(id));
+                if (c == null) {
+                    response.sendError(
+                            HttpServletResponse.SC_NOT_FOUND,
+                            "Campagna non trovata");
+                    return;
+                }
+                CampagnaInterface proxy = new CampagnaProxy(c);
+                c.setUtente(proxy.getUtente());
+                DonazioneProxy proxy2 = new DonazioneProxy();
+                c.setImmagini(proxy.getImmagini());
+                List<Donazione> donazioni = proxy.getDonazioni();
+                donazioni.forEach(d -> {
+                    proxy2.setDonazione(d);
+                    d.setUtente(proxy2.getUtente());
+                });
+                c.setDonazioni(proxy.getDonazioni());
+                request.setAttribute("campagna", c);
+                condividiCampagna(request, response, c.getIdCampagna());
+                resource = "/WEB-INF/results/campagna.jsp";
+                break;
+
+            case "/ricerca":
+                String searchText = request.getParameter("searchText");
+                searchText = searchText.trim();
+                List<Campagna> campagne = service.ricercaCampagna(searchText);
+                if (campagne.size() > 0 && !searchText.isBlank()) {
+                    for (Campagna campagna : campagne) {
+                        new CampagnaProxy(campagna).getImmagini();
+                    }
+                    request.setAttribute("campagneList", campagne);
+                    resource = "/WEB-INF/results/campagne.jsp";
+                } else {
+                    request.setAttribute("errorSearch",
+                            "Nessun risultato trovato");
+                    resource = "/WEB-INF/results/campagne.jsp";
+                }
+                break;
+            default:
+                response.sendError(
+                        HttpServletResponse.SC_NOT_FOUND,
+                        "Risorsa non trovata");
+                return;
+        }
+
+        RequestDispatcher dispatcher =
+                request.getRequestDispatcher(resource);
+        dispatcher.forward(request, response);
+    }
+
+    private void condividiCampagna(final HttpServletRequest request,
+                                   final HttpServletResponse response,
+                                   final int idCampagna) throws IOException {
+        Map<String, String> map =
+                new CampagnaServiceImpl(new CampagnaDAO())
+                        .condividiCampagna(idCampagna, request);
+
+        if (map != null) {
+            request.setAttribute("linkList", map);
             return;
-         case "/campagna":
-            String id = request.getParameter("idCampagna");
-            Campagna c = service.trovaCampagna(Integer.parseInt(id));
-            if (c == null) {
-               response.sendError(
-                       HttpServletResponse.SC_NOT_FOUND,
-                       "Campagna non trovata");
-               return;
-            }
-            CampagnaInterface proxy = new CampagnaProxy(c);
-            c.setUtente(proxy.getUtente());
-            DonazioneProxy proxy2 = new DonazioneProxy();
-            c.setImmagini(proxy.getImmagini());
-            List<Donazione> donazioni = proxy.getDonazioni();
-            donazioni.forEach(d -> {
-               proxy2.setDonazione(d);
-               d.setUtente(proxy2.getUtente());
-            });
-            c.setDonazioni(proxy.getDonazioni());
-            request.setAttribute("campagna", c);
-            condividiCampagna(request, response, c.getIdCampagna());
-            resource = "/WEB-INF/results/campagna.jsp";
-            break;
-
-         case "/ricerca":
-            String searchText = request.getParameter("searchText");
-            searchText = searchText.trim();
-            List<Campagna> campagne = service.ricercaCampagna(searchText);
-            if (campagne.size() > 0 && !searchText.isBlank()) {
-               for (Campagna campagna : campagne) {
-                  new CampagnaProxy(campagna).getImmagini();
-               }
-               request.setAttribute("campagneList", campagne);
-               resource = "/WEB-INF/results/campagne.jsp";
-            } else {
-               request.setAttribute("errorSearch",
-                       "Nessun risultato trovato");
-               resource = "/WEB-INF/results/campagne.jsp";
-            }
-            break;
-         default:
-            response.sendError(
-                    HttpServletResponse.SC_NOT_FOUND,
-                    "Risorsa non trovata");
+        } else {
+            response.sendRedirect(
+                    getServletContext().getContextPath()
+                            + "/index.jsp");
             return;
-      }
+        }
+    }
 
-      RequestDispatcher dispatcher =
-              request.getRequestDispatcher(resource);
-      dispatcher.forward(request, response);
-   }
+    private void visualizzaModificaCampagna(final HttpServletRequest request,
+                                            final HttpServletResponse response)
+            throws ServletException, IOException {
+        CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
+        CategoriaService categoriaService =
+                new CategoriaServiceImpl(new CategoriaDAO());
+        HttpSession session = request.getSession();
 
-   private void condividiCampagna(final HttpServletRequest request,
-                                  final HttpServletResponse response,
-                                  final int idCampagna) throws IOException {
-      Map<String, String> map =
-              new CampagnaServiceImpl(new CampagnaDAO())
-                      .condividiCampagna(idCampagna, request);
+        if (session == null || session.getAttribute("utente") == null) {
+            response.sendRedirect(
+                    getServletContext().getContextPath()
+                            + "/AutenticazioneController/login");
+            return;
+        }
 
-      if (map != null) {
-         request.setAttribute("linkList", map);
-         return;
-      } else {
-         response.sendRedirect(
-                 getServletContext().getContextPath()
-                         + "/index.jsp");
-         return;
-      }
-   }
+        Utente ut = (Utente) request.getSession().getAttribute("utente");
+        String idCampagna = request.getParameter("idCampagna");
+        int id;
+        try {
+            id = Integer.parseInt(idCampagna);
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
+                    "Input errato");
+            e.printStackTrace();
+            return;
+        }
+        Campagna c = service.trovaCampagna(id);
+        if (c.getUtente().getIdUtente() != ut.getIdUtente()) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                    "Non Autorizzato");
+            return;
+        }
+        request.setAttribute("campagna", c);
+        request.setAttribute("categorie",
+                categoriaService.visualizzaCategorie());
+        RequestDispatcher dispatcher =
+                request.getRequestDispatcher(
+                        "/WEB-INF/results/form_campagna.jsp");
+        dispatcher.forward(request, response);
+    }
 
-   private void visualizzaModificaCampagna(final HttpServletRequest request,
-                                           final HttpServletResponse response)
-           throws ServletException, IOException {
-      CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
-      CategoriaService categoriaService =
-              new CategoriaServiceImpl(new CategoriaDAO());
-      HttpSession session = request.getSession();
+    @Override
+    protected void doPost(final HttpServletRequest request,
+                          final HttpServletResponse response)
+            throws ServletException, IOException {
 
-      if (session == null || session.getAttribute("utente") == null) {
-         response.sendRedirect(
-                 getServletContext().getContextPath()
-                         + "/AutenticazioneController/login");
-         return;
-      }
+        HttpSession session = request.getSession();
+        CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
+        Utente userSession = (Utente) session.getAttribute("utente");
+        String idCampagna = request.getParameter("idCampagna");
+        int id = 0;
+        String path = request.getPathInfo() == null ? "/" : request.getPathInfo();
 
-      Utente ut = (Utente) request.getSession().getAttribute("utente");
-      String idCampagna = request.getParameter("idCampagna");
-      int id;
-      try {
-         id = Integer.parseInt(idCampagna);
-      } catch (NumberFormatException e) {
-         response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,
-                 "Input errato");
-         e.printStackTrace();
-         return;
-      }
-      Campagna c = service.trovaCampagna(id);
-      if (c.getUtente().getIdUtente() != ut.getIdUtente()) {
-         response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                 "Non Autorizzato");
-         return;
-      }
-      request.setAttribute("campagna", c);
-      request.setAttribute("categorie",
-              categoriaService.visualizzaCategorie());
-      RequestDispatcher dispatcher =
-              request.getRequestDispatcher(
-                      "/WEB-INF/results/form_campagna.jsp");
-      dispatcher.forward(request, response);
-   }
-
-   @Override
-   protected void doPost(final HttpServletRequest request,
-                         final HttpServletResponse response)
-           throws ServletException, IOException {
-
-      HttpSession session = request.getSession();
-      CampagnaService service = new CampagnaServiceImpl(new CampagnaDAO());
-      Utente userSession = (Utente) session.getAttribute("utente");
-      String idCampagna = request.getParameter("idCampagna");
-      int id = 0;
-
-        /*if (userSession == null) {
+        if (userSession == null) {
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/AutenticazioneController/login");
 
             return;
-        }*/
+        }
 
-      switch (request.getPathInfo()) {
-         case "/creaCampagna":
-            creaCampagna(request, response);
-            break;
-         case "/modificaCampagna":
-            if (idCampagna != null) {
-               modificaCampagna(request, response, service
-                       .trovaCampagna(Integer.parseInt(idCampagna)));
-            }
+        switch (path) {
+            case "/creaCampagna":
+                creaCampagna(request, response);
+                break;
+            case "/modificaCampagna":
+                if (idCampagna != null) {
+                    modificaCampagna(request, response, service
+                            .trovaCampagna(Integer.parseInt(idCampagna)));
+                }
 
-            break;
-         case "/cancellaCampagna":
-                /*if (!userSession.isAdmin()) {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                            "Non autorizzato");
-                    return;
-                }*/
-            //todo
-            id = Integer.parseInt(idCampagna);
-            Campagna campagna = service.trovaCampagna(id);
-            if (service.cancellaCampagna(campagna)) {
-               if (service.rimborsaDonazioni(campagna,
-                       new CampagnaProxy(campagna))) {
-                  System.out.println("rimborso ok");
-               } else {
-                  System.out.println("rimborso errore");
-               }
-               System.out.println("cancellazione Ok");
-            } else {
-               System.out.println("cancellazione errore");
-            }
-            break;
-         case "/chiudiCampagna":
-            id = Integer.parseInt(idCampagna);
-            Campagna campagna1 = service.trovaCampagna(id);
-            if (service.chiudiCampagna(campagna1)) {
-               response.sendRedirect(getServletContext().getContextPath()
-                       + "/GestioneUtenteController/visualizzaDashboard");
-            } else {
-               response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            }
-            return;
-         default:
-            response.sendError(
-                    HttpServletResponse.SC_NOT_FOUND,
-                    "Risorsa non trovata");
-            break;
-      }
-   }
+                break;
+            case "/cancellaCampagna":
+                id = Integer.parseInt(idCampagna);
+                Campagna campagna = service.trovaCampagna(id);
+                if (service.cancellaCampagna(campagna)) {
+                    if (service.rimborsaDonazioni(campagna,
+                            new CampagnaProxy(campagna))) {
+                        System.out.println("rimborso ok");
+                    } else {
+                        System.out.println("rimborso errore");
+                    }
+                    System.out.println("cancellazione Ok");
+                } else {
+                    System.out.println("cancellazione errore");
+                }
+                break;
+            case "/chiudiCampagna":
+                id = Integer.parseInt(idCampagna);
+                Campagna campagna1 = service.trovaCampagna(id);
+                if (service.chiudiCampagna(campagna1)) {
+                    response.sendRedirect(getServletContext().getContextPath()
+                            + "/GestioneUtenteController/visualizzaDashboard");
+                } else {
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                }
+                return;
+            default:
+                response.sendError(
+                        HttpServletResponse.SC_NOT_FOUND,
+                        "Risorsa non trovata");
+                break;
+        }
+    }
 
-   @Override
-   public void destroy() {
-      ConPool.getInstance().closeDataSource();
-      super.destroy();
-   }
+    @Override
+    public void destroy() {
+        ConPool.getInstance().closeDataSource();
+        super.destroy();
+    }
 
-   private void creaCampagna(final HttpServletRequest req,
-                             final HttpServletResponse res)
-           throws IOException, ServletException {
+    private void creaCampagna(final HttpServletRequest req,
+                              final HttpServletResponse res)
+            throws IOException, ServletException {
 
-      Campagna c = extractCampagna(req);
-      c.setSommaRaccolta(0d);
-      c.setUtente((Utente) req.getSession().getAttribute("utente"));
+        Campagna c = extractCampagna(req);
+        c.setSommaRaccolta(0d);
+        c.setUtente((Utente) req.getSession().getAttribute("utente"));
 
-      if (new CampagnaServiceImpl(new CampagnaDAO()).creazioneCampagna(c)) {
-         uploadFoto(req, c);
-         res.sendRedirect(
-                 getServletContext().getContextPath() + "/index.jsp");
-      } else {
-         res.sendRedirect(
-                 getServletContext().getContextPath()
-                         + "/campagna/creaCampagna");
-      }
-   }
+        if (new CampagnaServiceImpl(new CampagnaDAO()).creazioneCampagna(c)) {
+            uploadFoto(req, c);
+            res.sendRedirect(
+                    getServletContext().getContextPath() + "/index.jsp");
+        } else {
+            res.sendRedirect(
+                    getServletContext().getContextPath()
+                            + "/campagna/creaCampagna");
+        }
+    }
 
-   private Campagna extractCampagna(final HttpServletRequest request) {
-      Campagna c = new Campagna();
+    private Campagna extractCampagna(final HttpServletRequest request) {
+        Campagna c = new Campagna();
 
-      c.setStato(StatoCampagna.ATTIVA);
-      c.setTitolo(request.getParameter("titolo"));
-      c.setDescrizione(request.getParameter("descrizione"));
+        c.setStato(StatoCampagna.ATTIVA);
+        c.setTitolo(request.getParameter("titolo"));
+        c.setDescrizione(request.getParameter("descrizione"));
 
-      c.setSommaTarget(
-              Double.parseDouble(request.getParameter("sommaTarget")));
-      c.setUtente((Utente) request.getSession(false).getAttribute("utente"));
+        c.setSommaTarget(
+                Double.parseDouble(request.getParameter("sommaTarget")));
+        c.setUtente((Utente) request.getSession(false).getAttribute("utente"));
 
-      Categoria categoria = new Categoria();
-      categoria.setIdCategoria(Integer.parseInt(
-              request.getParameter("idCategoria")));
+        Categoria categoria = new Categoria();
+        categoria.setIdCategoria(Integer.parseInt(
+                request.getParameter("idCategoria")));
 
-      c.setCategoria(
-              new CategoriaServiceImpl(new CategoriaDAO())
-                      .visualizzaCategoria(categoria));
+        c.setCategoria(
+                new CategoriaServiceImpl(new CategoriaDAO())
+                        .visualizzaCategoria(categoria));
 
-      return c;
-   }
+        return c;
+    }
 
-   private void uploadFoto(final HttpServletRequest request,
-                           final Campagna campagna) throws ServletException,
-           IOException {
-      List<String> fotoList = FileServlet.uploadFoto(request);
-      ImmagineService immagineService =
-              new ImmagineServiceImpl(new ImmagineDAO());
-      Immagine immagine = new Immagine();
-      immagine.setCampagna(campagna);
+    private void uploadFoto(final HttpServletRequest request,
+                            final Campagna campagna) throws ServletException,
+            IOException {
+        List<String> fotoList = FileServlet.uploadFoto(request);
+        ImmagineService immagineService =
+                new ImmagineServiceImpl(new ImmagineDAO());
+        Immagine immagine = new Immagine();
+        immagine.setCampagna(campagna);
 
-      if (!fotoList.isEmpty()) {
-         immagineService.eliminaImmaginiCampagna(campagna.getIdCampagna());
-      }
+        if (!fotoList.isEmpty()) {
+            immagineService.eliminaImmaginiCampagna(campagna.getIdCampagna());
+        }
 
-      for (String fotoPath : fotoList) {
-         immagine.setPath(fotoPath);
-         immagineService.salvaImmagine(immagine);
-      }
-   }
+        for (String fotoPath : fotoList) {
+            immagine.setPath(fotoPath);
+            immagineService.salvaImmagine(immagine);
+        }
+    }
 
-   private void modificaCampagna(final HttpServletRequest request,
-                                 final HttpServletResponse response,
-                                 final Campagna campagna)
-           throws IOException, ServletException {
+    private void modificaCampagna(final HttpServletRequest request,
+                                  final HttpServletResponse response,
+                                  final Campagna campagna)
+            throws IOException, ServletException {
 
-      Campagna c = extractCampagna(request);
+        Campagna c = extractCampagna(request);
 
-      c.setIdCampagna(campagna.getIdCampagna());
-      c.setSommaRaccolta(campagna.getSommaRaccolta());
+        c.setIdCampagna(campagna.getIdCampagna());
+        c.setSommaRaccolta(campagna.getSommaRaccolta());
 
-      if (new CampagnaServiceImpl(new CampagnaDAO()).modificaCampagna(c)) {
-         uploadFoto(request, c);
-         response.sendRedirect(
-                 getServletContext().getContextPath() + "/index.jsp");
-      } else {
-         request.getRequestDispatcher("/campagna"
-                 + "/modificaCampagna").forward(request, response);
-      }
-   }
+        if (new CampagnaServiceImpl(new CampagnaDAO()).modificaCampagna(c)) {
+            uploadFoto(request, c);
+            response.sendRedirect(
+                    getServletContext().getContextPath() + "/index.jsp");
+        } else {
+            request.getRequestDispatcher("/campagna"
+                    + "/modificaCampagna").forward(request, response);
+        }
+    }
 }

@@ -32,22 +32,20 @@ public final class GestioneDonazioneController extends HttpServlet {
 
         if (session != null && session.getAttribute("utente") != null) {
 
-            switch (request.getPathInfo()) {
-                case "/scriviCommento":
-                    if (session.getAttribute("donazione") != null) {
-                        request.getRequestDispatcher(
-                                        "/WEB-INF/results/"
-                                                + "commentoDonazione.jsp")
-                                .forward(request, response);
-                        return;
-                    }
-                default:
-                    request.setAttribute("donazioniList",
-                            new DonazioniServiceImpl(new DonazioneDAO())
-                                    .visualizzaDonazioni(
-                                            (Utente) session
-                                                    .getAttribute("utente")));
+            if ("/scriviCommento".equals(request.getPathInfo())) {
+                if (session.getAttribute("donazione") != null) {
+                    request.getRequestDispatcher(
+                                    "/WEB-INF/results/"
+                                            + "commentoDonazione.jsp")
+                            .forward(request, response);
+                    return;
+                }
             }
+            request.setAttribute("donazioniList",
+                    new DonazioniServiceImpl(new DonazioneDAO())
+                            .visualizzaDonazioni(
+                                    (Utente) session
+                                            .getAttribute("utente")));
 
         } else {
             response.sendRedirect(
@@ -67,7 +65,7 @@ public final class GestioneDonazioneController extends HttpServlet {
         CampagnaService campagnaService =
                 new CampagnaServiceImpl(new CampagnaDAO());
         System.out.println("Inizializzazione campagnaService");
-        int id = 0;
+        int id;
 
         id = Integer.parseInt(request.getParameter("idCampagna"));
 

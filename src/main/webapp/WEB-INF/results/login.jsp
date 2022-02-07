@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <%@include file="../components/head.jsp" %>
@@ -7,6 +8,24 @@
 <body>
 
 <%@include file="../components/simple-navbar.jsp" %>
+
+<div class="text-center mt-2">
+    <%@include file="../components/toasts.jsp" %>
+</div>
+
+
+<!--Report-->
+<c:if test="${sessionScope.titoloReport.length() > 0}">
+    <input id="message" type="hidden"
+           value="${sessionScope.tipoReport}+${sessionScope.titoloReport}+${sessionScope.bodyReport}">
+    <script>
+
+        Toasty();
+    </script>
+    ${sessionScope.tipoReport = null}
+    ${sessionScope.titoloReport = null}
+    ${sessionScope.bodyReport = null}
+</c:if>
 
 <!--Definizione colonne-->
 <div class="container">
@@ -52,7 +71,8 @@
             </div>
         </div>
         <div class="col-6 mt-5">
-            <img class = "img-fluid" src="${pageContext.request.contextPath}/img/undraw_login_re_4vu2.svg" alt="" style="width: 110%;">
+            <img class="img-fluid" src="${pageContext.request.contextPath}/img/undraw_login_re_4vu2.svg" alt=""
+                 style="width: 110%;">
         </div>
     </div>
 </div>
