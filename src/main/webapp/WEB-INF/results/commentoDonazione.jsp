@@ -1,16 +1,49 @@
 <html>
   <head>
-      <title>Scrivi un commento</title>
+      <%@include file="../components/head.jsp" %>
+      <title>Fund.it</title>
   </head>
   <body>
-    <form method="post" action="${pageContext.request.contextPath}/donazione/scriviCommento">
-        <input type="hidden" name="idCampagna" value="${requestScope.idCampagna}">
-        <input type="text" name="commento" placeholder="Il tuo commento">
+    <div class = "container mt-5 text-center py-3">
+
         <div>
-            <input type="checkbox" name="anonimo" id="anonimo">
-            <label for="anonimo">Anonimo</label>
+            <h5>Lascia un commento se ti va!</h5>
         </div>
-        <input type="submit" value="Salva Commento">
-    </form>
+
+
+        <form method="post" action="${pageContext.request.contextPath}/donazione/scriviCommento" class="text-center needs-validation" novalidate>
+            <input type="hidden" name="idCampagna" value="${requestScope.idCampagna}">
+
+
+            <div class="form-group">
+                <label style="float: left" for="exampleFormControlTextarea1">Lascia un commento se ti va</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name = "commento" minlength="2" maxlength="150" required></textarea>
+            </div>
+
+            <div class = "mt-2">
+                <div style="float: left">
+                    <input class="form-check-input" type="checkbox" value="" id="anonimo" name = "anonimo" formnovalidate = "formnovalidate">
+                    <label class="form-check-label" for="anonimo">
+                        Anonimo
+                    </label>
+                </div>
+            </div>
+
+            <button type = "submit" class = "pulsante btn-primary btn mt-3" style="background-color: #00AB98; border-color: #00AB98; color: white">
+                Commenta
+            </button>
+
+        </form>
+
+        <form method="post" action="${pageContext.request.contextPath}/donazione/registraDonazione">
+            <input type="hidden" name="idCampagna" value="${requestScope.idCampagna}">
+            <button class = "pulsante btn-secondary btn mt-3">
+                Prosegui senza commentare
+            </button>
+        </form>
+
+    </div>
+
+    <script type="text/javascript" src=${pageContext.request.contextPath}/js/form-validation.js></script>
   </body>
 </html>
