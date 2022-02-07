@@ -34,6 +34,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @WebServlet(name = "GestioneCampagnaController",
         value = "/campagna/*",
@@ -71,7 +72,6 @@ public final class GestioneCampagnaController extends HttpServlet {
                 new CategoriaServiceImpl(new CategoriaDAO());
 
 
-
         switch (request.getPathInfo()) {
             case "/main" -> resource = "/WEB-INF/results/main_page.jsp";
             case "/creaCampagna" -> {
@@ -93,7 +93,9 @@ public final class GestioneCampagnaController extends HttpServlet {
             }
             case "/campagna" -> {
                 String id = request.getParameter("idCampagna");
-                Campagna c = service.trovaCampagna(Integer.parseInt(id));
+                int idCampagna = Integer.parseInt(id);
+                Campagna c = service.trovaCampagna(idCampagna);
+
                 if (c == null) {
                     response.sendError(
                             HttpServletResponse.SC_NOT_FOUND,
@@ -110,9 +112,15 @@ public final class GestioneCampagnaController extends HttpServlet {
                         d.setUtente(proxy2.getUtente());
                     });
                     c.setDonazioni(proxy.getDonazioni());
-                    request.setAttribute("campagna", c);
-                    condividiCampagna(request, response, c.getIdCampagna());
-                    resource = "/WEB-INF/results/campagna.jsp";
+                    if (service.modificaCampagna(c)) {
+                        request.setAttribute("campagna", c);
+                        condividiCampagna(request, response, c.getIdCampagna());
+                        resource = "/WEB-INF/results/campagna.jsp";
+                    } else {
+                        System.out.println("mammt");
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+
+                    }
                 }
             }
             case "/ricerca" -> {
