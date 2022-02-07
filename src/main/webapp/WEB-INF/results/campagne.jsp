@@ -24,6 +24,7 @@
 <c:choose>
     <c:when test="${requestScope.errorSearch == null}">
         <c:forEach items="${requestScope.campagneList}" var = "campagna">
+            <c:if test="${campagna.stato.toString().equalsIgnoreCase('Attiva')}">
             <div class="col-sm my-4">
                 <div class="card" style="width: 18rem;">
 
@@ -37,6 +38,7 @@
                     </div>
                 </div>
             </div>
+            </c:if>
         </c:forEach>
     </c:when>
 

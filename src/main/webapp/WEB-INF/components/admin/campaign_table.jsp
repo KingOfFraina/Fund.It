@@ -9,7 +9,7 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach items="${applicationScope.campagneList}" var = "campagna">
+    <c:forEach items="${requestScope.campagneList}" var = "campagna">
         <tr>
             <th scope="row">${campagna.idCampagna}</th>
             <c:choose>

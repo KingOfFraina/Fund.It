@@ -98,13 +98,24 @@
                 <div class="container my-4">
                     <h3>Commenti</h3>
 
-                    <c:forEach items="${campagna.donazioni}" var="don">
+                    <c:forEach items="${requestScope.campagna.donazioni}" var="don">
                         <c:if test="${don.commento != null}">
                             <div class="container commento">
                                 <hr class="solid text-black">
-                                <h4>${don.utente.nome} ${don.utente.cognome} ha donato
-                                        <fmt:formatNumber type="number" maxFractionDigits="2"
-                                                          value="${don.sommaDonata}"/>&euro;</h4>
+                               <c:choose>
+                                   <c:when test = "${don.anonimo}">
+                                       <h4>Anonimo ha donato
+                                               <fmt:formatNumber type="number" maxFractionDigits="2"
+                                                                 value="${don.sommaDonata}"/>&euro;</h4>
+                                   </c:when>
+
+                                   <c:otherwise>
+                                       <h4>${don.utente.nome} ${don.utente.cognome} ha donato
+                                               <fmt:formatNumber type="number" maxFractionDigits="2"
+                                                                 value="${don.sommaDonata}"/>&euro;</h4>
+                                   </c:otherwise>
+                               </c:choose>
+
                                 <h5>"${don.commento}"</h5>
                                 <hr class="solid text-black">
                             </div>
@@ -180,17 +191,39 @@
                     <c:choose>
                         <c:when test="${(campagna.donazioni.size()-3) >= 0}">
                             <c:forEach items="${campagna.donazioni}" begin="${campagna.donazioni.size()-3}" var="don">
-                                <h6>${don.utente.nome} ha donato ${don.sommaDonata}&euro; <span class="badge bg-white"
-                                                                                                style="color: #00AB98;">Nuovo</span>
-                                </h6>
+
+                                <c:choose>
+                                    <c:when test = "${don.anonimo}">
+                                        <h6>Anonimo ha donato ${don.sommaDonata}&euro; <span class="badge bg-white"
+                                                                                                        style="color: #00AB98;">Nuovo</span>
+                                        </h6>
+                                    </c:when>
+
+                                    <c:otherwise>
+                                        <h6>${don.utente.nome} ha donato ${don.sommaDonata}&euro; <span class="badge bg-white"
+                                                                                                        style="color: #00AB98;">Nuovo</span>
+                                        </h6>
+                                    </c:otherwise>
+                                </c:choose>
+
                             </c:forEach>
                         </c:when>
 
                         <c:otherwise>
                             <c:forEach items="${campagna.donazioni}" var="don">
-                                <h6>${don.utente.nome} ha donato ${don.sommaDonata}&euro; <span class="badge bg-white"
-                                                                                                style="color: #00AB98;">Nuovo</span>
-                                </h6>
+                                <c:choose>
+                                    <c:when test = "${don.anonimo}">
+                                        <h6>Anonimo ha donato ${don.sommaDonata}&euro; <span class="badge bg-white"
+                                                                                             style="color: #00AB98;">Nuovo</span>
+                                        </h6>
+                                    </c:when>
+
+                                    <c:otherwise>
+                                        <h6>${don.utente.nome} ha donato ${don.sommaDonata}&euro; <span class="badge bg-white"
+                                                                                                        style="color: #00AB98;">Nuovo</span>
+                                        </h6>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:forEach>
                         </c:otherwise>
                     </c:choose>

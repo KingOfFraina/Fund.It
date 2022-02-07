@@ -5,7 +5,7 @@
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/general.css">
 
-<nav class="navbar navbar-expand-lg navbar-light navbar-fund-it sticky-top">
+<nav class="navbar navbar-expand-lg navbar-light navbar-fund-it">
 
     <div class="container-fluid">
         <a class="navbar-brand logo logo-style" href="${pageContext.request.contextPath}" style="color: #00AB98;">Fund.it</a>
