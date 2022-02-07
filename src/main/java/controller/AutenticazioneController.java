@@ -1,6 +1,7 @@
 package controller;
 
 import controller.utils.FileServlet;
+import controller.utils.Validator;
 import model.DAO.UtenteDAO;
 import model.beans.Utente;
 import model.services.AutenticazioneService;
@@ -30,19 +31,21 @@ public final class AutenticazioneController extends HttpServlet {
     protected void doGet(final HttpServletRequest request,
                          final HttpServletResponse response)
             throws ServletException, IOException {
-
-        String path = request.getPathInfo();
         HttpSession session = request.getSession();
-        String resource = "/";
+        String resource;
 
-        if (session.getAttribute("utente") != null && !path.equals("/logout")) {
-            response.sendRedirect(
-                    getServletContext().getContextPath() + "/index.jsp");
+        if (!new Validator(request)
+                .isValidBean(Utente.class,
+                        session.getAttribute("utente"))) {
+
+            response.sendRedirect(getServletContext().getContextPath()
+                    + "/autenticazione/login");
             return;
         }
 
+
         Utente userSession = (Utente) session.getAttribute("utente");
-        switch (path) {
+        switch (request.getPathInfo()) {
             case "/login":
                 resource = "/WEB-INF/results/login.jsp";
                 break;
