@@ -65,7 +65,6 @@ public final class AutenticazioneController extends HttpServlet {
                          final HttpServletResponse response)
            throws IOException, ServletException {
       HttpSession session = request.getSession();
-
       Utente utente;
 
       switch (request.getPathInfo()) {
