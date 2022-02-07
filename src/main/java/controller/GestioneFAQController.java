@@ -80,7 +80,8 @@ public final class GestioneFAQController extends HttpServlet {
 
                if (domanda == null || domanda.isBlank()
                        || risposta == null || domanda.isBlank()) {
-                  throw new IllegalArgumentException("Input errati");
+                  response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                  return;
                } else {
                   FAQ faq = new FAQ();
                   faq.setDomanda(domanda);
@@ -103,8 +104,8 @@ public final class GestioneFAQController extends HttpServlet {
 
                if (domanda == null || domanda.isBlank()
                        || risposta == null || domanda.isBlank()) {
-
-                  throw new IllegalArgumentException("Input errati");
+                  response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                  return;
                }
 
                FAQ faq = new FAQ();

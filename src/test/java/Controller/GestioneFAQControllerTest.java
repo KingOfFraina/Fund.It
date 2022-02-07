@@ -108,4 +108,51 @@ public class GestioneFAQControllerTest {
       verify(request, atLeastOnce()).getPathInfo();
       verify(response, atLeastOnce()).sendError(anyInt());
    }
+
+   @Test
+   public void inserisci1() throws IOException {
+      when(request.getSession(false)).thenReturn(session);
+      when(session.getAttribute("utente")).thenReturn(null);
+      when(request.getServletContext()).thenReturn(servletContext);
+      when(servletContext.getContextPath()).thenReturn("/FundIt-1.0-SNAPSHOT");
+
+      gestioneFAQController.doPost(request, response);
+
+      verify(request, atLeastOnce()).getPathInfo();
+      verify(response, atLeastOnce()).sendError(anyInt());
+   }
+
+   @Test
+   public void inserisciFAQ1() throws IOException {
+      Utente utente = new Utente();
+      when(request.getPathInfo()).thenReturn("/inserisciFAQ");
+      when(request.getSession(false)).thenReturn(session);
+      when(session.getAttribute("utente")).thenReturn(utente);
+      when(request.getServletContext()).thenReturn(servletContext);
+      when(servletContext.getContextPath()).thenReturn("/FundIt-1.0-SNAPSHOT");
+      when(request.getParameter("domanda")).thenReturn("Domanda");
+      when(request.getParameter("risposta")).thenReturn(null);
+
+      gestioneFAQController.doPost(request, response);
+
+      verify(request, atLeastOnce()).getPathInfo();
+      verify(response, atLeastOnce()).sendError(anyInt(), anyString());
+   }
+
+   /*@Test
+   public void inserisciFAQ2() throws IOException {
+      Utente utente = new Utente();
+      utente.setAdmin(true);
+      when(request.getPathInfo()).thenReturn("/inserisciFAQ");
+      when(request.getSession(false)).thenReturn(session);
+      when(session.getAttribute("utente")).thenReturn(utente);
+      when(request.getServletContext()).thenReturn(servletContext);
+      when(servletContext.getContextPath()).thenReturn("/FundIt-1.0-SNAPSHOT");
+      when(request.getParameter("domanda")).thenReturn("Domanda");
+      when(request.getParameter("risposta")).thenReturn("Risposta");
+
+      gestioneFAQController.doPost(request, response);
+
+      verify(request, atLeastOnce()).getPathInfo();
+   }*/
 }
