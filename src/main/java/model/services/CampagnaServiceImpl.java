@@ -20,9 +20,15 @@ public final class CampagnaServiceImpl implements CampagnaService {
     private final DAO<Campagna> dao;
 
     /**
+     * Costruttore vuoto.
+     */
+    public CampagnaServiceImpl() {
+        this.dao = new CampagnaDAO();
+    }
+    /**
      * @param campagnaDAO Istanza di campagna DAO
      */
-    public CampagnaServiceImpl(final DAO<Campagna> campagnaDAO) {
+    public CampagnaServiceImpl(final DAO campagnaDAO) {
         this.dao = campagnaDAO;
     }
 

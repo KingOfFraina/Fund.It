@@ -57,7 +57,7 @@ public final class SegnalazioneController extends HttpServlet {
       Utente userSession = (Utente) session.getAttribute("utente");
       String idCampagna = request.getParameter("idCampagna");
       CampagnaService campagnaService =
-              new CampagnaServiceImpl(new CampagnaDAO());
+              new CampagnaServiceImpl();
       SegnalazioniService segnalazioniService = new SegnalazioniServiceImpl();
       UtenteService utenteService = new UtenteServiceImpl(new UtenteDAO());
 
