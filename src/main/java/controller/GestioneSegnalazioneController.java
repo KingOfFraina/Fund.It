@@ -31,10 +31,15 @@ import java.util.List;
 public final class GestioneSegnalazioneController extends HttpServlet {
     @Override
     protected void doGet(final HttpServletRequest request,
-                         final HttpServletResponse response) {
-        SegnalazioniService service = new SegnalazioniServiceImpl();
-        List<Segnalazione> segnalazioni = service.trovaSegnalazioni();
-        request.setAttribute("segnalazioni", segnalazioni);
+                         final HttpServletResponse response) throws IOException {
+        Utente userSession = (Utente) request.getSession().getAttribute("utente");
+        if (userSession.isAdmin()) {
+            SegnalazioniService service = new SegnalazioniServiceImpl();
+            List<Segnalazione> segnalazioni = service.trovaSegnalazioni();
+            request.setAttribute("segnalazioni", segnalazioni);
+        } else {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        }
     }
 
     @Override
