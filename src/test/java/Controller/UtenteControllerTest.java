@@ -387,5 +387,24 @@ public class UtenteControllerTest {
         verify(mockDispatcher, atMostOnce()).forward(mockRequest, mockResponse);
     }
 
+    @Test
+    public void testGetParamNull() throws ServletException, IOException {
+        when(mockRequest.getPathInfo())
+                .thenReturn("/modificaProfilo");
+        when(mockRequest.getSession())
+                .thenReturn(mockSession);
+        when(mockSession.getAttribute("utente"))
+                .thenReturn(utente);
+        when(mockRequest.getParameter("password"))
+                .thenReturn("password1");
+        when(mockRequest.getParameter("confermaPassword"))
+                .thenReturn("password2");
 
+        utenteController.doPost(mockRequest, mockResponse);
+
+        verify(mockRequest, atLeastOnce())
+                .getParameter(anyString());
+        verify(mockResponse, atMostOnce())
+                .sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
 }
