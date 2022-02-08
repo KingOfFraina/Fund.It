@@ -241,4 +241,19 @@ public class GestioneSegnalazioneTest {
       verify(request, atLeastOnce()).getPathInfo();
       verify(response, atLeastOnce()).sendRedirect(anyString());
    }
+
+   @Test
+   public void doPostDefaultBranch() throws IOException {
+      when(session.getAttribute("utente")).thenReturn(new Utente());
+      when(request.getParameter("idCampagna")).thenReturn("1");
+      when(request.getServletContext()).thenReturn(servletContext);
+      when(servletContext.getContextPath()).thenReturn("/FundIt-1.0-SNAPSHOT");
+      when(request.getSession()).thenReturn(session);
+      when(request.getPathInfo()).thenReturn("/hahah");
+
+      segnalazioneController.doPost(request, response);
+
+      verify(request, atLeastOnce()).getPathInfo();
+      verify(response, atLeastOnce()).sendError(anyInt());
+   }
 }
