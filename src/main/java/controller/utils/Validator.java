@@ -193,17 +193,6 @@ public final class Validator {
     }
 
     /**
-     * Verifica Double.
-     *
-     * @param value valore da controllare.
-     * @param msg   msg di errore.
-     * @return true se value rispetta la regexp, false altrimenti.
-     */
-    public boolean assertDouble(final String value, final String msg) {
-        return assertMatch(value, DOUBLE_PATTERN, msg);
-    }
-
-    /**
      * Verifica Email.
      *
      * @param value valore da controllare.
@@ -245,35 +234,6 @@ public final class Validator {
      */
     public boolean assertCF(final String value, final String msg) {
         return assertMatch(value, CODICE_FISCALE_PATTERN, msg);
-    }
-
-    /**
-     * Verifica ints.
-     *
-     * @param values valore da controllare.
-     * @param msg    msg di errore.
-     * @return true se value rispetta la regexp, false altrimenti.
-     */
-    public boolean assertInts(final String values, final String msg) {
-        String[] params = request.getParameterValues(values);
-        boolean allInt = Arrays.stream(params).
-                allMatch(param -> INT_PATTERN.matcher(param).matches());
-        return gatherError(allInt, msg);
-    }
-
-    /**
-     * Check sulla lunghezza di due liste.
-     *
-     * @param first  nome della prima lista.
-     * @param second nome della seconda lista.
-     * @param msg    msg.
-     * @return true se stessa lunghezza, altrimenti false.
-     */
-    public boolean assertSize(final String first,
-                              final String second, final String msg) {
-        String[] firstList = request.getParameterValues(first);
-        String[] secondList = request.getParameterValues(second);
-        return gatherError(firstList.length == secondList.length, msg);
     }
 
     /**
