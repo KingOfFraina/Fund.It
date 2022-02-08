@@ -78,8 +78,8 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
      * @param session la sessione da invalidare
      */
     @Override
-    public boolean logout(HttpSession session) {
-        if(session == null) {
+    public boolean logout(final HttpSession session) {
+        if (session == null) {
             return false;
         } else {
             session.invalidate();
