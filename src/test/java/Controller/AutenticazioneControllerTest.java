@@ -1,7 +1,6 @@
 package Controller;
 
 import controller.AutenticazioneController;
-import controller.utils.FileServlet;
 import model.beans.Utente;
 import model.services.AutenticazioneService;
 import org.junit.Before;
@@ -12,11 +11,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
