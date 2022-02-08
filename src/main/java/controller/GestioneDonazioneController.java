@@ -23,9 +23,39 @@ import java.time.LocalDateTime;
 @WebServlet(name = "GestioneDonazioneController",
         value = "/donazione/*")
 public final class GestioneDonazioneController extends HttpServlet {
+
+   /**
+    * Variabile per il service Donazioni.
+    */
+   private DonazioniService donazioniService;
+   /**
+    * Variabile per il service Campagna.
+    */
+   private CampagnaService campagnaService;
+
+   /**
+    * Costruttore classe GestioneDonazioneController.
+    *
+    * @param ds DonazioneService
+    * @param cs CampagnaService
+    */
+   public GestioneDonazioneController(final DonazioniService ds,
+                                      final CampagnaService cs) {
+      donazioniService = ds;
+      campagnaService = cs;
+   }
+
+   /**
+    * Costruttore classe GestioneDonazioneController.
+    */
+   public GestioneDonazioneController() {
+      donazioniService = new DonazioniServiceImpl();
+      campagnaService = new CampagnaServiceImpl();
+   }
+
    @Override
-   protected void doGet(final HttpServletRequest request,
-                        final HttpServletResponse response)
+   public void doGet(final HttpServletRequest request,
+                     final HttpServletResponse response)
            throws ServletException, IOException {
 
       String resource = "/WEB-INF/results/visualizzaDonazioni.jsp";
@@ -34,22 +64,18 @@ public final class GestioneDonazioneController extends HttpServlet {
       String path = request.getPathInfo() == null
               ? "/" : request.getPathInfo();
       Donazione donazione = (Donazione) session.getAttribute("donazione");
-      DonazioniService donazioniService =
-              new DonazioniServiceImpl(new DonazioneDAO());
 
       if (userSession != null) {
          if ("/scriviCommento".equals(path)) {
             if (donazione != null) {
                request.getRequestDispatcher(
-                               "/WEB-INF/results/"
-                                       + "commentoDonazione.jsp")
+                               "/WEB-INF/results/commentoDonazione.jsp")
                        .forward(request, response);
                return;
             }
          } else {
             request.setAttribute("donazioniList",
-                    donazioniService
-                            .visualizzaDonazioni(userSession));
+                    donazioniService.visualizzaDonazioni(userSession));
          }
       } else {
          response.sendRedirect(
@@ -61,8 +87,8 @@ public final class GestioneDonazioneController extends HttpServlet {
    }
 
    @Override
-   protected void doPost(final HttpServletRequest request,
-                         final HttpServletResponse response)
+   public void doPost(final HttpServletRequest request,
+                      final HttpServletResponse response)
            throws IOException, ServletException {
 
       String path = request.getPathInfo() == null ? "/"

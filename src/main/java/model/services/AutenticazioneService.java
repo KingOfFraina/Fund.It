@@ -25,6 +25,7 @@ public interface AutenticazioneService {
 
     /**
      * Esegue il logout dell'utente presente in sessione.
+     * @param session La sessione su cui effettuare il logout
      * @return l'esito dell'invocazione del metodo
      */
     boolean logout(HttpSession session);
