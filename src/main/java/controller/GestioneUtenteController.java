@@ -137,18 +137,17 @@ public final class GestioneUtenteController extends HttpServlet {
             throws IOException, ServletException {
         HttpSession session = request.getSession();
         Utente userSession = (Utente) session.getAttribute("utente");
+        Utente utente = new Utente();
         if (!new Validator(request).isValidBean(Utente.class, userSession)) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/autenticazione/login");
         } else {
-            Utente utente = new Utente();
             if (request.getParameter("password").equals(
                     request.getParameter("confermaPassword"))
                     && request.getParameter("email").equals(
                     request.getParameter("confermaEmail"))) {
                 if (new Validator(request).assertUtente()) {
-                    Utente inSessione = (Utente) session.getAttribute("utente");
-                    utente.setIdUtente(((Utente) session.getAttribute("utente"))
+                    utente.setIdUtente(userSession
                             .getIdUtente());
                     utente.createPasswordHash(request.getParameter("password"));
                     utente.setEmail(request.getParameter("email"));
@@ -162,13 +161,13 @@ public final class GestioneUtenteController extends HttpServlet {
                     utente.setCitta(request.getParameter("citta"));
                     utente.setCap(request.getParameter("cap"));
                     utente.setCf(request.getParameter("cf"));
-                    utente.setAdmin(inSessione.isAdmin());
+                    utente.setAdmin(userSession.isAdmin());
                     List<String> listFoto = FileServlet.uploadFoto(request);
 
                     if (!listFoto.isEmpty()) {
                         utente.setFotoProfilo(listFoto.get(0));
                     } else {
-                        utente.setFotoProfilo(inSessione.getFotoProfilo());
+                        utente.setFotoProfilo(userSession.getFotoProfilo());
                     }
 
                     if (utenteService.modificaProfilo(utente)) {

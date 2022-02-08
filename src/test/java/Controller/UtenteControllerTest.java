@@ -343,7 +343,7 @@ public class UtenteControllerTest {
     }
 
     @Test
-    public void testModificaProfiloTrue() throws ServletException, IOException {
+    public void testValidBeanModificaProfilo() throws ServletException, IOException {
         when(mockRequest.getPathInfo())
                 .thenReturn("/modificaProfilo");
         when(mockRequest.getSession())
@@ -406,5 +406,79 @@ public class UtenteControllerTest {
                 .getParameter(anyString());
         verify(mockResponse, atMostOnce())
                 .sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
+
+    @Test
+    public void testNotValidModificaProfilo() throws ServletException, IOException {
+        when(mockRequest.getPathInfo())
+                .thenReturn("/modificaProfilo");
+        when(mockRequest.getSession())
+                .thenReturn(mockSession);
+        when(mockSession.getAttribute("utente"))
+                .thenReturn(utente);
+        when(mockRequest.getParameter("password"))
+                .thenReturn("password1");
+        when(mockRequest.getParameter("confermaPassword"))
+                .thenReturn("password1");
+        when(mockRequest.getParameter("email"))
+                .thenReturn("email1");
+        when(mockRequest.getParameter("confermaEmail"))
+                .thenReturn("email2");
+
+        utenteController.doPost(mockRequest, mockResponse);
+
+        verify(mockSession, atLeastOnce())
+                .getAttribute("utente");
+        verify(mockRequest, atLeastOnce())
+                .getParameter(anyString());
+    }
+
+    @Test
+    public void testTrueModificaProfilo() throws ServletException, IOException {
+        when(mockRequest.getPathInfo())
+                .thenReturn("/modificaProfilo");
+        when(mockRequest.getSession())
+                .thenReturn(mockSession);
+        when(mockSession.getAttribute("utente"))
+                .thenReturn(utente);
+        when(mockRequest.getServletContext())
+                .thenReturn(mockContext);
+        when(mockRequest.getRequestDispatcher(anyString()))
+                .thenReturn(mockDispatcher);
+        when(mockRequest.getParameter("password"))
+                .thenReturn("WerBn12m90.");
+        when(mockRequest.getParameter("confermaPassword"))
+                .thenReturn("WerBn12m90.");
+        when(mockRequest.getParameter("email"))
+                .thenReturn("emailprova@gmail.com");
+        when(mockRequest.getParameter("confermaEmail"))
+                .thenReturn("emailprova@gmail.com");
+        when(mockRequest.getParameter("nome"))
+                .thenReturn("nome");
+        when(mockRequest.getParameter("cognome"))
+                .thenReturn("cognome");
+        when(mockRequest.getParameter("indirizzo"))
+                .thenReturn("via sesti, 23");
+        when(mockRequest.getParameter("cf"))
+                .thenReturn("PKKKKK80A01F205C");
+        when(mockRequest.getParameter("cap"))
+                .thenReturn("89301");
+        when(mockRequest.getParameter("citta"))
+                .thenReturn("Milano");
+        when(mockRequest.getParameter("telefono"))
+                .thenReturn("3782212789");
+        when(mockRequest.getParameter("dataDiNascita"))
+                .thenReturn(LocalDate.now().toString());
+        when(mockService.modificaProfilo(any(Utente.class)))
+                .thenReturn(true);
+
+        utenteController.doPost(mockRequest, mockResponse);
+
+        verify(mockRequest, atLeastOnce())
+                .getParameter(anyString());
+        verify(mockService, atMostOnce())
+                .modificaProfilo(utente);
+        verify(mockDispatcher, atMostOnce())
+                .forward(mockRequest, mockResponse);
     }
 }
