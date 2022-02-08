@@ -92,7 +92,6 @@ public class UtenteControllerTest {
         verify(mockSession, atLeastOnce()).getAttribute("utente");
         verify(utente, atLeastOnce()).isAdmin();
         verify(mockResponse, atMostOnce()).sendError(anyInt(), anyString());
-
     }
 
     @Test
@@ -178,5 +177,111 @@ public class UtenteControllerTest {
         utenteController.doPost(mockRequest, mockResponse);
         verify(mockSession, atLeastOnce()).getAttribute("utente");
         verify(mockResponse, atMostOnce()).sendRedirect(anyString());
+    }
+
+    @Test
+    public void testCasePromuoviUtenteNotAuthorized() throws IOException, ServletException {
+        when(mockRequest.getPathInfo())
+                .thenReturn("/promuoviDeclassaUtente");
+        when(mockRequest.getServletContext())
+                .thenReturn(mockContext);
+        when(mockContext.getContextPath())
+                .thenReturn(CONTEXT_PATH);
+        when(mockRequest.getSession())
+                .thenReturn(mockSession);
+        when(mockSession.getAttribute("utente"))
+                .thenReturn(utente);
+        when(utente.isAdmin())
+                .thenReturn(false);
+
+        utenteController.doPost(mockRequest, mockResponse);
+
+        verify(mockResponse, atLeastOnce())
+                .sendError(anyInt(), anyString());
+    }
+
+    @Test
+    public void testPromuoviUtenteAuthorized() throws ServletException, IOException {
+        when(mockRequest.getPathInfo())
+                .thenReturn("/promuoviDeclassaUtente");
+        when(mockRequest.getServletContext())
+                .thenReturn(mockContext);
+        when(mockContext.getContextPath())
+                .thenReturn(CONTEXT_PATH);
+        when(mockRequest.getSession())
+                .thenReturn(mockSession);
+        when(mockSession.getAttribute("utente"))
+                .thenReturn(utente);
+        when(utente.isAdmin())
+                .thenReturn(true);
+        when(mockRequest.getParameter("utentemod"))
+                .thenReturn("1");
+        when(mockService.visualizzaDashboardUtente(anyInt()))
+                .thenReturn(utente);
+        when(mockRequest.getRequestDispatcher(anyString()))
+                .thenReturn(mockDispatcher);
+        when(mockService.promuoviDeclassaUtente(utente, utente))
+                .thenReturn(true);
+
+        utenteController.doPost(mockRequest, mockResponse);
+
+        verify(mockRequest, atLeastOnce()).getParameter("utentemod");
+        verify(mockService, atLeastOnce())
+                .promuoviDeclassaUtente(utente, utente);
+        verify(mockDispatcher, atLeastOnce()).forward(mockRequest, mockResponse);
+    }
+
+    @Test
+    public void testPromuoviUtenteRequestParamNull() throws ServletException, IOException {
+        when(mockRequest.getPathInfo())
+                .thenReturn("/promuoviDeclassaUtente");
+        when(mockRequest.getServletContext())
+                .thenReturn(mockContext);
+        when(mockContext.getContextPath())
+                .thenReturn(CONTEXT_PATH);
+        when(mockRequest.getSession())
+                .thenReturn(mockSession);
+        when(mockSession.getAttribute("utente"))
+                .thenReturn(utente);
+        when(utente.isAdmin())
+                .thenReturn(true);
+        when(mockRequest.getParameter("utentemod"))
+                .thenReturn(null);
+
+        utenteController.doPost(mockRequest, mockResponse);
+
+        verify(mockRequest, atLeastOnce()).getParameter("utentemod");
+        verify(mockResponse, atMostOnce()).sendError(anyInt(), anyString());
+    }
+
+    @Test
+    public void testPromuoviUtenteReportError() throws ServletException, IOException {
+        when(mockRequest.getPathInfo())
+                .thenReturn("/promuoviDeclassaUtente");
+        when(mockRequest.getServletContext())
+                .thenReturn(mockContext);
+        when(mockContext.getContextPath())
+                .thenReturn(CONTEXT_PATH);
+        when(mockRequest.getSession())
+                .thenReturn(mockSession);
+        when(mockSession.getAttribute("utente"))
+                .thenReturn(utente);
+        when(utente.isAdmin())
+                .thenReturn(true);
+        when(mockRequest.getParameter("utentemod"))
+                .thenReturn("1");
+        when(mockService.visualizzaDashboardUtente(anyInt()))
+                .thenReturn(utente);
+        when(mockRequest.getRequestDispatcher(anyString()))
+                .thenReturn(mockDispatcher);
+        when(mockService.promuoviDeclassaUtente(utente, utente))
+                .thenReturn(false);
+
+        utenteController.doPost(mockRequest, mockResponse);
+
+        verify(mockRequest, atLeastOnce()).getParameter("utentemod");
+        verify(mockService, atLeastOnce())
+                .promuoviDeclassaUtente(utente, utente);
+        verify(mockDispatcher, atLeastOnce()).forward(mockRequest, mockResponse);
     }
 }

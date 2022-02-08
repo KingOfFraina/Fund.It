@@ -34,6 +34,10 @@ public final class GestioneUtenteController extends HttpServlet {
         utenteService = service;
     }
 
+    public GestioneUtenteController() {
+        utenteService = new UtenteServiceImpl();
+    }
+
     @Override
     public void doGet(final HttpServletRequest request,
                       final HttpServletResponse response)
