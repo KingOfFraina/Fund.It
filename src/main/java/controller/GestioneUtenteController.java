@@ -30,31 +30,26 @@ import java.util.List;
 public final class GestioneUtenteController extends HttpServlet {
 
     @Override
-    protected void doGet(final HttpServletRequest request,
-                         final HttpServletResponse response)
+    public void doGet(final HttpServletRequest request,
+                      final HttpServletResponse response)
             throws ServletException, IOException {
-        switch (request.getPathInfo()) {
-            case "/visualizzaDashboard" -> {
-                visualizzaDashboard(request, response);
-            }
-            case "/visualizzaDashboardAdmin" -> {
-                visualizzaDashboardAdmin(request, response);
-            }
+        String path = request.getPathInfo() == null ? "/" : request.getPathInfo();
+        switch (path) {
+            case "/visualizzaDashboard" -> visualizzaDashboard(request, response);
+            case "/visualizzaDashboardAdmin" -> visualizzaDashboardAdmin(request, response);
             default -> response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
     @Override
-    protected void doPost(final HttpServletRequest request,
-                          final HttpServletResponse response)
+    public void doPost(final HttpServletRequest request,
+                       final HttpServletResponse response)
             throws IOException, ServletException {
         String path = request.getPathInfo();
 
         switch (path) {
             case "/modificaProfilo" -> modificaProfilo(request, response);
-            case "/promuoviDeclassaUtente" -> {
-                promuoviDeclassaUtente(request, response);
-            }
+            case "/promuoviDeclassaUtente" -> promuoviDeclassaUtente(request, response);
             default -> response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
@@ -62,12 +57,13 @@ public final class GestioneUtenteController extends HttpServlet {
     private void visualizzaDashboardAdmin(final HttpServletRequest request,
                                           final HttpServletResponse response)
             throws IOException, ServletException {
+        HttpSession session = request.getSession();
         if (!new Validator(request).isValidBean(Utente.class,
-                request.getSession().getAttribute("utente"))) {
+                session.getAttribute("utente"))) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/autenticazione/login");
         } else {
-            Utente ut = (Utente) request.getSession().getAttribute("utente");
+            Utente ut = (Utente) session.getAttribute("utente");
             if (!ut.isAdmin()) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                         "Non autorizzato.");
@@ -107,16 +103,16 @@ public final class GestioneUtenteController extends HttpServlet {
                                      final HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        Utente userSession = (Utente) session.getAttribute("utente");
 
         if (!new Validator(request).isValidBean(Utente.class,
-                session.getAttribute("utente"))) {
+                userSession)) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/autenticazione/login");
-            //return;
         } else {
             UtenteService uts = new UtenteServiceImpl();
             Utente ut = uts.visualizzaDashboardUtente(
-                    ((Utente) session.getAttribute("utente")).getIdUtente());
+                    userSession.getIdUtente());
 
             UtenteProxy utenteProxy = new UtenteProxy(ut);
             ut.setDonazioni(utenteProxy.getDonazioni());
