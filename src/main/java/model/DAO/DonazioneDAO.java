@@ -114,7 +114,7 @@ public final class DonazioneDAO implements DAO<Donazione> {
                      ConPool.getInstance().getConnection()) {
             String query =
                     "UPDATE donazione SET sommaDonata = ?, "
-                            + "commento = ? "
+                            + "commento = ?, anonimo = ? "
                             + "WHERE idDonazione = ?";
 
             try (PreparedStatement preparedStatement =
@@ -126,6 +126,8 @@ public final class DonazioneDAO implements DAO<Donazione> {
                         entity.getSommaDonata());
                 preparedStatement.setString(index++,
                         entity.getCommento());
+                preparedStatement.setBoolean(index++,
+                        entity.isAnonimo());
                 preparedStatement.setInt(index,
                         entity.getIdDonazione());
 

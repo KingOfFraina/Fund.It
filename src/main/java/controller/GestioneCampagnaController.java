@@ -41,25 +41,6 @@ import java.util.stream.Collectors;
 public final class GestioneCampagnaController extends HttpServlet {
 
     @Override
-    public void init() throws ServletException {
-        super.init();
-        /*
-        List<Campagna> campagne;
-        DAO<Campagna> campagnaDAO = new CampagnaDAO();
-        campagne = campagnaDAO.getAll();
-        campagne = campagne.stream().
-                filter(campagna -> campagna.getStato()
-                        == StatoCampagna.ATTIVA).
-                collect(Collectors.toList());
-        campagne.forEach(c -> {
-            CampagnaInterface proxy = new CampagnaProxy(c);
-            proxy.getUtente();
-            proxy.getImmagini();
-        });
-        getServletContext().setAttribute("campagneList", campagne);*/
-    }
-
-    @Override
     protected void doGet(final HttpServletRequest request,
                          final HttpServletResponse response)
             throws ServletException, IOException {

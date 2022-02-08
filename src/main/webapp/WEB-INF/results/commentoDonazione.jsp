@@ -24,7 +24,7 @@
 
         <div class="mt-2 text-center">
             <div style="float: left">
-                <input class="form-check-input" type="checkbox" value="" id="anonimo" name="anonimo"
+                <input class="form-check-input" type="checkbox" value="true" id="anonimo" name="anonimo"
                        formnovalidate="formnovalidate">
                 <label class="form-check-label" for="anonimo">
                     Anonimo
