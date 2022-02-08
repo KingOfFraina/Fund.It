@@ -70,10 +70,10 @@
 
 
                             <c:forEach items="${requestScope.campagneList}" var = "campagna" begin="0" end="7">
-                                <div class="col-sm my-4">
-                                    <div class="card" style="width: 18rem;">
+                                <div class="col-sm my-4" >
+                                    <div class="card" style="width: 14rem;">
 
-                                        <img class="card-img-top" style="max-width: 180px"
+                                        <img class="card-img-top"
                                              src="${pageContext.request.contextPath}/file/${campagna.immagini.get(0).path}"
                                              alt="Card image cap">
                                         <div class="card-body">
