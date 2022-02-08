@@ -90,17 +90,13 @@ public final class GestioneSegnalazioneController extends HttpServlet {
       if (!new Validator(request)
               .isValidBean(Utente.class, session.getAttribute("utente"))) {
 
-         response.sendRedirect(getServletContext().getContextPath()
-                 + "/autenticazione/login");
+         response.sendRedirect(request.getServletContext()
+                 .getContextPath() + "/autenticazione/login");
          return;
       }
 
       Utente userSession = (Utente) session.getAttribute("utente");
       String idCampagna = request.getParameter("idCampagna");
-      CampagnaService campagnaService =
-              new CampagnaServiceImpl();
-      SegnalazioniService segnalazioniService = new SegnalazioniServiceImpl();
-      UtenteService utenteService = new UtenteServiceImpl(new UtenteDAO());
 
       switch (path) {
          case "/segnala" -> {
@@ -135,8 +131,7 @@ public final class GestioneSegnalazioneController extends HttpServlet {
          case "/risolvi" -> {
             if (!userSession.isAdmin()) {
                response.sendError(
-                       HttpServletResponse.SC_UNAUTHORIZED,
-                       "Non autorizzato");
+                       HttpServletResponse.SC_UNAUTHORIZED);
             } else {
                String scelta = request.getParameter("sceltaSegnalazione");
                int id = Integer.parseInt(
