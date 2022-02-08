@@ -10,11 +10,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 public class AutenticazioneServiceImpl implements AutenticazioneService {
-
-    /**
-     * Wrapper di HttpSession.
-     */
-    private final HttpSession sessionWrapper;
     /**
      * Wrapper di UtenteDAO.
      */
@@ -22,23 +17,16 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
 
     /**
      * Costruttore di AutenticazioneService.
-     *
-     * @param session   Sessione attuale dell'utente
      * @param utenteDAO istanza di UtenteDAO
      */
-    public AutenticazioneServiceImpl(final HttpSession session,
-                                     final DAO<Utente> utenteDAO) {
-        this.sessionWrapper = session;
+    public AutenticazioneServiceImpl(final DAO<Utente> utenteDAO) {
         this.dao = utenteDAO;
     }
 
     /**
      * Costruttore di AutenticazioneService.
-     *
-     * @param session Sessione attuale dell'utente
      */
-    public AutenticazioneServiceImpl(final HttpSession session) {
-        this.sessionWrapper = session;
+    public AutenticazioneServiceImpl() {
         this.dao = new UtenteDAO();
     }
 
@@ -87,9 +75,15 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
 
     /**
      * Esegue il logout dell'utente presente in sessione.
+     * @param session la sessione da invalidare
      */
     @Override
-    public void logout() {
-        sessionWrapper.invalidate();
+    public boolean logout(HttpSession session) {
+        if(session == null) {
+            return false;
+        } else {
+            session.invalidate();
+            return true;
+        }
     }
 }

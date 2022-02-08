@@ -24,7 +24,7 @@ public class AutenticazioneServiceTest {
     @BeforeClass
     public static void setUp() {
         mockDao = Mockito.mock(UtenteDAO.class);
-        autenticazioneService = new AutenticazioneServiceImpl(mockSession, mockDao);
+        autenticazioneService = new AutenticazioneServiceImpl(mockDao);
         mockSession = Mockito.mock(HttpSession.class);
         utente = new Utente();
     }
@@ -75,5 +75,15 @@ public class AutenticazioneServiceTest {
     public void testRegistrazione() {
         Mockito.when(mockDao.save(utente)).thenReturn(true);
         assertTrue(autenticazioneService.registrazione(utente));
+    }
+
+    @Test
+    public void logoutNull() {
+        assertFalse(autenticazioneService.logout(null));
+    }
+
+    @Test
+    public void logout() {
+        assertTrue(autenticazioneService.logout(mockSession));
     }
 }

@@ -2,6 +2,8 @@ package model.services;
 
 import model.beans.Utente;
 
+import javax.servlet.http.HttpSession;
+
 public interface AutenticazioneService {
 
     /**
@@ -23,6 +25,7 @@ public interface AutenticazioneService {
 
     /**
      * Esegue il logout dell'utente presente in sessione.
+     * @return l'esito dell'invocazione del metodo
      */
-    void logout();
+    boolean logout(HttpSession session);
 }
