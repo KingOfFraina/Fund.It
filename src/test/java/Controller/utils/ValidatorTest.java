@@ -157,7 +157,26 @@ public class ValidatorTest {
     public void testRequired11() {
        assertTrue(validator.required("aa"));
     }
-
+    @Test
+    public void testAssertInt0() {
+        Mockito.when(request.getParameter("num")).thenReturn("");
+       assertFalse(validator.assertInt("num", null));
+    }
+    @Test
+    public void testAssertInt00() {
+        Mockito.when(request.getParameter("num")).thenReturn(null);
+        assertFalse(validator.assertInt("num", null));
+    }
+    @Test
+    public void testAssertInt1() {
+       Mockito.when(request.getParameter("num")).thenReturn("nan bro");
+        assertFalse(validator.assertInt("num", null));
+    }
+    @Test
+    public void testAssertInt2() {
+        Mockito.when(request.getParameter("num")).thenReturn("22");
+        assertTrue(validator.assertInt("num", null));
+    }
    @After
    public void clean() {
 

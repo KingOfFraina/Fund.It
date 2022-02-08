@@ -78,24 +78,6 @@ public final class Validator {
     }
 
     /**
-     * Ci sono errori?
-     *
-     * @return se ci sono errori.
-     */
-    public boolean hasErrors() {
-        return !errors.isEmpty();
-    }
-
-    /**
-     * getErrori.
-     *
-     * @return errori.
-     */
-    public List<String> getErrors() {
-        return errors;
-    }
-
-    /**
      * Inserisce message nella lista se la condition è false.
      *
      * @param condition condizione.
@@ -274,10 +256,4 @@ public final class Validator {
         return false;
     }
 
-    /**
-     * Pulisce gli errori memorizzati.
-     */
-    public void reset() {
-        errors.clear();
-    }
 }
