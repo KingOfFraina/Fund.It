@@ -13,12 +13,7 @@ import model.beans.Utente;
 import model.beans.proxies.CampagnaProxy;
 import model.beans.proxies.DonazioneProxy;
 import model.beans.proxyInterfaces.CampagnaInterface;
-import model.services.CampagnaService;
-import model.services.CampagnaServiceImpl;
-import model.services.CategoriaService;
-import model.services.CategoriaServiceImpl;
-import model.services.ImmagineService;
-import model.services.ImmagineServiceImpl;
+import model.services.*;
 import model.storage.ConPool;
 
 import javax.servlet.RequestDispatcher;
@@ -195,6 +190,8 @@ public final class GestioneCampagnaController extends HttpServlet {
         if (map != null) {
             request.setAttribute("linkList", map);
         } else {
+            ReportService.creaReport(request, TipoReport.ERRORE,
+                    "Condivisione non effettuata");
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/index.jsp");
@@ -288,8 +285,6 @@ public final class GestioneCampagnaController extends HttpServlet {
                                 "Non Autorizzato");
                         return;
                     }
-
-
                 if (service.cancellaCampagna(campagna)) {
                     if (service.rimborsaDonazioni(campagna,
                             new CampagnaProxy(campagna))) {
