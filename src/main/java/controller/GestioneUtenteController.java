@@ -136,11 +136,10 @@ public final class GestioneUtenteController extends HttpServlet {
                                  final HttpServletResponse response)
             throws IOException, ServletException {
         HttpSession session = request.getSession();
-        if (!new Validator(request).isValidBean(Utente.class,
-                session.getAttribute("utente"))) {
+        Utente userSession = (Utente) session.getAttribute("utente");
+        if (!new Validator(request).isValidBean(Utente.class, userSession)) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/autenticazione/login");
-            //return;
         } else {
             Utente utente = new Utente();
             if (request.getParameter("password").equals(
