@@ -28,6 +28,11 @@ import java.util.List;
         value = "/GestioneUtenteController/*")
 @MultipartConfig
 public final class GestioneUtenteController extends HttpServlet {
+    static UtenteService utenteService;
+
+    public GestioneUtenteController(UtenteService service) {
+        utenteService = service;
+    }
 
     @Override
     public void doGet(final HttpServletRequest request,
@@ -58,17 +63,16 @@ public final class GestioneUtenteController extends HttpServlet {
                                           final HttpServletResponse response)
             throws IOException, ServletException {
         HttpSession session = request.getSession();
+        Utente userSession = (Utente) session.getAttribute("utente");
         if (!new Validator(request).isValidBean(Utente.class,
-                session.getAttribute("utente"))) {
+                userSession)) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/autenticazione/login");
         } else {
-            Utente ut = (Utente) session.getAttribute("utente");
-            if (!ut.isAdmin()) {
+            if (!userSession.isAdmin()) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                         "Non autorizzato.");
             } else {
-                UtenteService us = new UtenteServiceImpl();
                 SegnalazioniService segnalazioniService =
                         new SegnalazioniServiceImpl();
                 DonazioniService donazioniService = new DonazioniServiceImpl();
@@ -88,7 +92,7 @@ public final class GestioneUtenteController extends HttpServlet {
                 });
 
                 request.setAttribute("campagneList", lst);
-                request.setAttribute("utentiList", us.visualizzaUtenti(ut));
+                request.setAttribute("utentiList", utenteService.visualizzaUtenti(userSession));
                 request.setAttribute("segnalazioniList",
                         segnalazioniService.trovaSegnalazioni());
                 request.setAttribute("donazioniList", list);
@@ -110,8 +114,7 @@ public final class GestioneUtenteController extends HttpServlet {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/autenticazione/login");
         } else {
-            UtenteService uts = new UtenteServiceImpl();
-            Utente ut = uts.visualizzaDashboardUtente(
+            Utente ut = utenteService.visualizzaDashboardUtente(
                     userSession.getIdUtente());
 
             UtenteProxy utenteProxy = new UtenteProxy(ut);
@@ -165,7 +168,7 @@ public final class GestioneUtenteController extends HttpServlet {
                         utente.setFotoProfilo(inSessione.getFotoProfilo());
                     }
 
-                    if (new UtenteServiceImpl().modificaProfilo(utente)) {
+                    if (utenteService.modificaProfilo(utente)) {
                         ReportService.creaReport(request, TipoReport.INFO,
                                 "Esito operazione:",
                                 "Modifica effettuata con successo");
@@ -192,22 +195,18 @@ public final class GestioneUtenteController extends HttpServlet {
                                         final HttpServletResponse response)
             throws IOException, ServletException {
         HttpSession session = request.getSession();
-
+        Utente userSession = (Utente) session.getAttribute("utente");
         if (!new Validator(request).isValidBean(Utente.class,
-                session.getAttribute("utente"))) {
+                userSession)) {
             response.sendRedirect(request.getServletContext().getContextPath()
                     + "/autenticazione/login");
         } else {
-            Utente utente = (Utente) session.getAttribute("utente");
-
-            if (!utente.isAdmin()) {
+            if (!userSession.isAdmin()) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                         "Non Autorizzato");
             } else {
                 String idUtente = request.getParameter("utentemod");
                 Utente ut;
-                UtenteService utenteService = new UtenteServiceImpl();
-
                 if (idUtente != null) {
                     try {
                         ut = utenteService
@@ -219,7 +218,7 @@ public final class GestioneUtenteController extends HttpServlet {
                         return;
                     }
 
-                    if (utenteService.promuoviDeclassaUtente(utente, ut)) {
+                    if (utenteService.promuoviDeclassaUtente(userSession, ut)) {
                         ReportService.creaReport(request, TipoReport.INFO,
                                 "Esito operazione:",
                                 "Modifica effettuata con successo");
