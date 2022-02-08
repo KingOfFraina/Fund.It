@@ -50,16 +50,16 @@
                 <h5 class="modal-title" id="chiusuraLabel">Chiudi campagna</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action = "${pageContext.request.contextPath}/campagna/chiudiCampagna" method="post">
+            <form action = "http://localhost:8080/FundPay-1.0-SNAPSHOT/fundPay/accredito?idCampagna=${campagna.idCampagna}" method="get">
                 <input type="text" name = "idCampagna" value = "${requestScope.campagna.idCampagna}" hidden>
                 <div class="modal-body">
                     <p>Sei sicuro di voler chiudere la campagna? I fondi raccolti fino ad ora saranno trasferiti sul tuo conto.</p>
                 </div>
                 <div class="modal-footer">
+
                     <button type="button" class="btn btn-secondary pulsante" data-bs-dismiss="modal"
                             style="background-color: #00AB98; border-color: #00AB98">Annulla
                     </button>
-
                     <button type="submit" class="btn btn-secondary pulsante"
                             style="background-color: crimson; border-color: crimson">Chiudi campagna
                     </button>
