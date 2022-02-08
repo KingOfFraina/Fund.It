@@ -29,127 +29,162 @@ import java.util.List;
 @WebServlet(name = "GestioneSegnalazioneController",
         value = "/segnalazioni/*")
 public final class GestioneSegnalazioneController extends HttpServlet {
-    @Override
-    protected void doGet(final HttpServletRequest request,
-                         final HttpServletResponse response)
-            throws IOException {
-        Utente userSession = (Utente)
-                request.getSession().getAttribute("utente");
-        if (userSession.isAdmin()) {
-            SegnalazioniService service = new SegnalazioniServiceImpl();
-            List<Segnalazione> segnalazioni = service.trovaSegnalazioni();
-            request.setAttribute("segnalazioni", segnalazioni);
-        } else {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-        }
-    }
+   /**
+    * Variabile per il service di Campagna.
+    */
+   private CampagnaService campagnaService;
+   /**
+    * Variabile per il service di Segnalazione.
+    */
+   private SegnalazioniService segnalazioniService;
+   /**
+    * Variabile per il service di Utente.
+    */
+   private UtenteService utenteService;
 
-    @Override
-    protected void doPost(final HttpServletRequest request,
-                          final HttpServletResponse response)
-            throws IOException {
+   /**
+    * Costruttore del SegnalazioneController.
+    *
+    * @param cs CampagnaService
+    * @param ss CampagnaService
+    * @param us UtenteService
+    */
+   public GestioneSegnalazioneController(final CampagnaService cs,
+                                         final SegnalazioniService ss,
+                                         final UtenteService us) {
+      campagnaService = cs;
+      segnalazioniService = ss;
+      utenteService = us;
+   }
 
-        String path = request.getPathInfo();
-        HttpSession session = request.getSession();
+   /**
+    * Costruttore del SegnalazioneController.
+    */
+   public GestioneSegnalazioneController() {
+      campagnaService = new CampagnaServiceImpl();
+      segnalazioniService = new SegnalazioniServiceImpl();
+      utenteService = new UtenteServiceImpl();
+   }
 
-        if (!new Validator(request)
-                .isValidBean(Utente.class, session.getAttribute("utente"))) {
+   @Override
+   public void doGet(final HttpServletRequest request,
+                     final HttpServletResponse response)
+           throws IOException {
+      if (((Utente) request.getSession()
+              .getAttribute("utente")).isAdmin()) {
+         request.setAttribute("segnalazioni",
+                 segnalazioniService.trovaSegnalazioni());
+      } else {
+         response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+      }
+   }
 
-            response.sendRedirect(getServletContext().getContextPath()
-                    + "/autenticazione/login");
-            return;
-        }
+   @Override
+   public void doPost(final HttpServletRequest request,
+                      final HttpServletResponse response)
+           throws IOException {
 
-        Utente userSession = (Utente) session.getAttribute("utente");
-        String idCampagna = request.getParameter("idCampagna");
-        CampagnaService campagnaService =
-                new CampagnaServiceImpl();
-        SegnalazioniService segnalazioniService = new SegnalazioniServiceImpl();
-        UtenteService utenteService = new UtenteServiceImpl(new UtenteDAO());
+      String path = request.getPathInfo();
+      HttpSession session = request.getSession();
 
-        switch (path) {
-            case "/segnala" -> {
-                Segnalazione segnalazione = new Segnalazione();
-                String descrizione = request.getParameter("descrizione");
-                Campagna c = campagnaService.
-                        trovaCampagna(Integer.parseInt(idCampagna));
-                Utente utente = new Utente();
-                utente.setIdUtente(
-                        Integer.parseInt(request.getParameter("idUtente")));
+      if (!new Validator(request)
+              .isValidBean(Utente.class, session.getAttribute("utente"))) {
 
-                segnalazione.setCampagnaSegnalata(c);
-                segnalazione.setSegnalato(utente);
-                segnalazione.setSegnalatore(userSession);
-                segnalazione.setDescrizione(descrizione);
-                segnalazione.setDataOra(LocalDateTime.now());
-                segnalazione.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
+         response.sendRedirect(getServletContext().getContextPath()
+                 + "/autenticazione/login");
+         return;
+      }
 
-                if (segnalazioniService.segnalaCampagna(segnalazione)) {
-                    ReportService.creaReport(request, TipoReport.INFO,
-                            "Esito operazione:", "Segnalazione inviata");
-                } else {
-                    ReportService.creaReport(request, TipoReport.ERRORE,
-                            "Esito operazione:", "Segnalazione non inviata");
-                }
+      Utente userSession = (Utente) session.getAttribute("utente");
+      String idCampagna = request.getParameter("idCampagna");
+      CampagnaService campagnaService =
+              new CampagnaServiceImpl();
+      SegnalazioniService segnalazioniService = new SegnalazioniServiceImpl();
+      UtenteService utenteService = new UtenteServiceImpl(new UtenteDAO());
 
-                response.sendRedirect(request.getServletContext().
-                        getContextPath()
-                        + "/campagna/campagna?idCampagna=" + idCampagna);
+      switch (path) {
+         case "/segnala" -> {
+            Segnalazione segnalazione = new Segnalazione();
+            String descrizione = request.getParameter("descrizione");
+            Campagna c = campagnaService.
+                    trovaCampagna(Integer.parseInt(idCampagna));
+            Utente utente = new Utente();
+            utente.setIdUtente(
+                    Integer.parseInt(request.getParameter("idUtente")));
 
+            segnalazione.setCampagnaSegnalata(c);
+            segnalazione.setSegnalato(utente);
+            segnalazione.setSegnalatore(userSession);
+            segnalazione.setDescrizione(descrizione);
+            segnalazione.setDataOra(LocalDateTime.now());
+            segnalazione.setStatoSegnalazione(StatoSegnalazione.ATTIVA);
+
+            if (segnalazioniService.segnalaCampagna(segnalazione)) {
+               ReportService.creaReport(request, TipoReport.INFO,
+                       "Esito operazione:", "Segnalazione inviata");
+            } else {
+               ReportService.creaReport(request, TipoReport.ERRORE,
+                       "Esito operazione:", "Segnalazione non inviata");
             }
-            case "/risolvi" -> {
-                if (!userSession.isAdmin()) {
-                    response.sendError(
-                            HttpServletResponse.SC_UNAUTHORIZED,
-                            "Non autorizzato");
-                } else {
-                    String scelta = request.getParameter("sceltaSegnalazione");
-                    int id = Integer.parseInt(
-                            request.getParameter("idCampagna"));
-                    int idSegnalazione =
-                            Integer.parseInt(
-                                    request.getParameter("idSegnalazione"));
-                    Campagna campagna = campagnaService.trovaCampagna(id);
-                    if (scelta.equals("Risolvi")) {
-                        segnalazioniService
-                                .risolviSegnalazione(idSegnalazione,
-                                        StatoSegnalazione.RISOLTA);
-                        Utente utenteSegnalato =
-                                utenteService.visualizzaDashboardUtente(
-                                        campagna.getUtente().getIdUtente());
-                        campagnaService.cancellaCampagna(campagna);
-                        utenteService.sospensioneUtente(utenteSegnalato);
-                        CampagnaInterface campagnaProxy =
-                                new CampagnaProxy(campagna);
-                        if (campagnaService
-                                .rimborsaDonazioni(campagna, campagnaProxy)) {
-                            ReportService.creaReport(request, TipoReport.INFO,
-                                    "Esito operazione:",
-                                    "Segnalazione risolta");
-                        } else {
-                            ReportService.creaReport(request, TipoReport.ERRORE,
-                                    "Esito operazione:",
-                                    "Segnalazione non risolta");
-                        }
-                    } else {
-                        if (segnalazioniService
-                                .risolviSegnalazione(idSegnalazione,
-                                        StatoSegnalazione.ARCHIVIATA)) {
-                            ReportService.creaReport(request, TipoReport.INFO,
-                                    "Esito operazione:",
-                                    "Segnalazione archiviata");
-                        } else {
-                            ReportService.creaReport(request, TipoReport.ERRORE,
-                                    "Esito operazione:",
-                                    "Segnalazione non archviata");
-                        }
-                    }
-                    response.sendRedirect(request
-                            .getServletContext().getContextPath()
-                            + "/GestioneUtenteController/visualizzaDashboard");
-                }
+
+            response.sendRedirect(request.getServletContext().
+                    getContextPath()
+                    + "/campagna/campagna?idCampagna=" + idCampagna);
+
+         }
+         case "/risolvi" -> {
+            if (!userSession.isAdmin()) {
+               response.sendError(
+                       HttpServletResponse.SC_UNAUTHORIZED,
+                       "Non autorizzato");
+            } else {
+               String scelta = request.getParameter("sceltaSegnalazione");
+               int id = Integer.parseInt(
+                       request.getParameter("idCampagna"));
+               int idSegnalazione =
+                       Integer.parseInt(
+                               request.getParameter("idSegnalazione"));
+               Campagna campagna = campagnaService.trovaCampagna(id);
+               if (scelta.equals("Risolvi")) {
+                  segnalazioniService
+                          .risolviSegnalazione(idSegnalazione,
+                                  StatoSegnalazione.RISOLTA);
+                  Utente utenteSegnalato =
+                          utenteService.visualizzaDashboardUtente(
+                                  campagna.getUtente().getIdUtente());
+                  campagnaService.cancellaCampagna(campagna);
+                  utenteService.sospensioneUtente(utenteSegnalato);
+                  CampagnaInterface campagnaProxy =
+                          new CampagnaProxy(campagna);
+                  if (campagnaService
+                          .rimborsaDonazioni(campagna, campagnaProxy)) {
+                     ReportService.creaReport(request, TipoReport.INFO,
+                             "Esito operazione:",
+                             "Segnalazione risolta");
+                  } else {
+                     ReportService.creaReport(request, TipoReport.ERRORE,
+                             "Esito operazione:",
+                             "Segnalazione non risolta");
+                  }
+               } else {
+                  if (segnalazioniService
+                          .risolviSegnalazione(idSegnalazione,
+                                  StatoSegnalazione.ARCHIVIATA)) {
+                     ReportService.creaReport(request, TipoReport.INFO,
+                             "Esito operazione:",
+                             "Segnalazione archiviata");
+                  } else {
+                     ReportService.creaReport(request, TipoReport.ERRORE,
+                             "Esito operazione:",
+                             "Segnalazione non archviata");
+                  }
+               }
+               response.sendRedirect(request
+                       .getServletContext().getContextPath()
+                       + "/GestioneUtenteController/visualizzaDashboard");
             }
-            default -> response.sendError(HttpServletResponse.SC_NOT_FOUND);
-        }
-    }
+         }
+         default -> response.sendError(HttpServletResponse.SC_NOT_FOUND);
+      }
+   }
 }
