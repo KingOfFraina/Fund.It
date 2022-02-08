@@ -1,7 +1,6 @@
 package controller;
 
 import controller.utils.Validator;
-import model.DAO.UtenteDAO;
 import model.beans.Campagna;
 import model.beans.Segnalazione;
 import model.beans.StatoSegnalazione;
@@ -24,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @WebServlet(name = "GestioneSegnalazioneController",
         value = "/segnalazioni/*")
