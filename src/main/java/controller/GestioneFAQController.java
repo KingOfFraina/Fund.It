@@ -2,6 +2,7 @@ package controller;
 
 import model.beans.FAQ;
 import model.beans.Utente;
+import model.services.FaqService;
 import model.services.FaqServiceImpl;
 import model.services.ReportService;
 import model.services.TipoReport;
@@ -17,6 +18,26 @@ import java.io.IOException;
 @WebServlet(name = "GestioneFAQController",
         value = "/faq/*")
 public final class GestioneFAQController extends HttpServlet {
+   /**
+    * Variabile per il service di FAQ.
+    */
+   private FaqService service;
+
+   /**
+    * Costruttore classe GestioneFAQController.
+    *
+    * @param newService il service che si interfaccia con i DAO
+    */
+   public GestioneFAQController(final FaqService newService) {
+      service = newService;
+   }
+
+   /**
+    * Costruttore classe GestioneFAQController.
+    */
+   public GestioneFAQController() {
+      service = new FaqServiceImpl();
+   }
 
    @Override
    public void doGet(final HttpServletRequest request,
@@ -38,7 +59,7 @@ public final class GestioneFAQController extends HttpServlet {
                return;
             } else {
                if (path.equals("/modificaFAQ")) {
-                  request.setAttribute("faq", new FaqServiceImpl()
+                  request.setAttribute("faq", service
                           .visualizzaFaq(Integer
                                   .parseInt(
                                           request.getParameter("idFaq"))));
@@ -56,8 +77,7 @@ public final class GestioneFAQController extends HttpServlet {
             return;
          }
       } else {
-         request.setAttribute("faqList", new FaqServiceImpl()
-                 .visualizzaFaq());
+         request.setAttribute("faqList", service.visualizzaFaq());
       }
 
       request.getRequestDispatcher(resource).forward(request, response);
@@ -88,7 +108,7 @@ public final class GestioneFAQController extends HttpServlet {
                   faq.setRisposta(risposta);
                   faq.setUtenteCreatore(utente);
 
-                  if (new FaqServiceImpl().inserisciFaq(faq)) {
+                  if (service.inserisciFaq(faq)) {
                      ReportService.creaReport(request, TipoReport.INFO,
                              "Esito operazione:", "FAQ inserita con successo");
                   } else {
@@ -114,7 +134,7 @@ public final class GestioneFAQController extends HttpServlet {
                faq.setRisposta(risposta);
                faq.setUtenteCreatore(utente);
 
-               if (new FaqServiceImpl().modificaFaq(faq)) {
+               if (service.modificaFaq(faq)) {
                   ReportService.creaReport(request, TipoReport.INFO,
                           "Esito operazione:", "FAQ modificata con successo");
                } else {
@@ -127,7 +147,7 @@ public final class GestioneFAQController extends HttpServlet {
                faq.setIdFaq(Integer.parseInt(request.getParameter("idFaq")));
                faq.setUtenteCreatore(utente);
 
-               if (new FaqServiceImpl().cancellaFaq(faq)) {
+               if (service.cancellaFaq(faq)) {
                   ReportService.creaReport(request, TipoReport.INFO,
                           "Esito operazione:", "FAQ eliminata con successo");
                } else {
@@ -136,14 +156,13 @@ public final class GestioneFAQController extends HttpServlet {
                }
             }
             default -> {
-               response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                       "Risorsa non trovata");
+               response.sendError(HttpServletResponse.SC_NOT_FOUND);
                return;
             }
          }
 
          response.sendRedirect(
-                 getServletContext().getContextPath()
+                 request.getServletContext().getContextPath()
                          + "/faq/visualizzaFAQ");
       } else {
          response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
