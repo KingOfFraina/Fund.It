@@ -1,6 +1,7 @@
 package Controller;
 
 import controller.AutenticazioneController;
+import controller.utils.FileServlet;
 import model.beans.Utente;
 import model.services.AutenticazioneService;
 import org.junit.Before;
@@ -11,9 +12,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
+
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.atLeastOnce;
@@ -197,8 +201,32 @@ public class AutenticazioneControllerTest {
       when(request.getParameter("password")).thenReturn("password");
       when(request.getParameter("confermaEmail")).thenReturn("email");
       when(request.getParameter("confermaPassword")).thenReturn("password");
-      when(request.getParameter("password")).thenReturn("");
-      when(request.getParameter("email")).thenReturn("");
+      when(request.getParameter("nome")).thenReturn("");
+      when(request.getParameter("cognome")).thenReturn("");
+      when(request.getParameter("dataDiNascita")).thenReturn(LocalDate.now().toString());
+      when(request.getParameter("telefono")).thenReturn("");
+      when(request.getParameter("indirizzo")).thenReturn("");
+      when(request.getParameter("citta")).thenReturn("");
+      when(request.getParameter("cap")).thenReturn("");
+      when(request.getParameter("cf")).thenReturn("");
+      when(service.registrazione(any(Utente.class))).thenReturn(true);
+
+      autenticazioneController.doPost(request, response);
+
+      verify(request, atLeastOnce()).getPathInfo();
+      verify(response, atLeastOnce()).sendRedirect(anyString());
+   }
+
+   @Test
+   public void doPostRegistrazioneBranch3() throws ServletException, IOException {
+      when(request.getSession()).thenReturn(session);
+      when(request.getPathInfo()).thenReturn("/registrazione");
+      when(request.getServletContext()).thenReturn(servletContext);
+      when(servletContext.getContextPath()).thenReturn("/FundIt-1.0-SNAPSHOT");
+      when(request.getParameter("email")).thenReturn("email");
+      when(request.getParameter("password")).thenReturn("password");
+      when(request.getParameter("confermaEmail")).thenReturn("email");
+      when(request.getParameter("confermaPassword")).thenReturn("password");
       when(request.getParameter("nome")).thenReturn("");
       when(request.getParameter("cognome")).thenReturn("");
       when(request.getParameter("dataDiNascita")).thenReturn(LocalDate.now().toString());
@@ -225,8 +253,6 @@ public class AutenticazioneControllerTest {
       when(request.getParameter("password")).thenReturn("password");
       when(request.getParameter("confermaEmail")).thenReturn("email");
       when(request.getParameter("confermaPassword")).thenReturn("password");
-      when(request.getParameter("password")).thenReturn("");
-      when(request.getParameter("email")).thenReturn("");
       when(request.getParameter("nome")).thenReturn("");
       when(request.getParameter("cognome")).thenReturn("");
       when(request.getParameter("dataDiNascita")).thenReturn(LocalDate.now().toString());
@@ -253,8 +279,6 @@ public class AutenticazioneControllerTest {
       when(request.getParameter("password")).thenReturn("password");
       when(request.getParameter("confermaEmail")).thenReturn("email");
       when(request.getParameter("confermaPassword")).thenReturn("password");
-      when(request.getParameter("password")).thenReturn("");
-      when(request.getParameter("email")).thenReturn("");
       when(request.getParameter("nome")).thenReturn("");
       when(request.getParameter("cognome")).thenReturn("");
       when(request.getParameter("dataDiNascita")).thenReturn(LocalDate.now().toString());
