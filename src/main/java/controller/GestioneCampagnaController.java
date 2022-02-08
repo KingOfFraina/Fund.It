@@ -13,12 +13,7 @@ import model.beans.Utente;
 import model.beans.proxies.CampagnaProxy;
 import model.beans.proxies.DonazioneProxy;
 import model.beans.proxyInterfaces.CampagnaInterface;
-import model.services.CampagnaService;
-import model.services.CampagnaServiceImpl;
-import model.services.CategoriaService;
-import model.services.CategoriaServiceImpl;
-import model.services.ImmagineService;
-import model.services.ImmagineServiceImpl;
+import model.services.*;
 import model.storage.ConPool;
 
 import javax.servlet.RequestDispatcher;
@@ -133,7 +128,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                 break;
             case "/ricercaCategoria":
                 String cat = request.getParameter("idCat");
-                if(cat.isBlank()){
+                if (cat.isBlank()) {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                     return;
                 }
@@ -146,7 +141,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                 }
                 categoria = categoriaService.visualizzaCategoria(categoria);
 
-                if(categoria == null){
+                if (categoria == null) {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                     return;
                 }
@@ -211,7 +206,7 @@ public final class GestioneCampagnaController extends HttpServlet {
         HttpSession session = request.getSession();
 
         if (!new Validator(request).isValidBean(Utente.class,
-                session.getAttribute("utente") == null)) {
+                session.getAttribute("utente"))) {
             response.sendRedirect(
                     getServletContext().getContextPath()
                             + "/autenticazione/login");
@@ -274,7 +269,7 @@ public final class GestioneCampagnaController extends HttpServlet {
             case "/modificaCampagna":
                 if (idCampagna != null) {
                     modificaCampagna(request, response, service
-                            .trovaCampagna(Integer.parseInt(idCampagna)),
+                                    .trovaCampagna(Integer.parseInt(idCampagna)),
                             userSession);
                 }
                 break;
@@ -282,12 +277,12 @@ public final class GestioneCampagnaController extends HttpServlet {
                 id = Integer.parseInt(idCampagna);
                 Campagna campagna = service.trovaCampagna(id);
 
-                    if (campagna.getUtente().getIdUtente()
-                            != userSession.getIdUtente()) {
-                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                                "Non Autorizzato");
-                        return;
-                    }
+                if (campagna.getUtente().getIdUtente()
+                        != userSession.getIdUtente()) {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                            "Non Autorizzato");
+                    return;
+                }
 
 
                 if (service.cancellaCampagna(campagna)) {
@@ -297,7 +292,9 @@ public final class GestioneCampagnaController extends HttpServlet {
                     } else {
                         System.out.println("rimborso errore");
                     }
-                    System.out.println("cancellazione Ok");
+                    ReportService.creaReport(request, TipoReport.INFO, "Cancellazione effettuata");
+                    request.getRequestDispatcher("/WEB-INF/results/profilo_utente.jsp");
+                    return;
                 } else {
                     System.out.println("cancellazione errore");
                 }
