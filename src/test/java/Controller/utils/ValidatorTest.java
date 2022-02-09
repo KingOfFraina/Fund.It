@@ -47,9 +47,91 @@ public class ValidatorTest {
    public void testAssertUtente0() {
        assertFalse(validator.assertUtente());
    }
+    @Test
+    public void testAssertUtente1() {
+       Mockito.when(request.getParameter("nome")).thenReturn(null);
+       assertFalse(validator.assertUtente());
+    }
+    @Test
+    public void testAssertUtente2() {
+        Mockito.when(request.getParameter("nome")).thenReturn("Angelo");
+        Mockito.when(request.getParameter("cognome")).thenReturn(null);
+        assertFalse(validator.assertUtente());
+    }
+    @Test
+    public void testAssertUtente3() {
+        Mockito.when(request.getParameter("nome")).thenReturn("Angelo");
+        Mockito.when(request.getParameter("cognome")).thenReturn("Meo");
+        Mockito.when(request.getParameter("email")).thenReturn(null);
+        assertFalse(validator.assertUtente());
+    }
+    @Test
+    public void testAssertUtente4() {
+        Mockito.when(request.getParameter("nome")).thenReturn("Angelo");
+        Mockito.when(request.getParameter("cognome")).thenReturn("Meo");
+        Mockito.when(request.getParameter("email")).thenReturn("s.genovese@gmail.com");
+        Mockito.when(request.getParameter("cf")).thenReturn(null);
+        assertFalse(validator.assertUtente());
+    }
+    @Test
+    public void testAssertUtente5() {
+        Mockito.when(request.getParameter("nome")).thenReturn("Angelo");
+        Mockito.when(request.getParameter("cognome")).thenReturn("Meo");
+        Mockito.when(request.getParameter("email")).thenReturn("s.genovese@gmail.com");
+        Mockito.when(request.getParameter("cf")).thenReturn("QSZBVM83E54F965E");
+        Mockito.when(request.getParameter("password")).thenReturn(null);
+        assertFalse(validator.assertUtente());
+    }
 
+    @Test
+    public void testAssertUtente6() {
+        Mockito.when(request.getParameter("nome")).thenReturn("Angelo");
+        Mockito.when(request.getParameter("cognome")).thenReturn("Meo");
+        Mockito.when(request.getParameter("email")).thenReturn("s.genovese@gmail.com");
+        Mockito.when(request.getParameter("cf")).thenReturn("QSZBVM83E54F965E");
+        Mockito.when(request.getParameter("password")).thenReturn("Bcbc4321!");
+        Mockito.when(request.getParameter("cap")).thenReturn(null);
+        assertFalse(validator.assertUtente());
+    }
+
+    @Test
+    public void testAssertUtente7() {
+        Mockito.when(request.getParameter("nome")).thenReturn("Angelo");
+        Mockito.when(request.getParameter("cognome")).thenReturn("Meo");
+        Mockito.when(request.getParameter("email")).thenReturn("s.genovese@gmail.com");
+        Mockito.when(request.getParameter("cf")).thenReturn("QSZBVM83E54F965E");
+        Mockito.when(request.getParameter("password")).thenReturn("Bcbc4321!");
+        Mockito.when(request.getParameter("cap")).thenReturn("80030");
+        Mockito.when(request.getParameter("indirizzo")).thenReturn(null);
+        assertFalse(validator.assertUtente());
+    }
+    @Test
+    public void testAssertUtente8() {
+        Mockito.when(request.getParameter("nome")).thenReturn("Angelo");
+        Mockito.when(request.getParameter("cognome")).thenReturn("Meo");
+        Mockito.when(request.getParameter("email")).thenReturn("s.genovese@gmail.com");
+        Mockito.when(request.getParameter("cf")).thenReturn("QSZBVM83E54F965E");
+        Mockito.when(request.getParameter("password")).thenReturn("Bcbc4321!");
+        Mockito.when(request.getParameter("cap")).thenReturn("80030");
+        Mockito.when(request.getParameter("indirizzo")).thenReturn("piazza garibaldi, 4");
+        Mockito.when(request.getParameter("citta")).thenReturn(null);
+        assertFalse(validator.assertUtente());
+    }
+    @Test
+    public void testAssertUtente9() {
+        Mockito.when(request.getParameter("nome")).thenReturn("Angelo");
+        Mockito.when(request.getParameter("cognome")).thenReturn("Meo");
+        Mockito.when(request.getParameter("email")).thenReturn("s.genovese@gmail.com");
+        Mockito.when(request.getParameter("cf")).thenReturn("QSZBVM83E54F965E");
+        Mockito.when(request.getParameter("password")).thenReturn("Bcbc4321!");
+        Mockito.when(request.getParameter("cap")).thenReturn("80030");
+        Mockito.when(request.getParameter("indirizzo")).thenReturn("piazza garibaldi, 4");
+        Mockito.when(request.getParameter("citta")).thenReturn("Bergamo");
+        Mockito.when(request.getParameter("telefono")).thenReturn(null);
+        assertFalse(validator.assertUtente());
+    }
    @Test
-   public void testAssertUtente1() {
+   public void testAssertUtenteTrue() {
        Mockito.when(request.getParameter("nome")).thenReturn("Angelo");
        Mockito.when(request.getParameter("cognome")).thenReturn("Meo");
        Mockito.when(request.getParameter("email")).thenReturn("s.genovese@gmail.com");
@@ -75,7 +157,26 @@ public class ValidatorTest {
     public void testRequired11() {
        assertTrue(validator.required("aa"));
     }
-
+    @Test
+    public void testAssertInt0() {
+        Mockito.when(request.getParameter("num")).thenReturn("");
+       assertFalse(validator.assertInt("num", null));
+    }
+    @Test
+    public void testAssertInt00() {
+        Mockito.when(request.getParameter("num")).thenReturn(null);
+        assertFalse(validator.assertInt("num", null));
+    }
+    @Test
+    public void testAssertInt1() {
+       Mockito.when(request.getParameter("num")).thenReturn("nan bro");
+        assertFalse(validator.assertInt("num", null));
+    }
+    @Test
+    public void testAssertInt2() {
+        Mockito.when(request.getParameter("num")).thenReturn("22");
+        assertTrue(validator.assertInt("num", null));
+    }
    @After
    public void clean() {
 

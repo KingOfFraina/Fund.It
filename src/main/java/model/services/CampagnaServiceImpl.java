@@ -29,7 +29,7 @@ public final class CampagnaServiceImpl implements CampagnaService {
     /**
      * @param campagnaDAO Istanza di campagna DAO
      */
-    public CampagnaServiceImpl(final DAO campagnaDAO) {
+    public CampagnaServiceImpl(final DAO<Campagna> campagnaDAO) {
         this.dao = campagnaDAO;
     }
 
