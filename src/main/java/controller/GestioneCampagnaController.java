@@ -295,7 +295,7 @@ public final class GestioneCampagnaController extends HttpServlet {
         Utente userSession = (Utente) session.getAttribute("utente");
 
         if (!new Validator(request).isValidBean(Utente.class,
-                session.getAttribute("utente"))) {
+                userSession)) {
             response.sendRedirect(
                     request.getServletContext().getContextPath()
                             + "/autenticazione/login");
