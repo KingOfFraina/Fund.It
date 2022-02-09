@@ -2,6 +2,7 @@ package Controller;
 
 import controller.GestioneCampagnaController;
 import model.beans.Campagna;
+import model.beans.Categoria;
 import model.beans.Utente;
 import model.services.CampagnaService;
 import org.junit.Before;
@@ -29,6 +30,7 @@ public class CampagnaControllerTest {
     ServletContext mockContext;
     CampagnaService mockService;
     RequestDispatcher mockDispatcher;
+    final String CONTEXT_PATH = "/FundIt-1.0-SNAPSHOT";
 
 
     @Before
@@ -45,11 +47,15 @@ public class CampagnaControllerTest {
     }
 
     @Test
-    public void testGetCreazioneCampagna() throws ServletException, IOException {
+    public void testGetNotValidCreazioneCampagna() throws ServletException, IOException {
         when(mockRequest.getPathInfo())
                 .thenReturn("/creaCampagna");
         when(mockRequest.getSession())
                 .thenReturn(mockSession);
+        when(mockRequest.getServletContext())
+                .thenReturn(mockContext);
+        when(mockContext.getContextPath())
+                .thenReturn(CONTEXT_PATH);
         when(mockSession.getAttribute("utente"))
                 .thenReturn(null);
 
@@ -58,5 +64,24 @@ public class CampagnaControllerTest {
 
         verify(mockRequest, atLeastOnce()).getSession();
         verify(mockSession, atLeastOnce()).getAttribute("utente");
+        verify(mockResponse, atLeastOnce()).sendRedirect(anyString());
+    }
+
+    @Test
+    public void testGetValidCreazioneCampagna() throws ServletException, IOException {
+        when(mockRequest.getPathInfo())
+                .thenReturn("/creaCampagna");
+        when(mockRequest.getSession())
+                .thenReturn(mockSession);
+        when(mockSession.getAttribute("utente"))
+                .thenReturn(utente);
+        when(mockRequest.getRequestDispatcher(anyString()))
+                .thenReturn(mockDispatcher);
+
+        campagnaController.doGet(mockRequest, mockResponse);
+
+        verify(mockSession, atLeastOnce()).getAttribute("utente");
+        verify(mockRequest, atLeastOnce()).setAttribute(anyString(), anyList());
+        verify(mockDispatcher, atLeastOnce()).forward(mockRequest, mockResponse);
     }
 }
