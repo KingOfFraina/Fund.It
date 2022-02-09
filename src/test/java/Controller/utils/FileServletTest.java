@@ -29,8 +29,8 @@ public class FileServletTest {
 
         fileServlet.doGet(request, response);
         verify(request, atLeastOnce()).getPathInfo();
-        //verify(request, atLeastOnce()).getHeader(anyString());
-        //verify(request, atLeastOnce()).getDateHeader(anyString());
+        verify(request, atLeastOnce()).getHeader(anyString());
+        verify(request, atLeastOnce()).getDateHeader(anyString());
     }
 
     @Test
