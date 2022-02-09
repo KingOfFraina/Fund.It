@@ -12,7 +12,14 @@ import model.beans.Utente;
 import model.beans.proxies.CampagnaProxy;
 import model.beans.proxies.DonazioneProxy;
 import model.beans.proxyInterfaces.CampagnaInterface;
-import model.services.*;
+import model.services.CategoriaService;
+import model.services.CampagnaService;
+import model.services.CategoriaServiceImpl;
+import model.services.CampagnaServiceImpl;
+import model.services.ReportService;
+import model.services.TipoReport;
+import model.services.ImmagineService;
+import model.services.ImmagineServiceImpl;
 import model.storage.ConPool;
 
 import javax.servlet.RequestDispatcher;
