@@ -9,7 +9,16 @@ import model.beans.proxies.CampagnaProxy;
 import model.beans.proxies.DonazioneProxy;
 import model.beans.proxies.UtenteProxy;
 import model.beans.proxyInterfaces.CampagnaInterface;
-import model.services.*;
+import model.services.CampagnaService;
+import model.services.CampagnaServiceImpl;
+import model.services.DonazioniService;
+import model.services.DonazioniServiceImpl;
+import model.services.ReportService;
+import model.services.SegnalazioniService;
+import model.services.SegnalazioniServiceImpl;
+import model.services.TipoReport;
+import model.services.UtenteService;
+import model.services.UtenteServiceImpl;
 import model.storage.ConPool;
 
 import javax.servlet.ServletException;
