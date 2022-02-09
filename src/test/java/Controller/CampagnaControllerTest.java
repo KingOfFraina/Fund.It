@@ -2,7 +2,6 @@ package Controller;
 
 import controller.GestioneCampagnaController;
 import model.beans.Campagna;
-import model.beans.Categoria;
 import model.beans.Utente;
 import model.services.CampagnaService;
 import org.junit.Before;
@@ -83,5 +82,99 @@ public class CampagnaControllerTest {
         verify(mockSession, atLeastOnce()).getAttribute("utente");
         verify(mockRequest, atLeastOnce()).setAttribute(anyString(), anyList());
         verify(mockDispatcher, atLeastOnce()).forward(mockRequest, mockResponse);
+    }
+
+    @Test
+    public void testCasePathNotFound() throws ServletException, IOException {
+        when(mockRequest.getPathInfo())
+                .thenReturn("ciao");
+        when(mockRequest.getSession())
+                .thenReturn(mockSession);
+        when(mockSession.getAttribute("utente"))
+                .thenReturn(utente);
+
+        campagnaController.doGet(mockRequest, mockResponse);
+
+        verify(mockRequest, atLeastOnce())
+                .getPathInfo();
+        verify(mockResponse, atLeastOnce())
+                .sendError(anyInt(), anyString());
+    }
+
+    @Test
+    public void testGetMain() throws ServletException, IOException {
+        when(mockRequest.getPathInfo())
+                .thenReturn("/main");
+        when(mockRequest.getSession())
+                .thenReturn(mockSession);
+        when(mockSession.getAttribute("utente"))
+                .thenReturn(utente);
+        when(mockRequest.getRequestDispatcher(anyString()))
+                .thenReturn(mockDispatcher);
+
+        campagnaController.doGet(mockRequest, mockResponse);
+
+        verify(mockRequest, atLeastOnce())
+                .getPathInfo();
+        verify(mockRequest, atLeastOnce())
+                .getSession();
+        verify(mockSession, atLeastOnce())
+                .getAttribute("utente");
+        verify(mockDispatcher, atLeastOnce())
+                .forward(mockRequest, mockResponse);
+    }
+
+    @Test
+    public void testGetNotValidModificaCampagna() throws ServletException, IOException {
+        when(mockRequest.getPathInfo())
+                .thenReturn("/modificaCampagna");
+        when(mockRequest.getSession()).thenReturn(mockSession);
+        when(mockSession.getAttribute("utente"))
+                .thenReturn(null);
+        when(mockRequest.getServletContext())
+                .thenReturn(mockContext);
+        when(mockContext.getContextPath())
+                .thenReturn(CONTEXT_PATH);
+
+
+        campagnaController.doGet(mockRequest, mockResponse);
+
+        verify(mockRequest, atLeastOnce()).getPathInfo();
+        verify(mockRequest, atLeastOnce()).getSession();
+        verify(mockSession, atLeastOnce()).getAttribute("utente");
+        verify(mockResponse, atLeastOnce()).sendRedirect(anyString());
+    }
+
+    @Test
+    public void testGetValidModificaCampagna() throws ServletException, IOException {
+        Utente utente1 = Mockito.mock(Utente.class);
+        when(mockRequest.getPathInfo())
+                .thenReturn("/modificaCampagna");
+        when(mockRequest.getSession()).thenReturn(mockSession);
+        when(mockSession.getAttribute("utente"))
+                .thenReturn(utente);
+        when(mockRequest.getServletContext())
+                .thenReturn(mockContext);
+        when(mockRequest.getParameter("idCampagna"))
+                .thenReturn("2");
+        when(mockService.trovaCampagna(anyInt()))
+                .thenReturn(campagna);
+        when(campagna.getUtente())
+                .thenReturn(utente1);
+        when(utente1.getIdUtente())
+                .thenReturn(1);
+        when(utente.getIdUtente())
+                .thenReturn(2);
+        when(mockContext.getContextPath())
+                .thenReturn(CONTEXT_PATH);
+
+
+        campagnaController.doGet(mockRequest, mockResponse);
+
+        verify(mockRequest, atLeastOnce()).getSession();
+        verify(mockSession, atLeastOnce()).getAttribute("utente");
+        verify(mockRequest, atLeastOnce()).getParameter("idCampagna");
+        verify(mockService, atLeastOnce()).trovaCampagna(anyInt());
+        verify(mockResponse, atLeastOnce()).sendError(anyInt(), anyString());
     }
 }
