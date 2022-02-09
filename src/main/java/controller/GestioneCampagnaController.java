@@ -343,9 +343,15 @@ public final class GestioneCampagnaController extends HttpServlet {
 
       if (campagnaService.creazioneCampagna(c)) {
          uploadFoto(req, c);
+         ReportService.creaReport(req, TipoReport.INFO,
+                 "Operazione creazione campagna:",
+                 "Effettuata con successo");
          res.sendRedirect(
                  req.getServletContext().getContextPath() + "/index.jsp");
       } else {
+         ReportService.creaReport(req, TipoReport.ERRORE,
+                 "Operazione creazione campagna:",
+                 "Non effettuata con successo");
          res.sendRedirect(
                  req.getServletContext().getContextPath()
                          + "/campagna/creaCampagna");
