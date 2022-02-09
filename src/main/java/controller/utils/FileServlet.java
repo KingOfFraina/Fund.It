@@ -43,7 +43,8 @@ public class FileServlet extends HttpServlet {
    /**
     * BasePath dove vengono messe le immagini.
     */
-   private static String basePath;
+   private static String basePath = System.getenv("CATALINA_HOME")
+           + File.separator + "webapps" + File.separator + "uploads";
 
    /**
     * Initialize the servlet.
@@ -52,11 +53,6 @@ public class FileServlet extends HttpServlet {
     */
    @Override
    public void init() throws ServletException {
-
-      this.basePath = System.getenv("CATALINA_HOME") + File.separator
-              + "webapps" + File.separator + "uploads";
-      //this.basePath = "." + File.separator
-      // + "webapps" + File.separator + "uploads";
       System.out.println(basePath);
 
       // Validate base path.
@@ -101,8 +97,8 @@ public class FileServlet extends HttpServlet {
     * @see HttpServlet#doGet(HttpServletRequest, HttpServletResponse).
     */
    @Override
-   protected void doGet(final HttpServletRequest request,
-                        final HttpServletResponse response)
+   public void doGet(final HttpServletRequest request,
+                     final HttpServletResponse response)
            throws IOException {
       // Process request with content.
       processRequest(request, response, true);
@@ -122,12 +118,14 @@ public class FileServlet extends HttpServlet {
                                final boolean content)
            throws IOException {
       File file = helper(request, response);
+      if (file == null) {
+         return;
+      }
       String fileName = file.getName();
       long length = file.length();
       long lastModified = file.lastModified();
       String eTag = fileName + "_" + length + "_" + lastModified;
       long expires = System.currentTimeMillis() + DEFAULT_EXPIRE_TIME;
-
       String ifNoneMatch = request.getHeader("If-None-Match");
       if (ifNoneMatch != null && matches(ifNoneMatch, eTag)) {
          response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
@@ -261,13 +259,11 @@ public class FileServlet extends HttpServlet {
                           + "-" + r.end + "/" + r.total);
                   copy(input, output, r.start, r.length);
                }
-               sos.println();
-               sos.println("--" + MULTIPART_BOUNDARY + "--");
+               sos.println(); sos.println("--" + MULTIPART_BOUNDARY + "--");
             }
          }
       } finally {
-         close(output);
-         close(input);
+         close(output); close(input);
       }
    }
 
@@ -289,7 +285,6 @@ public class FileServlet extends HttpServlet {
       }
       File file = new File(basePath, URLDecoder.decode(requestedFile,
               StandardCharsets.UTF_8));
-
       if (!file.exists()) {
          response.sendError(HttpServletResponse.SC_NOT_FOUND);
          return null;
