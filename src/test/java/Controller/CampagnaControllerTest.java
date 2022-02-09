@@ -423,7 +423,7 @@ public class CampagnaControllerTest {
                 .thenReturn(mockDispatcher);
         when(mockRequest.getParameter("idCat"))
                 .thenReturn("3");
-        when(mockCateogriaService.visualizzaCategoria(categoria))
+        when(mockCateogriaService.visualizzaCategoria(any(Categoria.class)))
                 .thenReturn(categoria);
         when(mockService.ricercaCampagnaPerCategoria(anyString()))
                 .thenReturn(List.of(campagna1, campagna1, campagna2));
@@ -431,7 +431,7 @@ public class CampagnaControllerTest {
         campagnaController.doGet(mockRequest, mockResponse);
 
         verify(mockRequest, atLeastOnce())
-                .setAttribute(anyString(), anyList());
+                .setAttribute(anyString(), anyString());
         verify(mockDispatcher, atLeastOnce()).forward(mockRequest, mockResponse);
     }
 

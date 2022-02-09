@@ -12,13 +12,7 @@ import model.beans.Utente;
 import model.beans.proxies.CampagnaProxy;
 import model.beans.proxies.DonazioneProxy;
 import model.beans.proxyInterfaces.CampagnaInterface;
-import model.services.CampagnaService;
-import model.services.CampagnaServiceImpl;
-import model.services.CategoriaService;
-import model.services.ImmagineService;
-import model.services.ImmagineServiceImpl;
-import model.services.ReportService;
-import model.services.TipoReport;
+import model.services.*;
 import model.storage.ConPool;
 
 import javax.servlet.RequestDispatcher;
@@ -66,6 +60,7 @@ public final class GestioneCampagnaController extends HttpServlet {
     */
    public GestioneCampagnaController() {
       campagnaService = new CampagnaServiceImpl();
+      categoriaService = new CategoriaServiceImpl();
    }
 
    @Override
