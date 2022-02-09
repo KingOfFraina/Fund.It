@@ -217,7 +217,7 @@ public final class GestioneCampagnaController extends HttpServlet {
             case "/creaCampagna":
                creaCampagna(request, response, userSession);
                break;
-            case "/modificaCampagna"://TODO
+            case "/modificaCampagna":
                if (idCampagna != null) {
                   modificaCampagna(request, response, campagnaService
                                   .trovaCampagna(
@@ -407,24 +407,22 @@ public final class GestioneCampagnaController extends HttpServlet {
            throws IOException, ServletException {
 
       Campagna c = extractCampagna(request);
-
-      if (c.getUtente().getIdUtente() != utente.getIdUtente()) {
-         response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                 "Non Autorizzato");
-         return;
-      }
-
       c.setIdCampagna(campagna.getIdCampagna());
       c.setSommaRaccolta(campagna.getSommaRaccolta());
 
-
       if (campagnaService.modificaCampagna(c)) {
          uploadFoto(request, c);
+         ReportService.creaReport(request, TipoReport.INFO,
+                 "Operazione modifica campagna:",
+                 "Effettuata con successo");
          response.sendRedirect(
                  request
                          .getServletContext()
                          .getContextPath() + "/index.jsp");
       } else {
+         ReportService.creaReport(request, TipoReport.ERRORE,
+                 "Operazione modifica campagna:",
+                 "Non effettuata con successo");
          request.getRequestDispatcher("/campagna"
                  + "/modificaCampagna").forward(request, response);
       }
