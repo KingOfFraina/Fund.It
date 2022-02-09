@@ -80,7 +80,7 @@ public final class GestioneCampagnaController extends HttpServlet {
                 if (!new Validator(request).isValidBean(Utente.class,
                         userSession)) {
                     response.sendRedirect(
-                            getServletContext().getContextPath()
+                            request.getServletContext().getContextPath()
                                     + "/autenticazione/login");
                     return;
                 } else {
@@ -208,7 +208,7 @@ public final class GestioneCampagnaController extends HttpServlet {
         if (!new Validator(request).isValidBean(Utente.class,
                 userSession)) {
             response.sendRedirect(
-                    getServletContext().getContextPath()
+                    request.getServletContext().getContextPath()
                             + "/autenticazione/login");
             return;
         }
@@ -297,7 +297,7 @@ public final class GestioneCampagnaController extends HttpServlet {
         if (!new Validator(request).isValidBean(Utente.class,
                 session.getAttribute("utente"))) {
             response.sendRedirect(
-                    getServletContext().getContextPath()
+                    request.getServletContext().getContextPath()
                             + "/autenticazione/login");
             return;
         }
@@ -339,10 +339,10 @@ public final class GestioneCampagnaController extends HttpServlet {
         if (campagnaService.creazioneCampagna(c)) {
             uploadFoto(req, c);
             res.sendRedirect(
-                    getServletContext().getContextPath() + "/index.jsp");
+                    req.getServletContext().getContextPath() + "/index.jsp");
         } else {
             res.sendRedirect(
-                    getServletContext().getContextPath()
+                    req.getServletContext().getContextPath()
                             + "/campagna/creaCampagna");
         }
     }
@@ -410,7 +410,9 @@ public final class GestioneCampagnaController extends HttpServlet {
         if (campagnaService.modificaCampagna(c)) {
             uploadFoto(request, c);
             response.sendRedirect(
-                    getServletContext().getContextPath() + "/index.jsp");
+                    request
+                            .getServletContext()
+                            .getContextPath() + "/index.jsp");
         } else {
             request.getRequestDispatcher("/campagna"
                     + "/modificaCampagna").forward(request, response);
