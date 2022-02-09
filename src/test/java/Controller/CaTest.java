@@ -4,6 +4,7 @@ import controller.GestioneCampagnaController;
 import model.beans.Campagna;
 import model.beans.Utente;
 import model.services.CampagnaService;
+import model.services.CategoriaService;
 import org.checkerframework.checker.units.qual.C;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +30,7 @@ public class CaTest {
     HttpSession mockSession;
     ServletContext mockContext;
     CampagnaService mockService;
+    CategoriaService mockCategoriaService;
     RequestDispatcher mockDispatcher;
 
 
@@ -40,7 +42,8 @@ public class CaTest {
         mockContext = Mockito.mock(ServletContext.class);
         mockDispatcher = Mockito.mock(RequestDispatcher.class);
         mockService = Mockito.mock(CampagnaService.class);
-        campagnaController = new GestioneCampagnaController(mockService);
+        mockCategoriaService = Mockito.mock(CategoriaService.class);
+        campagnaController = new GestioneCampagnaController(mockService, mockCategoriaService);
         campagna = Mockito.mock(Campagna.class);
         utente = Mockito.mock(Utente.class);
     }
