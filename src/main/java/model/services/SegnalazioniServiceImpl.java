@@ -16,7 +16,7 @@ public class SegnalazioniServiceImpl implements SegnalazioniService {
 
     /**
      * Costruttore della classe SegnalazioniService.
-     * @param segnalazioneDAO istanza di interfaccia DAO<T>
+     * @param segnalazioneDAO istanza di interfaccia DAO
      */
     public SegnalazioniServiceImpl(final DAO<Segnalazione> segnalazioneDAO) {
         this.dao = segnalazioneDAO;

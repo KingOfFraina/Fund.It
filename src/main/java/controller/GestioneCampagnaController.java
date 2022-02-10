@@ -2,7 +2,6 @@ package controller;
 
 import controller.utils.FileServlet;
 import controller.utils.Validator;
-import model.DAO.ImmagineDAO;
 import model.beans.Campagna;
 import model.beans.Categoria;
 import model.beans.Donazione;

@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"controller"},{"l":"controller.utils"},{"l":"model.beans"},{"l":"model.beans.proxies"},{"l":"model.beans.proxyInterfaces"},{"l":"model.DAO"},{"l":"model.services"},{"l":"model.storage"}];updateSearchResults();

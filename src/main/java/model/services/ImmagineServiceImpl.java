@@ -19,6 +19,9 @@ public final class ImmagineServiceImpl implements ImmagineService {
       this.dao = newDAO;
    }
 
+   /**
+    * Il costruttore per la classe ImmagineService.
+    */
    public ImmagineServiceImpl() {
       dao = new ImmagineDAO();
    }
