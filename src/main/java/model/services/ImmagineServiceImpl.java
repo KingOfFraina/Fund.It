@@ -19,6 +19,10 @@ public final class ImmagineServiceImpl implements ImmagineService {
       this.dao = newDAO;
    }
 
+   public ImmagineServiceImpl() {
+      dao = new ImmagineDAO();
+   }
+
    @Override
    public boolean salvaImmagine(final Immagine immagine) {
       return dao.save(immagine);

@@ -402,7 +402,7 @@ public final class GestioneCampagnaController extends HttpServlet {
            IOException {
       List<String> fotoList = FileServlet.uploadFoto(request);
       ImmagineService immagineService =
-              new ImmagineServiceImpl(new ImmagineDAO());
+              new ImmagineServiceImpl();
       Immagine immagine = new Immagine();
       immagine.setCampagna(campagna);
 
