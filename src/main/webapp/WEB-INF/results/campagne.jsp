@@ -26,7 +26,7 @@
         <c:forEach items="${requestScope.campagneList}" var = "campagna">
             <c:if test="${campagna.stato.toString().equalsIgnoreCase('Attiva')}">
             <div class="col-sm my-4">
-                <div class="card" style="width: 18rem;">
+                <div class="card" style="width: 14rem;">
 
                     <img class="card-img-top"
                          src="${pageContext.request.contextPath}/file/${campagna.immagini.get(0).path}"

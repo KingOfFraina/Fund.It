@@ -240,10 +240,16 @@
                     </button>
 
                     <c:if test="${utente.idUtente == campagna.utente.idUtente}">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary pulsante" data-bs-toggle="modal"
                                 data-bs-target="#modalChiusura"
                                 style="background-color: crimson; border-color: crimson">Chiudi campagna
                         </button>
+
+                        <button type="button" class="btn btn-primary pulsante mt-3" data-bs-toggle="modal"
+                                data-bs-target="#modalCancellazione"
+                                style="background-color: crimson; border-color: crimson">Cancella campagna
+                        </button>
+
                         <div class="container">
                             <button class="btn btn-primary pulsante mt-4"
                                     onclick="location.href = '${pageContext.request.contextPath}/campagna/modificaCampagna?idCampagna=${requestScope.campagna.idCampagna}'"

@@ -33,7 +33,7 @@
                         <label for="inputTitolo" class="form-label">Titolo</label>
                         <input name="titolo" type="text" class="form-control" id="inputTitolo"
                                placeholder="Dai un titolo alla tua campagna!" required
-                               value="${requestScope.campagna.titolo}">
+                               value="${requestScope.campagna.titolo}" minlength="5">
                         <div class=invalid-feedback>
                             Formato nome non corretto
                         </div>
@@ -43,13 +43,14 @@
                     <div class="col mt-4">
                         <label for="inputDescrizione" class="form-label">Descrizione</label>
                         <div class="form-floating">
-<textarea name="descrizione" class="form-control" placeholder="Descrivi la tua campagna"
-          id="inputDescrizione" maxlength="3000" style="height: 100px"
-          required>${requestScope.campagna.descrizione}</textarea>
+                            <textarea name="descrizione" class="form-control" placeholder="Descrivi la tua campagna"
+                            id="inputDescrizione" minlength="15" maxlength="3000" style="height: 100px"
+                            required>${requestScope.campagna.descrizione}</textarea>
+                            <div class=invalid-feedback>
+                                La descrizione deve essere lunga max. 3000 caratteri e minimo 15
+                            </div>
                         </div>
-                        <div class=invalid-feedback>
-                            La descrizione deve essere lunga max. 3000 caratteri
-                        </div>
+
                     </div>
 
                     <!--categoria-->
@@ -75,7 +76,10 @@
                     <div class="col mt-4">
                         <label for="inputTarget" class="form-label">Che somma vorresti raggiungere?</label>
                         <input name="sommaTarget" type="number" class="form-control" id="inputTarget"
-                               placeholder="10" required value="${requestScope.campagna.sommaTarget}">
+                               placeholder="10" required value="${requestScope.campagna.sommaTarget}" min="0">
+                        <div class=invalid-feedback>
+                            Inserisci un valore > 0
+                        </div>
                     </div>
 
                     <!--File-->
@@ -87,6 +91,9 @@
                                     campagna</label>
                                 <input class="form-control" name="file" type="file" id="formFileMultipleI" multiple
                                        accept="image/*,.jpg">
+                            </div>
+                            <div class=invalid-feedback>
+                                Formato path non corretto
                             </div>
                             <button type="submit" class="btn btn-primary pulsante mt-4 mb-3"
                                     formaction="${pageContext.request.contextPath}/campagna/modificaCampagna"
@@ -100,6 +107,9 @@
                                     campagna</label>
                                 <input class="form-control" name="file" type="file" id="formFileMultipleII" multiple
                                        accept="image/*,.jpg" required>
+                                <div class=invalid-feedback>
+                                    Formato path non corretto
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-primary pulsante mt-4 mb-3"
                                     style="border-color: #00AB98; background-color: #00AB98"

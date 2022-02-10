@@ -172,3 +172,35 @@
 </div>
 
 
+<div class="modal scrollable fade" id="modalCancellazione" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="display: flex">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ancellaLabel">Cancella campagna</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action = "${pageContext.request.contextPath}/campagna/cancellaCampagna" method="post">
+                <input type="text" name = "idCampagna" value = "${requestScope.campagna.idCampagna}" hidden>
+                <div class="modal-body">
+                    <p>Sei sicuro di voler cancellare la campagna? I fondi raccolti fino ad ora saranno ritrasferiti ai donatori.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary pulsante" data-bs-dismiss="modal"
+                            style="background-color: #00AB98; border-color: #00AB98">Annulla
+                    </button>
+
+                        <input type = text value = "${campagna.idCampagna}" name = "idCampagna" hidden>
+                        <button type = "submit" class="btn btn-secondary pulsante"
+                                style="background-color: crimson; border-color: crimson">Cancella campagna
+                        </button>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+
+
