@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SegnalazioneDAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.DAO</a> &gt; <span class="el_source">SegnalazioneDAO.java</span></div><h1>SegnalazioneDAO.java</h1><pre class="source lang-java linenums">package model.DAO;
+
+import model.beans.Campagna;
+import model.beans.Segnalazione;
+import model.beans.Utente;
+import model.beans.StatoSegnalazione;
+import model.storage.ConPool;
+
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="fc" id="L18">public final class SegnalazioneDAO</span>
+        implements DAO&lt;Segnalazione&gt; {
+    /**
+     * @param id rappresenta l'identificativo dell'entity
+     * @return null se non viene trovato nessun risultato,
+     * un'istanza di T nel caso in cui viene trovato un risultato
+     */
+    @Override
+    public Segnalazione getById(final int id) {
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        if (id &lt;= 0) {</span>
+<span class="fc" id="L28">            throw new IllegalArgumentException(&quot;Id must be &gt;= 0&quot;);</span>
+        }
+<span class="fc" id="L30">        Segnalazione segnalazione = null;</span>
+<span class="fc" id="L31">        try (Connection connection = ConPool.getInstance().getConnection();</span>
+<span class="fc" id="L32">             PreparedStatement statement =</span>
+<span class="fc" id="L33">                     connection.prepareStatement(</span>
+                             &quot;SELECT * &quot;
+                                     + &quot;FROM segnalazione AS s&quot;
+                                     + &quot; WHERE s.idSegnalazione = ?&quot;)) {
+<span class="fc" id="L37">            statement.setInt(1, id);</span>
+<span class="fc" id="L38">            ResultSet set = statement.executeQuery();</span>
+
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">            if (set.next()) {</span>
+<span class="fc" id="L41">                segnalazione = extract(set);</span>
+            }
+<span class="nc" id="L43">        } catch (SQLException e) {</span>
+<span class="nc" id="L44">            throw new RuntimeException(e);</span>
+<span class="fc" id="L45">        }</span>
+<span class="fc" id="L46">        return segnalazione;</span>
+    }
+
+    /**
+     * @return una lista di entity T
+     */
+    @Override
+    public List&lt;Segnalazione&gt; getAll() {
+<span class="fc" id="L54">        String sql = &quot;SELECT * FROM segnalazione AS s&quot;;</span>
+        List&lt;Segnalazione&gt; list;
+<span class="fc" id="L56">        try (Connection connection = ConPool.getInstance().getConnection();</span>
+<span class="fc" id="L57">             PreparedStatement statement = connection.prepareStatement(sql)) {</span>
+<span class="fc" id="L58">            list = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L59">            ResultSet set = statement.executeQuery();</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">            while (set.next()) {</span>
+<span class="fc" id="L61">                list.add(extract(set));</span>
+            }
+<span class="nc" id="L63">        } catch (SQLException e) {</span>
+<span class="nc" id="L64">            throw new RuntimeException(e);</span>
+<span class="fc" id="L65">        }</span>
+<span class="fc" id="L66">        return list;</span>
+    }
+
+    /**
+     * @param entity l'istanza da salvare
+     * @return false --&gt; se l'operazione non va a buon fine,
+     * true --&gt; se l'operazione va a buon fine
+     */
+    @Override
+    public boolean save(final Segnalazione entity) {
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (entity == null) {</span>
+<span class="fc" id="L77">            throw new IllegalArgumentException(&quot;Entity must be not null&quot;);</span>
+        }
+<span class="fc" id="L79">        int ret = 0;</span>
+<span class="fc" id="L80">        try (Connection connection = ConPool.getInstance().getConnection();</span>
+<span class="fc" id="L81">             PreparedStatement statement = connection.prepareStatement(</span>
+                     &quot;INSERT INTO segnalazione &quot;
+                             + &quot;(DataOra, descrizione,&quot;
+                             + &quot; idUtenteSegnalatore,&quot;
+                             + &quot; idUtenteSegnalato, Stato, idCampagna)&quot;
+                             + &quot;values (?, ?, ?, ?, ?, ?)&quot;,
+                     PreparedStatement.RETURN_GENERATED_KEYS)) {
+
+<span class="fc" id="L89">            int index = 0;</span>
+
+<span class="fc" id="L91">            statement.setTimestamp(++index,</span>
+<span class="fc" id="L92">                    Timestamp.valueOf(entity.getDataOra()));</span>
+<span class="fc" id="L93">            statement.setString(++index, entity.getDescrizione());</span>
+<span class="fc" id="L94">            statement.setInt(++index,</span>
+<span class="fc" id="L95">                    entity.getSegnalatore().getIdUtente());</span>
+<span class="fc" id="L96">            statement.setInt(++index, entity.getSegnalato().getIdUtente());</span>
+<span class="fc" id="L97">            statement.setString(++index,</span>
+<span class="fc" id="L98">                    entity.getStatoSegnalazione().toString());</span>
+<span class="fc" id="L99">            statement.setInt(++index,</span>
+<span class="fc" id="L100">                    entity.getCampagnaSegnalata().getIdCampagna());</span>
+
+<span class="fc" id="L102">            ret = statement.executeUpdate();</span>
+<span class="fc" id="L103">            ResultSet set = statement.getGeneratedKeys();</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">            if (set.next()) {</span>
+<span class="fc" id="L105">                entity.setIdSegnalazione(set.getInt(1));</span>
+            }
+<span class="nc" id="L107">        } catch (SQLException e) {</span>
+<span class="nc" id="L108">            throw new RuntimeException(e);</span>
+<span class="fc" id="L109">        }</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">        return (ret &gt; 0);</span>
+    }
+
+    /**
+     * @param entity l'istanza da aggiornare
+     * @return false --&gt; se l'operazione non va a buon fine,
+     * true --&gt; se l'operazione va a buon fine
+     */
+    @Override
+    public boolean update(final Segnalazione entity) {
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        if (entity == null) {</span>
+<span class="fc" id="L121">            throw new IllegalArgumentException(&quot;Entity must be not null&quot;);</span>
+        }
+        int ret;
+<span class="fc" id="L124">        try (Connection connection = ConPool.getInstance().getConnection();</span>
+<span class="fc" id="L125">             PreparedStatement statement = connection.prepareStatement(</span>
+                     &quot;UPDATE segnalazione &quot;
+                             + &quot;SET Stato = ? WHERE idSegnalazione = ?&quot;)) {
+
+<span class="fc" id="L129">            statement.setString(1, entity.getStatoSegnalazione().toString());</span>
+<span class="fc" id="L130">            statement.setInt(2, entity.getIdSegnalazione());</span>
+
+<span class="fc" id="L132">            ret = statement.executeUpdate();</span>
+<span class="nc" id="L133">        } catch (SQLException e) {</span>
+<span class="nc" id="L134">            throw new RuntimeException(e);</span>
+<span class="fc" id="L135">        }</span>
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        return ret &gt; 0;</span>
+    }
+
+    /**
+     * @param entity l'istanza da eliminare
+     * @return false --&gt; se l'operazione non va a buon fine,
+     * true --&gt; se l'operazione va a buon fine
+     */
+    @Override
+    public boolean delete(final Segnalazione entity) {
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        if (entity == null) {</span>
+<span class="fc" id="L147">            throw new IllegalArgumentException(&quot;Entity must be not null&quot;);</span>
+        }
+        int ret;
+<span class="fc" id="L150">        try (Connection connection = ConPool.getInstance().getConnection();</span>
+<span class="fc" id="L151">             PreparedStatement statement = connection.prepareStatement(</span>
+                     &quot;DELETE FROM segnalazione &quot;
+                             + &quot; WHERE idSegnalazione = ?&quot;)) {
+<span class="fc" id="L154">            statement.setInt(1, entity.getIdSegnalazione());</span>
+
+
+<span class="fc" id="L157">            ret = statement.executeUpdate();</span>
+<span class="nc" id="L158">        } catch (SQLException e) {</span>
+<span class="nc" id="L159">            throw new RuntimeException(e);</span>
+<span class="fc" id="L160">        }</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        return ret &gt; 0;</span>
+    }
+
+    /**
+     * @param resultSet resultSet della query eseguita
+     * @return l'istanza della della classe T popolata con le informazioni
+     * presenti nel resultSet
+     * @throws SQLException eccezione lanciata in caso di problemi
+     */
+    @Override
+    public Segnalazione extract(final ResultSet resultSet)
+            throws SQLException {
+<span class="fc" id="L173">        Segnalazione s = new Segnalazione();</span>
+<span class="fc" id="L174">        s.setIdSegnalazione(resultSet.getInt(&quot;idSegnalazione&quot;));</span>
+<span class="fc" id="L175">        s.setDataOra(resultSet.getTimestamp(&quot;DataOra&quot;).toLocalDateTime());</span>
+<span class="fc" id="L176">        s.setStatoSegnalazione(StatoSegnalazione.valueOf(</span>
+<span class="fc" id="L177">                resultSet.getString(&quot;Stato&quot;).toUpperCase()));</span>
+<span class="fc" id="L178">        Utente segnalato = new Utente();</span>
+<span class="fc" id="L179">        segnalato.setIdUtente(resultSet.getInt(&quot;idUtenteSegnalato&quot;));</span>
+<span class="fc" id="L180">        s.setSegnalato(segnalato);</span>
+<span class="fc" id="L181">        Utente segnalatore = new Utente();</span>
+<span class="fc" id="L182">        segnalatore.setIdUtente(</span>
+<span class="fc" id="L183">                resultSet.getInt(&quot;idUtenteSegnalatore&quot;));</span>
+<span class="fc" id="L184">        s.setSegnalatore(segnalatore);</span>
+<span class="fc" id="L185">        s.setDescrizione(resultSet.getString(&quot;descrizione&quot;));</span>
+<span class="fc" id="L186">        Campagna c = new Campagna();</span>
+<span class="fc" id="L187">        c.setIdCampagna(resultSet.getInt(&quot;idCampagna&quot;));</span>
+<span class="fc" id="L188">        s.setCampagnaSegnalata(c);</span>
+<span class="fc" id="L189">        return s;</span>
+    }
+
+    /**
+     * @param idUtente id dell'utente
+     * @return lista di segnalazioni effettuate dall'utente
+     */
+    public List&lt;Segnalazione&gt; getByIdUtente(final int idUtente) {
+<span class="fc bfc" id="L197" title="All 2 branches covered.">        if (idUtente &lt;= 0) {</span>
+<span class="fc" id="L198">            throw new IllegalArgumentException(&quot;Id must be &gt;= 0&quot;);</span>
+        }
+        List&lt;Segnalazione&gt; list;
+<span class="fc" id="L201">        try (Connection connection = ConPool.getInstance().getConnection();</span>
+<span class="fc" id="L202">             PreparedStatement statement =</span>
+<span class="fc" id="L203">                     connection.prepareStatement(&quot;SELECT *&quot;</span>
+                             + &quot;FROM segnalazione AS s&quot;
+                             + &quot; WHERE idUtenteSegnalatore = ?&quot;)) {
+
+<span class="fc" id="L207">            list = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L208">            statement.setInt(1, idUtente);</span>
+
+<span class="fc" id="L210">            ResultSet set = statement.executeQuery();</span>
+<span class="fc bfc" id="L211" title="All 2 branches covered.">            while (set.next()) {</span>
+<span class="fc" id="L212">                list.add(extract(set));</span>
+            }
+<span class="nc" id="L214">        } catch (SQLException e) {</span>
+<span class="nc" id="L215">            throw new RuntimeException(e);</span>
+<span class="fc" id="L216">        }</span>
+<span class="fc" id="L217">        return list;</span>
+    }
+
+    /**
+     * @param idCampagna id della campagna
+     * @return lista delle segnalazioni effettuate sulla campagna
+     */
+    public List&lt;Segnalazione&gt; getByIdCampagna(final int idCampagna) {
+<span class="fc bfc" id="L225" title="All 2 branches covered.">        if (idCampagna &lt;= 0) {</span>
+<span class="fc" id="L226">            throw new IllegalArgumentException(&quot;Id must be &gt;= 0&quot;);</span>
+        }
+<span class="fc" id="L228">        List&lt;Segnalazione&gt; segnalazioneList = null;</span>
+<span class="fc" id="L229">        try (Connection connection = ConPool.getInstance().getConnection()) {</span>
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">            if (connection != null) {</span>
+<span class="fc" id="L231">                segnalazioneList = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L233">                String query = &quot;SELECT *&quot;</span>
+                        + &quot; FROM segnalazione&quot;
+                        + &quot; WHERE idCampagna = ?&quot;;
+
+<span class="fc" id="L237">                try (PreparedStatement preparedStatement =</span>
+<span class="fc" id="L238">                             connection.prepareStatement(query)) {</span>
+<span class="fc" id="L239">                    preparedStatement.setInt(1, idCampagna);</span>
+<span class="fc" id="L240">                    ResultSet resultSet = preparedStatement.executeQuery();</span>
+
+<span class="fc bfc" id="L242" title="All 2 branches covered.">                    while (resultSet.next()) {</span>
+<span class="fc" id="L243">                        segnalazioneList.add(extract(resultSet));</span>
+                    }
+                }
+            }
+<span class="nc" id="L247">        } catch (SQLException e) {</span>
+<span class="nc" id="L248">            throw new RuntimeException(e);</span>
+<span class="fc" id="L249">        }</span>
+<span class="fc" id="L250">        return segnalazioneList;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

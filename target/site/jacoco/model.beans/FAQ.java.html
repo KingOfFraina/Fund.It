@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FAQ.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.beans</a> &gt; <span class="el_source">FAQ.java</span></div><h1>FAQ.java</h1><pre class="source lang-java linenums">package model.beans;
+
+<span class="fc" id="L3">public final class FAQ {</span>
+   /**
+    * Rappresenta l'ID della faq.
+    */
+   private int idFaq;
+   /**
+    * Rappresenta la domanda della faq.
+    */
+   private String domanda;
+   /**
+    * Rappresenta la risposta della faq.
+    */
+   private String risposta;
+   /**
+    * Rappresenta l'utente che crea la faq.
+    */
+   private Utente utenteCreatore;
+
+   /**
+    * @return l'ID della faq.
+    */
+   public int getIdFaq() {
+<span class="fc" id="L25">      return idFaq;</span>
+   }
+
+   /**
+    * @param id rappresenta l'ID della faq
+    */
+   public void setIdFaq(final int id) {
+<span class="fc" id="L32">      this.idFaq = id;</span>
+<span class="fc" id="L33">   }</span>
+
+   /**
+    * @return la domanda relativa alla faq
+    */
+   public String getDomanda() {
+<span class="fc" id="L39">      return domanda;</span>
+   }
+
+   /**
+    * @param newDomanda rappresenta la domanda della faq
+    */
+   public void setDomanda(final String newDomanda) {
+<span class="fc" id="L46">      this.domanda = newDomanda;</span>
+<span class="fc" id="L47">   }</span>
+
+   /**
+    * @return la risposta relativa alla faq
+    */
+   public String getRisposta() {
+<span class="fc" id="L53">      return risposta;</span>
+   }
+
+   /**
+    * @param newRisposta rappresenta la risposta della faq
+    */
+   public void setRisposta(final String newRisposta) {
+<span class="fc" id="L60">      this.risposta = newRisposta;</span>
+<span class="fc" id="L61">   }</span>
+
+   /**
+    * @return l'utente che ha creato la FAQ
+    */
+   public Utente getUtenteCreatore() {
+<span class="fc" id="L67">      return utenteCreatore;</span>
+   }
+
+   /**
+    * @param newUtenteCreatore rappresenta l'utente che ha creato la FAQ
+    */
+   public void setUtenteCreatore(final Utente newUtenteCreatore) {
+<span class="fc" id="L74">      this.utenteCreatore = newUtenteCreatore;</span>
+<span class="fc" id="L75">   }</span>
+
+   @Override
+   public String toString() {
+<span class="nc" id="L79">      return &quot;FAQ{&quot;</span>
+              + &quot;IDFaq=&quot; + idFaq
+              + &quot;, domanda='&quot; + domanda + '\''
+              + &quot;, Risposta='&quot; + risposta + '\''
+              + &quot;, utente=&quot; + utenteCreatore
+              + '}';
+   }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

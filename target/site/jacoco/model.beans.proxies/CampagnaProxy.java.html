@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CampagnaProxy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.beans.proxies</a> &gt; <span class="el_source">CampagnaProxy.java</span></div><h1>CampagnaProxy.java</h1><pre class="source lang-java linenums">package model.beans.proxies;
+
+
+import model.DAO.DAO;
+import model.DAO.DonazioneDAO;
+import model.DAO.ImmagineDAO;
+import model.DAO.SegnalazioneDAO;
+import model.DAO.UtenteDAO;
+import model.beans.Campagna;
+import model.beans.Donazione;
+import model.beans.Immagine;
+import model.beans.Segnalazione;
+import model.beans.Utente;
+import model.beans.proxyInterfaces.CampagnaInterface;
+
+import java.util.List;
+
+public final class CampagnaProxy implements CampagnaInterface {
+
+    /**
+     * riferimento alla campagna.
+     */
+    private final Campagna campagna;
+
+    /**
+     * costruttore.
+     *
+     * @param newCampagna campagna
+     */
+<span class="fc" id="L30">    public CampagnaProxy(final Campagna newCampagna) {</span>
+<span class="fc" id="L31">        this.campagna = newCampagna;</span>
+<span class="fc" id="L32">    }</span>
+
+    @Override
+    public List&lt;Immagine&gt; getImmagini() {
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (campagna.getImmagini() == null) {</span>
+<span class="fc" id="L37">            ImmagineDAO immagineDAO = new ImmagineDAO();</span>
+<span class="fc" id="L38">            List&lt;Immagine&gt; immagineList =</span>
+<span class="fc" id="L39">                    immagineDAO.getByIdCampagna(campagna.getIdCampagna());</span>
+
+<span class="fc" id="L41">            immagineList.forEach(i -&gt; i.setCampagna(campagna));</span>
+
+<span class="fc" id="L43">            campagna.setImmagini(immagineList);</span>
+
+<span class="fc" id="L45">            return immagineList;</span>
+        } else {
+<span class="fc" id="L47">            return campagna.getImmagini();</span>
+        }
+    }
+
+    @Override
+    public List&lt;Donazione&gt; getDonazioni() {
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        if (campagna.getDonazioni() == null) {</span>
+<span class="fc" id="L54">            DonazioneDAO donazioneDAO = new DonazioneDAO();</span>
+<span class="fc" id="L55">            List&lt;Donazione&gt; donazioneList =</span>
+<span class="fc" id="L56">                    donazioneDAO.getByIdCampagna(campagna.getIdCampagna());</span>
+
+<span class="fc" id="L58">            donazioneList.forEach(d -&gt; d.setCampagna(campagna));</span>
+<span class="fc" id="L59">            double somma = donazioneList.stream().</span>
+<span class="fc" id="L60">                    mapToDouble(Donazione::getSommaDonata).</span>
+<span class="fc" id="L61">                    sum();</span>
+<span class="fc" id="L62">            campagna.setSommaRaccolta(somma);</span>
+<span class="fc" id="L63">            campagna.setDonazioni(donazioneList);</span>
+<span class="fc" id="L64">            return donazioneList;</span>
+        } else {
+<span class="fc" id="L66">            return campagna.getDonazioni();</span>
+        }
+    }
+
+    /**
+     * @return istanza dell'utente creatore della campagna.
+     */
+    @Override
+    public Utente getUtente() {
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (campagna.getUtente().getCf() == null) {</span>
+<span class="fc" id="L76">            DAO&lt;Utente&gt; dao = new UtenteDAO();</span>
+<span class="fc" id="L77">            Utente u =</span>
+<span class="fc" id="L78">                    dao.getById(campagna.getUtente().getIdUtente());</span>
+<span class="fc" id="L79">            campagna.setUtente(u);</span>
+
+<span class="fc" id="L81">            return u;</span>
+        } else {
+<span class="fc" id="L83">            return campagna.getUtente();</span>
+        }
+    }
+
+    @Override
+    public List&lt;Segnalazione&gt; getSegnalazioni() {
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        if (campagna.getSegnalazioni() == null) {</span>
+<span class="fc" id="L90">            SegnalazioneDAO segnalazioneDAO = new SegnalazioneDAO();</span>
+<span class="fc" id="L91">            List&lt;Segnalazione&gt; segnalazioneList =</span>
+<span class="fc" id="L92">                    segnalazioneDAO.getByIdCampagna(campagna.getIdCampagna());</span>
+
+<span class="fc" id="L94">            segnalazioneList.forEach(s -&gt; s.setCampagnaSegnalata(campagna));</span>
+
+<span class="fc" id="L96">            campagna.setSegnalazioni(segnalazioneDAO.getAll());</span>
+<span class="fc" id="L97">            return segnalazioneList;</span>
+        } else {
+<span class="fc" id="L99">            return campagna.getSegnalazioni();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

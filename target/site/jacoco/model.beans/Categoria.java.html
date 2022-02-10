@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Categoria.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.beans</a> &gt; <span class="el_source">Categoria.java</span></div><h1>Categoria.java</h1><pre class="source lang-java linenums">package model.beans;
+
+public final class Categoria {
+   /**
+    * Il nome della categoria.
+    */
+   private String nome;
+   /**
+    * id categoria.
+    */
+   private int idCategoria;
+
+   /***
+    * Costruttore.
+    */
+<span class="fc" id="L16">   public Categoria() {</span>
+<span class="fc" id="L17">      nome = &quot;&quot;;</span>
+<span class="fc" id="L18">   }</span>
+
+   /**
+    * @return String il nome della categoria.
+    */
+   public String getNome() {
+<span class="fc" id="L24">      return nome;</span>
+   }
+
+   /**
+    * @param nomeCategoria Il nome della categoria.
+    */
+   public void setNome(final String nomeCategoria) {
+<span class="fc" id="L31">      this.nome = nomeCategoria;</span>
+<span class="fc" id="L32">   }</span>
+
+   /**
+    * @return ide della categoria.
+    */
+   public int getIdCategoria() {
+<span class="fc" id="L38">      return idCategoria;</span>
+   }
+
+   /**
+    * @param id id della categoria.
+    */
+   public void setIdCategoria(final int id) {
+<span class="fc" id="L45">      this.idCategoria = id;</span>
+<span class="fc" id="L46">   }</span>
+
+   @Override
+   public String toString() {
+<span class="nc" id="L50">      return &quot;Categoria{&quot;</span>
+              + &quot;nome='&quot; + nome + '\''
+              + &quot;, idCategoria=&quot; + idCategoria + '}';
+   }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

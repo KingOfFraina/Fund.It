@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GestioneSegnalazioneController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">controller</a> &gt; <span class="el_source">GestioneSegnalazioneController.java</span></div><h1>GestioneSegnalazioneController.java</h1><pre class="source lang-java linenums">package controller;
+
+import controller.utils.Validator;
+import model.beans.Campagna;
+import model.beans.Segnalazione;
+import model.beans.StatoSegnalazione;
+import model.beans.Utente;
+import model.beans.proxies.CampagnaProxy;
+import model.beans.proxyInterfaces.CampagnaInterface;
+import model.services.CampagnaService;
+import model.services.CampagnaServiceImpl;
+import model.services.SegnalazioniService;
+import model.services.SegnalazioniServiceImpl;
+import model.services.UtenteService;
+import model.services.ReportService;
+import model.services.UtenteServiceImpl;
+import model.services.TipoReport;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.time.LocalDateTime;
+
+@WebServlet(name = &quot;GestioneSegnalazioneController&quot;,
+        value = &quot;/segnalazioni/*&quot;)
+public final class GestioneSegnalazioneController extends HttpServlet {
+   /**
+    * Variabile per il service di Campagna.
+    */
+   private CampagnaService campagnaService;
+   /**
+    * Variabile per il service di Segnalazione.
+    */
+   private SegnalazioniService segnalazioniService;
+   /**
+    * Variabile per il service di Utente.
+    */
+   private UtenteService utenteService;
+
+   /**
+    * Costruttore del SegnalazioneController.
+    *
+    * @param cs CampagnaService
+    * @param ss CampagnaService
+    * @param us UtenteService
+    */
+   public GestioneSegnalazioneController(final CampagnaService cs,
+                                         final SegnalazioniService ss,
+<span class="fc" id="L52">                                         final UtenteService us) {</span>
+<span class="fc" id="L53">      campagnaService = cs;</span>
+<span class="fc" id="L54">      segnalazioniService = ss;</span>
+<span class="fc" id="L55">      utenteService = us;</span>
+<span class="fc" id="L56">   }</span>
+
+   /**
+    * Costruttore del SegnalazioneController.
+    */
+<span class="nc" id="L61">   public GestioneSegnalazioneController() {</span>
+<span class="nc" id="L62">      campagnaService = new CampagnaServiceImpl();</span>
+<span class="nc" id="L63">      segnalazioniService = new SegnalazioniServiceImpl();</span>
+<span class="nc" id="L64">      utenteService = new UtenteServiceImpl();</span>
+<span class="nc" id="L65">   }</span>
+
+   @Override
+   public void doGet(final HttpServletRequest request,
+                     final HttpServletResponse response)
+           throws IOException {
+<span class="fc" id="L71">      if (((Utente) request.getSession()</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">              .getAttribute(&quot;utente&quot;)).isAdmin()) {</span>
+<span class="fc" id="L73">         request.setAttribute(&quot;segnalazioni&quot;,</span>
+<span class="fc" id="L74">                 segnalazioniService.trovaSegnalazioni());</span>
+      } else {
+<span class="fc" id="L76">         response.sendError(HttpServletResponse.SC_UNAUTHORIZED);</span>
+      }
+<span class="fc" id="L78">   }</span>
+
+   @Override
+   public void doPost(final HttpServletRequest request,
+                      final HttpServletResponse response)
+           throws IOException {
+
+<span class="fc" id="L85">      String path = request.getPathInfo();</span>
+<span class="fc" id="L86">      HttpSession session = request.getSession();</span>
+
+<span class="fc" id="L88">      if (!new Validator(request)</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">              .isValidBean(Utente.class, session.getAttribute(&quot;utente&quot;))) {</span>
+
+<span class="fc" id="L91">         response.sendRedirect(request.getServletContext()</span>
+<span class="fc" id="L92">                 .getContextPath() + &quot;/autenticazione/login&quot;);</span>
+<span class="fc" id="L93">         return;</span>
+      }
+
+<span class="fc" id="L96">      Utente userSession = (Utente) session.getAttribute(&quot;utente&quot;);</span>
+<span class="fc" id="L97">      String idCampagna = request.getParameter(&quot;idCampagna&quot;);</span>
+
+<span class="fc bfc" id="L99" title="All 3 branches covered.">      switch (path) {</span>
+<span class="fc" id="L100">         case &quot;/segnala&quot; -&gt; {</span>
+<span class="fc" id="L101">            Segnalazione segnalazione = new Segnalazione();</span>
+<span class="fc" id="L102">            String descrizione = request.getParameter(&quot;descrizione&quot;);</span>
+<span class="fc" id="L103">            Campagna c = campagnaService.</span>
+<span class="fc" id="L104">                    trovaCampagna(Integer.parseInt(idCampagna));</span>
+<span class="fc" id="L105">            Utente utente = new Utente();</span>
+<span class="fc" id="L106">            utente.setIdUtente(</span>
+<span class="fc" id="L107">                    Integer.parseInt(request.getParameter(&quot;idUtente&quot;)));</span>
+
+<span class="fc" id="L109">            segnalazione.setCampagnaSegnalata(c);</span>
+<span class="fc" id="L110">            segnalazione.setSegnalato(utente);</span>
+<span class="fc" id="L111">            segnalazione.setSegnalatore(userSession);</span>
+<span class="fc" id="L112">            segnalazione.setDescrizione(descrizione);</span>
+<span class="fc" id="L113">            segnalazione.setDataOra(LocalDateTime.now());</span>
+<span class="fc" id="L114">            segnalazione.setStatoSegnalazione(StatoSegnalazione.ATTIVA);</span>
+
+<span class="fc bfc" id="L116" title="All 2 branches covered.">            if (segnalazioniService.segnalaCampagna(segnalazione)) {</span>
+<span class="fc" id="L117">               ReportService.creaReport(request, TipoReport.INFO,</span>
+                       &quot;Esito operazione:&quot;, &quot;Segnalazione inviata&quot;);
+            } else {
+<span class="fc" id="L120">               ReportService.creaReport(request, TipoReport.ERRORE,</span>
+                       &quot;Esito operazione:&quot;, &quot;Segnalazione non inviata&quot;);
+            }
+
+<span class="fc" id="L124">            response.sendRedirect(request.getServletContext().</span>
+<span class="fc" id="L125">                    getContextPath()</span>
+                    + &quot;/campagna/campagna?idCampagna=&quot; + idCampagna);
+
+         }
+<span class="fc" id="L129">         case &quot;/risolvi&quot; -&gt; {</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">            if (!userSession.isAdmin()) {</span>
+<span class="fc" id="L131">               response.sendError(</span>
+                       HttpServletResponse.SC_UNAUTHORIZED);
+            } else {
+<span class="fc" id="L134">               String scelta = request.getParameter(&quot;sceltaSegnalazione&quot;);</span>
+<span class="fc" id="L135">               int id = Integer.parseInt(</span>
+<span class="fc" id="L136">                       request.getParameter(&quot;idCampagna&quot;));</span>
+<span class="fc" id="L137">               int idSegnalazione =</span>
+<span class="fc" id="L138">                       Integer.parseInt(</span>
+<span class="fc" id="L139">                               request.getParameter(&quot;idSegnalazione&quot;));</span>
+<span class="fc" id="L140">               Campagna campagna = campagnaService.trovaCampagna(id);</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">               if (scelta.equals(&quot;Risolvi&quot;)) {</span>
+<span class="fc" id="L142">                  segnalazioniService</span>
+<span class="fc" id="L143">                          .risolviSegnalazione(idSegnalazione,</span>
+                                  StatoSegnalazione.RISOLTA);
+<span class="fc" id="L145">                  Utente utenteSegnalato =</span>
+<span class="fc" id="L146">                          utenteService.visualizzaDashboardUtente(</span>
+<span class="fc" id="L147">                                  campagna.getUtente().getIdUtente());</span>
+<span class="fc" id="L148">                  campagnaService.cancellaCampagna(campagna);</span>
+<span class="fc" id="L149">                  utenteService.sospensioneUtente(utenteSegnalato);</span>
+<span class="fc" id="L150">                  CampagnaInterface campagnaProxy =</span>
+                          new CampagnaProxy(campagna);
+<span class="fc" id="L152">                  if (campagnaService</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">                          .rimborsaDonazioni(campagna, campagnaProxy)) {</span>
+<span class="fc" id="L154">                     ReportService.creaReport(request, TipoReport.INFO,</span>
+                             &quot;Esito operazione:&quot;,
+                             &quot;Segnalazione risolta&quot;);
+                  } else {
+<span class="fc" id="L158">                     ReportService.creaReport(request, TipoReport.ERRORE,</span>
+                             &quot;Esito operazione:&quot;,
+                             &quot;Segnalazione non risolta&quot;);
+                  }
+<span class="fc" id="L162">               } else {</span>
+<span class="fc" id="L163">                  if (segnalazioniService</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">                          .risolviSegnalazione(idSegnalazione,</span>
+                                  StatoSegnalazione.ARCHIVIATA)) {
+<span class="fc" id="L166">                     ReportService.creaReport(request, TipoReport.INFO,</span>
+                             &quot;Esito operazione:&quot;,
+                             &quot;Segnalazione archiviata&quot;);
+                  } else {
+<span class="fc" id="L170">                     ReportService.creaReport(request, TipoReport.ERRORE,</span>
+                             &quot;Esito operazione:&quot;,
+                             &quot;Segnalazione non archviata&quot;);
+                  }
+               }
+<span class="fc" id="L175">               response.sendRedirect(request</span>
+<span class="fc" id="L176">                       .getServletContext().getContextPath()</span>
+                       + &quot;/GestioneUtenteController/visualizzaDashboard&quot;);
+            }
+         }
+<span class="fc" id="L180">         default -&gt; response.sendError(HttpServletResponse.SC_NOT_FOUND);</span>
+      }
+<span class="fc" id="L182">   }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

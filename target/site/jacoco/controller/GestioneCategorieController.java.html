@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GestioneCategorieController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">controller</a> &gt; <span class="el_source">GestioneCategorieController.java</span></div><h1>GestioneCategorieController.java</h1><pre class="source lang-java linenums">package controller;
+
+import controller.utils.Validator;
+import model.beans.Categoria;
+import model.beans.Utente;
+import model.services.CategoriaService;
+import model.services.CategoriaServiceImpl;
+import model.services.ReportService;
+import model.services.TipoReport;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+
+@WebServlet(name = &quot;GestioneCategorieController&quot;,
+        value = &quot;/categorie/*&quot;, loadOnStartup = 0)
+public final class GestioneCategorieController extends HttpServlet {
+   /**
+    * Variabile per il service di Categoria.
+    */
+   private CategoriaService service;
+
+   /**
+    * Costruttore per il controller Categoria.
+    *
+    * @param newService istanza di una classe che implementa CategoriaService
+    */
+<span class="fc" id="L31">   public GestioneCategorieController(final CategoriaService newService) {</span>
+<span class="fc" id="L32">      this.service = newService;</span>
+<span class="fc" id="L33">   }</span>
+
+   /**
+    * Costruttore per il controller Categoria.
+    */
+<span class="nc" id="L38">   public GestioneCategorieController() {</span>
+<span class="nc" id="L39">      service = new CategoriaServiceImpl();</span>
+<span class="nc" id="L40">   }</span>
+
+   @Override
+   public void init() {
+<span class="nc" id="L44">      this.getServletContext().setAttribute(&quot;categorieList&quot;,</span>
+<span class="nc" id="L45">              service.visualizzaCategorie());</span>
+<span class="nc" id="L46">   }</span>
+
+   @Override
+   public void doPost(final HttpServletRequest request,
+                      final HttpServletResponse response)
+           throws IOException {
+<span class="fc" id="L52">      String path = request.getPathInfo();</span>
+<span class="fc" id="L53">      HttpSession session = request.getSession();</span>
+
+<span class="fc bfc" id="L55" title="All 3 branches covered.">      switch (path) {</span>
+<span class="fc" id="L56">         case &quot;/inserisciCategoria&quot; -&gt; {</span>
+<span class="fc" id="L57">            if (!new Validator(request)</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">                    .isValidBean(Utente.class,</span>
+<span class="fc" id="L59">                            session.getAttribute(&quot;utente&quot;))) {</span>
+
+<span class="fc" id="L61">               response.sendRedirect(request</span>
+<span class="fc" id="L62">                       .getServletContext().getContextPath()</span>
+                       + &quot;/autenticazione/login&quot;);
+<span class="fc" id="L64">               return;</span>
+            } else {
+<span class="fc" id="L66">               Utente utente = (Utente) session.getAttribute(&quot;utente&quot;);</span>
+
+<span class="fc bfc" id="L68" title="All 2 branches covered.">               if (!utente.isAdmin()) {</span>
+<span class="fc" id="L69">                  response.sendError(HttpServletResponse.SC_UNAUTHORIZED);</span>
+<span class="fc" id="L70">                  return;</span>
+               } else {
+<span class="fc" id="L72">                  String nomeCategoria = request.getParameter(&quot;nomeCategoria&quot;);</span>
+
+<span class="fc bfc" id="L74" title="All 2 branches covered.">                  if (nomeCategoria.isBlank()) {</span>
+<span class="fc" id="L75">                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);</span>
+<span class="fc" id="L76">                     return;</span>
+                  } else {
+<span class="fc" id="L78">                     Categoria c = new Categoria();</span>
+<span class="fc" id="L79">                     c.setNome(nomeCategoria);</span>
+
+<span class="fc bfc" id="L81" title="All 2 branches covered.">                     if (service.inserisciCategoria(c)) {</span>
+<span class="fc" id="L82">                        visualizzaCategorie(request);</span>
+<span class="fc" id="L83">                        ReportService.creaReport(request, TipoReport.INFO,</span>
+                                &quot;Esito operazione:&quot;,
+                                &quot;Aggiunta categoria eseguita&quot;);
+                     } else {
+<span class="fc" id="L87">                        ReportService.creaReport(request, TipoReport.ERRORE,</span>
+                                &quot;Esito operazione:&quot;,
+                                &quot;Aggiunta categoria non eseguita&quot;);
+                     }
+                  }
+               }
+            }
+         }
+<span class="fc" id="L95">         case &quot;/modificaCategoria&quot; -&gt; {</span>
+<span class="fc" id="L96">            if (!new Validator(request)</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">                    .isValidBean(Utente.class,</span>
+<span class="fc" id="L98">                            session.getAttribute(&quot;utente&quot;))) {</span>
+
+<span class="fc" id="L100">               response.sendRedirect(request.getServletContext()</span>
+<span class="fc" id="L101">                       .getContextPath() + &quot;/autenticazione/login&quot;);</span>
+<span class="fc" id="L102">               return;</span>
+            } else {
+<span class="fc" id="L104">               Utente utente = (Utente) session.getAttribute(&quot;utente&quot;);</span>
+
+<span class="fc bfc" id="L106" title="All 2 branches covered.">               if (!utente.isAdmin()) {</span>
+<span class="fc" id="L107">                  response.sendError(HttpServletResponse.SC_UNAUTHORIZED);</span>
+<span class="fc" id="L108">                  return;</span>
+               } else {
+<span class="fc" id="L110">                  int idCategoria = Integer.parseInt(</span>
+<span class="fc" id="L111">                          request.getParameter(&quot;idCategoria&quot;));</span>
+<span class="fc" id="L112">                  String nomeCategoria = request.getParameter(&quot;nomeCategoria&quot;);</span>
+<span class="fc" id="L113">                  Categoria categoria = new Categoria();</span>
+<span class="fc" id="L114">                  categoria.setIdCategoria(idCategoria);</span>
+<span class="fc" id="L115">                  categoria = service.visualizzaCategoria(categoria);</span>
+<span class="fc" id="L116">                  categoria.setNome(nomeCategoria);</span>
+
+<span class="fc bfc" id="L118" title="All 2 branches covered.">                  if (service.modificaCategoria(categoria)) {</span>
+<span class="fc" id="L119">                     visualizzaCategorie(request);</span>
+<span class="fc" id="L120">                     ReportService.creaReport(request, TipoReport.INFO,</span>
+                             &quot;Esito operazione:&quot;,
+                             &quot;Modifica categoria eseguita&quot;);
+                  } else {
+<span class="fc" id="L124">                     ReportService.creaReport(request, TipoReport.ERRORE,</span>
+                             &quot;Esito operazione:&quot;,
+                             &quot;Modifica categoria non eseguita&quot;);
+                  }
+               }
+            }
+         }
+
+         default -&gt; {
+<span class="fc" id="L133">            response.sendError(HttpServletResponse.SC_NOT_FOUND);</span>
+<span class="fc" id="L134">            return;</span>
+         }
+      }
+<span class="fc" id="L137">      response.sendRedirect(request.getServletContext().getContextPath()</span>
+              + &quot;/GestioneUtenteController/visualizzaDashboardAdmin&quot;);
+<span class="fc" id="L139">   }</span>
+
+   private void visualizzaCategorie(final HttpServletRequest request) {
+<span class="fc" id="L142">      request.setAttribute(&quot;categorieList&quot;,</span>
+<span class="fc" id="L143">              service.visualizzaCategorie());</span>
+<span class="fc" id="L144">   }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

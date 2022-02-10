@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Validator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">controller.utils</a> &gt; <span class="el_source">Validator.java</span></div><h1>Validator.java</h1><pre class="source lang-java linenums">package controller.utils;
+
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
+public final class Validator {
+    /**
+     * List di errori.
+     */
+    private final List&lt;String&gt; errors;
+    /**
+     * Request da controllare.
+     */
+    private final HttpServletRequest request;
+    /**
+     * Pattern per INT.
+     */
+<span class="fc" id="L21">    private static final Pattern INT_PATTERN = Pattern.compile(&quot;^\\d+$&quot;);</span>
+    /**
+     * Pattern per DOUBLE.
+     */
+<span class="fc" id="L25">    private static final Pattern DOUBLE_PATTERN =</span>
+<span class="fc" id="L26">            Pattern.compile(&quot;^(-)?(\\d+)(\\.\\d+)?$&quot;);</span>
+    /**
+     * Pattern per NAME.
+     */
+<span class="fc" id="L30">    private static final Pattern NAME_PATTERN =</span>
+<span class="fc" id="L31">            Pattern.compile(&quot;^[A-Za-zà-ź \\s]{2,50}$&quot;);</span>
+    /**
+     * Pattern per EMAIL.
+     */
+<span class="fc" id="L35">    private static final Pattern EMAIL_PATTERN =</span>
+<span class="fc" id="L36">            Pattern.compile(&quot;^[a-zA-Z0-9.!#$%&amp;’*+=?^_`{|}~-]{1,29}+&quot;</span>
+                    + &quot;@[a-zA-Z0-9-]{1,29}+(?:\\.[a-zA-Z0-9-]+){1,10}$&quot;);
+    /**
+     * Pattern per PASSWORD.
+     */
+<span class="fc" id="L41">    private static final Pattern PASSWORD_PATTERN =</span>
+<span class="fc" id="L42">            Pattern.compile(&quot;^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)&quot;</span>
+                    + &quot;(?=.*[@$!%*?&amp;._])[A-Za-z\\d@$!%*?&amp;._]{8,32}$&quot;);
+    /**
+     * Pattern per CODICE FISCALE.
+     */
+<span class="fc" id="L47">    private static final Pattern CODICE_FISCALE_PATTERN =</span>
+<span class="fc" id="L48">            Pattern.compile(&quot;^[A-Z]{6}[0-9]{2}[A-Z]&quot;</span>
+                    + &quot;[0-9]{2}[A-Z][0-9]{3}[A-Z]$&quot;);
+    /**
+     * Pattern per NUMERO DI TELEFONO.
+     */
+<span class="fc" id="L53">    private static final Pattern PHONE_PATTERN = Pattern.compile(&quot;^\\d{10}$&quot;);</span>
+    /**
+     * Pattern per INDIRIZZO.
+     */
+<span class="fc" id="L57">    private static final Pattern ADDRESS_PATTERN =</span>
+<span class="fc" id="L58">            Pattern.compile(&quot;[a-zA-Z0-9\\s]{1,74}+,\\s[0-9]{1,5}$&quot;);</span>
+    /**
+     * Pattern per CITY.
+     */
+<span class="fc" id="L62">    private static final Pattern CITY_PATTERN =</span>
+<span class="fc" id="L63">            Pattern.compile(&quot;^[A-Za-zà-ź \s]{2,50}$&quot;);</span>
+    /**
+     * Pattern per CAP.
+     */
+<span class="fc" id="L67">    private static final Pattern CAP_PATTERN = Pattern.compile(&quot;^[0-9]{5}$&quot;);</span>
+
+    /**
+     * Costruttore.
+     *
+     * @param requestt set della request per pullare gli int.
+     */
+<span class="fc" id="L74">    public Validator(final HttpServletRequest requestt) {</span>
+<span class="fc" id="L75">        errors = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L76">        this.request = requestt;</span>
+<span class="fc" id="L77">    }</span>
+
+    /**
+     * Inserisce message nella lista se la condition è false.
+     *
+     * @param condition condizione.
+     * @param message   messaggio.
+     * @return true se condition è vera false altrimenti.
+     */
+    private boolean gatherError(final boolean condition, final String message) {
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (condition) {</span>
+<span class="fc" id="L88">            return true;</span>
+        } else {
+<span class="fc" id="L90">            errors.add(message);</span>
+<span class="fc" id="L91">            return false;</span>
+        }
+    }
+
+    /**
+     * checka se value != null o !value.isBlank().
+     *
+     * @param value valore da checkare.
+     * @return true o false.
+     */
+    public boolean required(final String value) {
+<span class="fc bfc" id="L102" title="All 4 branches covered.">        return value != null &amp;&amp; !value.isBlank();</span>
+    }
+
+    /**
+     * assertMatch tra value e regxp con eventuale msg di errore.
+     *
+     * @param value  valore.
+     * @param regexp regexp.
+     * @param msg    msg di errore.
+     * @return true se matcha, altrimenti false.
+     */
+    public boolean assertMatch(final String value,
+                               final Pattern regexp, final String msg) {
+<span class="fc" id="L115">        String param = request.getParameter(value);</span>
+<span class="fc bfc" id="L116" title="All 4 branches covered.">        boolean condition = required(param) &amp;&amp; regexp.matcher(param).matches();</span>
+
+<span class="fc" id="L118">        return gatherError(condition, msg);</span>
+    }
+
+    /**
+     * Verifica CAP.
+     *
+     * @param value valore da controllare.
+     * @param msg   msg di errore.
+     * @return true se value rispetta la regexp, false altrimenti.
+     */
+    public boolean assertCAP(final String value, final String msg) {
+<span class="fc" id="L129">        return assertMatch(value, CAP_PATTERN, msg);</span>
+    }
+
+    /**
+     * Verifica City.
+     *
+     * @param value valore da controllare.
+     * @param msg   msg di errore.
+     * @return true se value rispetta la regexp, false altrimenti.
+     */
+    public boolean assertCity(final String value, final String msg) {
+<span class="fc" id="L140">        return assertMatch(value, CITY_PATTERN, msg);</span>
+    }
+
+    /**
+     * Verifica Indirizzo.
+     *
+     * @param value valore da controllare.
+     * @param msg   msg di errore.
+     * @return true se value rispetta la regexp, false altrimenti.
+     */
+    public boolean assertIndirizzo(final String value, final String msg) {
+<span class="fc" id="L151">        return assertMatch(value, ADDRESS_PATTERN, msg);</span>
+    }
+
+    /**
+     * Verifica int.
+     *
+     * @param value valore da controllare.
+     * @param msg   msg di errore.
+     * @return true se value rispetta la regexp, false altrimenti.
+     */
+    public boolean assertInt(final String value, final String msg) {
+<span class="fc" id="L162">        return assertMatch(value, INT_PATTERN, msg);</span>
+    }
+
+    /**
+     * Verifica Password.
+     *
+     * @param value valore da controllare.
+     * @param msg   msg di errore.
+     * @return true se value rispetta la regexp, false altrimenti.
+     */
+    public boolean assertPassword(final String value, final String msg) {
+<span class="fc" id="L173">        return assertMatch(value, PASSWORD_PATTERN, msg);</span>
+    }
+
+    /**
+     * Verifica Email.
+     *
+     * @param value valore da controllare.
+     * @param msg   msg di errore.
+     * @return true se value rispetta la regexp, false altrimenti.
+     */
+    public boolean assertEmail(final String value, final String msg) {
+<span class="fc" id="L184">        return assertMatch(value, EMAIL_PATTERN, msg);</span>
+    }
+
+    /**
+     * Verifica Phone.
+     *
+     * @param value valore da controllare.
+     * @param msg   msg di errore.
+     * @return true se value rispetta la regexp, false altrimenti.
+     */
+    public boolean assertPhone(final String value, final String msg) {
+<span class="fc" id="L195">        return assertMatch(value, PHONE_PATTERN, msg);</span>
+    }
+
+    /**
+     * Verifica Nome/Cognome.
+     *
+     * @param value valore da controllare.
+     * @param msg   msg di errore.
+     * @return true se value rispetta la regexp, false altrimenti.
+     */
+    public boolean assertNameSurname(final String value, final String msg) {
+<span class="fc" id="L206">        return assertMatch(value, NAME_PATTERN, msg);</span>
+    }
+
+    /**
+     * Verifica CF.
+     *
+     * @param value valore da controllare.
+     * @param msg   msg di errore.
+     * @return true se value rispetta la regexp, false altrimenti.
+     */
+    public boolean assertCF(final String value, final String msg) {
+<span class="fc" id="L217">        return assertMatch(value, CODICE_FISCALE_PATTERN, msg);</span>
+    }
+
+    /**
+     * Check se un bean può essere castato in modo sicuro.
+     *
+     * @param type Istanza del Tipo con cui verificare la compatibilità.
+     * @param attr Object da castare.
+     * @return true se attr corrisponde, false altrimenti.
+     */
+    public boolean isValidBean(final Class type, final Object attr) {
+<span class="fc bfc" id="L228" title="All 4 branches covered.">        return (type != null</span>
+                &amp;&amp; attr != null
+<span class="fc bfc" id="L230" title="All 2 branches covered.">                &amp;&amp; (attr.getClass().getSimpleName().equals(</span>
+<span class="fc" id="L231">                type.getSimpleName())));</span>
+    }
+
+    /**
+     * Check per tutti i parametri di utente.
+     *
+     * @return true se rispetta le regexp, altrimenti false.
+     */
+    public boolean assertUtente() {
+<span class="fc bfc" id="L240" title="All 2 branches covered.">        if (assertNameSurname(&quot;nome&quot;, &quot;Errore Input Nome&quot;)</span>
+<span class="fc bfc" id="L241" title="All 2 branches covered.">                &amp;&amp; assertNameSurname(&quot;cognome&quot;,</span>
+                &quot;Errore Input Cognome&quot;)
+<span class="fc bfc" id="L243" title="All 2 branches covered.">                &amp;&amp; assertEmail(&quot;email&quot;, &quot;Errore Input Email&quot;)</span>
+<span class="fc bfc" id="L244" title="All 2 branches covered.">                &amp;&amp; assertCF(&quot;cf&quot;, &quot;Errore Input CF&quot;)</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">                &amp;&amp; assertPassword(&quot;password&quot;,</span>
+                &quot;Errore Input Password&quot;)
+<span class="fc bfc" id="L247" title="All 2 branches covered.">                &amp;&amp; assertCAP(&quot;cap&quot;, &quot;Errore Input CAP&quot;)</span>
+<span class="fc bfc" id="L248" title="All 2 branches covered.">                &amp;&amp; assertIndirizzo(&quot;indirizzo&quot;,</span>
+                &quot;Errore Input Indirizzo&quot;)
+<span class="fc bfc" id="L250" title="All 2 branches covered.">                &amp;&amp; assertCity(&quot;citta&quot;, &quot;Errore Input City&quot;)</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">                &amp;&amp; assertPhone(&quot;telefono&quot;,</span>
+                &quot;Errore Input Trap Phone&quot;)) {
+<span class="fc" id="L253">            return true;</span>
+        }
+<span class="fc" id="L255">        return false;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

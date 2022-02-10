@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CampagnaServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.services</a> &gt; <span class="el_source">CampagnaServiceImpl.java</span></div><h1>CampagnaServiceImpl.java</h1><pre class="source lang-java linenums">package model.services;
+
+import model.DAO.CampagnaDAO;
+import model.DAO.DAO;
+import model.DAO.DonazioneDAO;
+import model.beans.Campagna;
+import model.beans.Donazione;
+import model.beans.StatoCampagna;
+import model.beans.proxyInterfaces.CampagnaInterface;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public final class CampagnaServiceImpl implements CampagnaService {
+    /**
+     * Wrapper di campagna DAO.
+     */
+    private final DAO&lt;Campagna&gt; dao;
+
+    /**
+     * Costruttore vuoto.
+     */
+<span class="fc" id="L26">    public CampagnaServiceImpl() {</span>
+<span class="fc" id="L27">        this.dao = new CampagnaDAO();</span>
+<span class="fc" id="L28">    }</span>
+    /**
+     * @param campagnaDAO Istanza di campagna DAO
+     */
+<span class="fc" id="L32">    public CampagnaServiceImpl(final DAO&lt;Campagna&gt; campagnaDAO) {</span>
+<span class="fc" id="L33">        this.dao = campagnaDAO;</span>
+<span class="fc" id="L34">    }</span>
+
+    @Override
+    public boolean creazioneCampagna(final Campagna campagna) {
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (campagna == null) {</span>
+<span class="fc" id="L39">            throw new IllegalArgumentException(&quot;Null Object&quot;);</span>
+        } else {
+<span class="fc" id="L41">            return dao.save(campagna);</span>
+        }
+    }
+
+    @Override
+    public boolean modificaCampagna(final Campagna campagna) {
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if (campagna == null) {</span>
+<span class="fc" id="L48">            throw new IllegalArgumentException(&quot;Null Object&quot;);</span>
+        } else {
+<span class="fc" id="L50">            return dao.update(campagna);</span>
+        }
+    }
+
+    @Override
+    public Map&lt;String, String&gt; condividiCampagna(final int idCampagna,
+                                                 final HttpServletRequest req) {
+<span class="fc" id="L57">        Campagna campagna = dao.getById(idCampagna);</span>
+
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (campagna == null) {</span>
+<span class="fc" id="L60">            throw new IllegalArgumentException(&quot;Null Object&quot;);</span>
+        } else {
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            if (req == null) {</span>
+<span class="fc" id="L63">                throw new IllegalArgumentException(&quot;Null Object&quot;);</span>
+            } else {
+<span class="fc" id="L65">                HashMap&lt;String, String&gt; link = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L66">                String path = &quot;http://&quot; + req.getServerName() + &quot;:&quot;</span>
+<span class="fc" id="L67">                        + req.getServerPort() + req.getContextPath()</span>
+                        + &quot;/campagna/campagna?idCampagna=&quot;
+<span class="fc" id="L69">                        + campagna.getIdCampagna();</span>
+<span class="fc" id="L70">                String subject = &quot;Dona a questa campagna presente su Fund.It &quot;;</span>
+
+<span class="fc" id="L72">                link.put(&quot;mail&quot;, &quot;mailto:?body=&quot;</span>
+                        + path + &quot;&amp;amp;subject= Titolo: &quot;
+<span class="fc" id="L74">                        + subject + campagna.getTitolo());</span>
+<span class="fc" id="L75">                link.put(&quot;whatsapp&quot;, &quot;https://wa.me/?text=&quot; + subject + path);</span>
+<span class="fc" id="L76">                link.put(&quot;facebook&quot;,</span>
+                        &quot;https://www.facebook.com/sharer/sharer.php?u=&quot;
+                                + path);
+<span class="fc" id="L79">                link.put(&quot;twitter&quot;, &quot;https://twitter.com/share?text=&quot; + subject</span>
+                        + &quot;&amp;amp;url=&quot; + path + &quot;/&amp;amp;via=Fund.It&quot;);
+<span class="fc" id="L81">                link.put(&quot;link&quot;, path);</span>
+
+<span class="fc" id="L83">                return link;</span>
+            }
+        }
+    }
+
+    /**
+     * Esegue i rimborsi delle eventuali donazioni
+     * effettuate sulla campagna.
+     *
+     * @param campagna istanza di Campagna
+     * @param proxy    proxy di Campagna per trovare le donazioni della campagna
+     * @return true se l'operazione è andata a buon fine, false altrimenti
+     */
+    @Override
+    public boolean rimborsaDonazioni(final Campagna campagna,
+                                     final CampagnaInterface proxy) {
+<span class="fc bfc" id="L99" title="All 4 branches covered.">        if (campagna == null || proxy == null) {</span>
+<span class="fc" id="L100">            throw new IllegalArgumentException(&quot;Invalid argument&quot;);</span>
+        } else {
+<span class="fc" id="L102">            List&lt;Donazione&gt; donazioni = proxy.getDonazioni();</span>
+<span class="fc" id="L103">            DAO&lt;Donazione&gt; daoDonazione = new DonazioneDAO();</span>
+<span class="pc" id="L104">            donazioni.forEach(d -&gt; d.setSommaDonata(-d.getSommaDonata()));</span>
+<span class="fc" id="L105">            boolean flag = donazioni.stream().allMatch(daoDonazione::update);</span>
+
+<span class="fc" id="L107">            campagna.setDonazioni(donazioni);</span>
+<span class="fc" id="L108">            return flag;</span>
+        }
+    }
+
+    @Override
+    public List&lt;Campagna&gt; getAllCampagne() {
+<span class="fc" id="L114">        return dao.getAll();</span>
+    }
+
+    @Override
+    public List&lt;Campagna&gt; getActiveCampagne() {
+<span class="nc" id="L119">        List&lt;Campagna&gt; lst = dao.getAll();</span>
+<span class="nc" id="L120">        lst = lst.stream().filter(c -&gt;</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">            c.getStato() == StatoCampagna.ATTIVA</span>
+<span class="nc" id="L122">        ).collect(Collectors.toList());</span>
+<span class="nc" id="L123">        return lst;</span>
+    }
+
+    @Override
+    public List&lt;Campagna&gt; ricercaCampagna(final String text) {
+<span class="nc" id="L128">        return ((CampagnaDAO) dao).getByKeyword(text);</span>
+    }
+
+    @Override
+    public List&lt;Campagna&gt; ricercaCampagnaPerCategoria(final String text) {
+<span class="nc" id="L133">        return ((CampagnaDAO) dao).getByCategory(text);</span>
+    }
+
+    @Override
+    public List&lt;Campagna&gt; visualizzaCampagne(final int size, final int offset) {
+<span class="nc" id="L138">        return ((CampagnaDAO) dao).getBySizeOffset(size, offset);</span>
+    }
+
+    /**
+     * @param idCampagna id della campagna da cercare
+     * @return istanza di Campagna avente come id idCampagna, null altrimenti
+     */
+    @Override
+    public Campagna trovaCampagna(final int idCampagna) {
+<span class="nc" id="L147">        return dao.getById(idCampagna);</span>
+    }
+
+    @Override
+    public boolean chiudiCampagna(final Campagna campagna) {
+<span class="nc" id="L152">        campagna.setStato(StatoCampagna.CHIUSA);</span>
+<span class="nc" id="L153">        return modificaCampagna(campagna);</span>
+    }
+
+    @Override
+    public boolean cancellaCampagna(final Campagna campagna) {
+<span class="nc" id="L158">        campagna.setStato(StatoCampagna.CANCELLATA);</span>
+<span class="nc" id="L159">        return modificaCampagna(campagna);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

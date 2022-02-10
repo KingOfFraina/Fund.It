@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UtenteServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.services</a> &gt; <span class="el_source">UtenteServiceImpl.java</span></div><h1>UtenteServiceImpl.java</h1><pre class="source lang-java linenums">package model.services;
+
+import model.DAO.DAO;
+import model.DAO.UtenteDAO;
+import model.beans.Utente;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public class UtenteServiceImpl implements UtenteService {
+    /**
+     * Il DAO usato per eseguire le operazioni.
+     */
+    private final DAO&lt;Utente&gt; dao;
+
+    /**
+     * Il costruttore per la classe {@link UtenteServiceImpl}.
+     *
+     * @param utenteDAO il DAO da utilizzare
+     *                  per eseguire le operazioni richieste.
+     */
+<span class="fc" id="L22">    public UtenteServiceImpl(final DAO&lt;Utente&gt; utenteDAO) {</span>
+<span class="fc" id="L23">        this.dao = utenteDAO;</span>
+<span class="fc" id="L24">    }</span>
+
+    /**
+     * Il costruttore per la classe {@link UtenteServiceImpl}.
+     */
+<span class="nc" id="L29">    public UtenteServiceImpl() {</span>
+<span class="nc" id="L30">        this.dao = new UtenteDAO();</span>
+<span class="nc" id="L31">    }</span>
+
+    /**
+     * @param id idUtente.
+     * @return l'istanza di utente presente nel database
+     */
+    @Override
+    public Utente visualizzaDashboardUtente(final int id) {
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (id &gt; 0) {</span>
+<span class="fc" id="L40">            return dao.getById(id);</span>
+        } else {
+<span class="fc" id="L42">            throw new IllegalArgumentException(&quot;Null Object&quot;);</span>
+        }
+    }
+
+    /**
+     * @param utente da modificare.
+     * @return esito operazione.
+     */
+    @Override
+    public boolean modificaProfilo(final Utente utente) {
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        if (utente != null) {</span>
+<span class="fc" id="L53">            return dao.update(utente);</span>
+        } else {
+<span class="fc" id="L55">            throw new IllegalArgumentException(&quot;Null Object&quot;);</span>
+        }
+    }
+
+    /**
+     * @param richiedente della lista completa utenti.
+     * @return null se il richiedente non è admin. List di Utente se è admin.
+     */
+    @Override
+    public List&lt;Utente&gt; visualizzaUtenti(final Utente richiedente) {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (richiedente != null) {</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">            if (!richiedente.isAdmin()) {</span>
+<span class="fc" id="L67">                throw new IllegalCallerException(&quot;Only Admin&quot;);</span>
+            } else {
+<span class="fc" id="L69">                return dao.getAll();</span>
+            }
+        } else {
+<span class="fc" id="L72">            throw new IllegalArgumentException(&quot;Null Object&quot;);</span>
+        }
+    }
+
+    /**
+     * @param richiedente Istanza di Utente di chi ha ordinato l'operazione.
+     * @param soggetto    Istanza di Utente di cui va modificato lo stato.
+     * @return esito dell'operazione.
+     */
+    @Override
+    public boolean promuoviDeclassaUtente(final Utente richiedente,
+                                          final Utente soggetto) {
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        if (richiedente != null) {</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">            if (soggetto == null) {</span>
+<span class="fc" id="L86">                throw new IllegalArgumentException(&quot;Null Object&quot;);</span>
+            } else {
+<span class="fc bfc" id="L88" title="All 2 branches covered.">                if (!richiedente.isAdmin()) {</span>
+<span class="fc" id="L89">                    throw new IllegalCallerException(&quot;Only Admin&quot;);</span>
+                } else {
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">                    soggetto.setAdmin(!soggetto.isAdmin());</span>
+<span class="fc" id="L92">                    return dao.update(soggetto);</span>
+                }
+            }
+        } else {
+<span class="fc" id="L96">            throw new IllegalArgumentException(&quot;Null Object&quot;);</span>
+        }
+    }
+
+    /**
+     * @param utente istanza di Utente da sospendere
+     * @return true se l'utente è stato sospeso, false altrimenti
+     */
+    @Override
+    public boolean sospensioneUtente(final Utente utente) {
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        if (utente == null) {</span>
+<span class="fc" id="L107">            throw new IllegalArgumentException(&quot;Null Object&quot;);</span>
+        } else {
+<span class="fc bfc" id="L109" title="All 2 branches covered.">            if (utente.getDataBan() != null) {</span>
+<span class="fc" id="L110">                utente.setDataBan(null);</span>
+            } else {
+<span class="fc" id="L112">                final long giorniBan = 5;</span>
+<span class="fc" id="L113">                utente.setDataBan(LocalDateTime.now()</span>
+<span class="fc" id="L114">                        .plusDays(giorniBan));</span>
+            }
+<span class="fc" id="L116">            return dao.update(utente);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

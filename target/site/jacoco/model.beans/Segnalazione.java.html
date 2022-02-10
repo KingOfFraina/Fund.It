@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Segnalazione.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.beans</a> &gt; <span class="el_source">Segnalazione.java</span></div><h1>Segnalazione.java</h1><pre class="source lang-java linenums">package model.beans;
+
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
+
+<span class="fc" id="L8">public final class Segnalazione {</span>
+    /**
+     * Identificativo univoco della segnalazione.
+     */
+    private int idSegnalazione;
+    /**
+     * Data della segnalazione.
+     */
+    private LocalDateTime dataOra;
+    /**
+     * Descrizione della segnalazione.
+     */
+    private String descrizione;
+    /**
+     * Insieme degli stati possibili assunti da una segnalazione.
+     */
+    private StatoSegnalazione statoSegnalazione;
+    /**
+     * Riferimento all'oggetto utente che segnala la campagna.
+     */
+    private Utente segnalatore;
+    /**
+     * Riferimento all'oggetto utente che viene segnalato.
+     */
+    private Utente segnalato;
+    /**
+     * Riferimento all'oggetto campagna che viene segnalata.
+     */
+    private Campagna campagnaSegnalata;
+
+    /**
+     * @return int Id attuale della segnalazione
+     */
+    public int getIdSegnalazione() {
+<span class="fc" id="L42">        return idSegnalazione;</span>
+    }
+
+    /**
+     * @param id Nuovo identificativo della segnalazione.
+     */
+    public void setIdSegnalazione(final int id) {
+<span class="fc" id="L49">        this.idSegnalazione = id;</span>
+<span class="fc" id="L50">    }</span>
+
+    /**
+     * @return Rappresenta la data della segnalazione.
+     */
+    public LocalDateTime getDataOra() {
+<span class="fc" id="L56">        return dataOra;</span>
+    }
+
+    /**
+     * @param data La nuova data della segnalazione.
+     */
+    public void setDataOra(final LocalDateTime data) {
+<span class="fc" id="L63">        this.dataOra = data.truncatedTo(ChronoUnit.MINUTES);</span>
+<span class="fc" id="L64">    }</span>
+
+    /**
+     * @return String stringa descrizione
+     */
+    public String getDescrizione() {
+<span class="fc" id="L70">        return descrizione;</span>
+    }
+
+    /**
+     * @param description La nuova descrizione della segnalazione.
+     */
+    public void setDescrizione(final String description) {
+<span class="fc" id="L77">        this.descrizione = description;</span>
+<span class="fc" id="L78">    }</span>
+
+    /**
+     * @return StatoSegnalazione Lo stato attuale della segnalazione.
+     */
+    public StatoSegnalazione getStatoSegnalazione() {
+<span class="fc" id="L84">        return statoSegnalazione;</span>
+    }
+
+    /**
+     * @param stato Il nuovo stato della segnalazione.
+     */
+    public void setStatoSegnalazione(final StatoSegnalazione stato) {
+<span class="fc" id="L91">        this.statoSegnalazione = stato;</span>
+<span class="fc" id="L92">    }</span>
+
+    /**
+     * @return Utente oggetto utente.
+     */
+    public Utente getSegnalatore() {
+<span class="fc" id="L98">        return segnalatore;</span>
+    }
+
+    /**
+     * @param utente Utente che ha segnalato la campagna.
+     */
+    public void setSegnalatore(final Utente utente) {
+<span class="fc" id="L105">        this.segnalatore = utente;</span>
+<span class="fc" id="L106">    }</span>
+
+    /**
+     * @return Utente istanza di Utente che viene segnalata.
+     */
+    public Utente getSegnalato() {
+<span class="fc" id="L112">        return segnalato;</span>
+    }
+
+    /**
+     * @param utente Istanza di utente che viene segnalata.
+     */
+    public void setSegnalato(final Utente utente) {
+<span class="fc" id="L119">        this.segnalato = utente;</span>
+<span class="fc" id="L120">    }</span>
+
+    /**
+     * @return Campagna istanza di Campagna che viene segnalata.
+     */
+    public Campagna getCampagnaSegnalata() {
+<span class="fc" id="L126">        return campagnaSegnalata;</span>
+    }
+
+    /**
+     * @param campagna Istanza di campagna da segnalare.
+     */
+    public void setCampagnaSegnalata(final Campagna campagna) {
+<span class="fc" id="L133">        this.campagnaSegnalata = campagna;</span>
+<span class="fc" id="L134">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L138">        return &quot;Segnalazione{&quot;</span>
+                + &quot;idSegnalazione=&quot; + idSegnalazione
+                + &quot;, dataOra=&quot; + dataOra
+                + &quot;, descrizione='&quot; + descrizione + '\''
+                + &quot;, statoSegnalazione=&quot; + statoSegnalazione
+<span class="nc" id="L143">                + &quot;, segnalatore=&quot; + segnalatore.getIdUtente()</span>
+<span class="nc" id="L144">                + &quot;, segnalato=&quot; + segnalato.getIdUtente()</span>
+<span class="nc" id="L145">                + &quot;, campagna=&quot; + campagnaSegnalata.getIdCampagna()</span>
+                + '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

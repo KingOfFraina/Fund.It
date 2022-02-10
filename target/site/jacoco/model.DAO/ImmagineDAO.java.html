@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImmagineDAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.DAO</a> &gt; <span class="el_source">ImmagineDAO.java</span></div><h1>ImmagineDAO.java</h1><pre class="source lang-java linenums">package model.DAO;
+
+import model.beans.Campagna;
+import model.beans.Immagine;
+import model.storage.ConPool;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="fc" id="L14">public final class ImmagineDAO implements DAO&lt;Immagine&gt; {</span>
+   @Override
+   public Immagine getById(final int id) {
+
+<span class="fc bfc" id="L18" title="All 2 branches covered.">      if (id &gt; 0) {</span>
+<span class="fc" id="L19">         try (Connection connection = ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L20">            String query = &quot;SELECT * FROM immagine WHERE idImmagine = ?&quot;;</span>
+
+<span class="fc" id="L22">            try (PreparedStatement preparedStatement =</span>
+<span class="fc" id="L23">                         connection.prepareStatement(query)) {</span>
+<span class="fc" id="L24">               preparedStatement.setInt(1, id);</span>
+<span class="fc" id="L25">               ResultSet resultSet = preparedStatement.executeQuery();</span>
+
+<span class="fc" id="L27">               Immagine immagine = null;</span>
+
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">               if (resultSet.next()) {</span>
+<span class="fc" id="L30">                  immagine = extract(resultSet);</span>
+               }
+<span class="fc" id="L32">               return immagine;</span>
+            }
+<span class="nc" id="L34">         } catch (SQLException e) {</span>
+<span class="nc" id="L35">            throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+         }
+      } else {
+<span class="fc" id="L38">         throw new IllegalArgumentException(&quot;Null object&quot;);</span>
+      }
+   }
+
+   @Override
+   public List&lt;Immagine&gt; getAll() {
+<span class="fc" id="L44">      try (Connection connection = ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L45">         String query = &quot;SELECT * FROM immagine&quot;;</span>
+
+<span class="fc" id="L47">         try (PreparedStatement preparedStatement =</span>
+<span class="fc" id="L48">                      connection.prepareStatement(query)) {</span>
+
+<span class="fc" id="L50">            ResultSet resultSet = preparedStatement.executeQuery();</span>
+<span class="fc" id="L51">            List&lt;Immagine&gt; immagineList = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L53" title="All 2 branches covered.">            while (resultSet.next()) {</span>
+<span class="fc" id="L54">               immagineList.add(extract(resultSet));</span>
+            }
+
+<span class="fc" id="L57">            return immagineList;</span>
+         }
+<span class="nc" id="L59">      } catch (SQLException e) {</span>
+<span class="nc" id="L60">         throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+      }
+   }
+
+   @Override
+   public boolean save(final Immagine entity) {
+<span class="fc bfc" id="L66" title="All 2 branches covered.">      if (entity != null) {</span>
+         try (Connection connection =
+<span class="fc" id="L68">                      ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L69">            String query =</span>
+                    &quot;INSERT INTO immagine (idCampagna, path) &quot;
+                            + &quot;VALUES (?,?)&quot;;
+
+<span class="fc" id="L73">            try (PreparedStatement preparedStatement =</span>
+<span class="fc" id="L74">                         connection.prepareStatement(query,</span>
+                                 PreparedStatement
+                                         .RETURN_GENERATED_KEYS)) {
+
+<span class="fc" id="L78">               int index = 1;</span>
+
+<span class="fc" id="L80">               preparedStatement.setInt(index++,</span>
+<span class="fc" id="L81">                       entity.getCampagna().getIdCampagna());</span>
+<span class="fc" id="L82">               preparedStatement.setString(index++, entity.getPath());</span>
+
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">               boolean esito = preparedStatement.executeUpdate() &gt; 0;</span>
+
+<span class="fc" id="L86">               ResultSet resultSet = preparedStatement.getGeneratedKeys();</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">               if (resultSet.next()) {</span>
+<span class="fc" id="L88">                  entity.setId(resultSet.getInt(1));</span>
+               }
+
+<span class="fc" id="L91">               return esito;</span>
+            }
+<span class="nc" id="L93">         } catch (SQLException e) {</span>
+<span class="nc" id="L94">            throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+         }
+      } else {
+<span class="fc" id="L97">         throw new IllegalArgumentException(&quot;Null object&quot;);</span>
+      }
+   }
+
+   @Override
+   public boolean update(final Immagine entity) {
+<span class="fc bfc" id="L103" title="All 2 branches covered.">      if (entity != null) {</span>
+         try (Connection connection =
+<span class="fc" id="L105">                      ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L106">            String query = &quot;UPDATE immagine &quot;</span>
+                    + &quot;SET path = ? WHERE idImmagine = ?&quot;;
+
+<span class="fc" id="L109">            try (PreparedStatement preparedStatement =</span>
+<span class="fc" id="L110">                         connection.prepareStatement(query)) {</span>
+
+<span class="fc" id="L112">               int index = 1;</span>
+
+<span class="fc" id="L114">               preparedStatement.setString(index++, entity.getPath());</span>
+<span class="fc" id="L115">               preparedStatement.setInt(index, entity.getId());</span>
+
+<span class="fc bfc" id="L117" title="All 2 branches covered.">               return preparedStatement.executeUpdate() &gt; 0;</span>
+            }
+<span class="nc" id="L119">         } catch (SQLException e) {</span>
+<span class="nc" id="L120">            throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+         }
+      } else {
+<span class="fc" id="L123">         throw new IllegalArgumentException(&quot;Null object&quot;);</span>
+      }
+   }
+
+   @Override
+   public boolean delete(final Immagine entity) {
+<span class="fc bfc" id="L129" title="All 2 branches covered.">      if (entity != null) {</span>
+         try (Connection connection =
+<span class="fc" id="L131">                      ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L132">            String query =</span>
+                    &quot;DELETE FROM immagine WHERE idImmagine = ?&quot;;
+
+<span class="fc" id="L135">            try (PreparedStatement preparedStatement =</span>
+<span class="fc" id="L136">                         connection.prepareStatement(query)) {</span>
+
+<span class="fc" id="L138">               preparedStatement.setInt(1, entity.getId());</span>
+
+<span class="fc bfc" id="L140" title="All 2 branches covered.">               return preparedStatement.executeUpdate() &gt; 0;</span>
+            }
+<span class="nc" id="L142">         } catch (SQLException e) {</span>
+<span class="nc" id="L143">            throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+         }
+      } else {
+<span class="fc" id="L146">         throw new IllegalArgumentException(&quot;Null object&quot;);</span>
+      }
+   }
+
+   @Override
+   public Immagine extract(final ResultSet resultSet)
+           throws SQLException {
+
+
+<span class="fc bfc" id="L155" title="All 2 branches covered.">      if (resultSet != null) {</span>
+<span class="fc" id="L156">         Immagine immagine = new Immagine();</span>
+
+<span class="fc" id="L158">         immagine.setId(resultSet.getInt(&quot;idImmagine&quot;));</span>
+<span class="fc" id="L159">         immagine.setPath(resultSet.getString(&quot;path&quot;));</span>
+
+<span class="fc" id="L161">         Campagna campagna = new Campagna();</span>
+<span class="fc" id="L162">         campagna.setIdCampagna(resultSet.getInt(&quot;idCampagna&quot;));</span>
+<span class="fc" id="L163">         immagine.setCampagna(campagna);</span>
+
+<span class="fc" id="L165">         return immagine;</span>
+      } else {
+<span class="fc" id="L167">         throw new IllegalArgumentException(&quot;Null object&quot;);</span>
+      }
+   }
+
+   /**
+    * Permette la cancellazione di tutte le foto collegate di una campagna.
+    *
+    * @param idCampagna l'idCampagna della campagna
+    * @return l'esito con cui si è conclusa l'operazione
+    */
+   public boolean deleteByIdCampagna(final int idCampagna) {
+<span class="fc bfc" id="L178" title="All 2 branches covered.">      if (idCampagna &gt; 0) {</span>
+         try (Connection connection =
+<span class="fc" id="L180">                      ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L181">            String query =</span>
+                    &quot;DELETE FROM immagine WHERE idCampagna = ?&quot;;
+
+<span class="fc" id="L184">            try (PreparedStatement preparedStatement =</span>
+<span class="fc" id="L185">                         connection.prepareStatement(query)) {</span>
+
+<span class="fc" id="L187">               preparedStatement.setInt(1, idCampagna);</span>
+
+<span class="pc bpc" id="L189" title="1 of 2 branches missed.">               return preparedStatement.executeUpdate() &gt; 0;</span>
+            }
+
+<span class="nc" id="L192">         } catch (SQLException e) {</span>
+<span class="nc" id="L193">            throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+         }
+      } else {
+<span class="fc" id="L196">         throw new IllegalArgumentException(&quot;Id &lt;= 0&quot;);</span>
+      }
+   }
+
+   /**
+    * @param idCampagna id della campagna
+    * @return tutte le immagini della campagna
+    */
+   public List&lt;Immagine&gt; getByIdCampagna(final int idCampagna) {
+<span class="fc bfc" id="L205" title="All 2 branches covered.">      if (idCampagna &gt; 0) {</span>
+<span class="fc" id="L206">         try (Connection connection = ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L207">            List&lt;Immagine&gt; immagineList = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L209">            String query = &quot;SELECT * FROM immagine WHERE idCampagna = ?&quot;;</span>
+
+<span class="fc" id="L211">            try (PreparedStatement preparedStatement =</span>
+<span class="fc" id="L212">                         connection.prepareStatement(query)) {</span>
+<span class="fc" id="L213">               preparedStatement.setInt(1, idCampagna);</span>
+<span class="fc" id="L214">               ResultSet resultSet = preparedStatement.executeQuery();</span>
+
+<span class="fc bfc" id="L216" title="All 2 branches covered.">               while (resultSet.next()) {</span>
+<span class="fc" id="L217">                  immagineList.add(extract(resultSet));</span>
+               }
+
+<span class="fc" id="L220">               return immagineList;</span>
+            }
+<span class="nc" id="L222">         } catch (SQLException e) {</span>
+<span class="nc" id="L223">            throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+         }
+      } else {
+<span class="fc" id="L226">         throw new IllegalArgumentException(&quot;Id &lt;= 0&quot;);</span>
+      }
+   }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

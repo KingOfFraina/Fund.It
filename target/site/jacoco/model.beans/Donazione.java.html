@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Donazione.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.beans</a> &gt; <span class="el_source">Donazione.java</span></div><h1>Donazione.java</h1><pre class="source lang-java linenums">package model.beans;
+
+import model.beans.proxyInterfaces.DonazioneInterface;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
+<span class="fc" id="L8">public final class Donazione implements DonazioneInterface {</span>
+    /**
+     * rappresenta l'ID della donazione.
+     */
+    private int idDonazione;
+    /**
+     * rappresenta la stringa che il PaymentProcessor rilascia
+     * all'atto di un pagamento.
+     */
+    private String ricevuta;
+    /**
+     * rappresenta il commento scritto durante la fase di donazione.
+     */
+    private String commento;
+    /**
+     * rappresenta l'importo della donazione.
+     */
+    private double sommaDonata;
+    /**
+     * rappresenta il consenso dell'utente a rendere visibile il
+     * proprio nome e cognome.
+     */
+    private boolean anonimo;
+    /**
+     * rappresenta l'utente che ha effettuato la donazione.
+     */
+    private Utente utente;
+    /**
+     * rappresenta la campagna su cui l'utente ha donato.
+     */
+    private Campagna campagna;
+    /**
+     * rappresenta la data e l'ora in cui viene effettuata la donazione.
+     */
+    private LocalDateTime dataOra;
+
+    /**
+     * @return l'identificativo della donazione
+     */
+    public int getIdDonazione() {
+<span class="fc" id="L48">        return idDonazione;</span>
+    }
+
+    /**
+     * @param newIdDonazione rappresenta l'ID della donazione
+     */
+    public void setIdDonazione(final int newIdDonazione) {
+<span class="fc" id="L55">        this.idDonazione = newIdDonazione;</span>
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * @return la stringa per la tracciabilità del pagamento
+     * per il PaymentProcessor
+     */
+    public String getRicevuta() {
+<span class="fc" id="L63">        return ricevuta;</span>
+    }
+
+    /**
+     * @param newRicevuta prende la stringa rilasciata dal PaymentProcessor
+     */
+    public void setRicevuta(final String newRicevuta) {
+<span class="fc" id="L70">        this.ricevuta = newRicevuta;</span>
+<span class="fc" id="L71">    }</span>
+
+    /**
+     * @return la striga rappresentante il commento
+     */
+    public String getCommento() {
+<span class="fc" id="L77">        return commento;</span>
+    }
+
+    /**
+     * @param newCommento prende il commento da inserire nella donazione
+     */
+    public void setCommento(final String newCommento) {
+<span class="fc" id="L84">        this.commento = newCommento;</span>
+<span class="fc" id="L85">    }</span>
+
+    /**
+     * @return la somma donata
+     */
+    public double getSommaDonata() {
+<span class="fc" id="L91">        return sommaDonata;</span>
+    }
+
+    /**
+     * @param newSommaDonata prende la somma donata
+     */
+    public void setSommaDonata(final double newSommaDonata) {
+<span class="fc" id="L98">        this.sommaDonata = newSommaDonata;</span>
+<span class="fc" id="L99">    }</span>
+
+    /**
+     * @return lo stato del flag anonimo: true --&gt; anonimo, false --&gt; pubblico
+     */
+    public boolean isAnonimo() {
+<span class="fc" id="L105">        return anonimo;</span>
+    }
+
+    /**
+     * @param newAnonimo prende la preferenza dell'utente circa l'anonimato
+     */
+    public void setAnonimo(final boolean newAnonimo) {
+<span class="fc" id="L112">        this.anonimo = newAnonimo;</span>
+<span class="fc" id="L113">    }</span>
+
+    /**
+     * @return l'utente che ha effettuato la donazione
+     */
+    public Utente getUtente() {
+<span class="fc" id="L119">        return utente;</span>
+    }
+
+    /**
+     * @param newUtente prende l'utente che ha effettuato la donazione
+     */
+    public void setUtente(final Utente newUtente) {
+<span class="fc" id="L126">        this.utente = newUtente;</span>
+<span class="fc" id="L127">    }</span>
+
+    /**
+     * @return la campagna su cui è stata effettuata la donazione
+     */
+    public Campagna getCampagna() {
+<span class="fc" id="L133">        return campagna;</span>
+    }
+
+    /**
+     * @param newCampagna prende la campagna su cui è stata
+     *                    effettuata la donazione
+     */
+    public void setCampagna(final Campagna newCampagna) {
+<span class="fc" id="L141">        this.campagna = newCampagna;</span>
+<span class="fc" id="L142">    }</span>
+
+    /**
+     * @return la data e l'ora in cui è stata effettuata la donazione
+     */
+    public LocalDateTime getDataOra() {
+<span class="fc" id="L148">        return dataOra;</span>
+    }
+
+    /**
+     * @param newDataOra prende la data e l'ora in cui è stato
+     *                   effettuata la donazione
+     */
+    public void setDataOra(final LocalDateTime newDataOra) {
+<span class="fc" id="L156">        this.dataOra = newDataOra.truncatedTo(ChronoUnit.MINUTES);</span>
+<span class="fc" id="L157">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L161">        return &quot;Donazione{&quot;</span>
+                + &quot;idDonazione=&quot; + idDonazione
+                + &quot;, ricevuta='&quot; + ricevuta + '\''
+                + &quot;, commento='&quot; + commento + '\''
+                + &quot;, sommaDonata=&quot; + sommaDonata
+                + &quot;, anonimo=&quot; + anonimo
+<span class="nc" id="L167">                + &quot;, utente=&quot; + utente.getIdUtente()</span>
+<span class="nc" id="L168">                + &quot;, campagna=&quot; + campagna.getIdCampagna()</span>
+                + &quot;, dataOra=&quot; + dataOra
+                + '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

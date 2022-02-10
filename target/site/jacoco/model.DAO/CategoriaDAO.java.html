@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CategoriaDAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.DAO</a> &gt; <span class="el_source">CategoriaDAO.java</span></div><h1>CategoriaDAO.java</h1><pre class="source lang-java linenums">package model.DAO;
+
+import model.beans.Categoria;
+import model.storage.ConPool;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="fc" id="L13">public final class CategoriaDAO implements DAO&lt;Categoria&gt; {</span>
+    @Override
+    public Categoria getById(final int id) {
+<span class="fc" id="L16">        Categoria c = null;</span>
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        if (id &lt;= 0) {</span>
+<span class="fc" id="L18">            throw new IllegalArgumentException(&quot;Id &lt;= 0&quot;);</span>
+        } else {
+<span class="fc" id="L20">            try (Connection con = ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L21">                try (PreparedStatement stmt =</span>
+<span class="fc" id="L22">                             con.prepareStatement(&quot;SELECT * FROM categoria &quot;</span>
+                                     + &quot;WHERE idCategoria = ?&quot;)) {
+<span class="fc" id="L24">                    stmt.setInt(1, id);</span>
+<span class="fc" id="L25">                    ResultSet resultSet = stmt.executeQuery();</span>
+<span class="pc bpc" id="L26" title="1 of 2 branches missed.">                    if (resultSet.next()) {</span>
+<span class="fc" id="L27">                        c = extract(resultSet);</span>
+                    }
+                }
+
+<span class="fc" id="L31">                return c;</span>
+<span class="nc" id="L32">            } catch (SQLException e) {</span>
+<span class="nc" id="L33">                throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+            }
+        }
+    }
+
+    @Override
+    public List&lt;Categoria&gt; getAll() {
+<span class="fc" id="L40">        List&lt;Categoria&gt; cList = null;</span>
+<span class="fc" id="L41">        try (Connection con = ConPool.getInstance().getConnection();</span>
+<span class="fc" id="L42">             PreparedStatement stmt =</span>
+<span class="fc" id="L43">                     con.prepareStatement(&quot;SELECT * FROM categoria&quot;)) {</span>
+
+<span class="fc" id="L45">            ResultSet resultSet = stmt.executeQuery();</span>
+<span class="fc" id="L46">            cList = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            while (resultSet.next()) {</span>
+<span class="fc" id="L49">                cList.add(extract(resultSet));</span>
+            }
+<span class="nc" id="L51">        } catch (SQLException e) {</span>
+<span class="nc" id="L52">            throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+<span class="fc" id="L53">        }</span>
+<span class="fc" id="L54">        return cList;</span>
+    }
+
+    @Override
+    public boolean save(final Categoria entity) {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (entity == null) {</span>
+<span class="fc" id="L60">            throw new IllegalArgumentException(&quot;Null object&quot;);</span>
+        } else {
+<span class="fc" id="L62">            try (Connection con = ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L63">                try (PreparedStatement stmt =</span>
+<span class="fc" id="L64">                             con.prepareStatement(&quot;INSERT INTO &quot;</span>
+                                             + &quot;categoria (nomeCategoria)&quot;
+                                             + &quot; VALUES (?)&quot;,
+                                     PreparedStatement
+                                             .RETURN_GENERATED_KEYS)) {
+
+<span class="fc" id="L70">                    stmt.setString(1, entity.getNome());</span>
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">                    boolean flag = stmt.executeUpdate() &gt; 0;</span>
+
+<span class="fc" id="L73">                    ResultSet set = stmt.getGeneratedKeys();</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">                    if (set.next()) {</span>
+<span class="fc" id="L75">                        entity.setIdCategoria(set.getInt(1));</span>
+                    }
+<span class="fc" id="L77">                    return flag;</span>
+                }
+<span class="fc" id="L79">            } catch (SQLException e) {</span>
+<span class="fc" id="L80">                throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+            }
+        }
+    }
+
+    @Override
+    public boolean update(final Categoria entity) {
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (entity == null) {</span>
+<span class="fc" id="L88">            throw new IllegalArgumentException(&quot;Null object&quot;);</span>
+        } else {
+<span class="fc" id="L90">            try (Connection con = ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L91">                try (PreparedStatement stmt =</span>
+<span class="fc" id="L92">                             con.prepareStatement(&quot;UPDATE categoria &quot;</span>
+                                     + &quot;SET nomeCategoria = ? &quot;
+                                     + &quot;WHERE idCategoria = ?&quot;)) {
+<span class="fc" id="L95">                    int index = 1;</span>
+<span class="fc" id="L96">                    stmt.setString(index++, entity.getNome());</span>
+<span class="fc" id="L97">                    stmt.setInt(index, entity.getIdCategoria());</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">                    return stmt.executeUpdate() &gt; 0;</span>
+                }
+<span class="fc" id="L100">            } catch (SQLException e) {</span>
+<span class="fc" id="L101">                throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+            }
+        }
+    }
+
+    @Override
+    public boolean delete(final Categoria entity) {
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (entity == null) {</span>
+<span class="fc" id="L109">            throw new IllegalArgumentException(&quot;Null object&quot;);</span>
+        } else {
+<span class="fc" id="L111">            try (Connection con = ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L112">                try (PreparedStatement stmt =</span>
+<span class="fc" id="L113">                             con.prepareStatement(&quot;DELETE FROM categoria &quot;</span>
+                                     + &quot;WHERE idCategoria = ?&quot;)) {
+<span class="fc" id="L115">                    stmt.setInt(1, entity.getIdCategoria());</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">                    return stmt.executeUpdate() &gt; 0;</span>
+                }
+<span class="nc" id="L118">            } catch (SQLException e) {</span>
+<span class="nc" id="L119">                throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+            }
+        }
+    }
+
+    @Override
+    public Categoria extract(final ResultSet resultSet) throws SQLException {
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if (resultSet != null) {</span>
+<span class="fc" id="L127">            Categoria c = new Categoria();</span>
+
+<span class="fc" id="L129">            c.setNome(resultSet.getString(&quot;nomeCategoria&quot;));</span>
+<span class="fc" id="L130">            c.setIdCategoria(resultSet.getInt(&quot;idCategoria&quot;));</span>
+<span class="fc" id="L131">            return c;</span>
+        } else {
+<span class="fc" id="L133">            throw new IllegalArgumentException(&quot;Null object&quot;);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

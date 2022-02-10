@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UtenteDAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.DAO</a> &gt; <span class="el_source">UtenteDAO.java</span></div><h1>UtenteDAO.java</h1><pre class="source lang-java linenums">package model.DAO;
+
+import model.beans.Utente;
+import model.storage.ConPool;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="fc" id="L15">public final class UtenteDAO implements DAO&lt;Utente&gt; {</span>
+   @Override
+   public Utente getById(final int id) {
+<span class="fc bfc" id="L18" title="All 2 branches covered.">      if (id &lt;= 0) {</span>
+<span class="fc" id="L19">         throw new IllegalArgumentException(&quot;Id &lt;= 0&quot;);</span>
+      } else {
+<span class="fc" id="L21">         try (Connection connection = ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L22">            String query = &quot;SELECT * FROM utente WHERE idUtente = ?&quot;;</span>
+
+<span class="fc" id="L24">            try (PreparedStatement preparedStatement =</span>
+<span class="fc" id="L25">                         connection.prepareStatement(query)) {</span>
+<span class="fc" id="L26">               preparedStatement.setInt(1, id);</span>
+<span class="fc" id="L27">               ResultSet resultSet = preparedStatement.executeQuery();</span>
+
+<span class="fc" id="L29">               Utente utente = null;</span>
+
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">               if (resultSet.next()) {</span>
+<span class="fc" id="L32">                  utente = extract(resultSet);</span>
+               }
+
+<span class="fc" id="L35">               return utente;</span>
+            }
+<span class="nc" id="L37">         } catch (SQLException e) {</span>
+<span class="nc" id="L38">            throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+         }
+      }
+   }
+
+   /**
+    * Metodo che permette il login.
+    *
+    * @param utente Il bean contenete alcune informazioni sull'utente che
+    *               intende effettuare il login
+    * @return Il bean dell'utente presente nel database
+    */
+   public Utente doLogin(final Utente utente) {
+<span class="fc bfc" id="L51" title="All 2 branches covered.">      if (utente == null) {</span>
+<span class="fc" id="L52">         throw new IllegalArgumentException(&quot;Null Object&quot;);</span>
+      } else {
+<span class="fc" id="L54">         try (Connection connection = ConPool.getInstance().getConnection();</span>
+<span class="fc" id="L55">              PreparedStatement statement =</span>
+<span class="fc" id="L56">                      connection.prepareStatement(&quot;SELECT *&quot;</span>
+                              + &quot;FROM utente WHERE email = ? &quot;
+                              + &quot;AND passwordhash = ?&quot;)) {
+
+<span class="fc" id="L60">            statement.setString(1, utente.getEmail());</span>
+<span class="fc" id="L61">            statement.setString(2, utente.getPassword());</span>
+
+<span class="fc" id="L63">            ResultSet set = statement.executeQuery();</span>
+<span class="fc" id="L64">            Utente utenteDB = null;</span>
+
+<span class="fc bfc" id="L66" title="All 2 branches covered.">            if (set.next()) {</span>
+<span class="fc" id="L67">               utenteDB = extract(set);</span>
+            }
+
+<span class="fc" id="L70">            return utenteDB;</span>
+<span class="nc" id="L71">         } catch (SQLException e) {</span>
+<span class="nc" id="L72">            throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+         }
+      }
+   }
+
+   @Override
+   public List&lt;Utente&gt; getAll() {
+<span class="fc" id="L79">      try (Connection connection = ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L80">         String query = &quot;SELECT * FROM utente&quot;;</span>
+<span class="fc" id="L81">         List&lt;Utente&gt; utenteList = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L83">         try (PreparedStatement preparedStatement =</span>
+<span class="fc" id="L84">                      connection.prepareStatement(query)) {</span>
+<span class="fc" id="L85">            ResultSet resultSet = preparedStatement.executeQuery();</span>
+
+<span class="fc bfc" id="L87" title="All 2 branches covered.">            while (resultSet.next()) {</span>
+<span class="fc" id="L88">               utenteList.add(extract(resultSet));</span>
+            }
+
+<span class="fc" id="L91">            return utenteList;</span>
+         }
+<span class="nc" id="L93">      } catch (SQLException e) {</span>
+<span class="nc" id="L94">         throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+      }
+   }
+
+   @Override
+   public boolean update(final Utente entity) {
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">      if (entity == null) {</span>
+<span class="nc" id="L101">         throw new IllegalArgumentException(&quot;Null Object&quot;);</span>
+      } else {
+         try (Connection connection =
+<span class="fc" id="L104">                      ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L105">            String query =</span>
+                    &quot;UPDATE utente SET dataBan = ?, admin = ?,&quot;
+                            + &quot;fotoProfilo = ?, passwordhash = ?,&quot;
+                            + &quot; telefono = ?, nome = ?, &quot;
+                            + &quot;cognome = ?, email = ?,&quot;
+                            + &quot; strada = ?, città = ?&quot;
+                            + &quot;, cap = ?, cf = ?, dataDiNascita = ?&quot;
+                            + &quot;WHERE idUtente = ?&quot;;
+
+<span class="fc" id="L114">            try (PreparedStatement preparedStatement =</span>
+<span class="fc" id="L115">                         connection.prepareStatement(query)) {</span>
+
+<span class="fc" id="L117">               int index = fillPreparedStatement(preparedStatement,</span>
+                       entity);
+<span class="fc" id="L119">               preparedStatement.setInt(index, entity.getIdUtente());</span>
+
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">               return preparedStatement.executeUpdate() &gt; 0;</span>
+            }
+
+<span class="nc" id="L124">         } catch (SQLException e) {</span>
+<span class="nc" id="L125">            throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+         }
+      }
+   }
+
+   @Override
+   public boolean save(final Utente entity) {
+<span class="fc bfc" id="L132" title="All 2 branches covered.">      if (entity == null) {</span>
+<span class="fc" id="L133">         throw new IllegalArgumentException(&quot;Null Object&quot;);</span>
+      } else {
+         try (Connection connection =
+<span class="fc" id="L136">                      ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L137">            String query =</span>
+                    &quot;INSERT INTO utente (dataBan, admin, fotoProfilo, &quot;
+                            + &quot;passwordhash, telefono, nome,&quot;
+                            + &quot; cognome, email,&quot;
+                            + &quot; strada, città, cap, cf, dataDiNascita) &quot;
+                            + &quot;VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
+
+<span class="fc" id="L144">            try (PreparedStatement preparedStatement =</span>
+<span class="fc" id="L145">                         connection.prepareStatement(query,</span>
+                                 PreparedStatement
+                                         .RETURN_GENERATED_KEYS)) {
+
+<span class="fc" id="L149">               fillPreparedStatement(preparedStatement, entity);</span>
+
+<span class="pc bpc" id="L151" title="1 of 2 branches missed.">               boolean esito = preparedStatement.executeUpdate() &gt; 0;</span>
+
+<span class="fc" id="L153">               ResultSet set = preparedStatement.getGeneratedKeys();</span>
+
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">               if (set.next()) {</span>
+<span class="fc" id="L156">                  entity.setIdUtente(set.getInt(1));</span>
+               }
+<span class="fc" id="L158">               return esito;</span>
+            }
+
+<span class="nc" id="L161">         } catch (SQLException e) {</span>
+<span class="nc" id="L162">            throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+         }
+      }
+   }
+
+   @Override
+   public boolean delete(final Utente entity) {
+<span class="fc bfc" id="L169" title="All 2 branches covered.">      if (entity != null) {</span>
+         try (Connection connection =
+<span class="fc" id="L171">                      ConPool.getInstance().getConnection()) {</span>
+<span class="fc" id="L172">            String query =</span>
+                    &quot;DELETE FROM utente WHERE idUtente = ?&quot;;
+
+<span class="fc" id="L175">            try (PreparedStatement preparedStatement =</span>
+<span class="fc" id="L176">                         connection.prepareStatement(query)) {</span>
+
+<span class="fc" id="L178">               preparedStatement.setInt(1, entity.getIdUtente());</span>
+
+<span class="fc bfc" id="L180" title="All 2 branches covered.">               return preparedStatement.executeUpdate() &gt; 0;</span>
+            }
+<span class="nc" id="L182">         } catch (SQLException e) {</span>
+<span class="nc" id="L183">            throw new RuntimeException(&quot;SQL error: &quot; + e.getMessage());</span>
+         }
+      } else {
+<span class="fc" id="L186">         throw new IllegalArgumentException(&quot;Id &lt;= 0&quot;);</span>
+      }
+   }
+
+   @Override
+   public Utente extract(final ResultSet resultSet)
+           throws SQLException {
+<span class="fc bfc" id="L193" title="All 2 branches covered.">      if (resultSet == null) {</span>
+<span class="fc" id="L194">         throw new IllegalArgumentException(&quot;Null ResultSet&quot;);</span>
+      } else {
+<span class="fc" id="L196">         Utente utente = null;</span>
+<span class="fc" id="L197">         utente = new Utente();</span>
+
+<span class="fc" id="L199">         utente.setAdmin(resultSet.getBoolean(&quot;admin&quot;));</span>
+<span class="fc" id="L200">         utente.setCap(resultSet.getString(&quot;cap&quot;));</span>
+<span class="fc" id="L201">         utente.setCf(resultSet.getString(&quot;cf&quot;));</span>
+<span class="fc" id="L202">         utente.setCitta(resultSet.getString(&quot;città&quot;));</span>
+<span class="fc" id="L203">         utente.setCognome(resultSet.getString(&quot;cognome&quot;));</span>
+<span class="fc" id="L204">         Timestamp dataBan = resultSet.getTimestamp(&quot;dataBan&quot;);</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">         if (dataBan != null) {</span>
+<span class="fc" id="L206">            utente.setDataBan(dataBan.toLocalDateTime());</span>
+         }
+<span class="fc" id="L208">         utente.setDataDiNascita(resultSet.getDate(&quot;dataDiNascita&quot;)</span>
+<span class="fc" id="L209">                 .toLocalDate());</span>
+<span class="fc" id="L210">         utente.setEmail(resultSet.getString(&quot;email&quot;));</span>
+<span class="fc" id="L211">         utente.setFotoProfilo(</span>
+<span class="fc" id="L212">                 resultSet.getString(&quot;fotoProfilo&quot;));</span>
+<span class="fc" id="L213">         utente.setIdUtente(resultSet.getInt(&quot;idUtente&quot;));</span>
+<span class="fc" id="L214">         utente.setNome(resultSet.getString(&quot;nome&quot;));</span>
+<span class="fc" id="L215">         utente.setPassword(</span>
+<span class="fc" id="L216">                 resultSet.getString(&quot;passwordhash&quot;));</span>
+<span class="fc" id="L217">         utente.setStrada(resultSet.getString(&quot;strada&quot;));</span>
+<span class="fc" id="L218">         utente.setTelefono(resultSet.getString(&quot;telefono&quot;));</span>
+<span class="fc" id="L219">         utente.setCampagne(null);</span>
+<span class="fc" id="L220">         utente.setDonazioni(null);</span>
+<span class="fc" id="L221">         utente.setSegnalazioni(null);</span>
+
+<span class="fc" id="L223">         return utente;</span>
+      }
+   }
+
+   /**
+    * Riempe il preparedStatement.
+    *
+    * @param preparedStatement il preparedStatement da riempire
+    * @param entity            l'entità da dove prelevare le informazioni
+    * @return l'indice del prossimo campo da riempire
+    * @throws SQLException l'eccezione
+    */
+   public int fillPreparedStatement(final PreparedStatement preparedStatement,
+                                    final Utente entity) throws SQLException {
+
+<span class="pc bpc" id="L238" title="1 of 4 branches missed.">      if (entity != null &amp;&amp; preparedStatement != null) {</span>
+<span class="fc" id="L239">         int index = 1;</span>
+
+<span class="fc bfc" id="L241" title="All 2 branches covered.">         if (entity.getDataBan() != null) {</span>
+<span class="fc" id="L242">            preparedStatement.setTimestamp(index++,</span>
+<span class="fc" id="L243">                    Timestamp.valueOf(entity.getDataBan()));</span>
+         } else {
+<span class="fc" id="L245">            preparedStatement.setTimestamp(index++, null);</span>
+         }
+
+<span class="fc" id="L248">         preparedStatement.setBoolean(index++, entity.isAdmin());</span>
+<span class="fc" id="L249">         preparedStatement.setString(index++, entity.getFotoProfilo());</span>
+<span class="fc" id="L250">         preparedStatement.setString(index++, entity.getPassword());</span>
+<span class="fc" id="L251">         preparedStatement.setString(index++, entity.getTelefono());</span>
+<span class="fc" id="L252">         preparedStatement.setString(index++, entity.getNome());</span>
+<span class="fc" id="L253">         preparedStatement.setString(index++, entity.getCognome());</span>
+<span class="fc" id="L254">         preparedStatement.setString(index++, entity.getEmail());</span>
+<span class="fc" id="L255">         preparedStatement.setString(index++, entity.getStrada());</span>
+<span class="fc" id="L256">         preparedStatement.setString(index++, entity.getCitta());</span>
+<span class="fc" id="L257">         preparedStatement.setString(index++, entity.getCap());</span>
+<span class="fc" id="L258">         preparedStatement.setString(index++, entity.getCf());</span>
+<span class="fc" id="L259">         preparedStatement.setDate(index++,</span>
+<span class="fc" id="L260">                 Date.valueOf(entity.getDataDiNascita()));</span>
+
+<span class="fc" id="L262">         return index;</span>
+      } else {
+<span class="fc" id="L264">         throw new IllegalArgumentException(&quot;Null PreparedStatement &quot;</span>
+                 + &quot;and/or Entity&quot;);
+      }
+   }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

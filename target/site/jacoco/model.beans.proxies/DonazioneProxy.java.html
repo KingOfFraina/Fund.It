@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DonazioneProxy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.beans.proxies</a> &gt; <span class="el_source">DonazioneProxy.java</span></div><h1>DonazioneProxy.java</h1><pre class="source lang-java linenums">package model.beans.proxies;
+
+import model.DAO.CampagnaDAO;
+import model.DAO.DAO;
+import model.DAO.UtenteDAO;
+import model.beans.Campagna;
+import model.beans.Donazione;
+import model.beans.Utente;
+import model.beans.proxyInterfaces.DonazioneInterface;
+
+public final class DonazioneProxy implements DonazioneInterface {
+    /**
+     * donazione.
+     */
+    private Donazione donazione;
+
+
+    /**
+     * Costruttore.
+     */
+<span class="fc" id="L21">    public DonazioneProxy() {</span>
+<span class="fc" id="L22">        this.donazione = new Donazione();</span>
+<span class="fc" id="L23">    }</span>
+
+    /**
+     * Costruttore.
+     *
+     * @param newDonazione donazione.
+     */
+<span class="fc" id="L30">    public DonazioneProxy(final Donazione newDonazione) {</span>
+<span class="fc" id="L31">        this.donazione = newDonazione;</span>
+<span class="fc" id="L32">    }</span>
+
+
+    @Override
+    public Campagna getCampagna() {
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (donazione.getCampagna() == null) {</span>
+<span class="fc" id="L38">            throw new IllegalArgumentException(&quot;Campagna must be not null&quot;);</span>
+        }
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (donazione.getCampagna().getTitolo() == null) {</span>
+<span class="fc" id="L41">            DAO&lt;Campagna&gt; campagnaDAO = new CampagnaDAO();</span>
+<span class="fc" id="L42">            Campagna campagna = campagnaDAO</span>
+<span class="fc" id="L43">                    .getById(</span>
+<span class="fc" id="L44">                            donazione.getCampagna()</span>
+<span class="fc" id="L45">                                    .getIdCampagna());</span>
+
+<span class="fc" id="L47">            donazione.setCampagna(campagna);</span>
+<span class="fc" id="L48">            return donazione.getCampagna();</span>
+        } else {
+<span class="fc" id="L50">            return donazione.getCampagna();</span>
+        }
+    }
+
+    @Override
+    public Utente getUtente() {
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (donazione.getUtente() == null) {</span>
+<span class="fc" id="L57">            throw new IllegalArgumentException(&quot;Utente must be not null&quot;);</span>
+        }
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (donazione.getUtente().getCf() == null) {</span>
+<span class="fc" id="L60">            DAO&lt;Utente&gt; utenteDAO = new UtenteDAO();</span>
+<span class="fc" id="L61">            Utente u = utenteDAO.getById(donazione.getUtente().getIdUtente());</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">            if (u != null) {</span>
+<span class="fc" id="L63">                Utente utenteNuovo = donazione.getUtente();</span>
+<span class="fc" id="L64">                utenteNuovo.setIdUtente(u.getIdUtente());</span>
+<span class="fc" id="L65">                utenteNuovo.setNome(u.getNome());</span>
+<span class="fc" id="L66">                utenteNuovo.setCognome(u.getCognome());</span>
+<span class="fc" id="L67">                donazione.setUtente(utenteNuovo);</span>
+<span class="fc" id="L68">                return donazione.getUtente();</span>
+            } else {
+<span class="nc" id="L70">                return null;</span>
+            }
+        } else {
+<span class="fc" id="L73">            return donazione.getUtente();</span>
+        }
+    }
+
+    /**
+     * @param nuovaDonazione istanza di Donazione
+     */
+    public void setDonazione(final Donazione nuovaDonazione) {
+<span class="fc" id="L81">        this.donazione = nuovaDonazione;</span>
+<span class="fc" id="L82">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

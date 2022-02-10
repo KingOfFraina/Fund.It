@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SegnalazioniServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.services</a> &gt; <span class="el_source">SegnalazioniServiceImpl.java</span></div><h1>SegnalazioniServiceImpl.java</h1><pre class="source lang-java linenums">package model.services;
+
+import model.DAO.DAO;
+import model.DAO.SegnalazioneDAO;
+import model.beans.Segnalazione;
+import model.beans.StatoSegnalazione;
+
+import java.util.List;
+
+public class SegnalazioniServiceImpl implements SegnalazioniService {
+
+    /**
+     * Wrapper d'istanza di SegnalazioneDAO.
+     */
+    private final DAO&lt;Segnalazione&gt; dao;
+
+    /**
+     * Costruttore della classe SegnalazioniService.
+     * @param segnalazioneDAO istanza di interfaccia DAO&lt;T&gt;
+     */
+<span class="fc" id="L21">    public SegnalazioniServiceImpl(final DAO&lt;Segnalazione&gt; segnalazioneDAO) {</span>
+<span class="fc" id="L22">        this.dao = segnalazioneDAO;</span>
+<span class="fc" id="L23">    }</span>
+
+    /**
+     * Costruttore della classe SegnalazioniService.
+     */
+<span class="fc" id="L28">    public SegnalazioniServiceImpl() {</span>
+<span class="fc" id="L29">        this.dao = new SegnalazioneDAO();</span>
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * @return lista delle segnalazioni effettuate dall'utente
+     */
+    @Override
+    public List&lt;Segnalazione&gt; trovaSegnalazioni() {
+<span class="fc" id="L37">        return dao.getAll();</span>
+    }
+
+    /**
+     * @param idSegnalazione id della segnalazione interessata
+     * @return istanza di segnalazione
+     */
+    @Override
+    public Segnalazione trovaSegnalazione(final int idSegnalazione) {
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (idSegnalazione &lt;= 0) {</span>
+<span class="fc" id="L47">            throw new IllegalArgumentException(&quot;Argument must be &gt; 0&quot;);</span>
+        } else {
+<span class="fc" id="L49">            return dao.getById(idSegnalazione);</span>
+        }
+    }
+
+    /**
+     * @param idSegnalazione intero che rappresenta l'id della segnalazione
+     * @param stato          Il nuovo stato della segnalazione
+     * @return true se l'operazione è andata a buon fine, false altrimenti
+     */
+    @Override
+    public boolean risolviSegnalazione(final int idSegnalazione,
+                                       final StatoSegnalazione stato) {
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (idSegnalazione &lt;= 0) {</span>
+<span class="fc" id="L62">            throw new IllegalArgumentException(&quot;Argument id must be &gt; 0&quot;);</span>
+        } else {
+<span class="fc" id="L64">            Segnalazione s = dao.getById(idSegnalazione);</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">            if (s == null) {</span>
+<span class="fc" id="L66">                throw new RuntimeException(&quot;Segnalazione non trovata con id: &quot;</span>
+                        + idSegnalazione);
+            } else {
+<span class="fc" id="L69">                s.setStatoSegnalazione(stato);</span>
+<span class="fc" id="L70">                return dao.update(s);</span>
+            }
+        }
+    }
+
+
+    /**
+     * @param segnalazione istanza di Segnalazione che esprime una
+     *                     segnalazione fatta da un utente verso una campagna
+     * @return true se l'operazione è andata a buon fine, false altrimenti
+     */
+    @Override
+    public boolean segnalaCampagna(final Segnalazione segnalazione) {
+<span class="fc bfc" id="L83" title="All 4 branches covered.">        if (segnalazione == null || segnalazione.getCampagnaSegnalata() == null</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">                || segnalazione.getSegnalatore() == null</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">                || segnalazione.getSegnalato() == null</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">                || segnalazione.getDescrizione() == null) {</span>
+<span class="fc" id="L87">            throw new IllegalArgumentException(&quot;Arguments must be not null&quot;);</span>
+        } else {
+<span class="fc" id="L89">            return dao.save(segnalazione);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

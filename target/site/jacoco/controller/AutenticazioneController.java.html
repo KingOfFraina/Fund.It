@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AutenticazioneController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">controller</a> &gt; <span class="el_source">AutenticazioneController.java</span></div><h1>AutenticazioneController.java</h1><pre class="source lang-java linenums">package controller;
+
+import controller.utils.FileServlet;
+import controller.utils.Validator;
+import model.beans.Utente;
+import model.services.AutenticazioneService;
+import model.services.ReportService;
+import model.services.TipoReport;
+import model.services.AutenticazioneServiceImpl;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
+@WebServlet(name = &quot;AutenticazioneController&quot;,
+        value = &quot;/autenticazione/*&quot;)
+@MultipartConfig
+public final class AutenticazioneController extends HttpServlet {
+   /**
+    * Variabile per il service di Autenticazione.
+    */
+   private AutenticazioneService service;
+
+   /**
+    * Costruttore classe AutenticazioneController.
+    *
+    * @param newService il service che si interfaccia con i DAO
+    */
+<span class="fc" id="L37">   public AutenticazioneController(final AutenticazioneService newService) {</span>
+<span class="fc" id="L38">      service = newService;</span>
+<span class="fc" id="L39">   }</span>
+
+   /**
+    * Costruttore classe AutenticazioneController.
+    */
+<span class="nc" id="L44">   public AutenticazioneController() {</span>
+<span class="nc" id="L45">      service = new AutenticazioneServiceImpl();</span>
+<span class="nc" id="L46">   }</span>
+
+   @Override
+   public void doGet(final HttpServletRequest request,
+                     final HttpServletResponse response)
+           throws ServletException, IOException {
+<span class="fc" id="L52">      HttpSession session = request.getSession();</span>
+      String path;
+
+<span class="fc" id="L55">      if (!new Validator(request)</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">              .isValidBean(Utente.class, session.getAttribute(&quot;utente&quot;))) {</span>
+<span class="fc" id="L57">         String pathInfo = request.getPathInfo();</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">         if (&quot;/login&quot;.equals(pathInfo)) {</span>
+<span class="fc" id="L59">            path = &quot;/WEB-INF/results/login.jsp&quot;;</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">         } else if (&quot;/registrazione&quot;.equals(pathInfo)) {</span>
+<span class="fc" id="L61">            path = &quot;/WEB-INF/results/registrazione.jsp&quot;;</span>
+         } else {
+<span class="fc" id="L63">            response.sendError(HttpServletResponse.SC_NOT_FOUND);</span>
+<span class="fc" id="L64">            return;</span>
+         }
+<span class="fc" id="L66">         request.getRequestDispatcher(path).forward(request, response);</span>
+<span class="fc" id="L67">      } else {</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">         if (request.getPathInfo().equals(&quot;/logout&quot;)) {</span>
+<span class="fc" id="L69">            service.logout(session);</span>
+<span class="fc" id="L70">            response.sendRedirect(request.getServletContext().getContextPath()</span>
+                    + &quot;/index.jsp&quot;);
+         } else {
+<span class="fc" id="L73">            response.sendError(HttpServletResponse.SC_NOT_FOUND);</span>
+         }
+      }
+<span class="fc" id="L76">   }</span>
+
+   @Override
+   public void doPost(final HttpServletRequest request,
+                      final HttpServletResponse response)
+           throws IOException, ServletException {
+<span class="fc" id="L82">      HttpSession session = request.getSession();</span>
+      Utente utente;
+
+<span class="fc bfc" id="L85" title="All 3 branches covered.">      switch (request.getPathInfo()) {</span>
+         case &quot;/login&quot; -&gt; {
+<span class="fc" id="L87">            utente = new Utente();</span>
+<span class="fc" id="L88">            utente.setEmail(request.getParameter(&quot;email&quot;));</span>
+<span class="fc" id="L89">            utente.createPasswordHash(request.getParameter(&quot;password&quot;));</span>
+
+<span class="fc" id="L91">            utente = service.login(utente);</span>
+
+<span class="fc bfc" id="L93" title="All 4 branches covered.">            if (utente != null &amp;&amp; utente.getIdUtente() != -1) {</span>
+<span class="fc" id="L94">               session.setAttribute(&quot;utente&quot;, utente);</span>
+<span class="pc bpc" id="L95" title="1 of 4 branches missed.">            } else if (utente != null &amp;&amp; utente.getIdUtente() == -1) {</span>
+<span class="fc" id="L96">               long minuti = ChronoUnit.MINUTES</span>
+<span class="fc" id="L97">                       .between(LocalDateTime.now(), utente.getDataBan());</span>
+<span class="fc" id="L98">               final long min = 60;</span>
+<span class="fc" id="L99">               long ore = minuti / min;</span>
+<span class="fc" id="L100">               minuti = minuti - (ore * min);</span>
+
+<span class="fc" id="L102">               ReportService.creaReport(request, TipoReport.ERRORE,</span>
+                       &quot;Utente bannato&quot;, &quot;Ritenta il login tra &quot;
+                               + ore + &quot; ore&quot;, &quot;e &quot; + minuti + &quot; minuti&quot;);
+<span class="fc" id="L105">               response.sendRedirect(</span>
+<span class="fc" id="L106">                       request.getServletContext().getContextPath()</span>
+                               + &quot;/autenticazione/login&quot;);
+<span class="fc" id="L108">               return;</span>
+            } else {
+<span class="fc" id="L110">               ReportService.creaReport(request, TipoReport.ERRORE,</span>
+                       &quot;Credenziali sbagliate&quot;, &quot;Ritenta il login&quot;);
+<span class="fc" id="L112">               response.sendRedirect(</span>
+<span class="fc" id="L113">                       request.getServletContext().getContextPath()</span>
+                               + &quot;/autenticazione/login&quot;);
+<span class="fc" id="L115">               return;</span>
+            }
+         }
+<span class="fc" id="L118">         case &quot;/registrazione&quot; -&gt; {</span>
+<span class="fc" id="L119">            utente = new Utente();</span>
+
+<span class="fc bfc" id="L121" title="All 2 branches covered.">            if (request.getParameter(&quot;password&quot;).equals(</span>
+<span class="fc" id="L122">                    request.getParameter(&quot;confermaPassword&quot;))</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">                    &amp;&amp; request.getParameter(&quot;email&quot;).equals(</span>
+<span class="fc" id="L124">                    request.getParameter(&quot;confermaEmail&quot;))) {</span>
+<span class="fc" id="L125">               utente.createPasswordHash(request.getParameter(&quot;password&quot;));</span>
+<span class="fc" id="L126">               utente.setEmail(request.getParameter(&quot;email&quot;));</span>
+<span class="fc" id="L127">               utente.setNome(request.getParameter(&quot;nome&quot;));</span>
+<span class="fc" id="L128">               utente.setCognome(request.getParameter(&quot;cognome&quot;));</span>
+<span class="fc" id="L129">               utente.setDataDiNascita(</span>
+<span class="fc" id="L130">                       LocalDate.parse(</span>
+<span class="fc" id="L131">                               request.getParameter(&quot;dataDiNascita&quot;)));</span>
+<span class="fc" id="L132">               utente.setTelefono(request.getParameter(&quot;telefono&quot;));</span>
+<span class="fc" id="L133">               utente.setStrada(request.getParameter(&quot;indirizzo&quot;));</span>
+<span class="fc" id="L134">               utente.setCitta(request.getParameter(&quot;citta&quot;));</span>
+<span class="fc" id="L135">               utente.setCap(request.getParameter(&quot;cap&quot;));</span>
+<span class="fc" id="L136">               utente.setCf(request.getParameter(&quot;cf&quot;));</span>
+
+<span class="fc" id="L138">               List&lt;String&gt; fileNames = FileServlet.uploadFoto(request);</span>
+
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">               if (fileNames.size() &gt; 0) {</span>
+<span class="nc" id="L141">                  utente.setFotoProfilo(fileNames.get(0));</span>
+               } else {
+<span class="fc" id="L143">                  utente.setFotoProfilo(&quot;&quot;);</span>
+               }
+
+<span class="fc bfc" id="L146" title="All 2 branches covered.">               if (service.registrazione(utente)) {</span>
+<span class="fc" id="L147">                  session.setAttribute(&quot;utente&quot;, utente);</span>
+
+<span class="fc" id="L149">                  ReportService.creaReport(request, TipoReport.INFO,</span>
+                          &quot;Esito operazione:&quot;,
+                          &quot;Registrazione avvenuta con successo&quot;);
+               } else {
+<span class="fc" id="L153">                  ReportService.creaReport(request, TipoReport.ERRORE,</span>
+                          &quot;Esito operazione:&quot;,
+                          &quot;Registrazione non avvenuta con successo&quot;);
+               }
+<span class="fc" id="L157">            } else {</span>
+<span class="fc" id="L158">               ReportService.creaReport(request, TipoReport.ERRORE,</span>
+                       &quot;Esito operazione:&quot;,
+                       &quot;Registrazione non avvenuta con successo&quot;);
+
+<span class="fc" id="L162">               response.sendRedirect(</span>
+<span class="fc" id="L163">                       request.getServletContext().getContextPath()</span>
+                               + &quot;/autenticazione/registrazione&quot;);
+            }
+         }
+
+         default -&gt; {
+<span class="fc" id="L169">            response.sendError(HttpServletResponse.SC_NOT_FOUND);</span>
+<span class="fc" id="L170">            return;</span>
+         }
+      }
+
+<span class="fc" id="L174">      response.sendRedirect(request.getServletContext()</span>
+<span class="fc" id="L175">              .getContextPath() + &quot;/index.jsp&quot;);</span>
+<span class="fc" id="L176">   }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

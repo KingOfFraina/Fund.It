@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Utente.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.beans</a> &gt; <span class="el_source">Utente.java</span></div><h1>Utente.java</h1><pre class="source lang-java linenums">package model.beans;
+
+import model.beans.proxyInterfaces.UtenteInterface;
+
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
+<span class="fc" id="L14">public final class Utente implements UtenteInterface {</span>
+    /**
+     * Id dell'utente.
+     */
+    private int idUtente;
+    /**
+     * Data del ban dell'utente.
+     */
+    private LocalDateTime dataBan;
+    /**
+     * Booleano che identifica se l'utente è admin oppure no.
+     */
+    private boolean admin;
+    /**
+     * Path della fotoProfilo.
+     */
+    private String fotoProfilo;
+    /**
+     * Password dell'utente.
+     */
+    private String password;
+    /**
+     * Numero di telefono.
+     */
+    private String telefono;
+    /**
+     * Nome dell'utente.
+     */
+    private String nome;
+    /**
+     * Cognome dell'utente.
+     */
+    private String cognome;
+    /**
+     * Email dell'utente.
+     */
+    private String email;
+    /**
+     * Strada dell'abitazione dell'utente.
+     */
+    private String strada;
+    /**
+     * Città dell'utente.
+     */
+    private String citta;
+    /**
+     * Cap dell'utente.
+     */
+    private String cap;
+    /**
+     * Codice Fiscale dell'utente.
+     */
+    private String cf;
+    /**
+     * Data di nascita dell'utente.
+     */
+    private LocalDate dataDiNascita;
+    /**
+     * Lista delle donazioni effettuate dall'utente.
+     */
+    private List&lt;Donazione&gt; donazioni;
+    /**
+     * Lista delle segnalazioni effettuate.
+     */
+    private List&lt;Segnalazione&gt; segnalazioni;
+
+    /**
+     * Lista delle campagne avviate dall'utente.
+     */
+    private List&lt;Campagna&gt; campagne;
+
+    /**
+     * @return idUtente.
+     */
+    public int getIdUtente() {
+<span class="fc" id="L89">        return idUtente;</span>
+    }
+
+    /**
+     * @param id idUtente.
+     */
+    public void setIdUtente(final int id) {
+<span class="fc" id="L96">        this.idUtente = id;</span>
+<span class="fc" id="L97">    }</span>
+
+    /**
+     * @return dataBan.
+     */
+    public LocalDateTime getDataBan() {
+<span class="fc" id="L103">        return dataBan;</span>
+    }
+
+    /**
+     * @param data Data del ban.
+     */
+    public void setDataBan(final LocalDateTime data) {
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        if (data == null) {</span>
+<span class="fc" id="L111">            this.dataBan = null;</span>
+        } else {
+<span class="fc" id="L113">            this.dataBan = data.truncatedTo(ChronoUnit.MINUTES);</span>
+        }
+<span class="fc" id="L115">    }</span>
+
+    /**
+     * @return isAdmin.
+     */
+    public boolean isAdmin() {
+<span class="fc" id="L121">        return admin;</span>
+    }
+
+    /**
+     * @param adm bool (Admin==1/Utente normale==0).
+     */
+    public void setAdmin(final boolean adm) {
+<span class="fc" id="L128">        this.admin = adm;</span>
+<span class="fc" id="L129">    }</span>
+
+    /**
+     * @return Path della foto profilo.
+     */
+    public String getFotoProfilo() {
+<span class="fc" id="L135">        return fotoProfilo;</span>
+    }
+
+    /**
+     * @param path Path della foto profilo.
+     */
+    public void setFotoProfilo(final String path) {
+<span class="fc" id="L142">        this.fotoProfilo = path;</span>
+<span class="fc" id="L143">    }</span>
+
+    /**
+     * @return Password.
+     */
+    public String getPassword() {
+<span class="fc" id="L149">        return password;</span>
+    }
+
+    /**
+     * @param pw Password.
+     */
+    public void setPassword(final String pw) {
+<span class="fc" id="L156">        this.password = pw;</span>
+<span class="fc" id="L157">    }</span>
+
+    /**
+     * @return Telefono registrato.
+     */
+    public String getTelefono() {
+<span class="fc" id="L163">        return telefono;</span>
+    }
+
+    /**
+     * @param tf Telefono da registrare.
+     */
+    public void setTelefono(final String tf) {
+<span class="fc" id="L170">        this.telefono = tf;</span>
+<span class="fc" id="L171">    }</span>
+
+    /**
+     * @return Nome dell'utente.
+     */
+    public String getNome() {
+<span class="fc" id="L177">        return nome;</span>
+    }
+
+    /**
+     * @param name Nome dell'utente.
+     */
+    public void setNome(final String name) {
+<span class="fc" id="L184">        this.nome = name;</span>
+<span class="fc" id="L185">    }</span>
+
+    /**
+     * @return Cognome dell'utente.
+     */
+    public String getCognome() {
+<span class="fc" id="L191">        return cognome;</span>
+    }
+
+    /**
+     * @param surname Cognome dell'utente.
+     */
+    public void setCognome(final String surname) {
+<span class="fc" id="L198">        this.cognome = surname;</span>
+<span class="fc" id="L199">    }</span>
+
+    /**
+     * @return E-mail dell'utente.
+     */
+    public String getEmail() {
+<span class="fc" id="L205">        return email;</span>
+    }
+
+    /**
+     * @param em E-mail dell'utente.
+     */
+    public void setEmail(final String em) {
+<span class="fc" id="L212">        this.email = em;</span>
+<span class="fc" id="L213">    }</span>
+
+    /**
+     * @return Strada dell'utente.
+     */
+    public String getStrada() {
+<span class="fc" id="L219">        return strada;</span>
+    }
+
+    /**
+     * @param st Strada dell'utente.
+     */
+    public void setStrada(final String st) {
+<span class="fc" id="L226">        this.strada = st;</span>
+<span class="fc" id="L227">    }</span>
+
+    /**
+     * @return Città dell'utente.
+     */
+    public String getCitta() {
+<span class="fc" id="L233">        return citta;</span>
+    }
+
+    /**
+     * @param city Città dell'utente.
+     */
+    public void setCitta(final String city) {
+<span class="fc" id="L240">        this.citta = city;</span>
+<span class="fc" id="L241">    }</span>
+
+    /**
+     * @return Cap dell'utente.
+     */
+    public String getCap() {
+<span class="fc" id="L247">        return cap;</span>
+    }
+
+    /**
+     * @param newCap Cap dell'utente.
+     */
+    public void setCap(final String newCap) {
+<span class="fc" id="L254">        this.cap = newCap;</span>
+<span class="fc" id="L255">    }</span>
+
+    /**
+     * @return Codice Fiscale dell'utente.
+     */
+    public String getCf() {
+<span class="fc" id="L261">        return cf;</span>
+    }
+
+    /**
+     * @param codf Codice Fiscale dell'utente.
+     */
+    public void setCf(final String codf) {
+<span class="fc" id="L268">        this.cf = codf;</span>
+<span class="fc" id="L269">    }</span>
+
+    /**
+     * @return Data Di Nascita dell'utente.
+     */
+    public LocalDate getDataDiNascita() {
+<span class="fc" id="L275">        return dataDiNascita;</span>
+    }
+
+    /**
+     * @param ddn Data Di Nascita dell'utente.
+     */
+    public void setDataDiNascita(final LocalDate ddn) {
+<span class="fc" id="L282">        this.dataDiNascita = ddn;</span>
+<span class="fc" id="L283">    }</span>
+
+    /**
+     * @return Lista donazioni effettuate dall'utente.
+     */
+    @Override
+    public List&lt;Donazione&gt; getDonazioni() {
+<span class="fc" id="L290">        return donazioni;</span>
+    }
+
+    /**
+     * @param dList Lista donazioni effettuate dall'utente.
+     */
+    public void setDonazioni(final List&lt;Donazione&gt; dList) {
+<span class="fc" id="L297">        this.donazioni = dList;</span>
+<span class="fc" id="L298">    }</span>
+
+    /**
+     * @return Lista effettuate.
+     */
+    @Override
+    public List&lt;Segnalazione&gt; getSegnalazioni() {
+<span class="fc" id="L305">        return segnalazioni;</span>
+    }
+
+    /**
+     * @param sList List effettuate.
+     */
+    public void setSegnalazioni(final List&lt;Segnalazione&gt; sList) {
+<span class="fc" id="L312">        this.segnalazioni = sList;</span>
+<span class="fc" id="L313">    }</span>
+
+    /**
+     * @return Lista delle campagne avviate dall'utente.
+     */
+    @Override
+    public List&lt;Campagna&gt; getCampagne() {
+<span class="fc" id="L320">        return campagne;</span>
+    }
+
+    /**
+     * @param cList Lista delle campagne avviate dall'utente.
+     */
+    public void setCampagne(final List&lt;Campagna&gt; cList) {
+<span class="fc" id="L327">        this.campagne = cList;</span>
+<span class="fc" id="L328">    }</span>
+
+    /**
+     * @param newPassword la password su cui viene eseguita la funzione di hash.
+     */
+    public void createPasswordHash(final String newPassword) {
+
+<span class="fc" id="L335">        MessageDigest digest = null;</span>
+
+        try {
+<span class="fc" id="L338">            digest = MessageDigest.getInstance(&quot;SHA-256&quot;);</span>
+<span class="nc" id="L339">        } catch (NoSuchAlgorithmException e) {</span>
+<span class="nc" id="L340">            e.printStackTrace();</span>
+<span class="fc" id="L341">        }</span>
+
+<span class="fc" id="L343">        digest.reset();</span>
+<span class="fc" id="L344">        digest.update(newPassword.getBytes(StandardCharsets.UTF_8));</span>
+
+<span class="fc" id="L346">        password = String.format(&quot;%040x&quot;, new BigInteger(1, digest.digest()));</span>
+<span class="fc" id="L347">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L351">        return &quot;Utente{&quot;</span>
+                + &quot;idUtente=&quot; + idUtente
+                + &quot;, dataBan=&quot; + dataBan
+                + &quot;, admin=&quot; + admin
+                + &quot;, fotoProfilo='&quot; + fotoProfilo + '\''
+                + &quot;, password='&quot; + password + '\''
+                + &quot;, telefono='&quot; + telefono + '\''
+                + &quot;, nome='&quot; + nome + '\''
+                + &quot;, cognome='&quot; + cognome + '\''
+                + &quot;, email='&quot; + email + '\''
+                + &quot;, strada='&quot; + strada + '\''
+                + &quot;, citta='&quot; + citta + '\''
+                + &quot;, cap='&quot; + cap + '\''
+                + &quot;, cf='&quot; + cf + '\''
+                + &quot;, dataDiNascita=&quot; + dataDiNascita
+                + '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

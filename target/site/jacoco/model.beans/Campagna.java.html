@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Campagna.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.beans</a> &gt; <span class="el_source">Campagna.java</span></div><h1>Campagna.java</h1><pre class="source lang-java linenums">package model.beans;
+
+import model.beans.proxyInterfaces.CampagnaInterface;
+
+import java.util.List;
+
+<span class="fc" id="L7">public final class Campagna implements CampagnaInterface {</span>
+    /**
+     * id della campagna.
+     */
+    private int idCampagna;
+    /**
+     * titolo della campagna.
+     */
+    private String titolo;
+    /**
+     * stato della campagna.
+     */
+    private StatoCampagna stato;
+    /**
+     * descrizione della campagna.
+     */
+    private String descrizione;
+    /**
+     * Somma attualmente raccolta nei fondi della campagna.
+     */
+    private Double sommaRaccolta;
+    /**
+     * Somma target scelta da raggiungere.
+     */
+    private Double sommaTarget;
+    /**
+     * riferimento alla categoria della campagna.
+     */
+    private Categoria categoria;
+    /**
+     * riferimento all'utente.
+     */
+    private Utente utente;
+    /**
+     * immagini relative alla campagna.
+     */
+    private List&lt;Immagine&gt; immagini;
+    /**
+     * lista delle donazioni alla campagna.
+     */
+    private List&lt;Donazione&gt; donazioni;
+    /**
+     * lista delle segnalazioni alla campagna.
+     */
+    private List&lt;Segnalazione&gt; segnalazioni;
+
+    /**
+     * @return id della campagna.
+     */
+    public int getIdCampagna() {
+<span class="fc" id="L57">        return idCampagna;</span>
+    }
+
+    /**
+     * @return stato della campagna.
+     */
+    public StatoCampagna getStato() {
+<span class="fc" id="L64">        return stato;</span>
+    }
+
+    /**
+     * @return descrizione della campagna.
+     */
+    public String getDescrizione() {
+<span class="fc" id="L71">        return descrizione;</span>
+    }
+
+    /**
+     * @return somma raccolta.
+     */
+    public Double getSommaRaccolta() {
+<span class="fc" id="L78">        return sommaRaccolta;</span>
+    }
+
+    /**
+     * @return somma target.
+     */
+    public Double getSommaTarget() {
+<span class="fc" id="L85">        return sommaTarget;</span>
+    }
+
+    /**
+     * @return categoria di una campagna.
+     */
+    public Categoria getCategoria() {
+<span class="fc" id="L92">        return categoria;</span>
+    }
+
+    /**
+     * @return utente creatore della campagna.
+     */
+    public Utente getUtente() {
+<span class="fc" id="L99">        return utente;</span>
+    }
+
+    /**
+     * @param id id della campagna.
+     */
+    public void setIdCampagna(final int id) {
+<span class="fc" id="L106">        this.idCampagna = id;</span>
+<span class="fc" id="L107">    }</span>
+
+    /**
+     * @param status indica lo stato della campagna.
+     */
+    public void setStato(final StatoCampagna status) {
+<span class="fc" id="L113">        this.stato = status;</span>
+<span class="fc" id="L114">    }</span>
+
+    /**
+     * @param descrizioneCampagna indica la descrizione annessa alla campagna.
+     */
+    public void setDescrizione(final String descrizioneCampagna) {
+<span class="fc" id="L120">        this.descrizione = descrizioneCampagna;</span>
+<span class="fc" id="L121">    }</span>
+
+    /**
+     * @param fondiRaccolti indica la somma fino ad ora raccolta.
+     */
+    public void setSommaRaccolta(final Double fondiRaccolti) {
+<span class="fc" id="L127">        this.sommaRaccolta = fondiRaccolti;</span>
+<span class="fc" id="L128">    }</span>
+
+    /**
+     * @param target indica la somma da raggiungere per la raccolta.
+     */
+    public void setSommaTarget(final Double target) {
+<span class="fc" id="L134">        this.sommaTarget = target;</span>
+<span class="fc" id="L135">    }</span>
+
+    /**
+     * @param categoriaCampagna indica la categoria cui appartiene la campagna.
+     */
+    public void setCategoria(final Categoria categoriaCampagna) {
+<span class="fc" id="L141">        this.categoria = categoriaCampagna;</span>
+<span class="fc" id="L142">    }</span>
+
+    /**
+     * @param beneficiario indica l'utente creatore della campagna.
+     */
+    public void setUtente(final Utente beneficiario) {
+<span class="fc" id="L148">        this.utente = beneficiario;</span>
+<span class="fc" id="L149">    }</span>
+
+    /**
+     * @return foto sulla campagna.
+     */
+    public List&lt;Immagine&gt; getImmagini() {
+<span class="fc" id="L155">        return immagini;</span>
+    }
+
+    /**
+     * @param foto lista di foto relative alla campagna.
+     */
+    public void setImmagini(final List&lt;Immagine&gt; foto) {
+<span class="fc" id="L162">        this.immagini = foto;</span>
+<span class="fc" id="L163">    }</span>
+
+    /**
+     * @return lista delle donazioni.
+     */
+    public List&lt;Donazione&gt; getDonazioni() {
+<span class="fc" id="L169">        return donazioni;</span>
+    }
+
+    /**
+     * @param importo lista delle donazioni.
+     */
+    public void setDonazioni(final List&lt;Donazione&gt; importo) {
+<span class="fc" id="L176">        this.donazioni = importo;</span>
+<span class="fc" id="L177">    }</span>
+
+    /**
+     * @return lista delle segnalazioni.
+     */
+    public List&lt;Segnalazione&gt; getSegnalazioni() {
+<span class="fc" id="L183">        return segnalazioni;</span>
+    }
+
+    /**
+     * @param reports lista delle segnalazioni.
+     */
+    public void setSegnalazioni(final List&lt;Segnalazione&gt; reports) {
+<span class="fc" id="L190">        this.segnalazioni = reports;</span>
+<span class="fc" id="L191">    }</span>
+
+    /**
+     * @return titolo della campagna.
+     */
+    public String getTitolo() {
+<span class="fc" id="L197">        return titolo;</span>
+    }
+
+    /**
+     * @param title titolo della campagna
+     */
+    public void setTitolo(final String title) {
+<span class="fc" id="L204">        this.titolo = title;</span>
+<span class="fc" id="L205">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L209">        return &quot;Campagna{&quot;</span>
+                + &quot;idCampagna=&quot;
+                + idCampagna
+                + &quot;, titolo=&quot;
+                + titolo
+                + &quot;, stato=&quot;
+                + stato
+                + &quot;, descrizione='&quot;
+                + descrizione + '\''
+                + &quot;, sommaRaccolta=&quot;
+                + sommaRaccolta
+                + &quot;, sommaTarget=&quot;
+                + sommaTarget
+                + &quot;, categoria=&quot;
+<span class="nc" id="L223">                + categoria.getIdCategoria()</span>
+                + &quot;, utente=&quot;
+<span class="nc" id="L225">                + utente.getIdUtente()</span>
+                + '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

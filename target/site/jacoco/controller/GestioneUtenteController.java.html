@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GestioneUtenteController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">controller</a> &gt; <span class="el_source">GestioneUtenteController.java</span></div><h1>GestioneUtenteController.java</h1><pre class="source lang-java linenums">package controller;
+
+import controller.utils.FileServlet;
+import controller.utils.Validator;
+import model.beans.Campagna;
+import model.beans.Donazione;
+import model.beans.Utente;
+import model.beans.proxies.CampagnaProxy;
+import model.beans.proxies.DonazioneProxy;
+import model.beans.proxies.UtenteProxy;
+import model.beans.proxyInterfaces.CampagnaInterface;
+import model.services.CampagnaService;
+import model.services.CampagnaServiceImpl;
+import model.services.DonazioniService;
+import model.services.DonazioniServiceImpl;
+import model.services.ReportService;
+import model.services.SegnalazioniService;
+import model.services.SegnalazioniServiceImpl;
+import model.services.TipoReport;
+import model.services.UtenteService;
+import model.services.UtenteServiceImpl;
+import model.storage.ConPool;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+
+
+@WebServlet(name = &quot;GestioneUtenteController&quot;,
+        value = &quot;/GestioneUtenteController/*&quot;)
+@MultipartConfig
+public final class GestioneUtenteController extends HttpServlet {
+   /**
+    * Variabile per il service di Utente.
+    */
+   private static UtenteService utenteService;
+
+   /**
+    * Costruttore per GestioneUtenteController.
+    *
+    * @param service il service di Utente.
+    */
+<span class="fc" id="L50">   public GestioneUtenteController(final UtenteService service) {</span>
+<span class="fc" id="L51">      utenteService = service;</span>
+<span class="fc" id="L52">   }</span>
+
+   /**
+    * Costruttore per GestioneUtenteController.
+    */
+<span class="nc" id="L57">   public GestioneUtenteController() {</span>
+<span class="nc" id="L58">      utenteService = new UtenteServiceImpl();</span>
+<span class="nc" id="L59">   }</span>
+
+   @Override
+   public void doGet(final HttpServletRequest request,
+                     final HttpServletResponse response)
+           throws ServletException, IOException {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">      String path = request.getPathInfo() == null</span>
+<span class="fc" id="L66">              ? &quot;/&quot; : request.getPathInfo();</span>
+<span class="fc bfc" id="L67" title="All 3 branches covered.">      switch (path) {</span>
+<span class="fc" id="L68">         case &quot;/visualizzaDashboard&quot; -&gt; {</span>
+<span class="fc" id="L69">            visualizzaDashboard(request, response);</span>
+         }
+<span class="fc" id="L71">         case &quot;/visualizzaDashboardAdmin&quot; -&gt; {</span>
+<span class="fc" id="L72">            visualizzaDashboardAdmin(request, response);</span>
+         }
+<span class="fc" id="L74">         default -&gt; response.sendError(HttpServletResponse.SC_NOT_FOUND);</span>
+      }
+<span class="fc" id="L76">   }</span>
+
+   @Override
+   public void doPost(final HttpServletRequest request,
+                      final HttpServletResponse response)
+           throws IOException, ServletException {
+<span class="fc" id="L82">      String path = request.getPathInfo();</span>
+
+<span class="fc bfc" id="L84" title="All 3 branches covered.">      switch (path) {</span>
+<span class="fc" id="L85">         case &quot;/modificaProfilo&quot; -&gt; modificaProfilo(request, response);</span>
+<span class="fc" id="L86">         case &quot;/promuoviDeclassaUtente&quot; -&gt; promuoviDeclassaUtente(request,</span>
+                 response);
+<span class="fc" id="L88">         default -&gt; response.sendError(HttpServletResponse.SC_NOT_FOUND);</span>
+      }
+<span class="fc" id="L90">   }</span>
+
+   private void visualizzaDashboardAdmin(final HttpServletRequest request,
+                                         final HttpServletResponse response)
+           throws IOException, ServletException {
+<span class="fc" id="L95">      HttpSession session = request.getSession();</span>
+<span class="fc" id="L96">      Utente userSession = (Utente) session.getAttribute(&quot;utente&quot;);</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">      if (!new Validator(request).isValidBean(Utente.class,</span>
+              userSession)) {
+<span class="fc" id="L99">         response.sendRedirect(request.getServletContext().getContextPath()</span>
+                 + &quot;/autenticazione/login&quot;);
+      } else {
+<span class="fc bfc" id="L102" title="All 2 branches covered.">         if (!userSession.isAdmin()) {</span>
+<span class="fc" id="L103">            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,</span>
+                    &quot;Non autorizzato.&quot;);
+         } else {
+<span class="fc" id="L106">            SegnalazioniService segnalazioniService =</span>
+                    new SegnalazioniServiceImpl();
+<span class="fc" id="L108">            DonazioniService donazioniService = new DonazioniServiceImpl();</span>
+
+<span class="fc" id="L110">            List&lt;Donazione&gt; list = donazioniService.visualizzaDonazioni();</span>
+<span class="fc" id="L111">            DonazioneProxy proxy = new DonazioneProxy(new Donazione());</span>
+<span class="fc" id="L112">            list.forEach(d -&gt; {</span>
+<span class="fc" id="L113">               proxy.setDonazione(d);</span>
+<span class="fc" id="L114">               d.setUtente(proxy.getUtente());</span>
+<span class="fc" id="L115">            });</span>
+
+<span class="fc" id="L117">            CampagnaService cs = new CampagnaServiceImpl();</span>
+<span class="fc" id="L118">            List&lt;Campagna&gt; lst = cs.getAllCampagne();</span>
+<span class="fc" id="L119">            lst.forEach(c -&gt; {</span>
+<span class="fc" id="L120">               CampagnaInterface proxyCamp = new CampagnaProxy(c);</span>
+<span class="fc" id="L121">               proxyCamp.getUtente();</span>
+<span class="fc" id="L122">            });</span>
+
+<span class="fc" id="L124">            request.setAttribute(&quot;campagneList&quot;, lst);</span>
+<span class="fc" id="L125">            request.setAttribute(&quot;utentiList&quot;,</span>
+<span class="fc" id="L126">                    utenteService.visualizzaUtenti(userSession));</span>
+<span class="fc" id="L127">            request.setAttribute(&quot;segnalazioniList&quot;,</span>
+<span class="fc" id="L128">                    segnalazioniService.trovaSegnalazioni());</span>
+<span class="fc" id="L129">            request.setAttribute(&quot;donazioniList&quot;, list);</span>
+
+<span class="fc" id="L131">            request.getRequestDispatcher(&quot;/WEB-INF/results/admin.jsp&quot;)</span>
+<span class="fc" id="L132">                    .forward(request, response);</span>
+         }
+      }
+<span class="fc" id="L135">   }</span>
+
+   private void visualizzaDashboard(final HttpServletRequest request,
+                                    final HttpServletResponse response)
+           throws ServletException, IOException {
+<span class="fc" id="L140">      HttpSession session = request.getSession();</span>
+<span class="fc" id="L141">      Utente userSession = (Utente) session.getAttribute(&quot;utente&quot;);</span>
+
+<span class="fc bfc" id="L143" title="All 2 branches covered.">      if (!new Validator(request).isValidBean(Utente.class,</span>
+              userSession)) {
+<span class="fc" id="L145">         response.sendRedirect(request.getServletContext().getContextPath()</span>
+                 + &quot;/autenticazione/login&quot;);
+      } else {
+<span class="fc" id="L148">         Utente ut = utenteService.visualizzaDashboardUtente(</span>
+<span class="fc" id="L149">                 userSession.getIdUtente());</span>
+
+<span class="fc" id="L151">         UtenteProxy utenteProxy = new UtenteProxy(ut);</span>
+<span class="fc" id="L152">         ut.setDonazioni(utenteProxy.getDonazioni());</span>
+<span class="fc" id="L153">         ut.setCampagne(utenteProxy.getCampagne());</span>
+
+<span class="fc" id="L155">         request.setAttribute(&quot;utente&quot;, ut);</span>
+
+<span class="fc" id="L157">         request.getRequestDispatcher(&quot;/WEB-INF/results/profilo_utente.jsp&quot;)</span>
+<span class="fc" id="L158">                 .forward(request, response);</span>
+      }
+<span class="fc" id="L160">   }</span>
+
+   private void modificaProfilo(final HttpServletRequest request,
+                                final HttpServletResponse response)
+           throws IOException, ServletException {
+<span class="fc" id="L165">      HttpSession session = request.getSession();</span>
+<span class="fc" id="L166">      Utente userSession = (Utente) session.getAttribute(&quot;utente&quot;);</span>
+<span class="fc" id="L167">      Utente utente = new Utente();</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">      if (!new Validator(request).isValidBean(Utente.class, userSession)) {</span>
+<span class="fc" id="L169">         response.sendRedirect(request.getServletContext().getContextPath()</span>
+                 + &quot;/autenticazione/login&quot;);
+      } else {
+<span class="fc bfc" id="L172" title="All 2 branches covered.">         if (request.getParameter(&quot;password&quot;).equals(</span>
+<span class="fc" id="L173">                 request.getParameter(&quot;confermaPassword&quot;))</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">                 &amp;&amp; request.getParameter(&quot;email&quot;).equals(</span>
+<span class="fc" id="L175">                 request.getParameter(&quot;confermaEmail&quot;))) {</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">            if (new Validator(request).assertUtente()) {</span>
+<span class="fc" id="L177">               utente.setIdUtente(userSession</span>
+<span class="fc" id="L178">                       .getIdUtente());</span>
+<span class="fc" id="L179">               utente.createPasswordHash(request.getParameter(&quot;password&quot;));</span>
+<span class="fc" id="L180">               utente.setEmail(request.getParameter(&quot;email&quot;));</span>
+<span class="fc" id="L181">               utente.setNome(request.getParameter(&quot;nome&quot;));</span>
+<span class="fc" id="L182">               utente.setCognome(request.getParameter(&quot;cognome&quot;));</span>
+<span class="fc" id="L183">               utente.setDataDiNascita(</span>
+<span class="fc" id="L184">                       LocalDate.parse(</span>
+<span class="fc" id="L185">                               request.getParameter(&quot;dataDiNascita&quot;)));</span>
+<span class="fc" id="L186">               utente.setTelefono(request.getParameter(&quot;telefono&quot;));</span>
+<span class="fc" id="L187">               utente.setStrada(request.getParameter(&quot;indirizzo&quot;));</span>
+<span class="fc" id="L188">               utente.setCitta(request.getParameter(&quot;citta&quot;));</span>
+<span class="fc" id="L189">               utente.setCap(request.getParameter(&quot;cap&quot;));</span>
+<span class="fc" id="L190">               utente.setCf(request.getParameter(&quot;cf&quot;));</span>
+<span class="fc" id="L191">               utente.setAdmin(userSession.isAdmin());</span>
+<span class="fc" id="L192">               List&lt;String&gt; listFoto = FileServlet.uploadFoto(request);</span>
+
+<span class="pc bpc" id="L194" title="1 of 2 branches missed.">               if (!listFoto.isEmpty()) {</span>
+<span class="nc" id="L195">                  utente.setFotoProfilo(listFoto.get(0));</span>
+               } else {
+<span class="fc" id="L197">                  utente.setFotoProfilo(userSession.getFotoProfilo());</span>
+               }
+
+<span class="fc bfc" id="L200" title="All 2 branches covered.">               if (utenteService.modificaProfilo(utente)) {</span>
+<span class="fc" id="L201">                  ReportService.creaReport(request, TipoReport.INFO,</span>
+                          &quot;Esito operazione:&quot;,
+                          &quot;Modifica effettuata con successo&quot;);
+               } else {
+<span class="fc" id="L205">                  ReportService.creaReport(request, TipoReport.ERRORE,</span>
+                          &quot;Esito operazione:&quot;,
+                          &quot;Modifica non effettuata con successo&quot;);
+               }
+
+<span class="fc" id="L210">               session.setAttribute(&quot;utente&quot;, utente);</span>
+<span class="fc" id="L211">               request.getRequestDispatcher(</span>
+                               &quot;/WEB-INF/results/profilo_utente.jsp&quot;)
+<span class="fc" id="L213">                       .forward(request, response);</span>
+<span class="fc" id="L214">            } else {</span>
+<span class="fc" id="L215">               response.sendError(HttpServletResponse.SC_BAD_REQUEST);</span>
+            }
+         } else {
+<span class="fc" id="L218">            response.sendError(HttpServletResponse.SC_BAD_REQUEST);</span>
+         }
+      }
+<span class="fc" id="L221">   }</span>
+
+   private void promuoviDeclassaUtente(final HttpServletRequest request,
+                                       final HttpServletResponse response)
+           throws IOException, ServletException {
+<span class="fc" id="L226">      HttpSession session = request.getSession();</span>
+<span class="fc" id="L227">      Utente userSession = (Utente) session.getAttribute(&quot;utente&quot;);</span>
+<span class="fc bfc" id="L228" title="All 2 branches covered.">      if (!new Validator(request).isValidBean(Utente.class,</span>
+              userSession)) {
+<span class="fc" id="L230">         response.sendRedirect(request.getServletContext().getContextPath()</span>
+                 + &quot;/autenticazione/login&quot;);
+      } else {
+<span class="fc bfc" id="L233" title="All 2 branches covered.">         if (!userSession.isAdmin()) {</span>
+<span class="fc" id="L234">            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,</span>
+                    &quot;Non Autorizzato&quot;);
+         } else {
+<span class="fc" id="L237">            String idUtente = request.getParameter(&quot;utentemod&quot;);</span>
+            Utente ut;
+<span class="fc bfc" id="L239" title="All 2 branches covered.">            if (idUtente != null) {</span>
+               try {
+<span class="fc" id="L241">                  ut = utenteService</span>
+<span class="fc" id="L242">                          .visualizzaDashboardUtente(</span>
+<span class="fc" id="L243">                                  Integer.parseInt(idUtente));</span>
+<span class="nc" id="L244">               } catch (NumberFormatException e) {</span>
+<span class="nc" id="L245">                  response.sendError(HttpServletResponse</span>
+                          .SC_INTERNAL_SERVER_ERROR);
+<span class="nc" id="L247">                  return;</span>
+<span class="fc" id="L248">               }</span>
+
+<span class="fc bfc" id="L250" title="All 2 branches covered.">               if (utenteService.promuoviDeclassaUtente(userSession, ut)) {</span>
+<span class="fc" id="L251">                  ReportService.creaReport(request, TipoReport.INFO,</span>
+                          &quot;Esito operazione:&quot;,
+                          &quot;Modifica effettuata con successo&quot;);
+               } else {
+<span class="fc" id="L255">                  ReportService.creaReport(request, TipoReport.ERRORE,</span>
+                          &quot;Esito operazione:&quot;,
+                          &quot;Modifica non effettuata con successo&quot;);
+               }
+<span class="fc" id="L259">               visualizzaDashboardAdmin(request, response);</span>
+            } else {
+<span class="fc" id="L261">               response.sendError(HttpServletResponse.</span>
+                       SC_INTERNAL_SERVER_ERROR);
+            }
+         }
+      }
+<span class="fc" id="L266">   }</span>
+
+   @Override
+   public void destroy() {
+<span class="nc" id="L270">      ConPool.getInstance().closeDataSource();</span>
+<span class="nc" id="L271">      super.destroy();</span>
+<span class="nc" id="L272">   }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

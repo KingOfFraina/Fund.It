@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GestioneCampagnaController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">controller</a> &gt; <span class="el_source">GestioneCampagnaController.java</span></div><h1>GestioneCampagnaController.java</h1><pre class="source lang-java linenums">package controller;
+
+import controller.utils.FileServlet;
+import controller.utils.Validator;
+import model.DAO.ImmagineDAO;
+import model.beans.Campagna;
+import model.beans.Categoria;
+import model.beans.Donazione;
+import model.beans.Immagine;
+import model.beans.StatoCampagna;
+import model.beans.Utente;
+import model.beans.proxies.CampagnaProxy;
+import model.beans.proxies.DonazioneProxy;
+import model.beans.proxyInterfaces.CampagnaInterface;
+import model.services.CategoriaService;
+import model.services.CampagnaService;
+import model.services.CategoriaServiceImpl;
+import model.services.CampagnaServiceImpl;
+import model.services.ReportService;
+import model.services.TipoReport;
+import model.services.ImmagineService;
+import model.services.ImmagineServiceImpl;
+import model.storage.ConPool;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@WebServlet(name = &quot;GestioneCampagnaController&quot;,
+        value = &quot;/campagna/*&quot;,
+        loadOnStartup = 0)
+@MultipartConfig
+public final class GestioneCampagnaController extends HttpServlet {
+   /**
+    * Variabile per il service di Campagna.
+    */
+   private static CampagnaService campagnaService;
+
+   /**
+    * Variabile per il service di Categoria.
+    */
+   private static CategoriaService categoriaService;
+
+   /**
+    * Costruttore per GestioneCampagnaController.
+    *
+    * @param service    il service di Campagna.
+    * @param catService il service di Categoria.
+    */
+   public GestioneCampagnaController(final CampagnaService service,
+<span class="fc" id="L60">                                     final CategoriaService catService) {</span>
+<span class="fc" id="L61">      campagnaService = service;</span>
+<span class="fc" id="L62">      categoriaService = catService;</span>
+<span class="fc" id="L63">   }</span>
+
+   /**
+    * Costruttore per GestioneCampagnaController.
+    */
+<span class="nc" id="L68">   public GestioneCampagnaController() {</span>
+<span class="nc" id="L69">      campagnaService = new CampagnaServiceImpl();</span>
+<span class="nc" id="L70">      categoriaService = new CategoriaServiceImpl();</span>
+<span class="nc" id="L71">   }</span>
+
+   @Override
+   public void doGet(final HttpServletRequest request,
+                     final HttpServletResponse response)
+           throws ServletException, IOException {
+<span class="fc" id="L77">      String resource = &quot;/&quot;;</span>
+<span class="fc" id="L78">      HttpSession session = request.getSession();</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">      String path = request.getPathInfo() == null</span>
+<span class="fc" id="L80">              ? &quot;/&quot; : request.getPathInfo();</span>
+
+<span class="fc" id="L82">      Utente userSession = (Utente) session.getAttribute(&quot;utente&quot;);</span>
+
+<span class="fc bfc" id="L84" title="All 7 branches covered.">      switch (path) {</span>
+         case &quot;/main&quot;:
+<span class="fc" id="L86">            List&lt;Campagna&gt; lst = campagnaService.getActiveCampagne();</span>
+<span class="fc" id="L87">            lst.forEach(c -&gt; {</span>
+<span class="nc" id="L88">               CampagnaInterface proxy = new CampagnaProxy(c);</span>
+<span class="nc" id="L89">               proxy.getUtente();</span>
+<span class="nc" id="L90">               proxy.getImmagini();</span>
+<span class="nc" id="L91">            });</span>
+<span class="fc" id="L92">            request.setAttribute(&quot;campagneList&quot;, lst);</span>
+<span class="fc" id="L93">            resource = &quot;/WEB-INF/results/main_page.jsp&quot;;</span>
+<span class="fc" id="L94">            break;</span>
+         case &quot;/creaCampagna&quot;:
+<span class="fc bfc" id="L96" title="All 2 branches covered.">            if (!new Validator(request).isValidBean(Utente.class,</span>
+                    userSession)) {
+<span class="fc" id="L98">               response.sendRedirect(</span>
+<span class="fc" id="L99">                       request.getServletContext().getContextPath()</span>
+                               + &quot;/autenticazione/login&quot;);
+<span class="fc" id="L101">               return;</span>
+            } else {
+<span class="fc" id="L103">               request.setAttribute(&quot;categorie&quot;,</span>
+<span class="fc" id="L104">                       categoriaService.visualizzaCategorie());</span>
+<span class="fc" id="L105">               resource = &quot;/WEB-INF/results/form_campagna.jsp&quot;;</span>
+            }
+<span class="fc" id="L107">            break;</span>
+         case &quot;/modificaCampagna&quot;:
+<span class="fc" id="L109">            visualizzaModificaCampagna(request, response);</span>
+<span class="fc" id="L110">            return;</span>
+         case &quot;/campagna&quot;:
+<span class="fc" id="L112">            String id = request.getParameter(&quot;idCampagna&quot;);</span>
+<span class="fc" id="L113">            int idCampagna = Integer.parseInt(id);</span>
+<span class="fc" id="L114">            Campagna c = campagnaService.trovaCampagna(idCampagna);</span>
+<span class="pc bpc" id="L115" title="1 of 4 branches missed.">            if (c == null || c.getStato() != StatoCampagna.ATTIVA) {</span>
+<span class="fc" id="L116">               response.sendError(</span>
+                       HttpServletResponse.SC_NOT_FOUND,
+                       &quot;Campagna non trovata&quot;);
+<span class="fc" id="L119">               return;</span>
+            } else {
+<span class="fc" id="L121">               CampagnaInterface proxy = new CampagnaProxy(c);</span>
+<span class="fc" id="L122">               c.setUtente(proxy.getUtente());</span>
+<span class="fc" id="L123">               DonazioneProxy proxy2 = new DonazioneProxy();</span>
+<span class="fc" id="L124">               c.setImmagini(proxy.getImmagini());</span>
+<span class="fc" id="L125">               List&lt;Donazione&gt; donazioni = proxy.getDonazioni();</span>
+<span class="fc" id="L126">               donazioni.forEach(d -&gt; {</span>
+<span class="nc" id="L127">                  proxy2.setDonazione(d);</span>
+<span class="nc" id="L128">                  d.setUtente(proxy2.getUtente());</span>
+<span class="nc" id="L129">               });</span>
+<span class="fc" id="L130">               c.setDonazioni(proxy.getDonazioni());</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">               if (campagnaService.modificaCampagna(c)) {</span>
+<span class="fc" id="L132">                  request.setAttribute(&quot;campagna&quot;, c);</span>
+<span class="fc" id="L133">                  condividiCampagna(request, c.getIdCampagna());</span>
+<span class="fc" id="L134">                  resource = &quot;/WEB-INF/results/campagna.jsp&quot;;</span>
+               } else {
+<span class="fc" id="L136">                  response.sendError(HttpServletResponse.SC_NOT_FOUND);</span>
+<span class="fc" id="L137">                  return;</span>
+               }
+            }
+<span class="fc" id="L140">            break;</span>
+         case &quot;/ricerca&quot;:
+<span class="fc" id="L142">            String searchText = request.getParameter(&quot;searchText&quot;);</span>
+<span class="fc" id="L143">            searchText = searchText.trim();</span>
+<span class="fc" id="L144">            List&lt;Campagna&gt; campagne = campagnaService.</span>
+<span class="fc" id="L145">                    ricercaCampagna(searchText);</span>
+<span class="fc" id="L146">            campagne = campagne.stream().</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">                    filter(campagna -&gt; campagna.getStato()</span>
+                            == StatoCampagna.ATTIVA).
+<span class="fc" id="L149">                    collect(Collectors.toList());</span>
+
+<span class="pc bpc" id="L151" title="1 of 4 branches missed.">            if (campagne.size() &gt; 0 &amp;&amp; !searchText.isBlank()) {</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">               for (Campagna campagna : campagne) {</span>
+<span class="fc" id="L153">                  new CampagnaProxy(campagna).getImmagini();</span>
+<span class="fc" id="L154">               }</span>
+<span class="fc" id="L155">               request.setAttribute(&quot;campagneList&quot;, campagne);</span>
+<span class="fc" id="L156">               resource = &quot;/WEB-INF/results/campagne.jsp&quot;;</span>
+            } else {
+<span class="fc" id="L158">               request.setAttribute(&quot;errorSearch&quot;,</span>
+                       &quot;Nessun risultato trovato&quot;);
+<span class="fc" id="L160">               resource = &quot;/WEB-INF/results/campagne.jsp&quot;;</span>
+            }
+<span class="fc" id="L162">            break;</span>
+         case &quot;/ricercaCategoria&quot;:
+<span class="fc" id="L164">            String cat = request.getParameter(&quot;idCat&quot;);</span>
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">            if (cat.isBlank()) {</span>
+<span class="nc" id="L166">               response.sendError(HttpServletResponse.SC_NOT_FOUND);</span>
+<span class="nc" id="L167">               return;</span>
+            }
+<span class="fc" id="L169">            String idcattrimmed = cat.trim();</span>
+<span class="fc" id="L170">            Categoria categoria = new Categoria();</span>
+            try {
+<span class="fc" id="L172">               categoria.setIdCategoria(Integer.parseInt(idcattrimmed));</span>
+<span class="nc" id="L173">            } catch (NumberFormatException e) {</span>
+<span class="nc" id="L174">               response.sendError(HttpServletResponse.SC_NOT_FOUND);</span>
+<span class="fc" id="L175">            }</span>
+<span class="fc" id="L176">            categoria = categoriaService.visualizzaCategoria(categoria);</span>
+
+<span class="pc bpc" id="L178" title="1 of 2 branches missed.">            if (categoria == null) {</span>
+<span class="nc" id="L179">               response.sendError(HttpServletResponse.SC_NOT_FOUND);</span>
+<span class="nc" id="L180">               return;</span>
+            }
+
+<span class="fc" id="L183">            List&lt;Campagna&gt; campagneSearched = campagnaService.</span>
+<span class="fc" id="L184">                    ricercaCampagnaPerCategoria(categoria.getNome());</span>
+
+<span class="fc" id="L186">            campagne = campagneSearched.stream().</span>
+<span class="pc bnc" id="L187" title="All 2 branches missed.">                    filter(campagna -&gt; campagna.getStato()</span>
+                            == StatoCampagna.ATTIVA).
+<span class="fc" id="L189">                    collect(Collectors.toList());</span>
+
+<span class="pc bpc" id="L191" title="1 of 2 branches missed.">            if (campagne.size() &gt; 0) {</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">               for (Campagna campagna : campagne) {</span>
+<span class="nc" id="L193">                  new CampagnaProxy(campagna).getImmagini();</span>
+<span class="nc" id="L194">               }</span>
+<span class="nc" id="L195">               request.setAttribute(&quot;campagneList&quot;, campagne);</span>
+            } else {
+<span class="fc" id="L197">               request.setAttribute(&quot;errorSearch&quot;,</span>
+                       &quot;Nessun risultato trovato&quot;);
+            }
+<span class="fc" id="L200">            resource = &quot;/WEB-INF/results/campagne.jsp&quot;;</span>
+<span class="fc" id="L201">            break;</span>
+         default:
+<span class="fc" id="L203">            response.sendError(</span>
+                    HttpServletResponse.SC_NOT_FOUND,
+                    &quot;Risorsa non trovata&quot;);
+<span class="fc" id="L206">            return;</span>
+      }
+
+<span class="fc" id="L209">      RequestDispatcher dispatcher =</span>
+<span class="fc" id="L210">              request.getRequestDispatcher(resource);</span>
+<span class="fc" id="L211">      dispatcher.forward(request, response);</span>
+<span class="fc" id="L212">   }</span>
+
+   @Override
+   public void doPost(final HttpServletRequest request,
+                      final HttpServletResponse response)
+           throws ServletException, IOException {
+
+<span class="fc" id="L219">      HttpSession session = request.getSession();</span>
+<span class="fc" id="L220">      Utente userSession = (Utente) session.getAttribute(&quot;utente&quot;);</span>
+<span class="fc" id="L221">      String path = request.getPathInfo();</span>
+<span class="fc bfc" id="L222" title="All 2 branches covered.">      if (!new Validator(request).isValidBean(Utente.class, userSession)) {</span>
+<span class="fc" id="L223">         response.sendRedirect(</span>
+<span class="fc" id="L224">                 request.getServletContext().getContextPath()</span>
+                         + &quot;/autenticazione/login&quot;);
+      } else {
+<span class="fc" id="L227">         String idCampagna = request.getParameter(&quot;idCampagna&quot;);</span>
+         int id;
+
+<span class="fc bfc" id="L230" title="All 5 branches covered.">         switch (path) {</span>
+            case &quot;/creaCampagna&quot;:
+<span class="fc" id="L232">               creaCampagna(request, response, userSession);</span>
+<span class="fc" id="L233">               break;</span>
+            case &quot;/modificaCampagna&quot;:
+<span class="fc bfc" id="L235" title="All 2 branches covered.">               if (idCampagna != null) {</span>
+<span class="fc" id="L236">                  modificaCampagna(request, response, campagnaService</span>
+<span class="fc" id="L237">                                  .trovaCampagna(</span>
+<span class="fc" id="L238">                                          Integer.parseInt(idCampagna)),</span>
+                          userSession);
+               } else {
+<span class="fc" id="L241">                  ReportService.creaReport(request, TipoReport.ERRORE,</span>
+                          &quot;Operazione modifica campagna:&quot;,
+                          &quot;Non effettuata con successo&quot;);
+               }
+<span class="fc" id="L245">               break;</span>
+            case &quot;/cancellaCampagna&quot;:
+<span class="fc" id="L247">               id = Integer.parseInt(idCampagna);</span>
+<span class="fc" id="L248">               Campagna campagna = campagnaService.trovaCampagna(id);</span>
+
+<span class="fc" id="L250">               if (campagna.getUtente().getIdUtente()</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">                       != userSession.getIdUtente()) {</span>
+<span class="fc" id="L252">                  response.sendError(HttpServletResponse.SC_UNAUTHORIZED);</span>
+<span class="fc" id="L253">                  return;</span>
+               } else {
+<span class="fc bfc" id="L255" title="All 2 branches covered.">                  if (campagnaService.cancellaCampagna(campagna)) {</span>
+<span class="fc bfc" id="L256" title="All 2 branches covered.">                     if (campagnaService.rimborsaDonazioni(campagna,</span>
+                             new CampagnaProxy(campagna))) {
+<span class="fc" id="L258">                        ReportService.creaReport(request,</span>
+                                TipoReport.INFO,
+                                &quot;Operazione rimborso donazioni:&quot;,
+                                &quot;Effettuata con successo&quot;);
+                     } else {
+<span class="fc" id="L263">                        ReportService.creaReport(request,</span>
+                                TipoReport.ERRORE,
+                                &quot;Operazione rimborso donazioni:&quot;,
+                                &quot;Non effettuata con successo&quot;);
+                     }
+<span class="fc" id="L268">                     request.getRequestDispatcher(</span>
+                             &quot;/WEB-INF/results/profilo_utente.jsp&quot;);
+<span class="fc" id="L270">                     return;</span>
+                  } else {
+<span class="fc" id="L272">                     ReportService.creaReport(request,</span>
+                             TipoReport.ERRORE,
+                             &quot;Operazione cancellazione campagna:&quot;,
+                             &quot;Non effettuata con successo&quot;);
+                  }
+               }
+<span class="fc" id="L278">               break;</span>
+            case &quot;/chiudiCampagna&quot;:
+<span class="fc" id="L280">               id = Integer.parseInt(idCampagna);</span>
+<span class="fc" id="L281">               Campagna campagna1 = campagnaService.trovaCampagna(id);</span>
+<span class="fc bfc" id="L282" title="All 2 branches covered.">               if (campagnaService.chiudiCampagna(campagna1)) {</span>
+<span class="fc" id="L283">                  ReportService.creaReport(request,</span>
+                          TipoReport.INFO,
+                          &quot;Chiusura campagna&quot;,
+                          &quot;Azione effettuata con successo&quot;);
+<span class="fc" id="L287">                  response.sendRedirect(request.getServletContext()</span>
+<span class="fc" id="L288">                          .getContextPath()</span>
+                          + &quot;/GestioneUtenteController&quot;
+                          + &quot;/visualizzaDashboard&quot;);
+               } else {
+<span class="fc" id="L292">                  response.sendError(</span>
+                          HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+               }
+<span class="fc" id="L295">               return;</span>
+            default:
+<span class="fc" id="L297">               response.sendError(</span>
+                       HttpServletResponse.SC_NOT_FOUND);
+               break;
+         }
+      }
+<span class="fc" id="L302">   }</span>
+
+   private void condividiCampagna(final HttpServletRequest request,
+                                  final int idCampagna) {
+
+<span class="fc" id="L307">      Map&lt;String, String&gt; map =</span>
+<span class="fc" id="L308">              campagnaService.condividiCampagna(idCampagna, request);</span>
+
+<span class="fc" id="L310">      request.setAttribute(&quot;linkList&quot;, map);</span>
+
+<span class="fc" id="L312">   }</span>
+
+   private void visualizzaModificaCampagna(final HttpServletRequest request,
+                                           final HttpServletResponse response)
+           throws ServletException, IOException {
+<span class="fc" id="L317">      HttpSession session = request.getSession();</span>
+<span class="fc" id="L318">      Utente userSession = (Utente) session.getAttribute(&quot;utente&quot;);</span>
+
+<span class="fc bfc" id="L320" title="All 2 branches covered.">      if (!new Validator(request).isValidBean(Utente.class,</span>
+<span class="fc" id="L321">              session.getAttribute(&quot;utente&quot;))) {</span>
+<span class="fc" id="L322">         response.sendRedirect(</span>
+<span class="fc" id="L323">                 request.getServletContext().getContextPath()</span>
+                         + &quot;/autenticazione/login&quot;);
+<span class="fc" id="L325">         return;</span>
+      }
+
+<span class="fc" id="L328">      String idCampagna = request.getParameter(&quot;idCampagna&quot;);</span>
+      int id;
+      try {
+<span class="fc" id="L331">         id = Integer.parseInt(idCampagna);</span>
+<span class="nc" id="L332">      } catch (NumberFormatException e) {</span>
+<span class="nc" id="L333">         response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,</span>
+                 &quot;Input errato&quot;);
+<span class="nc" id="L335">         e.printStackTrace();</span>
+<span class="nc" id="L336">         return;</span>
+<span class="fc" id="L337">      }</span>
+<span class="fc" id="L338">      Campagna c = campagnaService.trovaCampagna(id);</span>
+<span class="fc bfc" id="L339" title="All 2 branches covered.">      if (c.getUtente().getIdUtente() != userSession.getIdUtente()) {</span>
+<span class="fc" id="L340">         response.sendError(HttpServletResponse.SC_UNAUTHORIZED,</span>
+                 &quot;Non Autorizzato&quot;);
+<span class="fc" id="L342">         return;</span>
+      }
+<span class="fc" id="L344">      request.setAttribute(&quot;campagna&quot;, c);</span>
+<span class="fc" id="L345">      request.setAttribute(&quot;categorie&quot;,</span>
+<span class="fc" id="L346">              categoriaService.visualizzaCategorie());</span>
+<span class="fc" id="L347">      RequestDispatcher dispatcher =</span>
+<span class="fc" id="L348">              request.getRequestDispatcher(</span>
+                      &quot;/WEB-INF/results/form_campagna.jsp&quot;);
+<span class="fc" id="L350">      dispatcher.forward(request, response);</span>
+<span class="fc" id="L351">   }</span>
+
+   private void creaCampagna(final HttpServletRequest req,
+                             final HttpServletResponse res,
+                             final Utente utente)
+           throws IOException, ServletException {
+
+<span class="fc" id="L358">      Campagna c = extractCampagna(req);</span>
+<span class="fc" id="L359">      c.setSommaRaccolta(0d);</span>
+<span class="fc" id="L360">      c.setUtente(utente);</span>
+
+<span class="fc bfc" id="L362" title="All 2 branches covered.">      if (campagnaService.creazioneCampagna(c)) {</span>
+<span class="fc" id="L363">         uploadFoto(req, c);</span>
+<span class="fc" id="L364">         ReportService.creaReport(req, TipoReport.INFO,</span>
+                 &quot;Operazione creazione campagna:&quot;,
+                 &quot;Effettuata con successo&quot;);
+<span class="fc" id="L367">         res.sendRedirect(</span>
+<span class="fc" id="L368">                 req.getServletContext().getContextPath() + &quot;/index.jsp&quot;);</span>
+      } else {
+<span class="fc" id="L370">         ReportService.creaReport(req, TipoReport.ERRORE,</span>
+                 &quot;Operazione creazione campagna:&quot;,
+                 &quot;Non effettuata con successo&quot;);
+<span class="fc" id="L373">         res.sendRedirect(</span>
+<span class="fc" id="L374">                 req.getServletContext().getContextPath()</span>
+                         + &quot;/campagna/creaCampagna&quot;);
+      }
+<span class="fc" id="L377">   }</span>
+
+   private Campagna extractCampagna(final HttpServletRequest request) {
+<span class="fc" id="L380">      Campagna c = new Campagna();</span>
+
+<span class="fc" id="L382">      c.setStato(StatoCampagna.ATTIVA);</span>
+<span class="fc" id="L383">      c.setTitolo(request.getParameter(&quot;titolo&quot;));</span>
+<span class="fc" id="L384">      c.setDescrizione(request.getParameter(&quot;descrizione&quot;));</span>
+
+<span class="fc" id="L386">      c.setSommaTarget(</span>
+<span class="fc" id="L387">              Double.parseDouble(request.getParameter(&quot;sommaTarget&quot;)));</span>
+<span class="fc" id="L388">      c.setUtente((Utente) request.getSession(false).getAttribute(&quot;utente&quot;));</span>
+
+<span class="fc" id="L390">      Categoria categoria = new Categoria();</span>
+<span class="fc" id="L391">      categoria.setIdCategoria(Integer.parseInt(</span>
+<span class="fc" id="L392">              request.getParameter(&quot;idCategoria&quot;)));</span>
+
+<span class="fc" id="L394">      c.setCategoria(</span>
+<span class="fc" id="L395">              categoriaService.visualizzaCategoria(categoria));</span>
+
+<span class="fc" id="L397">      return c;</span>
+   }
+
+   private void uploadFoto(final HttpServletRequest request,
+                           final Campagna campagna) throws ServletException,
+           IOException {
+<span class="fc" id="L403">      List&lt;String&gt; fotoList = FileServlet.uploadFoto(request);</span>
+<span class="fc" id="L404">      ImmagineService immagineService =</span>
+              new ImmagineServiceImpl();
+<span class="fc" id="L406">      Immagine immagine = new Immagine();</span>
+<span class="fc" id="L407">      immagine.setCampagna(campagna);</span>
+
+<span class="pc bpc" id="L409" title="1 of 2 branches missed.">      if (!fotoList.isEmpty()) {</span>
+<span class="nc" id="L410">         immagineService.eliminaImmaginiCampagna(campagna.getIdCampagna());</span>
+      }
+
+<span class="pc bpc" id="L413" title="1 of 2 branches missed.">      for (String fotoPath : fotoList) {</span>
+<span class="nc" id="L414">         immagine.setPath(fotoPath);</span>
+<span class="nc" id="L415">         immagineService.salvaImmagine(immagine);</span>
+<span class="nc" id="L416">      }</span>
+<span class="fc" id="L417">   }</span>
+
+   private void modificaCampagna(final HttpServletRequest request,
+                                 final HttpServletResponse response,
+                                 final Campagna campagna,
+                                 final Utente utente)
+           throws IOException, ServletException {
+
+<span class="fc" id="L425">      Campagna c = extractCampagna(request);</span>
+<span class="fc" id="L426">      c.setIdCampagna(campagna.getIdCampagna());</span>
+<span class="fc" id="L427">      c.setSommaRaccolta(campagna.getSommaRaccolta());</span>
+
+<span class="fc bfc" id="L429" title="All 2 branches covered.">      if (campagnaService.modificaCampagna(c)) {</span>
+<span class="fc" id="L430">         uploadFoto(request, c);</span>
+<span class="fc" id="L431">         ReportService.creaReport(request, TipoReport.INFO,</span>
+                 &quot;Operazione modifica campagna:&quot;,
+                 &quot;Effettuata con successo&quot;);
+<span class="fc" id="L434">         response.sendRedirect(</span>
+                 request
+<span class="fc" id="L436">                         .getServletContext()</span>
+<span class="fc" id="L437">                         .getContextPath() + &quot;/index.jsp&quot;);</span>
+      } else {
+<span class="fc" id="L439">         ReportService.creaReport(request, TipoReport.ERRORE,</span>
+                 &quot;Operazione modifica campagna:&quot;,
+                 &quot;Non effettuata con successo&quot;);
+<span class="fc" id="L442">         request.getRequestDispatcher(&quot;/campagna&quot;</span>
+<span class="fc" id="L443">                 + &quot;/modificaCampagna&quot;).forward(request, response);</span>
+      }
+<span class="fc" id="L445">   }</span>
+
+   @Override
+   public void destroy() {
+<span class="nc" id="L449">      ConPool.getInstance().closeDataSource();</span>
+<span class="nc" id="L450">      super.destroy();</span>
+<span class="nc" id="L451">   }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

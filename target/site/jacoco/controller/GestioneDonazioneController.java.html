@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GestioneDonazioneController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">controller</a> &gt; <span class="el_source">GestioneDonazioneController.java</span></div><h1>GestioneDonazioneController.java</h1><pre class="source lang-java linenums">package controller;
+
+import model.beans.Campagna;
+import model.beans.Donazione;
+import model.beans.Utente;
+import model.services.CampagnaService;
+import model.services.CampagnaServiceImpl;
+import model.services.DonazioniService;
+import model.services.DonazioniServiceImpl;
+import model.services.ReportService;
+import model.services.TipoReport;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.time.LocalDateTime;
+
+@WebServlet(name = &quot;GestioneDonazioneController&quot;,
+        value = &quot;/donazione/*&quot;)
+public final class GestioneDonazioneController extends HttpServlet {
+
+   /**
+    * Variabile per il service Donazioni.
+    */
+   private DonazioniService donazioniService;
+   /**
+    * Variabile per il service Campagna.
+    */
+   private CampagnaService campagnaService;
+
+   /**
+    * Costruttore classe GestioneDonazioneController.
+    *
+    * @param ds DonazioneService
+    * @param cs CampagnaService
+    */
+   public GestioneDonazioneController(final DonazioniService ds,
+<span class="fc" id="L42">                                      final CampagnaService cs) {</span>
+<span class="fc" id="L43">      donazioniService = ds;</span>
+<span class="fc" id="L44">      campagnaService = cs;</span>
+<span class="fc" id="L45">   }</span>
+
+   /**
+    * Costruttore classe GestioneDonazioneController.
+    */
+<span class="nc" id="L50">   public GestioneDonazioneController() {</span>
+<span class="nc" id="L51">      donazioniService = new DonazioniServiceImpl();</span>
+<span class="nc" id="L52">      campagnaService = new CampagnaServiceImpl();</span>
+<span class="nc" id="L53">   }</span>
+
+   @Override
+   public void doGet(final HttpServletRequest request,
+                     final HttpServletResponse response)
+           throws ServletException, IOException {
+
+<span class="fc" id="L60">      String resource = &quot;/WEB-INF/results/visualizzaDonazioni.jsp&quot;;</span>
+<span class="fc" id="L61">      HttpSession session = request.getSession();</span>
+<span class="fc" id="L62">      Utente userSession = (Utente) session.getAttribute(&quot;utente&quot;);</span>
+<span class="fc" id="L63">      String path = request.getPathInfo();</span>
+<span class="fc" id="L64">      Donazione donazione = (Donazione) session.getAttribute(&quot;donazione&quot;);</span>
+
+<span class="fc bfc" id="L66" title="All 2 branches covered.">      if (userSession != null) {</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">         if (&quot;/scriviCommento&quot;.equals(path)) {</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">            if (donazione != null) {</span>
+<span class="fc" id="L69">               request.getRequestDispatcher(</span>
+                               &quot;/WEB-INF/results/commentoDonazione.jsp&quot;)
+<span class="fc" id="L71">                       .forward(request, response);</span>
+            } else {
+<span class="fc" id="L73">               response.sendError(HttpServletResponse.SC_BAD_REQUEST);</span>
+            }
+<span class="fc" id="L75">            return;</span>
+         } else {
+<span class="fc" id="L77">            request.setAttribute(&quot;donazioniList&quot;,</span>
+<span class="fc" id="L78">                    donazioniService.visualizzaDonazioni(userSession));</span>
+         }
+      } else {
+<span class="fc" id="L81">         response.sendRedirect(</span>
+<span class="fc" id="L82">                 request.getServletContext().getContextPath()</span>
+                         + &quot;/autenticazione/login&quot;);
+<span class="fc" id="L84">         return;</span>
+      }
+<span class="fc" id="L86">      request.getRequestDispatcher(resource).forward(request, response);</span>
+<span class="fc" id="L87">   }</span>
+
+   @Override
+   public void doPost(final HttpServletRequest request,
+                      final HttpServletResponse response)
+           throws IOException, ServletException {
+<span class="fc" id="L93">      String path = request.getPathInfo();</span>
+<span class="fc" id="L94">      int id = Integer.parseInt(request.getParameter(&quot;idCampagna&quot;));</span>
+<span class="fc" id="L95">      HttpSession session = request.getSession();</span>
+<span class="fc" id="L96">      Utente utente = (Utente) session.getAttribute(&quot;utente&quot;);</span>
+
+<span class="fc" id="L98">      Campagna campagna = campagnaService.trovaCampagna(id);</span>
+
+<span class="fc bfc" id="L100" title="All 2 branches covered.">      if (campagna == null) {</span>
+<span class="fc" id="L101">         response.sendError(HttpServletResponse.SC_NOT_FOUND);</span>
+      } else {
+<span class="fc bfc" id="L103" title="All 3 branches covered.">         switch (path) {</span>
+<span class="fc" id="L104">            case &quot;/registraDonazione&quot; -&gt; {</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">               if (utente != null) {</span>
+<span class="fc" id="L106">                  Donazione donazione = new Donazione();</span>
+<span class="fc" id="L107">                  donazione.setCampagna(campagna);</span>
+<span class="fc" id="L108">                  donazione.setUtente((Utente)</span>
+<span class="fc" id="L109">                          session.getAttribute(&quot;utente&quot;));</span>
+<span class="fc" id="L110">                  donazione.setSommaDonata(Double.parseDouble(</span>
+<span class="fc" id="L111">                          request.getParameter(&quot;sommaDonata&quot;)));</span>
+<span class="fc" id="L112">                  donazione.setAnonimo(false);</span>
+<span class="fc" id="L113">                  donazione.setCommento(null);</span>
+<span class="fc" id="L114">                  donazione.setRicevuta(request.getParameter(&quot;ricevuta&quot;));</span>
+<span class="fc" id="L115">                  donazione.setDataOra(LocalDateTime.now());</span>
+
+<span class="fc bfc" id="L117" title="All 2 branches covered.">                  if (donazioniService.effettuaDonazione(donazione)) {</span>
+<span class="fc" id="L118">                     ReportService.creaReport(request,</span>
+                             TipoReport.INFO,
+                             &quot;Donazione andata a buon fine&quot;);
+                  } else {
+<span class="fc" id="L122">                     ReportService.creaReport(request, TipoReport.ERRORE,</span>
+                             &quot;Donazione non salvata&quot;);
+                  }
+<span class="fc" id="L125">                  session.setAttribute(&quot;donazione&quot;, donazione);</span>
+
+<span class="fc" id="L127">                  request.setAttribute(&quot;idCampagna&quot;, id);</span>
+<span class="fc" id="L128">                  request.getRequestDispatcher(</span>
+                                  &quot;/WEB-INF/results/commentoDonazione.jsp&quot;)
+<span class="fc" id="L130">                          .forward(request, response);</span>
+<span class="fc" id="L131">               } else {</span>
+<span class="fc" id="L132">                  response.sendError(HttpServletResponse.SC_BAD_REQUEST);</span>
+               }
+            }
+<span class="fc" id="L135">            case &quot;/scriviCommento&quot; -&gt; {</span>
+<span class="fc" id="L136">               Donazione donazione = (Donazione) session</span>
+<span class="fc" id="L137">                       .getAttribute(&quot;donazione&quot;);</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">               if (donazione != null) {</span>
+<span class="fc" id="L139">                  donazione.setCommento(request.getParameter(&quot;commento&quot;));</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">                  if (request.getParameter(&quot;anonimo&quot;) != null) {</span>
+<span class="fc" id="L141">                     donazione.setAnonimo(true);</span>
+                  } else {
+<span class="fc" id="L143">                     donazione.setAnonimo(false);</span>
+                  }
+
+<span class="fc bfc" id="L146" title="All 2 branches covered.">                  if (donazioniService.commenta(donazione)) {</span>
+<span class="fc" id="L147">                     campagna.setSommaRaccolta(</span>
+<span class="fc" id="L148">                             campagna.getSommaRaccolta()</span>
+<span class="fc" id="L149">                                     + donazione.getSommaDonata());</span>
+<span class="fc" id="L150">                     campagnaService.modificaCampagna(campagna);</span>
+<span class="fc" id="L151">                     session.removeAttribute(&quot;donazione&quot;);</span>
+<span class="fc" id="L152">                     ReportService.creaReport(request,</span>
+                             TipoReport.INFO,
+                             &quot;Commento andato a buon fine&quot;);
+<span class="fc" id="L155">                     response.sendRedirect(request.getServletContext()</span>
+<span class="fc" id="L156">                             .getContextPath()</span>
+                             + &quot;/campagna/campagna?idCampagna=&quot;
+<span class="fc" id="L158">                             + campagna.getIdCampagna());</span>
+                  } else {
+<span class="fc" id="L160">                     ReportService.creaReport(request, TipoReport.ERRORE,</span>
+                             &quot;Commento non salvato&quot;);
+<span class="fc" id="L162">                     response</span>
+<span class="fc" id="L163">                             .sendError(HttpServletResponse</span>
+                                     .SC_INTERNAL_SERVER_ERROR);
+                  }
+
+<span class="fc" id="L167">                  return;</span>
+               } else {
+<span class="fc" id="L169">                  response.sendError(HttpServletResponse.SC_BAD_REQUEST);</span>
+               }
+            }
+            default -&gt; {
+<span class="fc" id="L173">               response.sendError(HttpServletResponse.SC_NOT_FOUND);</span>
+<span class="fc" id="L174">               return;</span>
+            }
+         }
+      }
+<span class="fc" id="L178">   }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

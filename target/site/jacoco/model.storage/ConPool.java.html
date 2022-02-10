@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConPool.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fund.It</a> &gt; <a href="index.source.html" class="el_package">model.storage</a> &gt; <span class="el_source">ConPool.java</span></div><h1>ConPool.java</h1><pre class="source lang-java linenums">package model.storage;
+
+import org.apache.tomcat.jdbc.pool.PoolProperties;
+import org.apache.tomcat.jdbc.pool.DataSource;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+public final class ConPool {
+   /***
+    * Instanza di dataSource.
+    */
+   private DataSource datasource;
+   /***
+    * Instanza della classe ConPool.
+    */
+   private static ConPool instance;
+   /***
+    * Connessioni Max.
+    */
+   private static final int MAX_ACTIVE = 100;
+   /***
+    * Size del pool.
+    */
+   private static final int INITIAL_SIZE = 10;
+   /***
+    * Tempo minimo di idle.
+    */
+   private static final int MIN_IDLE = 10;
+   /***
+    * Timeout connessione.
+    */
+   private static final int TIMEOUT = 15;
+
+   private ConPool() {
+   }
+
+   /***
+    * Metodo che ritorna l'instanza di ConPool.
+    * @return l'istanza della classe
+    */
+   public static ConPool getInstance() {
+<span class="fc bfc" id="L43" title="All 2 branches covered.">      if (instance == null) {</span>
+<span class="fc" id="L44">         instance = new ConPool();</span>
+      }
+
+<span class="fc" id="L47">      return instance;</span>
+   }
+
+   /**
+    * Metodo per ottenere una connessione al database.
+    *
+    * @return Una Connection
+    * @throws SQLException Eccezione se qualcosa va storto
+    */
+   public Connection getConnection() throws SQLException {
+<span class="fc bfc" id="L57" title="All 2 branches covered.">      if (datasource == null) {</span>
+<span class="fc" id="L58">         PoolProperties p = new PoolProperties();</span>
+<span class="fc" id="L59">         p.setUrl(&quot;jdbc:mysql://&quot;</span>
+                 + &quot;fundit-mysqlserver.mysql.database.azure.com:3306/&quot;
+                 + &quot;funditdb?useSSL=true&quot;);
+<span class="fc" id="L62">         p.setDriverClassName(&quot;com.mysql.cj.jdbc.Driver&quot;);</span>
+<span class="fc" id="L63">         p.setUsername(&quot;funditadmin&quot;);</span>
+<span class="fc" id="L64">         p.setPassword(&quot;cAEmiz5Dx3PZRQ&quot;);</span>
+<span class="fc" id="L65">         p.setMaxActive(MAX_ACTIVE);</span>
+<span class="fc" id="L66">         p.setInitialSize(INITIAL_SIZE);</span>
+<span class="fc" id="L67">         p.setMinIdle(MIN_IDLE);</span>
+<span class="fc" id="L68">         p.setRemoveAbandonedTimeout(TIMEOUT);</span>
+<span class="fc" id="L69">         p.setRemoveAbandoned(true);</span>
+<span class="fc" id="L70">         datasource = new DataSource();</span>
+<span class="fc" id="L71">         datasource.setPoolProperties(p);</span>
+      }
+
+<span class="fc" id="L74">      return datasource.getConnection();</span>
+   }
+
+   /***
+    * Metodo per chiudere la dataSource.
+    */
+   public void closeDataSource() {
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">      if (datasource != null) {</span>
+         try {
+<span class="fc" id="L83">            datasource.getConnection().close();</span>
+<span class="nc" id="L84">         } catch (SQLException e) {</span>
+<span class="nc" id="L85">            e.printStackTrace();</span>
+<span class="fc" id="L86">         }</span>
+<span class="fc" id="L87">         datasource.close();</span>
+      }
+<span class="fc" id="L89">   }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
