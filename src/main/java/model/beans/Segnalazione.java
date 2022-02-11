@@ -1,11 +1,13 @@
 package model.beans;
 
 
+import model.beans.proxyInterfaces.SegnalazioneInterface;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 
-public final class Segnalazione {
+public final class Segnalazione implements SegnalazioneInterface {
     /**
      * Identificativo univoco della segnalazione.
      */
@@ -113,17 +115,18 @@ public final class Segnalazione {
     }
 
     /**
+     * @return Campagna istanza di Campagna che viene segnalata.
+     */
+    @Override
+    public Campagna getCampagna() {
+        return campagnaSegnalata;
+    }
+
+    /**
      * @param utente Istanza di utente che viene segnalata.
      */
     public void setSegnalato(final Utente utente) {
         this.segnalato = utente;
-    }
-
-    /**
-     * @return Campagna istanza di Campagna che viene segnalata.
-     */
-    public Campagna getCampagnaSegnalata() {
-        return campagnaSegnalata;
     }
 
     /**
