@@ -19,18 +19,21 @@ public final class ImmagineServiceImpl implements ImmagineService {
 <span class="fc" id="L19">      this.dao = newDAO;</span>
 <span class="fc" id="L20">   }</span>
 
-<span class="fc" id="L22">   public ImmagineServiceImpl() {</span>
-<span class="fc" id="L23">      dao = new ImmagineDAO();</span>
-<span class="fc" id="L24">   }</span>
+   /**
+    * Il costruttore per la classe ImmagineService.
+    */
+<span class="fc" id="L25">   public ImmagineServiceImpl() {</span>
+<span class="fc" id="L26">      dao = new ImmagineDAO();</span>
+<span class="fc" id="L27">   }</span>
 
    @Override
    public boolean salvaImmagine(final Immagine immagine) {
-<span class="fc" id="L28">      return dao.save(immagine);</span>
+<span class="fc" id="L31">      return dao.save(immagine);</span>
    }
 
    @Override
    public boolean eliminaImmaginiCampagna(final int idCampagna) {
-<span class="fc" id="L33">      return ((ImmagineDAO) dao).deleteByIdCampagna(idCampagna);</span>
+<span class="fc" id="L36">      return ((ImmagineDAO) dao).deleteByIdCampagna(idCampagna);</span>
    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

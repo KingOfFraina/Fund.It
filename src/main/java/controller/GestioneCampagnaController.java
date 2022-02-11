@@ -264,8 +264,10 @@ public final class GestioneCampagnaController extends HttpServlet {
                                 "Operazione rimborso donazioni:",
                                 "Non effettuata con successo");
                      }
-                     request.getRequestDispatcher(
-                             "/WEB-INF/results/profilo_utente.jsp");
+                     response.sendRedirect(request.getServletContext()
+                             .getContextPath()
+                             + "/GestioneUtenteController"
+                             + "/visualizzaDashboard");
                      return;
                   } else {
                      ReportService.creaReport(request,

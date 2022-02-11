@@ -547,6 +547,8 @@ public class CampagnaControllerTest {
         when(mockService.trovaCampagna(anyInt())).thenReturn(campagna);
         when(mockService.cancellaCampagna(any())).thenReturn(true);
         when(mockService.rimborsaDonazioni(any(), any())).thenReturn(true);
+        when(mockRequest.getServletContext()).thenReturn(mockContext);
+        when(mockContext.getContextPath()).thenReturn("/FundIt-1.0-SNAPSHOT");
         campagnaController.doPost(mockRequest, mockResponse);
 
         verify(mockRequest, atLeastOnce()).getPathInfo();
@@ -569,6 +571,8 @@ public class CampagnaControllerTest {
         when(mockService.trovaCampagna(anyInt())).thenReturn(campagna);
         when(mockService.cancellaCampagna(any())).thenReturn(true);
         when(mockService.rimborsaDonazioni(any(), any())).thenReturn(false);
+        when(mockRequest.getServletContext()).thenReturn(mockContext);
+        when(mockContext.getContextPath()).thenReturn("/FundIt-1.0-SNAPSHOT");
         campagnaController.doPost(mockRequest, mockResponse);
 
         verify(mockRequest, atLeastOnce()).getPathInfo();
