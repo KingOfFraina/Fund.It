@@ -148,7 +148,7 @@ public class SegnalazioneProxyTest {
 
    @Test
    public void getCampagnaLazy() {
-      segnalazione.getCampagnaSegnalata().setTitolo(null);
+      segnalazione.getCampagna().setTitolo(null);
       Campagna campagna1 = segnalazioneProxy.getCampagna();
       campagna.setTitolo("titolo");
       assertAll(

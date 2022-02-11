@@ -202,7 +202,7 @@ public class UtenteProxyTest {
               () -> assertEquals(segnalazione.getSegnalato().getIdUtente(), segnalazioneList.get(0).getSegnalato().getIdUtente()),
               () -> assertEquals(segnalazione.getSegnalatore().getIdUtente(), segnalazioneList.get(0).getSegnalatore().getIdUtente()),
               () -> assertEquals(segnalazione.getDescrizione(), segnalazioneList.get(0).getDescrizione()),
-              () -> assertEquals(segnalazione.getCampagnaSegnalata().getIdCampagna(), segnalazioneList.get(0).getCampagnaSegnalata().getIdCampagna())
+              () -> assertEquals(segnalazione.getCampagna().getIdCampagna(), segnalazioneList.get(0).getCampagna().getIdCampagna())
 
       );
 

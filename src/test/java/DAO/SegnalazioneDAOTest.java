@@ -169,7 +169,7 @@ public class SegnalazioneDAOTest {
     @Test
     public void testGetByIdCampagna() {
         SegnalazioneDAO segnalazioneDAO = (SegnalazioneDAO) dao;
-        List<Segnalazione> segnalazioni = segnalazioneDAO.getByIdCampagna(s1.getCampagnaSegnalata().getIdCampagna());
+        List<Segnalazione> segnalazioni = segnalazioneDAO.getByIdCampagna(s1.getCampagna().getIdCampagna());
         assertNotNull(segnalazioni);
         assertTrue(segnalazioni.size() > 0);
     }

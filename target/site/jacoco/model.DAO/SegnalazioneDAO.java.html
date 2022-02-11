@@ -97,7 +97,7 @@ import java.util.List;
 <span class="fc" id="L97">            statement.setString(++index,</span>
 <span class="fc" id="L98">                    entity.getStatoSegnalazione().toString());</span>
 <span class="fc" id="L99">            statement.setInt(++index,</span>
-<span class="fc" id="L100">                    entity.getCampagnaSegnalata().getIdCampagna());</span>
+<span class="fc" id="L100">                    entity.getCampagna().getIdCampagna());</span>
 
 <span class="fc" id="L102">            ret = statement.executeUpdate();</span>
 <span class="fc" id="L103">            ResultSet set = statement.getGeneratedKeys();</span>

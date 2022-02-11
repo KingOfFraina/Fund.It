@@ -80,7 +80,7 @@ public class SegnalazioniServiceImpl implements SegnalazioniService {
      */
     @Override
     public boolean segnalaCampagna(final Segnalazione segnalazione) {
-        if (segnalazione == null || segnalazione.getCampagnaSegnalata() == null
+        if (segnalazione == null || segnalazione.getCampagna() == null
                 || segnalazione.getSegnalatore() == null
                 || segnalazione.getSegnalato() == null
                 || segnalazione.getDescrizione() == null) {

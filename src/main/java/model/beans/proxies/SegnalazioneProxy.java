@@ -47,14 +47,14 @@ public final class SegnalazioneProxy implements SegnalazioneInterface {
 
    @Override
    public Campagna getCampagna() {
-      if (segnalazione.getCampagnaSegnalata().getTitolo() == null) {
+      if (segnalazione.getCampagna().getTitolo() == null) {
          CampagnaDAO dao = new CampagnaDAO();
          Campagna c = dao.getById(segnalazione.
-                 getCampagnaSegnalata().getIdCampagna());
+                 getCampagna().getIdCampagna());
          segnalazione.setCampagnaSegnalata(c);
          return c;
       } else {
-         return segnalazione.getCampagnaSegnalata();
+         return segnalazione.getCampagna();
       }
    }
 }

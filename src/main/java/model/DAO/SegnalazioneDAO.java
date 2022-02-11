@@ -97,7 +97,7 @@ public final class SegnalazioneDAO
             statement.setString(++index,
                     entity.getStatoSegnalazione().toString());
             statement.setInt(++index,
-                    entity.getCampagnaSegnalata().getIdCampagna());
+                    entity.getCampagna().getIdCampagna());
 
             ret = statement.executeUpdate();
             ResultSet set = statement.getGeneratedKeys();
