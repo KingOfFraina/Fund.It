@@ -2,7 +2,7 @@
 <footer class="text-center text-lg-start bg-dark text-muted footer-fundit">
 
     <div class="container logo text-center">
-        <h1>Fund.it</h1>
+        <h1 style="color: #00AB98; font-family: Comfortaa, cursive">Fund.it</h1>
     </div>
     <!-- Section: Social media -->
     <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">

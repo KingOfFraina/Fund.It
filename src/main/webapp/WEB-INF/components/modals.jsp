@@ -112,10 +112,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <c:forEach items="${campagna.donazioni}" var="don">
+                <c:forEach items="${requestScope.campagna.donazioni}" var="don">
                     <div class="container commento">
                         <hr class="solid text-black">
-                        <h4>${don.utente.nome} ${don.utente.cognome} ha donato  <fmt:formatNumber type="number" maxFractionDigits="2" value="${don.sommaDonata}"/>&euro;</h4>
+                        <c:choose>
+                            <c:when test="${don.anonimo}">
+                                <h4>Anonimo ha donato  <fmt:formatNumber type="number" maxFractionDigits="2" value="${don.sommaDonata}"/>&euro;</h4>
+                            </c:when>
+                            <c:otherwise>
+                                <h4>${don.utente.nome} ${don.utente.cognome} ha donato  <fmt:formatNumber type="number" maxFractionDigits="2" value="${don.sommaDonata}"/>&euro;</h4>
+                            </c:otherwise>
+                        </c:choose>
+
                         <hr class="solid text-black">
                     </div>
                 </c:forEach>

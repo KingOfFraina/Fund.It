@@ -19,7 +19,7 @@
         <c:forEach items="${requestScope.utente.donazioni}" var="donazione">
             <tr>
                 <th scope="row">${donazione.idDonazione}</th>
-                <td>${donazione.sommaDonata}&euro;</td>
+                <td><fmt:formatNumber type="number" maxFractionDigits="2" value="${donazione.sommaDonata}"/>&euro;</td>
                 <td>${donazione.dataOra}</td>
                 <td>${donazione.campagna.idCampagna}</td>
             </tr>

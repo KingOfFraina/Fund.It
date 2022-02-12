@@ -157,7 +157,7 @@
 
                 <div class="d-grid gap-2 my-3">
                     <input type="hidden" id="idCampagna" value="${campagna.idCampagna}">
-                    <button id="condividiButton" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    <button id="condividiButton" type="button" class="btn btn-primary pulsante" data-bs-toggle="modal"
                             data-bs-target="#modalCondivisione"
                             style=" background-color: #00AB98; border-color: #00AB98">Condividi
                     </button>
@@ -194,13 +194,13 @@
 
                                 <c:choose>
                                     <c:when test = "${don.anonimo}">
-                                        <h6>Anonimo ha donato ${don.sommaDonata}&euro; <span class="badge bg-white"
+                                        <h6>Anonimo ha donato <fmt:formatNumber type="number" maxFractionDigits="2" value="${don.sommaDonata}"/>&euro; <span class="badge bg-white"
                                                                                                         style="color: #00AB98;">Nuovo</span>
                                         </h6>
                                     </c:when>
 
                                     <c:otherwise>
-                                        <h6>${don.utente.nome} ha donato ${don.sommaDonata}&euro; <span class="badge bg-white"
+                                        <h6>${don.utente.nome} ha donato <fmt:formatNumber type="number" maxFractionDigits="2" value="${don.sommaDonata}"/>&euro; <span class="badge bg-white"
                                                                                                         style="color: #00AB98;">Nuovo</span>
                                         </h6>
                                     </c:otherwise>
@@ -213,13 +213,13 @@
                             <c:forEach items="${campagna.donazioni}" var="don">
                                 <c:choose>
                                     <c:when test = "${don.anonimo}">
-                                        <h6>Anonimo ha donato ${don.sommaDonata}&euro; <span class="badge bg-white"
+                                        <h6>Anonimo ha donato <fmt:formatNumber type="number" maxFractionDigits="2" value="${don.sommaDonata}"/>&euro; <span class="badge bg-white"
                                                                                              style="color: #00AB98;">Nuovo</span>
                                         </h6>
                                     </c:when>
 
                                     <c:otherwise>
-                                        <h6>${don.utente.nome} ha donato ${don.sommaDonata}&euro; <span class="badge bg-white"
+                                        <h6>${don.utente.nome} ha donato <fmt:formatNumber type="number" maxFractionDigits="2" value="${don.sommaDonata}"/>&euro; <span class="badge bg-white"
                                                                                                         style="color: #00AB98;">Nuovo</span>
                                         </h6>
                                     </c:otherwise>
@@ -235,7 +235,7 @@
                 <!--Visualizza donazioni-->
                 <div class="d-grid gap-2 d-md-block text-center my-5">
 
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                    <button type="button" class="btn btn-primary pulsante" data-bs-toggle="modal" data-bs-target="#exampleModal"
                             style=" background-color: #00AB98; border-color: #00AB98">Mostra tutto
                     </button>
 

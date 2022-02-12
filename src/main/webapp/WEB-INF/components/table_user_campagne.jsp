@@ -33,8 +33,8 @@
                 </c:otherwise>
 
             </c:choose>
-            <td>${campagna.sommaRaccolta}&euro;</td>
-            <td>${campagna.sommaTarget}&euro;</td>
+            <td><fmt:formatNumber type="number" maxFractionDigits="2" value="${campagna.sommaRaccolta}"/>&euro;</td>
+            <td><fmt:formatNumber type="number" maxFractionDigits="2" value="${campagna.sommaTarget}"/>&euro;</td>
         </tr>
 
     </c:forEach>
