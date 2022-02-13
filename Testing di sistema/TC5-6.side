@@ -1,0 +1,272 @@
+{
+  "id": "b5f66b00-cdeb-40c2-ad36-da25b4161293",
+  "version": "2.0",
+  "name": "categoria+segnalazioneFundIt",
+  "url": "http://localhost:8080/Fund_It_war/campagna/campagna?idCampagna=6",
+  "tests": [{
+    "id": "2e2154c1-ed27-465a-8b1b-dab21384f937",
+    "name": "TC_5.1.1",
+    "commands": [{
+      "id": "9e2d03f4-9cd3-4142-b6c3-62fd456522d6",
+      "comment": "",
+      "command": "open",
+      "target": "http://localhost:8080/FundIt-1.0-SNAPSHOT/GestioneUtenteController/visualizzaDashboardAdmin",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6408cabd-02d5-4f4e-ab5f-bfce8024a50d",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Gestisci Categorie",
+      "targets": [
+        ["linkText=Gestisci Categorie", "linkText"],
+        ["css=li:nth-child(5) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Gestisci Categorie')]", "xpath:link"],
+        ["xpath=//a[@onclick='showCategoriesTable()']", "xpath:attributes"],
+        ["xpath=//nav[@id='sidebar']/ul/li[5]/a", "xpath:idRelative"],
+        ["xpath=//li[5]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Gestisci Categorie')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "6ca9c89b-52fb-4aaf-816c-58b23ebf6ea6",
+      "comment": "",
+      "command": "type",
+      "target": "id=nomeCategoria",
+      "targets": [
+        ["id=nomeCategoria", "id"],
+        ["css=#nomeCategoria", "css:finder"],
+        ["xpath=//input[@id='nomeCategoria']", "xpath:attributes"],
+        ["xpath=//div[@id='categories_table']/div/form/input", "xpath:idRelative"],
+        ["xpath=//div/form/input", "xpath:position"]
+      ],
+      "value": "Ac/8().-"
+    }, {
+      "id": "639cdd14-1bb8-42e5-9108-5687305ae295",
+      "comment": "",
+      "command": "click",
+      "target": "css=.fa-plus-square",
+      "targets": [
+        ["css=.fa-plus-square", "css:finder"],
+        ["xpath=//div[@id='categories_table']/div/form/button/i", "xpath:idRelative"],
+        ["xpath=//div/form/button/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b426dbc7-a9d2-4ea7-a36d-f294ea959301",
+      "comment": "",
+      "command": "waitForElementNotVisible",
+      "target": "id=toastMessage",
+      "targets": [],
+      "value": "3000"
+    }]
+  }, {
+    "id": "e2a29de9-37c2-4e99-a27a-379278445189",
+    "name": "TC_5.1.2",
+    "commands": [{
+      "id": "0e3a97be-6a4c-4a29-8446-2675c4383a6b",
+      "comment": "",
+      "command": "open",
+      "target": "http://localhost:8080/FundIt-1.0-SNAPSHOT/GestioneUtenteController/visualizzaDashboardAdmin",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "dff96acb-6036-44bf-9fcc-d0193fac11f8",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Gestisci Categorie",
+      "targets": [
+        ["linkText=Gestisci Categorie", "linkText"],
+        ["css=li:nth-child(5) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Gestisci Categorie')]", "xpath:link"],
+        ["xpath=//a[@onclick='showCategoriesTable()']", "xpath:attributes"],
+        ["xpath=//nav[@id='sidebar']/ul/li[5]/a", "xpath:idRelative"],
+        ["xpath=//li[5]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Gestisci Categorie')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "4728d85f-b2b2-4e5c-9cfc-ec49f21ea14c",
+      "comment": "",
+      "command": "type",
+      "target": "id=nomeCategoria",
+      "targets": [
+        ["id=nomeCategoria", "id"],
+        ["css=#nomeCategoria", "css:finder"],
+        ["xpath=//input[@id='nomeCategoria']", "xpath:attributes"],
+        ["xpath=//div[@id='categories_table']/div/form/input", "xpath:idRelative"],
+        ["xpath=//div/form/input", "xpath:position"]
+      ],
+      "value": "Interventi chirurgici"
+    }, {
+      "id": "8f6f2f43-2314-401a-ad30-a7eb319661d3",
+      "comment": "",
+      "command": "click",
+      "target": "css=.fa-plus-square",
+      "targets": [
+        ["css=.fa-plus-square", "css:finder"],
+        ["xpath=//div[@id='categories_table']/div/form/button/i", "xpath:idRelative"],
+        ["xpath=//div/form/button/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "e62dcae9-566c-445b-bd5f-d9d578860918",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='reportToast']/div",
+      "targets": [],
+      "value": "3000"
+    }]
+  }, {
+    "id": "82679e36-2f6c-4705-8ed0-9289e87fe691",
+    "name": "TC_6.1.1",
+    "commands": [{
+      "id": "64ce8482-10fa-47eb-bcce-b9d25b462dc9",
+      "comment": "",
+      "command": "open",
+      "target": "http://localhost:8080/FundIt-1.0-SNAPSHOT/campagna/campagna?idCampagna=829",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d8fb875a-c034-4cfd-924a-8cbd7ea5226e",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Segnala la raccolta fondi",
+      "targets": [
+        ["linkText=Segnala la raccolta fondi", "linkText"],
+        ["css=.container:nth-child(2) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Segnala la raccolta fondi')]", "xpath:link"],
+        ["xpath=//div[4]/div/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Segnala la raccolta fondi')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "75772466-54d8-4739-b25d-6fad6ed061c3",
+      "comment": "",
+      "command": "click",
+      "target": "id=textAraeSegnalazioni",
+      "targets": [
+        ["id=textAraeSegnalazioni", "id"],
+        ["name=descrizione", "name"],
+        ["css=#textAraeSegnalazioni", "css:finder"],
+        ["xpath=//textarea[@id='textAraeSegnalazioni']", "xpath:attributes"],
+        ["xpath=//div[@id='modalSegnalazioni']/div/div/form/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "38c55158-c68f-4703-9ac3-346fdba1ee4a",
+      "comment": "",
+      "command": "click",
+      "target": "css=.modal-footer:nth-child(2) > .btn:nth-child(2)",
+      "targets": [
+        ["css=.modal-footer:nth-child(2) > .btn:nth-child(2)", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//div[@id='modalSegnalazioni']/div/div/form/div[2]/button[2]", "xpath:idRelative"],
+        ["xpath=//div[2]/button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Invia segnalazione')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "717726b5-d419-47b9-8c48-00be7b7bed83",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "id=textAraeSegnalazioni",
+      "targets": [
+        ["id=textAraeSegnalazioni", "id"],
+        ["name=descrizione", "name"],
+        ["css=#textAraeSegnalazioni", "css:finder"],
+        ["xpath=//textarea[@id='textAraeSegnalazioni']", "xpath:attributes"],
+        ["xpath=//div[@id='modalSegnalazioni']/div/div/form/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "69836d77-70a7-4382-af82-0371ec725760",
+    "name": "TC_6.1.2",
+    "commands": [{
+      "id": "910dbcb0-1966-42ed-82d1-e7d8237e9b4c",
+      "comment": "",
+      "command": "open",
+      "target": "http://localhost:8080/FundIt-1.0-SNAPSHOT/campagna/campagna?idCampagna=829",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "96655587-5291-41ea-ae83-9eb9f276fba8",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Segnala la raccolta fondi",
+      "targets": [
+        ["linkText=Segnala la raccolta fondi", "linkText"],
+        ["css=.container:nth-child(2) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Segnala la raccolta fondi')]", "xpath:link"],
+        ["xpath=//div[4]/div/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Segnala la raccolta fondi')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "59846512-fcc7-4400-a0f8-9b600dbfa4fb",
+      "comment": "",
+      "command": "click",
+      "target": "id=textAraeSegnalazioni",
+      "targets": [
+        ["id=textAraeSegnalazioni", "id"],
+        ["name=descrizione", "name"],
+        ["css=#textAraeSegnalazioni", "css:finder"],
+        ["xpath=//textarea[@id='textAraeSegnalazioni']", "xpath:attributes"],
+        ["xpath=//div[@id='modalSegnalazioni']/div/div/form/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "211847f8-abec-428b-a3bf-b3960e23fcb2",
+      "comment": "",
+      "command": "type",
+      "target": "id=textAraeSegnalazioni",
+      "targets": [
+        ["id=textAraeSegnalazioni", "id"],
+        ["name=descrizione", "name"],
+        ["css=#textAraeSegnalazioni", "css:finder"],
+        ["xpath=//textarea[@id='textAraeSegnalazioni']", "xpath:attributes"],
+        ["xpath=//div[@id='modalSegnalazioni']/div/div/form/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "Campagna sospetta per documentazione inesistente"
+    }, {
+      "id": "620a4dee-1032-4d5f-82d7-d073063fb616",
+      "comment": "",
+      "command": "click",
+      "target": "css=.modal-footer:nth-child(2) > .btn:nth-child(2)",
+      "targets": [
+        ["css=.modal-footer:nth-child(2) > .btn:nth-child(2)", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//div[@id='modalSegnalazioni']/div/div/form/div[2]/button[2]", "xpath:idRelative"],
+        ["xpath=//div[2]/button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Invia segnalazione')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ca519da2-3674-44af-8ca1-e363e33fdad8",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='reportToast']/div",
+      "targets": [
+        ["css=.d-flex:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='reportToast']/div", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/div", "xpath:position"]
+      ],
+      "value": "30000"
+    }]
+  }],
+  "suites": [{
+    "id": "0e87380e-009d-45dd-8431-a2009d26b90d",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["2e2154c1-ed27-465a-8b1b-dab21384f937"]
+  }],
+  "urls": ["http://localhost:8080/", "http://localhost:8080/Fund_It_war/GestioneUtenteController/visualizzaDashboardAdmin", "http://localhost:8080/Fund_It_war/campagna/campagna?idCampagna=6"],
+  "plugins": []
+}
